@@ -1,0 +1,99 @@
+Manifest-Version: 1.0
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
+Built-By: igor
+Bundle-SymbolicName: org.eclipse.m2e.archetype.common;singleton:=true
+MavenArtifact-GroupId: org.eclipse.m2e
+Require-Bundle: org.eclipse.m2e.maven.runtime;bundle-version="[1.0.0,1
+ .1.0)"
+Bundle-Version: 1.0.0.20110607-2117
+Export-Package: META-INF.plexus,org.apache.maven.archetype,org.apache.
+ maven.archetype.catalog,org.apache.maven.archetype.catalog.io.xpp3,or
+ g.apache.maven.archetype.common,org.apache.maven.archetype.common.io.
+ xpp3,org.apache.maven.archetype.common.util,org.apache.maven.archetyp
+ e.creator,org.apache.maven.archetype.creator.olddescriptor,org.apache
+ .maven.archetype.downloader,org.apache.maven.archetype.exception,org.
+ apache.maven.archetype.generator,org.apache.maven.archetype.metadata,
+ org.apache.maven.archetype.metadata.io.xpp3,org.apache.maven.archetyp
+ e.model,org.apache.maven.archetype.model.io.xpp3,org.apache.maven.arc
+ hetype.old,org.apache.maven.archetype.old.descriptor,org.apache.maven
+ .archetype.registry,org.apache.maven.archetype.registry.io.xpp3,org.a
+ pache.maven.archetype.repositorycrawler,org.apache.maven.archetype.so
+ urce,org.codehaus.plexus.velocity
+Build-Jdk: 1.6.0_24
+Bundle-ClassPath: jars/jchardet-1.0.jar,jars/dom4j-1.6.1.jar,jars/jdom
+ -1.0.jar,jars/commons-io-1.3.2.jar,jars/plexus-velocity-1.1.3.jar,jar
+ s/commons-collections-3.2.jar,jars/archetype-common-2.0-alpha-4.jar,j
+ ars/commons-lang-2.1.jar,jars/oro-2.0.8.jar,jars/velocity-1.5.jar
+Bundle-Vendor: %Bundle-Vendor
+Bundle-Name: %Bundle-Name
+MavenArtifact-BaseVersion: 2.0.1.20090526-1230
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+MavenArtifact-ArtifactId: org.eclipse.m2e.archetype.common
+Bundle-ManifestVersion: 2
+
+Name: about_files/LICENSE-1.1.txt
+SHA1-Digest: LU3HxKIxz/SZNMODB4d2mnr6VUk=
+
+Name: about_files/LICENSE-2.0.txt
+SHA1-Digest: K4uBUimqimHkg/tLoFiLi2xJGJA=
+
+Name: META-INF/plexus/.gitignore
+SHA1-Digest: 2jmj7l5rSw0yVb/vlWAYkK/YBwk=
+
+Name: jars/jdom-1.0.jar
+SHA1-Digest: Fv04zC/2t8iKTAAX9HYhfxK2Npk=
+
+Name: META-INF/eclipse.inf
+SHA1-Digest: 09gN05tobgS/MdtqyTNQhOhB73M=
+
+Name: about_files/dom4j-LICENSE.txt
+SHA1-Digest: SQRT7//2ftCQvWowK7UDU2B6Uno=
+
+Name: OSGI-INF/l10n/bundle.properties
+SHA1-Digest: bZ3aSb9EC+r81NMtQCAL11C3/PM=
+
+Name: about_files/MPL-1.1.txt
+SHA1-Digest: q6jXbQr2fVfaPDwyHKpZ89JCOGs=
+
+Name: jars/velocity-1.5.jar
+SHA1-Digest: 64GSjSARnWjGp8ZCvEBPp2lJfrk=
+
+Name: about.html
+SHA1-Digest: PQlHUJKkYLBVPAKmLwI1a3GBxFg=
+
+Name: jars/commons-collections-3.2.jar
+SHA1-Digest: N+ebIa8bvA8SboAKmo0Q3vLyDqg=
+
+Name: META-INF/maven/org.eclipse.m2e/org.eclipse.m2e.archetype.common/
+ pom.xml
+SHA1-Digest: IIZE8ucsiteAW+N2LMSvbMtNTA4=
+
+Name: jars/archetype-common-2.0-alpha-4.jar
+SHA1-Digest: 6fN6Ydpo1KRQxkT1Z6hfr7i0bAg=
+
+Name: jars/oro-2.0.8.jar
+SHA1-Digest: 7cnbBMVPGRdyojYf2212FGJxeuU=
+
+Name: about_files/jdom-LICENSE.txt
+SHA1-Digest: ixVITUctA9P+pCXIrF6qe/d1sPw=
+
+Name: META-INF/maven/org.eclipse.m2e/org.eclipse.m2e.archetype.common/
+ pom.properties
+SHA1-Digest: 7pqRscrC0/0feTcFRPGDkmnNx+c=
+
+Name: jars/commons-io-1.3.2.jar
+SHA1-Digest: zJOCsNxzRtyQww7Zj/7pPiA1g1k=
+
+Name: jars/dom4j-1.6.1.jar
+SHA1-Digest: Esgoip1nHnZFBbwARANII1PLd7U=
+
+Name: jars/jchardet-1.0.jar
+SHA1-Digest: ctp0+nLbq2SHVlTh5DMj0c/sADU=
+
+Name: jars/plexus-velocity-1.1.3.jar
+SHA1-Digest: 5e2BBiN+Vbr36DF9mSkEVrcUxlg=
+
+Name: jars/commons-lang-2.1.jar
+SHA1-Digest: sWECsQPU+IM8nF9Z9gJEhSDe8Fk=
+

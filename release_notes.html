@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>Google Web Toolkit Eclipse Plugin Release Notes</title>
+
+<style>
+body {
+	background-color: white;
+	color: black;
+	font-family: Arial, sans-serif;
+	font-size: small;
+	margin: 20px;
+}
+
+li {
+	margin-bottom: 0.5em;
+}
+
+li div {
+	margin-top: 0.2em;
+}
+
+code {
+	font-size: medium;
+}
+</style>
+</head>
+
+<body>
+<h1>Google Web Toolkit Eclipse Plugin Release Notes</h1>
+<ul>
+	<li><a href="#Release_Notes_Current">@VERSION@</a></li>
+</ul>
+
+<hr />
+<a name="Release_Notes_Current"></a>
+<h2>Release Notes for @VERSION@</h2>
+<h3>Features</h3>
+<ul>
+  <li>Wizards</li>
+    <ul>
+      <li>New GWT Project: Creates a new GWT project (wraps the projectCreator/applicationCreator scripts)</li>
+      <li>New GWT Module: Creates a new GWT module</li>
+      <li>New GWT Host Page: Creates an HTML host page for a GWT module</li>
+      <li>New GWT Entry Point Class: Creates a new entry-point class for a GWT module.</li>
+    </ul>
+  <li>Customized editing of JSNI methods</li>
+    <ul>
+      <li>Syntax coloring for JavaScript idioms and references to Java entities</li>
+      <li>Validation of JavaScript syntax (using the Rhino parser)</li>
+      <li>Marks errors on unresolved Java references (can be disabled for a particular method with @SuppressWarnings("jsni"))</li>
+      <li>Open Declaration (F3) action works on Java references</li>
+      <li>Java Search includes references inside JSNI methods</li>
+      <li>Refactoring Java types (move/rename) and members (rename) affects references in JSNI</li>
+      <li>Auto-completion of JSNI method bodies based on the method's Java signature while also accounting for Bean-style properties.<br/>
+      For example, if the java method's signature is <code>native int getFoo(int x)</code>, the proposed completions would be:
+        <ul>
+          <li><code>/*-{ }-*/</code></li>
+          <li><code>/*-{ return this.getFoo(x); }*-/</code></li>
+          <li><code>/*-{ return this.foo(x) }*-/</code></li>
+          <li><code>/*-{ return this.foo[x] }*-/</code></li>
+        </ul>
+      </li>      
+    </ul>
+  <li>GWT Runtimes</li>
+    <ul>
+      <li>Can point to GWT jars or imported source projects (gwt-user, gwt-dev-&lt;platform&gt;)</li>
+      <li>Can be easily switched via the Project Properties page (e.g., change a GWT project to use 1.5 jars instead of 1.4.6 jars)</li>
+      <li>Added to project classpath as a library (similar to Java JRE)</li>
+      <li>Runtimes can be defined via Preferences -&gt; Google Web Toolkit -&gt; Installed Runtimes</li>
+    </ul>
+  <li>Launch configurations</li>
+    <ul>
+      <li>Can launch hosted mode sessions or JUnit tests</li>
+      <li>Context menu -&gt; Run As... shortcuts on GWT modules, HTML host pages, and GWTTestCases</li>
+      <li>Settings tab for specifying GWTShell arguments (log level, compiler output obfuscation, etc.)</li>
+      <li>GWT Runtime selection for overriding the GWT runtime library used in build classpath</li>
+    </ul>
+  <li>Module editor</li>
+    <ul>
+      <li>Auto-completion of module elements, attributes</li>
+      <li>Structural and element-wise validation of module files</li>
+      <li>XML syntax validation of module files</li>
+    </ul>
+  <li>Auto-update</li>
+    <ul>
+      <li>Checks for updates automatically, and notifies user when new version is available to install</li>
+      <li>Can be disabled via Preferences -&gt; Google Web Toolkit</li>
+    </ul>
+</ul>
+</body>
+</html>

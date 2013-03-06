@@ -1,0 +1,257 @@
+{
+ "kind": "discovery#directoryList",
+ "items": [
+  {
+   "kind": "discovery#directoryItem",
+   "id": "appsmarket:v2",
+   "name": "appsmarket",
+   "version": "v2",
+   "description": "Google Apps Marketplace API",
+   "discoveryLink": "./describe/appsmarket/v2",
+   "labels": [
+    "labs"
+   ],
+   "preferred": false
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "appsmarket:v2sandbox",
+   "name": "appsmarket",
+   "version": "v2sandbox",
+   "description": "Google Apps Marketplace API",
+   "discoveryLink": "./describe/appsmarket/v2sandbox",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "appssearch:v1r1",
+   "name": "appssearch",
+   "version": "v1r1",
+   "description": "Google Apps Search API",
+   "discoveryLink": "./describe/appssearch/v1r1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "audit:v1",
+   "name": "audit",
+   "version": "v1",
+   "description": "Audit reporting API",
+   "discoveryLink": "./describe/audit/v1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "buzz:v1",
+   "name": "buzz",
+   "version": "v1",
+   "description": "Buzz APIs for Buzz Posts, etc.",
+   "discoveryLink": "./describe/buzz/v1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "chromewebstore:v1",
+   "name": "chromewebstore",
+   "version": "v1",
+   "description": "Chrome Web Store Authorization API",
+   "discoveryLink": "./describe/chromewebstore/v1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "cips:v1",
+   "name": "cips",
+   "version": "v1",
+   "description": "Content Injection and Proxy System API",
+   "discoveryLink": "./describe/cips/v1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "customsearch:v1",
+   "name": "customsearch",
+   "version": "v1",
+   "description": "CustomSearch API",
+   "discoveryLink": "./describe/customsearch/v1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "diacritize:v1",
+   "name": "diacritize",
+   "version": "v1",
+   "description": "Diacritize API",
+   "discoveryLink": "./describe/diacritize/v1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "discovery:0.1",
+   "name": "discovery",
+   "version": "0.1",
+   "description": "Discovery API",
+   "discoveryLink": "./describe/discovery/0.1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": false
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "discovery:v0.2",
+   "name": "discovery",
+   "version": "v0.2",
+   "description": "Discovery API",
+   "discoveryLink": "./describe/discovery/v0.2",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "discovery:v0.2beta1",
+   "name": "discovery",
+   "version": "v0.2beta1",
+   "description": "Discovery API",
+   "discoveryLink": "./describe/discovery/v0.2beta1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": false
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "easyhybrid:v1",
+   "name": "easyhybrid",
+   "version": "v1",
+   "description": "EasyHybrid GetUserInfo endpoint",
+   "discoveryLink": "./describe/easyhybrid/v1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "latitude:v1",
+   "name": "latitude",
+   "version": "v1",
+   "description": "Google Latitude API",
+   "discoveryLink": "./describe/latitude/v1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "moderator:v1",
+   "name": "moderator",
+   "version": "v1",
+   "description": "Moderator API",
+   "discoveryLink": "./describe/moderator/v1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "realtimesearch:v1r1",
+   "name": "realtimesearch",
+   "version": "v1r1",
+   "description": "Realtime Search API",
+   "discoveryLink": "./describe/realtimesearch/v1r1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "shopping:v1",
+   "name": "shopping",
+   "version": "v1",
+   "description": "Search API for Shopping",
+   "discoveryLink": "./describe/shopping/v1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "shopping:v1beta1",
+   "name": "shopping",
+   "version": "v1beta1",
+   "description": "Search API for Shopping",
+   "discoveryLink": "./describe/shopping/v1beta1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": false
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "siteVerification:v1beta1",
+   "name": "siteVerification",
+   "version": "v1beta1",
+   "description": "Google Site Verification API",
+   "discoveryLink": "./describe/siteVerification/v1beta1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "translate:v2",
+   "name": "translate",
+   "version": "v2",
+   "description": "Translate API",
+   "discoveryLink": "./describe/translate/v2",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  },
+  {
+   "kind": "discovery#directoryItem",
+   "id": "urlshortener:v1",
+   "name": "urlshortener",
+   "version": "v1",
+   "description": "URL Shortener API",
+   "discoveryLink": "./describe/urlshortener/v1",
+   "labels": [
+    "labs"
+   ],
+   "preferred": true
+  }
+ ]
+}

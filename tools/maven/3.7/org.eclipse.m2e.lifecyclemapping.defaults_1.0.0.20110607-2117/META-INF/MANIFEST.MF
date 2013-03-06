@@ -1,0 +1,35 @@
+Manifest-Version: 1.0
+Build-Jdk: 1.6.0_24
+Bundle-Vendor: %Bundle-Vendor
+Bundle-Localization: plugin
+Bundle-Name: %Bundle-Name
+Built-By: igor
+Bundle-SymbolicName: org.eclipse.m2e.lifecyclemapping.defaults;singlet
+ on:=true
+Require-Bundle: org.eclipse.m2e.core;bundle-version="[1.0.0,1.1.0)",or
+ g.eclipse.m2e.jdt;bundle-version="[1.0.0,1.1.0)"
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Bundle-Version: 1.0.0.20110607-2117
+Bundle-ManifestVersion: 2
+
+Name: META-INF/eclipse.inf
+SHA1-Digest: 09gN05tobgS/MdtqyTNQhOhB73M=
+
+Name: lifecycle-mapping-metadata.xml
+SHA1-Digest: pxaA2T5Oc/zMblTfvRXuUhGsJZc=
+
+Name: META-INF/maven/org.eclipse.m2e/org.eclipse.m2e.lifecyclemapping.
+ defaults/pom.xml
+SHA1-Digest: nSlYlOU9O9xMjlp7oHvx69QPWo0=
+
+Name: about.html
+SHA1-Digest: zJXWusTNrlkJGFqrBbEesNrfUp8=
+
+Name: plugin.properties
+SHA1-Digest: vwli81ef2BXrhBlE2XCcRhMJ/Eg=
+
+Name: META-INF/maven/org.eclipse.m2e/org.eclipse.m2e.lifecyclemapping.
+ defaults/pom.properties
+SHA1-Digest: w4t/vKG+pWKvhuHVnp1TBothiH8=
+

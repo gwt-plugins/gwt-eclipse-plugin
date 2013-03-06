@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.google.gdt.eclipse.mobile.android.feature"
+      label="%featureName"
+      version="0.0.0.qualifier"
+      provider-name="%providerName">
+
+   <description>
+      App Engine Tools for Android extensions to the Google Plugin for Eclipse
+   </description>
+
+   <copyright>
+      Copyright 2012 Google Inc.
+   </copyright>
+
+   <license>
+<![CDATA[
+      @FEATURE_LICENSE@
+]]>
+   </license>
+
+   <url>
+      <update url="@FEATURE_UPDATE_SITE_URL@"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="com.google.appengine.eclipse.core"/>
+      <import plugin="com.android.ide.eclipse.adt" version="12.0.0" match="greaterOrEqual"/>
+      <import plugin="com.google.gwt.eclipse.core"/>
+      <import plugin="com.google.gdt.eclipse.suite"/>
+      <import plugin="org.eclipse.jdt.debug.ui"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.ltk.core.refactoring"/>
+      <import plugin="org.eclipse.jdt.core.manipulation"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.text"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="com.google.gdt.eclipse.appengine.rpc"/>
+      <import plugin="com.google.gdt.eclipse.appengine.swarm_backend"/>
+      <import plugin="com.android.ide.eclipse.base" version="21.0.0" match="greaterOrEqual"/>           
+   </requires>
+
+   <plugin
+         id="com.google.gdt.eclipse.mobile.android"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+</feature>

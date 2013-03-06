@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="com.google.gdt.eclipse.gph.checkoutProviders">
+      <scmProvider
+            checkoutProviderClass="com.google.gdt.eclipse.gph.subversive.SubversiveCheckoutProvider"
+            priority="1"
+            providerName="Subversive"
+            providerIcon="icons/subversive.png"
+            providerDescription="The Subversive project aims to provide Subversion (SVN) integration for Eclipse. The Subversive plug-in gives you the ability to work with this CVS successor version control system from the Eclipse workbench. You can work with Subversion repositories in almost exactly the same way you can now work with CVS repositories using the CVS plug-in bundled in the standard Eclipse distribution."
+            scmType="svn"
+            scmTypeLabel="Subversion">
+      </scmProvider>
+   </extension>
+</plugin>

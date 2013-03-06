@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: m2e
+Build-Jdk: 1.6.0_12
+Export-Package: org.sonatype.nexus.index.updater,org.sonatype.nexus.in
+ dex.context,org.apache.lucene.util,org.apache.lucene.search.function,
+ org.apache.lucene,org.apache.lucene.index,org.apache.lucene.store,org
+ .sonatype.nexus.index.incremental,org.sonatype.nexus.artifact,org.apa
+ che.lucene.search.payloads,org.apache.lucene.queryParser,org.apache.l
+ ucene.document,org.sonatype.nexus.index,org.sonatype.nexus.index.crea
+ tor,org.sonatype.nexus.index.locator,org.sonatype.nexus.index.fs,org.
+ sonatype.nexus.index.treeview,org.sonatype.nexus.index.archetype,org.
+ sonatype.nexus.index.packer,org.apache.lucene.analysis.standard,org.a
+ pache.lucene.search.spans,META-INF.plexus,org.sonatype.nexus.index.up
+ dater.jetty,org.apache.lucene.search,org.sonatype.nexus.index.search.
+ grouping,org.sonatype.nexus.index.cli,org.apache.lucene.analysis
+Bundle-ClassPath: jars/nexus-indexer-2.0.5-SNAPSHOT.jar,jars/lucene-co
+ re-2.3.2.jar
+Bundle-Name: Nexus Indexer Bundle
+Bundle-RequiredExecutionEnvironment: J2SE-1.5, JavaSE-1.6
+Require-Bundle: org.maven.ide.eclipse.maven_embedder;bundle-version="[
+ 0.10.0,0.11.0)",org.maven.ide.eclipse.archetype_common;bundle-version
+ ="[0.10.0,0.11.0)"
+Bundle-Vendor: Sonatype, Inc.
+MavenArtifact-BaseVersion: 0.10.0
+Bundle-Version: 0.10.0.20100209-0800
+MavenArtifact-GroupId: org.maven.ide.eclipse
+MavenArtifact-ArtifactId: org.maven.ide.eclipse.nexus_indexer
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.maven.ide.eclipse.nexus_indexer;singleton:=true
+

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--            Google Apps Marketplace Listing Manifest file            -->
+<!-- ******************************************************************* -->
+<!--                  DO NOT DELETE THIS FILE MANUALLY                   -->
+<!-- ******************************************************************* -->
+<!-- To delete this file un-check support for Google Apps Marketplace    -->
+<!-- from eclipse project properties page.                               -->
+<!-- The default manifest file creates a free listing with five seats    -->
+<!-- To create a custom listing please refer to following link:          -->
+<!-- http://code.google.com/googleapps/marketplace/listing_manifest.html -->
+<ListingManifest>
+  <SubListings>
+    <SubListing>
+      <DisplayName>Free edition</DisplayName>
+      <EditionId>free</EditionId>
+      <PaymentModel>FREE</PaymentModel>
+      <SeatCount>5</SeatCount>
+    </SubListing>
+  </SubListings>
+</ListingManifest>

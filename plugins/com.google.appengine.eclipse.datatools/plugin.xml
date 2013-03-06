@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="com.google.appengine.eclipse.core.gaeSqlToolsExtension">
+      <gaeSqlToolsExtension
+            class="com.google.appengine.eclipse.datatools.listeners.SqlPropertiesUpdateListener">
+      </gaeSqlToolsExtension>
+   </extension>
+   <extension
+         point="org.eclipse.datatools.connectivity.driverExtension">
+      <driverTemplate
+            createDefault="false"
+            description="Template for Google Cloud Sql"
+            emptyJarListIsOK="false"
+            id="org.eclipse.datatools.connectivity.googlecloudsql.driverTemplate"
+            jarList="google_sql.jar"
+            name="GoogleCloudSql"
+            parentCategory="com.google.appengine.eclipse.datatools.driverCategory">
+         <properties>
+            <property
+                  name="Database Name"
+                  required="true"
+                  visible="true"
+                  id="org.eclipse.datatools.connectivity.db.databaseName">
+            </property>
+            <property
+                  name="Driver Class"
+                  value="com.google.cloud.sql.jdbc.internal.googleapi.GoogleApiDriver"
+                  required="true"
+                  visible="true"
+                  id="org.eclipse.datatools.connectivity.db.driverClass">
+            </property>
+            <property
+                  name="User Name"
+                  value="root"
+                  required="false"
+                  visible="true"
+                  id="org.eclipse.datatools.connectivity.db.username">
+            </property>
+            <property
+                  name="Password"
+                  value=""
+                  required="false"
+                  visible="true"
+                  id="org.eclipse.datatools.connectivity.db.password">
+            </property>
+            <property
+                  name="Instance Name"
+                  required="true"
+                  visible="true"
+                  id="org.eclipse.datatools.connectivity.googlecloudsql.instancename">
+            </property>
+         </properties>
+      </driverTemplate>
+      <category
+            id="com.google.appengine.eclipse.datatools.driverCategory"
+            name="Google Cloud SQL"
+            parentCategory="org.eclipse.datatools.enablement.mysql.driverCategory">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.datatools.connectivity.ui.driverUIContributor">
+      <driverUIContributor
+            class="com.google.appengine.eclipse.datatools.ui.GoogleSqlDriverUIContributer"
+            driverTemplateID="org.eclipse.datatools.connectivity.googlecloudsql.driverTemplate"
+            id="org.eclipse.datatools.connectivity.googlecloudsql.GoogleSqlDriverUIContributor">
+      </driverUIContributor>
+   </extension>
+   <extension
+         point="org.eclipse.datatools.connectivity.connectionProfile">
+      <connectionFactory
+            class="com.google.appengine.eclipse.datatools.connection.GoogleSqlConnectionFactory"
+            id="java.sql.Connection"
+            name="Google Cloud SQL Connection factory"
+            profile="com.google.appengine.eclipse.datatools.connectionProfile">
+      </connectionFactory>
+      <connectionProfile
+            category="org.eclipse.datatools.connectivity.db.category"
+            configurationType="org.eclipse.datatools.connectivity.db.generic.configurationType"
+            icon="icons/jdbc.gif"
+            id="com.google.appengine.eclipse.datatools.connectionProfile"
+            name="Google SQL Connection Profile"
+            pingFactory="com.google.appengine.eclipse.datatools.connection.GoogleSqlConnectionFactory">
+      </connectionProfile>
+      <newWizard
+            class="com.google.appengine.eclipse.datatools.ui.GoogleSqlConnectionProfileWizard"
+            id="com.google.appengine.eclipse.datatools.newWizard"
+            name="Google Cloud SQL"
+            icon="icons/new_db_element.gif"
+            profile="com.google.appengine.eclipse.datatools.connectionProfile">
+      </newWizard>
+   </extension>
+   <extension
+         point="org.eclipse.datatools.connectivity.sqm.core.mappings">
+      <providerIDtoDriverCategoryID
+            driverCategoryID="com.google.appengine.eclipse.datatools.driverCategory"
+            providerID="com.google.appengine.eclipse.datatools.connectionProfile">
+      </providerIDtoDriverCategoryID>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="com.google.appengine.eclipse.datatools.ui.GoogleSqlPropertyPage"
+            id="com.google.appengine.eclipse.datatools.propertyPage"
+            name="Google Cloud SQL Property Page">
+         <filter
+               name="org.eclipse.datatools.profile.property.id"
+               value="com.google.appengine.eclipse.datatools.connectionProfile">
+         </filter>
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.datatools.connectivity.IConnectionProfile">
+            </instanceof>
+         </enabledWhen>
+      </page>
+   </extension>
+   <extension
+         point="com.google.gdt.eclipse.login.loginListener">
+      <loginListener
+            class="com.google.appengine.eclipse.datatools.listeners.DatatoolsLoginListener">
+      </loginListener>
+   </extension>
+</plugin>

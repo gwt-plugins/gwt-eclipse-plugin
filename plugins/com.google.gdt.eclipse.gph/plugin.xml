@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension-point id="com.google.gdt.eclipse.gph.checkoutProviders" name="CheckoutProvider" schema="schema/checkoutProviders.exsd"/>
+   <extension-point id="com.google.gdt.eclipse.gph.installManagerProvider" name="Install Manager Provider" schema="schema/installManagerProvider.exsd"/>
+   <extension-point id="com.google.gdt.eclipse.gph.importcallback" name="Import Callback" schema="schema/importcallback.exsd"/>
+
+   <!-- NOTE: The action set ID is not prefixed with this plugin's ID as 
+        one would expect.  Because toolbar actions within a group are ordered
+        by action set ID, and we want the project hosting action to appear after 
+        any GWT and App Engine actions, we use an action set ID that ensures it. -->
+   
+   <extension point="org.eclipse.ui.popupMenus">
+      <objectContribution
+         adaptable="true"
+         id="com.google.gdt.eclipse.suite.actionSet.60.projecthosting"
+         objectClass="org.eclipse.core.resources.IProject">
+
+         <action
+            class="com.google.gdt.eclipse.gph.actions.ImportHostedProjectsAction"
+            icon="icons/projecthosting-16.png"
+            id="com.google.gdt.eclipse.gph.actions.ImportHostedProjectsAction"
+            label="Import Google Hosted Project.."
+            menubarPath="com.google.gdt.eclipse.suite.popupMenu.project/actionsContent">
+         </action>
+      </objectContribution>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <wizard
+            category="com.google.gdt.eclipse.suite.importWizards"
+            class="com.google.gdt.eclipse.gph.wizards.ImportHostedProjectsWizard"
+            icon="icons/projecthosting-16.png"
+            id="com.google.gdt.eclipse.gph.wizards.ImportHostedProjectsWizard"
+            name="Google Project Hosting">
+         <description>
+            Import from Project Hosting on Google Code (code.google.com/hosting).
+         </description>
+      </wizard>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="com.google.gdt.eclipse.gph.actions.ImportHostedProjectsHandler"
+            id="com.google.gdt.eclipse.gph.importGoogleHostedProject"
+            name="Import Google Hosted Project">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:com.google.gdt.eclipse.suite.GDTPulldown?after=toolbarGroup.import">
+         <command
+               commandId="com.google.gdt.eclipse.gph.importGoogleHostedProject"
+               tooltip="Import Google Hosted Project"
+               icon="icons/projecthosting-16.png"
+               label="Import Google Hosted Project..."
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="com.google.gdt.eclipse.login.oauthScope">
+      <oauthScope
+            scope="https://www.googleapis.com/auth/projecthosting">
+      </oauthScope>
+   </extension>
+
+</plugin>

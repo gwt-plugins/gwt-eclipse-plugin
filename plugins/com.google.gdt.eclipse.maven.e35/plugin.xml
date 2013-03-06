@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.maven.ide.eclipse.projectConfigurators">
+      <configurator
+            class="com.google.gdt.eclipse.maven.e35.configurators.GoogleProjectConfigurator"
+            id="com.google.gdt.eclipse.maven.e35.googleProjectConfigurator"
+            name="Google Project Configurator"
+            priority="200">
+      </configurator>
+   </extension>
+</plugin>

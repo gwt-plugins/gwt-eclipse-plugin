@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Google SWTBot Core Plugin
+Bundle-SymbolicName: com.google.gdt.eclipse.swtbot;singleton:=true
+Bundle-Version: 0.0.0.qualifier
+Bundle-Vendor: Google, Inc.
+Require-Bundle: com.google.gdt.eclipse.core,
+ org.eclipse.swt,
+ org.hamcrest,
+ org.eclipse.swtbot.swt.finder,
+ org.eclipse.swtbot.eclipse.finder,
+ org.eclipse.ui,
+ org.apache.log4j,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
+Export-Package: com.google.gdt.eclipse.swtbot

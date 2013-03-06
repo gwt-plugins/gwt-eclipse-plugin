@@ -1,0 +1,71 @@
+Manifest-Version: 1.0
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
+Built-By: igor
+Bundle-SymbolicName: org.eclipse.m2e.maven.indexer;singleton:=true
+MavenArtifact-GroupId: org.eclipse.m2e
+Require-Bundle: org.eclipse.m2e.maven.runtime;bundle-version="[1.0.0,1
+ .1.0)",org.eclipse.m2e.archetype.common;bundle-version="[1.0.0,1.1.0)
+ "
+Bundle-Version: 1.0.0.20110607-2117
+Export-Package: META-INF.plexus,org.apache.lucene,org.apache.lucene.an
+ alysis,org.apache.lucene.analysis.standard,org.apache.lucene.document
+ ,org.apache.lucene.index,org.apache.lucene.queryParser,org.apache.luc
+ ene.search,org.apache.lucene.search.function,org.apache.lucene.search
+ .payloads,org.apache.lucene.search.spans,org.apache.lucene.store,org.
+ apache.lucene.util,org.apache.lucene.util.cache,org.apache.maven.inde
+ x,org.apache.maven.index.archetype,org.apache.maven.index.artifact,or
+ g.apache.maven.index.cli,org.apache.maven.index.context,org.apache.ma
+ ven.index.creator,org.apache.maven.index.fs,org.apache.maven.index.in
+ cremental,org.apache.maven.index.locator,org.apache.maven.index.packe
+ r,org.apache.maven.index.search.grouping,org.apache.maven.index.treev
+ iew,org.apache.maven.index.updater
+Build-Jdk: 1.6.0_24
+Bundle-ClassPath: local-patches.jar,jars/indexer-artifact-3.1.0.jar,ja
+ rs/indexer-core-3.1.0.jar,jars/lucene-core-2.4.1.jar,jars/lucene-high
+ lighter-2.4.1.jar
+Bundle-Vendor: %Bundle-Vendor
+Bundle-Name: %Bundle-Name
+MavenArtifact-BaseVersion: 2.0.4-SNAPSHOT
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+MavenArtifact-ArtifactId: org.eclipse.m2e.maven.indexer
+Bundle-ManifestVersion: 2
+
+Name: about_files/LICENSE-2.0.txt
+SHA1-Digest: K4uBUimqimHkg/tLoFiLi2xJGJA=
+
+Name: local-patches.jar
+SHA1-Digest: yY4NZ6Z+/jnvvQq+BzqbMYZI5UY=
+
+Name: META-INF/plexus/.gitignore
+SHA1-Digest: 2jmj7l5rSw0yVb/vlWAYkK/YBwk=
+
+Name: META-INF/eclipse.inf
+SHA1-Digest: 09gN05tobgS/MdtqyTNQhOhB73M=
+
+Name: OSGI-INF/l10n/bundle.properties
+SHA1-Digest: Lots54dgITVnDYNkKQ10QJWZVDo=
+
+Name: jars/lucene-highlighter-2.4.1.jar
+SHA1-Digest: PI/NRXAGjC/ZTwOiWATipdh0gdI=
+
+Name: META-INF/maven/org.eclipse.m2e/org.eclipse.m2e.maven.indexer/pom
+ .xml
+SHA1-Digest: fJO8v67VAQvsLadt7HmIz/NmYzc=
+
+Name: jars/indexer-core-3.1.0.jar
+SHA1-Digest: KpLWpJFFu12CVPCbaoHa7F5TiRM=
+
+Name: about.html
+SHA1-Digest: fkfvLeDRLL7XErW1f+YlEzcsj1A=
+
+Name: jars/lucene-core-2.4.1.jar
+SHA1-Digest: k70ecMuN8uYAkPX7/nTZ0GP56nU=
+
+Name: META-INF/maven/org.eclipse.m2e/org.eclipse.m2e.maven.indexer/pom
+ .properties
+SHA1-Digest: D+VBMVyhyiMNzM1yiP0zSbSuc4A=
+
+Name: jars/indexer-artifact-3.1.0.jar
+SHA1-Digest: aOcZ0zZCIUeGwgNJxF1jQsER+Yc=
+

@@ -1,0 +1,16 @@
+{
+  "kind": "discovery#directoryItem",
+  "id": "buzz:v2beta1",
+  "name":"buzz",
+  "version":"v2beta1",
+  "title":"Google Buzz API",
+  "publisher":"Google, Inc.",
+  "ranking":0,
+  "description":"Google Buzz API",
+  "icons":{"32x32":"http://icons.google.com/someicon.png"},
+  "tosLink":"tos link2",
+  "releaseDate":"2010-01-14",
+  "releaseNotesLink":"release Notes 2",
+  "documentationLink":"doc link 2",
+  "downloadLink":"http://localhost:8888/static/buzz_v2beta1.zip"
+}

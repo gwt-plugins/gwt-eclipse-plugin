@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="com.google.gdt.eclipse.suite.launchConfigVmArgProcessor" name="Launch Configuration VM Argument Processor" schema="schema/com.google.gdt.eclipse.suite.launchConfigVmArgProcessor.exsd"/>
+   <extension-point id="com.google.gdt.eclipse.suite.xMxArgumentProcessorMem" name="XmxArgumentProcessor Memory" schema="schema/com.google.gdt.eclipse.suite.xMxArgumentProcessorMem.exsd"/>
+   <extension-point id="com.google.gdt.eclipse.suite.gaeSettingsTab" name="GaeSettingsTab" schema="schema/com.google.gdt.eclipse.suite.gaeSettingsTab.exsd"/>
+   <extension-point id="com.google.gdt.eclipse.suite.mainTypeFinder" name="MainTypeFinder" schema="schema/com.google.gdt.eclipse.suite.mainTypeFinder.exsd"/>
+   <extension-point id="com.google.gdt.eclipse.suite.warArgFinder" name="WarArgFinder" schema="schema/com.google.gdt.eclipse.suite.warArgFinder.exsd"/>
+   <extension-point id="com.google.gdt.eclipse.suite.launchConfigurationType" name="LaunchConfigurationType" schema="schema/com.google.gdt.eclipse.suite.launchConfigurationType.exsd"/>
+	<extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="com.google.gdt.eclipse.suite.preferences.ui.GooglePreferencePage"
+            id="com.google.gdt.eclipse.suite.preferences.ui.googlePreferences"
+            name="%gpe.menu.label">
+      </page>
+      <page
+            category="com.google.gdt.eclipse.suite.preferences.ui.googlePreferences"
+            class="com.google.gdt.eclipse.suite.preferences.ui.ErrorsWarningsPage"
+            id="com.google.gdt.eclipse.suite.preferences.ui.errorsWarnings"
+            name="Errors/Warnings">
+      </page>
+   </extension>
+   
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="com.google.gdt.eclipse.suite.launch.WebAppLaunchDelegate"
+            delegateDescription="Runs a Web Application"
+            delegateName="Web Application Launcher"
+            id="com.google.gdt.eclipse.suite.webapp"
+            modes="run, debug"
+            name="Web Application"
+            sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
+            sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
+      <launchConfigurationType
+          delegate="com.google.gdt.eclipse.suite.launch.SpeedTracerLaunchDelegate"
+          delegateDescription="Profiles Using Speed Tracer"
+          delegateName="Speed Tracer Launcher"
+          id="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunch"
+          modes="profile"
+          name="Speed Tracer"
+          sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
+          sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer" />
+   </extension>
+   
+      <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            icon="icons/gdt_16x16.png"
+            configTypeID="com.google.gdt.eclipse.suite.webapp"
+            id="com.google.gdt.eclipse.suite.launch.webappImage">
+      </launchConfigurationTypeImage>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="com.google.gdt.eclipse.suite.webapp"
+            helpContextId="org.eclipse.jdt.debug.ui.launchConfigHelpContext.local_java_application"
+            class="com.google.gdt.eclipse.suite.launch.ui.WebAppTabGroup"
+            id="com.google.gdt.eclipse.suite.launch.ui.webappTabGroup">
+         <launchMode 
+               mode="debug"
+               perspective="org.eclipse.debug.ui.DebugPerspective"
+               description="Debug a Web Application">
+         </launchMode>
+         <launchMode
+               mode="run"
+               description="Run a Web Application">
+         </launchMode>
+      </launchConfigurationTabGroup>
+      <!-- TODO: This lives here since it references the Server tab.  Use extensions to clean it up. -->
+      <launchConfigurationTabGroup
+          type="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunch"
+          helpContextId="org.eclipse.jdt.debug.ui.launchConfigHelpContext.local_java_application"
+          class="com.google.gdt.eclipse.suite.launch.ui.SpeedTracerLaunchTabGroup"
+          id="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunchTabGroup">
+          <launchMode
+              mode="profile"
+              description="Profile Using Speed Tracer">
+          </launchMode>
+      </launchConfigurationTabGroup>
+   </extension>
+      
+   <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            class="com.google.gdt.eclipse.suite.launch.ui.WebAppLaunchShortcut"
+            description="Launch a Web Application"
+            icon="icons/gdt_16x16.png"
+            id="com.google.gdt.eclipse.suite.launch.ui.webappLaunchShortcut"
+            label="Web Application"
+            modes="run, debug">
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <count value= "1"/>
+                     <iterate>
+                        <!--
+                        see code in com.google.gdt.eclipse.suite.propertytesters.LaunchTargetTester.java
+                        -->
+                        <test property="com.google.gdt.eclipse.suite.isLaunchTarget"/>
+                     </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
+
+         <description
+               description="Run a Web Application"
+               mode="run" />
+         <description
+               description="Debug a Web Application"
+               mode="debug" />
+         <configurationType
+               id="com.google.gdt.eclipse.suite.webapp"/>
+      </shortcut>
+       <shortcut
+            class="com.google.gdt.eclipse.suite.launch.ui.WebAppNoServerLaunchShortcut"
+            description="Launch a Web Application using an External Server"
+            icon="icons/gdt_16x16.png"
+            id="com.google.gdt.eclipse.suite.ui.webappNoServerLaunchShortcut"
+            label="Web Application (running on an external server)"
+            modes="run, debug">            
+         <contextualLaunch>
+            <enablement>
+               <with
+                     variable="selection">
+                  <count
+                        value="1">
+                  </count>
+                  <iterate>
+                     <test
+                           property="com.google.gdt.eclipse.suite.isNoServerLaunchTarget">
+                     </test>
+                  </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
+         <description
+               description="Run a Web Application (running on an external server)"
+               mode="run">
+         </description>
+         <description
+               description="Debug a Web Application (running on an external server)"
+               mode="debug">
+         </description>
+         <configurationType
+               id="com.google.gdt.eclipse.suite.webapp">
+         </configurationType>
+      </shortcut>
+   </extension>  
+   <extension  
+        point="org.eclipse.jdt.launching.classpathProviders">
+      <classpathProvider
+             class="com.google.gdt.eclipse.suite.launch.processors.AppengineClasspathProvider"
+             id="com.google.gdt.eclipse.suite.appengineClasspathProvider">
+      </classpathProvider>
+   </extension>
+   <extension
+        point="com.google.gwt.eclipse.core.moduleClasspathProvider">
+      <moduleClasspathProvider
+            priority="20"
+            providerClass="com.google.gdt.eclipse.suite.launch.processors.AppengineClasspathProvider$AppengineClasspathProviderIdProvider">
+      </moduleClasspathProvider>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="com.google.gdt.eclipse.suite.newWizards"
+            name="%gpe.menu.label">
+      </category>
+      <wizard
+            category="com.google.gdt.eclipse.suite.newWizards"
+            class="com.google.gdt.eclipse.suite.wizards.NewWebAppProjectWizard"
+            icon="icons/gdt-new-project_16x16.png"
+            id="com.google.gdt.eclipse.suite.wizards.newProjectWizard"
+            name="Web Application Project"
+            preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective"
+            project="true">
+      </wizard>      
+   </extension>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <category
+            id="com.google.gdt.eclipse.suite.importWizards"
+            name="%gpe.menu.label">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <newWizardShortcut
+               id="com.google.gdt.eclipse.suite.wizards.newProjectWizard">
+         </newWizardShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaBrowsingPerspective">
+         <newWizardShortcut
+               id="com.google.gdt.eclipse.suite.wizards.newProjectWizard">
+         </newWizardShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaHierarchyPerspective">
+         <newWizardShortcut
+               id="com.google.gdt.eclipse.suite.wizards.newProjectWizard">
+         </newWizardShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.jst.j2ee.J2EEPerspective">
+         <newWizardShortcut
+               id="com.google.gdt.eclipse.suite.wizards.newProjectWizard">
+         </newWizardShortcut>
+      </perspectiveExtension>
+   </extension>
+   <!--
+   	Action set that other plugins will contribute actions to.
+   -->
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="com.google.gdt.eclipse.suite.projectGoogleSettings"
+            objectClass="org.eclipse.core.resources.IProject">
+         <menu
+               id="com.google.gdt.eclipse.suite.popupMenu.project"
+               label="%gpe.menu.label"
+               path="additions">
+            <groupMarker
+                  name="actionsContent">
+            </groupMarker>
+            <separator
+                  name="separator1">
+            </separator>
+            <groupMarker
+                  name="settingsContent">
+            </groupMarker>
+         </menu>
+      </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="com.google.gdt.eclipse.suite.fileActions"
+            objectClass="org.eclipse.core.resources.IFile">
+         <menu
+               id="com.google.gdt.eclipse.suite.popupMenu.file"
+               label="%gpe.menu.label"
+               path="additions">
+            <groupMarker
+                  name="content">
+            </groupMarker>
+         </menu>
+      </objectContribution>
+   </extension>
+
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+         id="com.google.gdt.eclipse.suite.launchTargetPropertyTester"
+         namespace="com.google.gdt.eclipse.suite"
+         properties="isLaunchTarget"
+         type="org.eclipse.core.runtime.IAdaptable"
+         class="com.google.gdt.eclipse.suite.propertytesters.LaunchTargetTester">
+      </propertyTester>
+      <propertyTester
+         id="com.google.gdt.eclipse.suite.noServerLaunchTargetPropertyTester"
+         namespace="com.google.gdt.eclipse.suite"
+         properties="isNoServerLaunchTarget"
+         type="org.eclipse.core.runtime.IAdaptable"
+         class="com.google.gdt.eclipse.suite.propertytesters.NoServerLaunchTargetTester">
+      </propertyTester>      
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+            class="com.google.gdt.eclipse.suite.markers.quickfixes.GaeValidatorProblemMarkerResolutionGenerator"
+            markerType="com.google.appengine.eclipse.core.problemMarker">
+      </markerResolutionGenerator>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?before=additions">
+         <toolbar
+               id="com.google.gdt.eclipse.suite.GDTPulldownToolbar"
+               label="Google">
+            <command
+                  commandId="com.google.gdt.eclipse.suite.GDTPulldown"
+                  icon="icons/gdt_16x16.png"
+                  label="Google Services and Development Tools"
+                  style="pulldown">
+            </command>
+         </toolbar>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:com.google.gdt.eclipse.suite.GDTPulldown?after=toolbarGroup.new">
+         <command
+               commandId="com.google.gdt.eclipse.suite.newWebAppProject"
+               icon="icons/gdt-new-project_16x16.png"
+               label="New Web Application Project..."
+               style="push"
+               tooltip="New Web Application Project">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="menu:com.google.gdt.eclipse.suite.GDTPulldown">
+         <separator
+               name="toolbarGroup.new"
+               visible="true">
+         </separator>
+         <separator
+               name="toolbarGroup.import"
+               visible="false">
+         </separator>
+         <separator
+               name="toolbarGroup.compile"
+               visible="true">
+         </separator>
+         <separator
+               name="toolbarGroup.profile"
+               visible="false">
+         </separator>
+         <separator
+               name="toolbarGroup.deploy"
+               visible="true">
+         </separator>
+         <separator
+               name="toolbarGroup.list"
+               visible="false">
+         </separator>                                             
+         <separator
+               name="toolbarGroup.googleapis"
+               visible="true">                                                   
+         </separator>                  
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="com.google.gdt.eclipse.suite.actions.PulldownHandler"
+            id="com.google.gdt.eclipse.suite.GDTPulldown"
+            name="GDT Pulldown">
+      </command>
+      <command
+            defaultHandler="com.google.gdt.eclipse.suite.actions.NewWebAppToolbarHandler"
+            id="com.google.gdt.eclipse.suite.newWebAppProject"
+            name="New Web Application Project">
+      </command>
+   </extension>
+</plugin>
+

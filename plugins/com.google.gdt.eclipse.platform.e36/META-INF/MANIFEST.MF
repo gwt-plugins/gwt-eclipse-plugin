@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Google Eclipse 3.6 Platform Plugin
+Bundle-SymbolicName: com.google.gdt.eclipse.platform.e36;singleton:=true
+Bundle-Version: 0.0.0.qualifier
+Bundle-Vendor: Google, Inc.
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: com.google.gdt.eclipse.platform.shared;visibility:=reexport,
+ org.eclipse.jface,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
+ org.eclipse.ui.workbench,
+ org.eclipse.core.runtime;bundle-version="3.6.0",
+ org.eclipse.equinox.p2.ui,
+ org.eclipse.equinox.p2.ui.sdk,
+ org.eclipse.equinox.p2.metadata,
+ org.eclipse.equinox.p2.core,
+ org.eclipse.equinox.p2.operations,
+ org.eclipse.jdt.debug.ui,
+ org.eclipse.debug.core,
+ org.mortbay.jetty.server,
+ org.mortbay.jetty.util,
+ org.eclipse.debug.ui,
+ javax.servlet,
+ org.eclipse.jface.text,
+ org.eclipse.ltk.core.refactoring
+Export-Package: com.google.gdt.eclipse.platform.debug.ui,
+ com.google.gdt.eclipse.platform.update,
+ com.google.gdt.eclipse.platform.jetty,
+ com.google.gdt.eclipse.platform.jdt.text.correction.proposals,
+ org.eclipse.jdt.internal.debug.ui
+Bundle-ActivationPolicy: lazy

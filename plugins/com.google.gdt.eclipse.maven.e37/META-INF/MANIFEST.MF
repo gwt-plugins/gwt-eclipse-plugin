@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Maven support for Eclipse 3.7 and m2Eclipse 1.0.0+
+Bundle-SymbolicName: com.google.gdt.eclipse.maven.e37;singleton:=true
+Bundle-Version: 0.0.0.qualifier
+Bundle-Vendor: Google, Inc.
+Require-Bundle: com.google.gdt.eclipse.maven,
+ org.eclipse.m2e.core;resolution:=optional,
+ org.eclipse.m2e.jdt;resolution:=optional,
+ org.eclipse.m2e.maven.runtime;resolution:=optional,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ com.google.gdt.eclipse.core,
+ com.google.appengine.eclipse.core,
+ com.google.gwt.eclipse.core,
+ org.eclipse.jdt.core,
+ org.eclipse.ui
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy

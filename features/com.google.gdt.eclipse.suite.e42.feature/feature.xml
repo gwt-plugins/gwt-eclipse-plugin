@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.google.gdt.eclipse.suite.e42.feature"
+      label="%featureName"
+      version="0.0.0.qualifier"
+      provider-name="%providerName"
+      plugin="com.google.gdt.eclipse.suite">
+
+   <description>
+      Support for the development of Google App Engine and Google Web Toolkit projects in Eclipse 4.2
+   </description>
+
+   <copyright>
+      Copyright 2009 - 2012
+   </copyright>
+
+   <license>
+<![CDATA[
+      @FEATURE_LICENSE@
+]]>
+   </license>
+
+   <url>
+      <update label="Google Update Site for Eclipse 4.2" url="@FEATURE_UPDATE_SITE_URL@"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.console"/>
+      <import plugin="org.eclipse.wst.xml.core"/>
+      <import plugin="org.eclipse.wst.sse.core"/>
+      <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.jdt.core.manipulation"/>
+      <import plugin="org.eclipse.jdt.debug.ui"/>
+      <import plugin="org.eclipse.jdt.junit"/>
+      <import plugin="org.eclipse.ltk.core.refactoring"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.wst.sse.ui"/>
+      <import plugin="org.eclipse.core.variables"/>
+      <import plugin="org.eclipse.wst.validation"/>
+      <import plugin="org.eclipse.wst.xml.ui"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.eclipse.wst.css.core"/>
+      <import plugin="org.eclipse.wst.css.ui"/>
+      <import plugin="javax.servlet"/>
+      <import plugin="org.eclipse.pde.core"/>
+      <import plugin="org.eclipse.ui.browser"/>
+      <import plugin="org.eclipse.wst.jsdt.core"/>
+      <import plugin="org.eclipse.wst.jsdt.ui"/>
+      <import plugin="org.eclipse.wst.jsdt.manipulation"/>
+      <import plugin="org.apache.ant"/>
+      <import plugin="org.eclipse.wst.common.project.facet.core"/>
+      <import plugin="org.eclipse.wst.common.modulecore"/>
+      <import plugin="org.eclipse.core.runtime.compatibility"/>
+      <import plugin="org.eclipse.wst.server.core"/>
+      <import plugin="org.eclipse.mylyn.commons.ui"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.runtime" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.p2.ui"/>
+      <import plugin="org.eclipse.equinox.p2.ui.sdk"/>
+      <import plugin="org.eclipse.equinox.p2.metadata"/>
+      <import plugin="org.eclipse.equinox.p2.core"/>
+      <import plugin="org.eclipse.equinox.p2.operations"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.jetty.servlet"/>
+      <import plugin="org.eclipse.jetty.server"/>
+      <import plugin="org.eclipse.jetty.util"/>
+      <import plugin="org.eclipse.jst.server.core"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.ui.views.properties.tabbed"/>
+      <import plugin="org.eclipse.equinox.p2.repository"/>
+      <import plugin="org.eclipse.equinox.p2.engine"/>
+      <import plugin="org.eclipse.text"/>
+      <import feature="org.eclipse.platform" version="3.8" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.debug"/>
+      <import plugin="org.objectweb.asm"/>
+      <import plugin="org.eclipse.update.configurator"/>
+      <import plugin="org.eclipse.team.core"/>
+   </requires>
+
+   <plugin
+         id="com.google.appengine.eclipse.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gwt.eclipse.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.suite"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.suite.ext"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.platform.shared"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.platform.e42"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.platform"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gwt.eclipse.oophm"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.maven"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.managedapis"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.gph"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.gph.hge"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.gph.subclipse"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.gph.subversive"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+   <!-- this plugin is lableled .e36 but it will work in versions >= 3.6 -->
+   <plugin
+         id="com.google.gdt.eclipse.gph.e36"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.login"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.appengine.rpc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <!-- this plugin is lableled .e37 but it will work in vesrions >= 3.7 -->
+   <plugin
+         id="com.google.gdt.eclipse.maven.e37"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.appsmarketplace"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.appengine.eclipse.datatools"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.appengine.eclipse.webtools"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.appengine.eclipse.webtools.e42"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.appengine.swarm"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.appengine.swarm_backend"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+</feature>
+

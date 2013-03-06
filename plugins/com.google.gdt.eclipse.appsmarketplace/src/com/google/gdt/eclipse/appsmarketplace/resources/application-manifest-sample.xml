@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--          Google Apps Marketplace Application Manifest file          -->
+<!-- ******************************************************************* -->
+<!--                  DO NOT DELETE THIS FILE MANUALLY                   -->
+<!-- ******************************************************************* -->
+<!-- To delete this file un-check support for Google Apps Marketplace    -->
+<!-- from eclise project properties page.                                -->
+<!-- To create a custom manifest please refer to following link:         -->
+<!-- http://code.google.com/googleapps/marketplace/manifest.html         -->
+<ApplicationManifest xmlns="http://schemas.google.com/ApplicationManifest/2009">
+  <Name>Next Meeting App</Name>
+  <Description>Demonstrates a simple Google Apps Marketplace application</Description>
+
+  <!-- Administrators and users will be sent to this URL for application support -->
+  <Support>
+    <Link rel="support" href="http://www.yoursite.com/support" />
+  </Support>
+
+  <!-- Show this link in Google's universal navigation for all users -->
+  <Extension id="navLink" type="link">
+    <Name>Next Meeting App</Name>
+    <Url>http://yourapplication.example.com/openid?hd=${DOMAIN_NAME}</Url>
+    <Scope ref="calendarAPI"/>
+  </Extension>
+
+  <!-- Declare our OpenID realm so our app is white listed -->
+  <Extension id="realm" type="openIdRealm">
+    <Url>http://yourapplication.example.com/</Url>
+  </Extension>
+
+  <!-- Need access to the Calendar API -->
+  <Scope id="calendarAPI">
+    <Url>https://www.google.com/calendar/feeds/</Url>
+    <Reason>This app displays the user's next upcoming Google Calendar meeting.</Reason>
+  </Scope>
+  <Edition id="free">
+    <Name>Free Edition</Name>
+    <Extension ref="navLink"/>
+  </Edition>
+</ApplicationManifest>

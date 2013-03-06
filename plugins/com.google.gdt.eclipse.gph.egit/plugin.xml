@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension point="com.google.gdt.eclipse.gph.checkoutProviders">
+      <scmProvider
+         checkoutProviderClass="com.google.gdt.eclipse.gph.egit.EGitCheckoutProvider"
+         priority="0"
+         providerName="EGit"
+         providerIcon="icons/egit.png"
+         providerDescription="EGit is an Eclipse Team provider for the Git version control system. Git is a distributed SCM, which means every developer has a full copy of all history of every revision of the code, making queries against the history very fast and versatile."
+         scmType="git"
+         scmTypeLabel="Git">
+      </scmProvider>
+   </extension>
+   
+</plugin>

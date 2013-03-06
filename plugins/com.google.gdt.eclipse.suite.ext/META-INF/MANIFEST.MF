@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Google Suite Plugin
+Bundle-SymbolicName: com.google.gdt.eclipse.suite.ext;singleton:=true
+Bundle-Version: 0.0.0.qualifier
+Bundle-Vendor: Google, Inc.
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

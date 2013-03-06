@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: com.google.gwt.eclipse.oophm; singleton:=true
+Bundle-Version: 0.0.0.qualifier
+Bundle-Activator: com.google.gwt.eclipse.oophm.Activator
+Bundle-Vendor: %providerName
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.console,
+ org.eclipse.jdt.ui,
+ org.eclipse.ui.views.properties.tabbed,
+ org.eclipse.debug.core,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.launching,
+ com.google.gdt.eclipse.core;visibility:=reexport,
+ org.eclipse.core.variables,
+ com.google.gwt.eclipse.core,
+ org.eclipse.jdt.debug.ui,
+ org.eclipse.debug.ui
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ lib/gwt-dev-transport.jar
+Export-Package: com.google.gwt.eclipse.oophm.launch,
+ com.google.gwt.eclipse.oophm.model
+Bundle-Localization: plugin

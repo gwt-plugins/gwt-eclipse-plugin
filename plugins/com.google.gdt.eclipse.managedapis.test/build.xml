@@ -1,0 +1,24 @@
+<project name="com.google.gdt.eclipse.managedapis.test" default="build" basedir=".">
+
+    <!-- FIXME: This is not run as part of the build; we need to migrate to JUnit 4 first. -->
+
+    <!-- Project-specific properties -->
+    <property name="plugin_name" value="com.google.gdt.eclipse.managedapis.test" />
+    <property name="host.plugin.name" value="com.google.gdt.eclipse.managedapis" />
+
+    <property name="project.tail" value="plugins/${plugin_name}" />
+
+    <path id="plugin.src">
+        <pathelement location="${gwt.plugin.root}/plugins/com.google.gdt.eclipse.managedapis/src" />
+    </path>
+
+    <import file="${build.project.dir}/common.ant.xml" />
+    <import file="${build.project.dir}/plugins/test.plugins.common.ant.xml" />
+
+    <target name="build">
+        <copy.plugin.src />
+        <gwt.plugin.eclipseantrunner builddir="."
+                                     buildfile="build.xml"
+                                     buildtarget="buildInEclipse" />
+    </target>
+</project>

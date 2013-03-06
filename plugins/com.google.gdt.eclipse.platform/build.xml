@@ -1,0 +1,19 @@
+<project name="com.google.gdt.eclipse.platform" default="build" basedir=".">
+
+    <!-- Project-specific properties -->
+    <property name="plugin_name" value="com.google.gdt.eclipse.platform" />
+    <property name="project.tail" value="plugins/${plugin_name}" />
+
+    <import file="${build.project.dir}/common.ant.xml" />
+
+    <property name="plugin.version" value="${gdt.version}" />
+
+    <import file="${build.project.dir}/plugins/plugins.common.ant.xml" />
+
+    <target name="build">
+        <copy.plugin.src />
+        <gwt.plugin.eclipseantrunner builddir="."
+                                     buildfile="build.xml"
+                                     buildtarget="buildInEclipse" />
+    </target>
+</project>

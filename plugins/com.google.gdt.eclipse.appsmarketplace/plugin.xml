@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+  <extension point="org.eclipse.ui.popupMenus">
+    <objectContribution
+      adaptable="true"
+      id="com.google.gdt.eclipse.appsmarketplace.popupMenus.deployProject"
+      objectClass="org.eclipse.core.resources.IProject">
+      <action
+        class="com.google.gdt.eclipse.appsmarketplace.ui.ListOnMarketplaceAction"
+        icon="icons/list-on-marketplace_16x16.png"
+        id="com.google.gdt.eclipse.appsmarketplace.popupMenus.listOnMarketplaceAction"
+        label="List on Google Apps Marketplace..."
+        menubarPath="com.google.gdt.eclipse.suite.popupMenu.project/actionsContent">
+        </action>
+        <visibility>
+          <objectState
+            name="projectPersistentProperty"
+            value="com.google.gdt.eclipse.appsmarketplace.appsMarketplaceSupport=true"/>
+        </visibility>
+    </objectContribution>
+  </extension>
+  <extension point="org.eclipse.ui.popupMenus">
+    <objectContribution
+      adaptable="true"
+      id="com.google.gdt.eclipse.appsmarketplace.popupMenus.deployProject"
+      objectClass="org.eclipse.core.resources.IProject">
+      <action
+        class="com.google.gdt.eclipse.appsmarketplace.ui.AddMarketplaceSupportAction"
+        icon="icons/list-on-marketplace_16x16.png"
+        id="com.google.gdt.eclipse.appsmarketplace.popupMenus.addMarketplaceSupportAction"
+        label="Add Google Apps Marketplace Support..."
+        menubarPath="com.google.gdt.eclipse.suite.popupMenu.project/actionsContent">
+      </action>
+      <visibility>
+        <or>
+          <not>
+            <objectState
+              name="projectPersistentProperty"
+              value="com.google.gdt.eclipse.appsmarketplace.appsMarketplaceSupport"/>
+          </not>
+          <objectState
+            name="projectPersistentProperty"
+            value="com.google.gdt.eclipse.appsmarketplace.appsMarketplaceSupport=false"/>
+        </or>
+      </visibility>
+    </objectContribution>
+  </extension>
+  <extension point="org.eclipse.ui.commands">
+    <command
+      defaultHandler="com.google.gdt.eclipse.appsmarketplace.ui.AppsMarketplaceDeployHandler"
+      id="com.google.gdt.eclipse.appsmarketplace.actions.listOnAppsMarketplace"
+      name="List on Google Apps Marketplace...">
+    </command>
+  </extension>
+  <extension point="org.eclipse.ui.menus">
+    <menuContribution
+      locationURI="menu:com.google.gdt.eclipse.suite.GDTPulldown?after=toolbarGroup.list">
+      <command
+        commandId="com.google.gdt.eclipse.appsmarketplace.actions.listOnAppsMarketplace"
+        icon="icons/list-on-marketplace_16x16.png"
+        label="Google Apps Marketplace..."
+        style="push"
+        tooltip="Google Apps Marketplace">
+      </command>
+    </menuContribution>
+  </extension>
+  <extension point="com.google.gdt.eclipse.login.oauthScope">
+    <oauthScope
+      scope="https://www.googleapis.com/auth/appsmarketplace">
+    </oauthScope>
+  </extension>
+  <extension point="org.eclipse.ui.propertyPages">
+    <page
+      category="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage"
+      class="com.google.gdt.eclipse.appsmarketplace.ui.AppsMarketplaceProjectPropertyPage"
+      id="com.google.gdt.eclipse.appsmarketplace.appsMarketplaceProjectPropertyPage"
+      name="Google Apps Marketplace">
+      <enabledWhen>
+        <adapt
+          type="org.eclipse.core.resources.IProject">
+          <test
+            property="org.eclipse.core.resources.projectNature"
+            value="org.eclipse.jdt.core.javanature">
+          </test>
+        </adapt>
+      </enabledWhen>
+    </page>
+  </extension>
+</plugin>

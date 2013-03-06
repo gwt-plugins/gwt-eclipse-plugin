@@ -1,0 +1,53 @@
+{
+  "kind": "discovery#directoryList",
+  "items": [
+    {
+      "kind": "discovery#directoryItem",
+      "id": "buzz:v2beta1",
+      "name":"buzz",
+      "version":"v2beta1",
+      "title":"Google Buzz API",
+      "publisher":"Google, Inc.",
+      "ranking":0,
+      "description":"Google Buzz API",
+      "icons":{"32x32":"http://icons.google.com/someicon.png"},
+      "tosLink":"http://link/to/tos1",
+      "releaseDate":"2010-01-14",
+      "releaseNotesLink":"http://link/to/notes1",
+      "documentationLink":"http://link/to/doc1",
+      "downloadLink":"http://link/to/download1"
+    },
+    {
+      "kind": "discovery#directoryItem",
+      "id": "maps:v2beta1",
+      "name":"maps",
+      "version":"v2beta1",
+      "title":"Google Maps API",
+      "publisher":"Google, Inc.",
+      "ranking":0,
+      "description":"Google Maps API",
+      "icons":{"32x32":"http://icons.google.com/someicon.png"},
+      "tosLink":"http://link/to/tos2",
+      "releaseDate":"2010-01-14",
+      "releaseNotesLink":"http://link/to/notes2",
+      "documentationLink":"http://link/to/docs2",
+      "downloadLink":"http://link/to/download2"
+    },
+    {
+      "kind": "discovery#directoryItem",
+      "id": "zoo:v2beta1",
+      "name":"zoo",
+      "version":"v1",
+      "title":"Google Zoo API",
+      "publisher":"Google, Inc.",
+      "ranking":0,
+      "description":"Google Zoo API",
+      "icons":{"32x32":"http://icons.google.com/someicon.png"},
+      "tosLink":"http://link/to/tos3",
+      "releaseDate":"2010-11-12",
+      "releaseNotesLink":"http://link/to/notes3",
+      "documentationLink":"http://link/to/docs3",
+      "downloadLink":"http://link/to/download3"
+    }
+  ]
+}

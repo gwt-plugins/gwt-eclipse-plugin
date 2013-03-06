@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="com.google.gdt.eclipse.gph" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="com.google.gdt.eclipse.gph" id="com.google.gdt.eclipse.gph.checkoutProviders" name="CheckoutProviders"/>
+      </appinfo>
+      <documentation>
+         This extension point is used to register SCM providers.  Checkout providers implement the &lt;code&gt;ICheckoutProvider&lt;/code&gt; interface and provide source checkout functionality for a particular SCM system.
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="scmProvider" minOccurs="1" maxOccurs="unbounded"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="scmProvider">
+      <complexType>
+         <sequence minOccurs="0" maxOccurs="1">
+         </sequence>
+         <attribute name="scmType" type="string" use="required">
+            <annotation>
+               <documentation>
+                  An SCM type identifier.  Legal values include &quot;hg&quot; and &quot;svn&quot;.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="scmTypeLabel" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The SCM type label - e.g. Subversion.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="providerName" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The SCM provider name.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="providerIcon" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="providerDescription" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The SCM provider description.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="priority" type="string" use="default" value="0">
+            <annotation>
+               <documentation>
+                  The SCM provider priority. Lower values are high priority.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="checkoutProviderClass" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":com.google.gdt.eclipse.gph.providers.ICheckoutProvider"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="feature">
+      <complexType>
+         <attribute name="featureId" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  The name of the feature; not required. Used for maintenance purposes.
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+
+
+
+
+
+</schema>

@@ -1,0 +1,40 @@
+Manifest-Version: 1.0
+Bundle-ClassPath: lib/jms.jar
+Ant-Version: Apache Ant 1.8.2
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Name: %pluginName
+Bundle-SymbolicName: org.eclipse.net4j.jms.api
+Created-By: 1.6.0_21-b06 (Sun Microsystems Inc.)
+Bundle-Version: 3.0.0.v20110516-1727
+Export-Package: com.sun.messaging;x-internal:=true,com.sun.messaging.j
+ mq;x-internal:=true,com.sun.messaging.jmq.resources;x-internal:=true,
+ com.sun.messaging.jmq.util;x-internal:=true,com.sun.messaging.jms;x-i
+ nternal:=true,javax.jms;version="1.1.0"
+Bundle-ManifestVersion: 2
+
+Name: lib/jms.jar
+SHA1-Digest: ngXr3465ptmOUbdhOygAeXwcMPc=
+
+Name: META-INF/geronimo-LICENSE.txt
+SHA1-Digest: Wn199lW6QEeProCmq6/Gr8Nvm2o=
+
+Name: META-INF/eclipse.inf
+SHA1-Digest: +AdFp1Zakj/5YbyNwx0M/HAMlYI=
+
+Name: lib/CDDL.html
+SHA1-Digest: PvyPbGJxzb+sM7slmSJ0uQGUyA8=
+
+Name: copyright.txt
+SHA1-Digest: cSsGaSTLSfayKkd0dFKnvLSGDh0=
+
+Name: META-INF/geronimo-NOTICE.txt
+SHA1-Digest: j3bi6eMB1nDdeXvklpdGZCaMGG4=
+
+Name: about.html
+SHA1-Digest: ICkzAYRqAGGXqQ+jfp205zg4dZI=
+
+Name: plugin.properties
+SHA1-Digest: z4WiswBaGzxXgjOqcU+iLsibqHs=
+

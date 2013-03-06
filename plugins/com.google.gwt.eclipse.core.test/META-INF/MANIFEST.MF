@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: GWT Plugin Test Fragment
+Bundle-SymbolicName: com.google.gwt.eclipse.core.test;singleton:=true
+Bundle-Version: 0.0.0
+Fragment-Host: com.google.gwt.eclipse.core;bundle-version="0.0.0"
+Require-Bundle: org.junit
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

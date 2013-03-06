@@ -1,0 +1,40 @@
+  <servlet>
+    <servlet-name>OpenIdServlet</servlet-name>
+    <servlet-class>@PackageName@.samples.apps.marketplace.OpenIdServlet</servlet-class>
+    <init-param>
+      <param-name>realm</param-name>
+      <param-value></param-value>
+    </init-param>
+    <init-param>
+      <param-name>return_to_path</param-name>
+      <param-value>/openid</param-value>
+    </init-param>
+    <init-param>
+      <param-name>home_path</param-name>
+      <param-value>/meeting</param-value>
+    </init-param>
+  </servlet>
+
+  <servlet>
+    <servlet-name>CalendarServlet</servlet-name>
+    <servlet-class>@PackageName@.samples.apps.marketplace.CalendarServlet</servlet-class>
+    <init-param>
+      <param-name>consumer_key</param-name>
+      <param-value></param-value>
+    </init-param>
+    <init-param>
+      <param-name>consumer_secret</param-name>
+      <param-value></param-value>
+    </init-param>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>OpenIdServlet</servlet-name>
+    <url-pattern>/openid</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>CalendarServlet</servlet-name>
+    <url-pattern>/meeting</url-pattern>
+  </servlet-mapping>
+

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+    <extension
+        point="com.google.gdt.eclipse.gph.checkoutProviders">
+        
+        <scmProvider
+            checkoutProviderClass="com.google.gdt.eclipse.gph.hge.HgCheckoutProvider"
+            scmType="hg"
+            scmTypeLabel="Mercurial"
+            providerName="MercurialEclipse"
+            providerDescription="MercurialEclipse is a plugin providing support for the highly popular Mercurial distributed version control system within the Eclipse IDE."
+            providerIcon="icons/mercurial-logo.png">
+        </scmProvider>
+    </extension>
+
+</plugin>

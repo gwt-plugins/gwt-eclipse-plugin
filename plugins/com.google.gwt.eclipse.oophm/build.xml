@@ -1,0 +1,33 @@
+<project name="com.google.gwt.eclipse.oophm" default="build" basedir=".">
+
+    <!-- Project-specific properties -->
+    <property name="plugin_name" value="com.google.gwt.eclipse.oophm" />
+    <property name="project.tail" value="plugins/${plugin_name}" />
+
+    <import file="${build.project.dir}/common.ant.xml" />
+
+    <property name="plugin.version" value="${gdt.version}" />
+
+    <import file="${build.project.dir}/plugins/plugins.common.ant.xml" />
+
+    <target name="build">
+        <copy.plugin.src />
+        <gwt.plugin.eclipseantrunner builddir="."
+                                     buildfile="build.xml"
+                                     buildtarget="buildInEclipse" />
+    </target>
+
+    <!-- Define locations for the protobuf and gwt-dev jars -->
+    <target name="build-gwt-dev-transport">
+        <jar destfile="lib/gwt-dev-transport.jar">
+            <zipfileset src="lib/protobuf-java-rebased-2.2.0.jar" />
+            <zipfileset src="lib/gwt-dev.jar">
+                <include name="com/google/gwt/core/ext/TreeLogger**.class" />
+                <include name="com/google/gwt/dev/shell/remoteui/MessageTransport**.class" />
+                <include name="com/google/gwt/dev/shell/remoteui/RemoteMessageProto**.class" />
+                <include name="com/google/gwt/dev/shell/remoteui/RequestProcessor.class" />
+                <include name="com/google/gwt/dev/util/Callback.class" />
+            </zipfileset>
+        </jar>
+    </target>
+</project>

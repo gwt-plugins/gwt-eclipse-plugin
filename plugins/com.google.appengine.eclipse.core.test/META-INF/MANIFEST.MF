@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: GAE Eclipse Plugin Test Fragment
+Bundle-SymbolicName: com.google.appengine.eclipse.core.test;singleton:=true
+Bundle-Version: 0.0.0
+Bundle-Vendor: Google, Inc.
+Fragment-Host: com.google.appengine.eclipse.core;bundle-version="0.0.0"
+Require-Bundle: org.junit
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+

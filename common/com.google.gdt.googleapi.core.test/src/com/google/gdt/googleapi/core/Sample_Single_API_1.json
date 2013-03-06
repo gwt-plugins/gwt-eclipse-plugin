@@ -1,0 +1,18 @@
+{
+  "kind": "discovery#directoryItem",
+  "id": "buzz:v2sandbox",
+  "publisher": "Google, Inc.",
+  "description": "Google Buzz API",
+  "name": "buzz",
+  "title" : "pretty name",
+  "tosLink": "tos link 1",
+  "version": "v1",
+  "icons": {
+    "32x32": "http://icons.google.com/someicon.png"
+  },
+  "discoveryLink": "http://www.googleapis.com/dis...",
+  "preferred": "true",
+  "releaseDate" : "2010-11-20",
+  "releaseNotesLink" : "releaseNotes1",
+  "documentationLink": "doc link 1" 
+}

@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: m2e
+Build-Jdk: 1.6.0_12
+Export-Package: org.apache.maven.shared.dependency.tree,org.apache.mav
+ en.shared.dependency.tree.filter,org.apache.maven.shared.dependency.t
+ ree.traversal,META-INF.plexus
+Bundle-ClassPath: jars/maven-dependency-tree-1.2-SNAPSHOT.jar
+Bundle-Name: Maven Dependency Tree Bundle
+Bundle-RequiredExecutionEnvironment: J2SE-1.5,JavaSE-1.6
+Require-Bundle: org.maven.ide.eclipse.maven_embedder;bundle-version="[
+ 0.10.0,0.11.0)"
+Bundle-Vendor: Sonatype
+MavenArtifact-BaseVersion: 0.10.0
+Bundle-Version: 0.10.0.20100209-0800
+MavenArtifact-GroupId: org.maven.ide.eclipse
+MavenArtifact-ArtifactId: org.maven.ide.eclipse.dependency_tree
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.maven.ide.eclipse.dependency_tree;singleton:=
+ true
+

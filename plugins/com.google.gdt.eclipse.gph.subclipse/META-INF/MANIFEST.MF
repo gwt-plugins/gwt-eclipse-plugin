@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: com.google.gdt.eclipse.gph.subclipse;singleton:=true
+Bundle-Version: 0.0.0.qualifier
+Bundle-Vendor: %providerName
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: com.google.gdt.eclipse.gph,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.team.core,
+ org.eclipse.ui,
+ org.tigris.subversion.subclipse.core;resolution:=optional,
+ org.tigris.subversion.subclipse.ui;resolution:=optional
+Bundle-ActivationPolicy: lazy
+Bundle-Localization: plugin

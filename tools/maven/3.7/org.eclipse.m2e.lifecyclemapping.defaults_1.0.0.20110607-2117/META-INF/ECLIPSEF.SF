@@ -1,0 +1,25 @@
+Signature-Version: 1.0
+SHA1-Digest-Manifest: 73idgUCwPJJW1xz5FCa+lHX/x1c=
+Created-By: 1.6.0 (IBM Corporation)
+SHA1-Digest-Manifest-Main-Attributes: FCS8Qrkqy0rbutQFeTS14tUfki4=
+
+Name: META-INF/eclipse.inf
+SHA1-Digest: QdryQvJlVywlE0MGLuwYCkmkyWk=
+
+Name: lifecycle-mapping-metadata.xml
+SHA1-Digest: YAUpsHbfI8K+VtXgjP9XWqzWReE=
+
+Name: META-INF/maven/org.eclipse.m2e/org.eclipse.m2e.lifecyclemapping.
+ defaults/pom.xml
+SHA1-Digest: TkP3LsFzLAfC1+H0epNQFBGRYec=
+
+Name: about.html
+SHA1-Digest: KxCtVOgxpMjaAk9hh6iCewya/XU=
+
+Name: plugin.properties
+SHA1-Digest: 0XyDLY9Kpb8yjma5NxmwreTGi98=
+
+Name: META-INF/maven/org.eclipse.m2e/org.eclipse.m2e.lifecyclemapping.
+ defaults/pom.properties
+SHA1-Digest: q2OmBVXSJFie1C0f8Fm1aFTnSQI=
+

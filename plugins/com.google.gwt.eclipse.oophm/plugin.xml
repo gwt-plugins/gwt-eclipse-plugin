@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Google"
+            id="com.google.gwt.eclipse.oophm">
+      </category>
+      <view
+            name="Development Mode"
+            icon="icons/gwt_oophm_16x16.png"
+            category="com.google.gwt.eclipse.oophm"
+            class="com.google.gwt.eclipse.oophm.views.hierarchical.WebAppLaunchView"
+            id="com.google.gwt.eclipse.DevModeView">
+      </view>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               id="com.google.gwt.eclipse.DevModeView"
+               minimized="false"
+               relative="org.eclipse.ui.console.ConsoleView"
+               relationship="stack"
+               visible="false">
+         </view>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.debug.ui.DebugPerspective">
+         <view
+               id="com.google.gwt.eclipse.DevModeView"
+               minimized="false"
+               relative="org.eclipse.ui.console.ConsoleView"
+               relationship="stack">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.core.variables.dynamicVariables">
+      <variable
+            description="Returns the port that the GWT remote UI server is listening on."
+            name="gwt_remote_ui_server_port"
+            resolver="com.google.gwt.eclipse.oophm.launch.GwtRemoteUiServerPortVariableResolver">
+      </variable>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="com.google.gwt.eclipse.oophm.LogSniffer"
+            id="com.google.gwt.eclipse.oophm.logSniffer"
+            name="Dump Log Sniffer Buffer">
+         <commandParameter
+               id="com.google.gwt.eclipse.oophm.logSniffer.param1"
+               name="Command"
+               optional="false">
+         </commandParameter>
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.google.gwt.eclipse.oophm.logSniffer"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="Shift+Ctrl+M3+Z">
+         <parameter
+               id="com.google.gwt.eclipse.oophm.logSniffer.param1"
+               value="CMD_DUMP">
+         </parameter>
+      </key>
+      <key
+            commandId="com.google.gwt.eclipse.oophm.logSniffer"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="Shift+Ctrl+M3+X">
+         <parameter
+               id="com.google.gwt.eclipse.oophm.logSniffer.param1"
+               value="CMD_CLEAR">
+         </parameter>
+      </key>
+   </extension>
+</plugin>

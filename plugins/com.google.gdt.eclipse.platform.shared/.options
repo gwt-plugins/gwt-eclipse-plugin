@@ -1,0 +1,3 @@
+com.google.gdt.eclipse.platform.shared/debug = false
+com.google.gdt.eclipse.platform.shared/jetty/info = false
+com.google.gdt.eclipse.platform.shared/jetty/debug = false

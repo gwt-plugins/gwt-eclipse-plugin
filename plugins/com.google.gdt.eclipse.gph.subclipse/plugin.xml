@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension point="com.google.gdt.eclipse.gph.checkoutProviders">
+      <scmProvider
+         checkoutProviderClass="com.google.gdt.eclipse.gph.subclipse.SubclipseCheckoutProvider"
+         priority="0"
+         providerName="Subclipse"
+         providerIcon="icons/subversion.png"
+         providerDescription="Subclipse is an Eclipse Team Provider plug-in providing support for Subversion within the Eclipse IDE. The software is released under the Eclipse Public License (EPL) 1.0 open source license."
+         scmType="svn"
+         scmTypeLabel="Subversion">
+      </scmProvider>
+   </extension>   
+
+</plugin>

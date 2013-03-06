@@ -1,0 +1,4 @@
+This is a placeholder plugin for Google-specific functionality and behavior. It is included as part of the binary releases of the Google Plugin for Eclipse.
+
+This plugin is not required for GPE to function. However, users will need to provide their own API key in order for the Google Project Hosting functionality to work. See the com.google.gdt.eclipse.gph.extensions package for more details.
+

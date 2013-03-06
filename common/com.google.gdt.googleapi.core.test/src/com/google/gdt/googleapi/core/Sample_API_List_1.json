@@ -1,0 +1,41 @@
+{
+  "kind": "discovery#directoryList",
+  "items": [
+    {
+      "kind": "discovery#directoryItem",
+      "id": "buzz:v1",
+      "publisher": "Google, Inc.",
+      "description": "Google Buzz API",
+      "name": "buzzy",
+      "title" : "pretty name",
+      "tosLink": "http://link/to/tos",
+      "version": "v1",
+      "discoveryLink": "http://www.googleapis.com/dis...",
+      "preferred": "true",
+      "releaseDate" : "2010-11-12",
+      "releaseNotesLink" : "http://link/to/release/notes",
+      "documentationLink": "http://link/to/docs",
+      "icons": {
+        "32x32": "http://icons.google.com/someicon.png"
+      }
+    },
+    {
+      "kind": "discovery#directoryItem",
+      "id": "buzz:v2beta1",
+      "publisher": "Google, Inc.",
+      "description": "Google Buzz API",
+      "name": "buzz",
+      "title" : "pretty name",
+      "tosLink": "http://link/to/tos",
+      "version": "v2beta1",
+      "discoveryLink": "http://link/to/discovery",
+      "preferred": "true",
+      "releaseDate" : "2010-01-14",
+      "releaseNotesLink" : "http://link/to/release/notes",
+      "documentationLink": "http://link/to/docs",
+      "icons": {
+        "32x32": "http://icons.google.com/someicon.png"
+      } 
+    }
+  ]    
+}

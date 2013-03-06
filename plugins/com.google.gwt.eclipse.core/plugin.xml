@@ -1,0 +1,1033 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="com.google.gwt.eclipse.core.moduleInfo" name="ModuleInfo" schema="schema/com.google.gwt.eclipse.core.moduleInfo.exsd"/>
+   <extension-point id="com.google.gwt.eclipse.core.launchShortcutStrategy" name="LaunchShortcutStrategy" schema="schema/com.google.gwt.eclipse.core.launchShortcutStrategy.exsd"/>
+   <extension-point id="com.google.gwt.eclipse.core.moduleClasspathProvider" name="ModuleClasspathProvider" schema="schema/com.google.gwt.eclipse.core.moduleClasspathProvider.exsd"/>
+   <extension-point id="com.google.gwt.eclipse.core.gwtSdkSelectionEnablementFinder" name="GwtSdkSelectionEnablementFinder" schema="schema/com.google.gwt.eclipse.core.gwtSdkSelectionEnablementFinder.exsd"/>
+   <extension-point id="com.google.gwt.eclipse.core.gwtProjectBoundSdkFactory" name="GWT Project-Bound SDK Factory" schema="schema/com.google.gwt.eclipse.core.gwtProjectBoundSdkFactory.exsd"/>
+   <extension-point id="com.google.gwt.eclipse.core.alternateSpeedTracerDialog" name="alternateSpeedTracerDialog" schema="schema/com.google.gwt.eclipse.core.alternateSpeedTracerDialog.exsd"/>
+   <extension-point id="com.google.gwt.eclipse.core.gwtCompileProjectValidator" name="gwtCompileProjectValidator" schema="schema/com.google.gwt.eclipse.core.gwtCompileProjectValidator.exsd"/>
+   <extension-point id="com.google.gwt.eclipse.core.gwtSettingsTabFactory" name="GwtSettingsTabFactory" schema="schema/com.google.gwt.eclipse.core.gwtSettingsTabFactory.exsd"/>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="com.google.gdt.eclipse.suite.preferences.ui.googlePreferences"
+            class="com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage"
+            id="com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage"
+            name="Web Toolkit">
+      </page>
+      <page
+            category="com.google.gdt.eclipse.suite.preferences.ui.googlePreferences"
+            class="com.google.gwt.eclipse.core.preferences.ui.SpeedTracerPreferencePage"
+            id="com.google.gwt.eclipse.core.preferences.ui.SpeedTracerPreferencePage"
+            name="Speed Tracer">
+      </page>
+   </extension>
+   <extension
+         id="gwtNature"
+         name="GWT Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="com.google.gwt.eclipse.core.nature.GWTNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+      <content-type
+            id="com.google.gwt.eclipse.core.gwtJavaSource">
+      </content-type>
+      <builder
+            id="com.google.gwt.eclipse.core.gwtProjectValidator">
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="com.google.gwt.eclipse.core.newWizards"
+            name="Google Web Toolkit">
+      </category>
+      <wizard
+            category="com.google.gwt.eclipse.core.newWizards"
+            class="com.google.gwt.eclipse.core.wizards.NewModuleWizard"
+            icon="icons/gwt-new-module_small.png"
+            id="com.google.gwt.eclipse.core.newModuleWizard"
+            name="Module">
+      </wizard>
+      <wizard
+            category="com.google.gwt.eclipse.core.newWizards"
+            class="com.google.gwt.eclipse.core.wizards.NewHostPageWizard"
+            icon="icons/gwt-new-hostpage_small.png"
+            id="com.google.gwt.eclipse.core.newHostPageWizard"
+            name="HTML Page">
+      </wizard>
+      <wizard
+            category="com.google.gwt.eclipse.core.newWizards"
+            class="com.google.gwt.eclipse.core.wizards.NewEntryPointWizard"
+            icon="icons/gwt-new-entrypoint_small.png"
+            id="com.google.gwt.eclipse.core.newEntryPointWizard"
+            name="Entry Point Class">
+      </wizard>
+      <wizard
+            category="com.google.gwt.eclipse.core.newWizards"
+            class="com.google.gwt.eclipse.core.wizards.NewClientBundleWizard"
+            icon="icons/gwt-new-clientbundle_small.png"
+            id="com.google.gwt.eclipse.core.newClientBundleWizard"
+            name="ClientBundle">
+      </wizard>
+      <wizard
+            category="com.google.gwt.eclipse.core.newWizards"
+            class="com.google.gwt.eclipse.core.wizards.NewUiBinderWizard"
+            icon="icons/gwt-new-uibinder_small.png"
+            id="com.google.gwt.eclipse.core.newUiBinderWizard"
+            name="UiBinder">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editorActions">
+      <editorContribution
+            id="com.google.gwt.eclipse.core.editors.gwtJavaEditor.BreakpointRulerActions"
+            targetID="com.google.gwt.eclipse.core.editors.gwtJavaEditor">
+         <action
+               actionID="RulerDoubleClick"
+               class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+               id="org.eclipse.jdt.debug.ui.actions.ManageBreakpointRulerAction"
+               label="%AddBreakpoint.label">
+         </action>
+      </editorContribution>
+      <editorContribution
+            targetID="com.google.gwt.eclipse.core.editors.gwtJavaEditor"
+            id="com.google.gwt.eclipse.core.editors.gwtJavaEditor.ruler.actions">
+         <action
+               label="%BookmarkRulerAction.label"
+               helpContextId="org.eclipse.ui.bookmark_action_context"
+               class="org.eclipse.ui.texteditor.BookmarkRulerAction"
+               actionID="RulerDoubleClick"
+               id="org.eclipse.jdt.internal.ui.javaeditor.BookmarkRulerAction">
+         </action>
+         <action
+               label="%JavaSelectRulerAction.label"
+               class="org.eclipse.jdt.internal.ui.javaeditor.JavaSelectRulerAction"
+               actionID="RulerClick"
+               id="org.eclipse.jdt.internal.ui.javaeditor.JavaSelectRulerAction">
+         </action>
+      </editorContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.google.gwt.eclipse.core.editors.java.GWTJavaEditor"
+            contributorClass="org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor"
+            extensions="java"
+            icon="icons/jcu_obj.gif"
+            id="com.google.gwt.eclipse.core.editors.gwtJavaEditor"
+            name="GWT Java Editor">
+         <contentTypeBinding
+               contentTypeId="com.google.gwt.eclipse.core.gwtJavaSource">
+         </contentTypeBinding>
+      </editor>
+      <editor
+            class="com.google.gwt.eclipse.core.uibinder.sse.UiBinderXmlTextEditor"
+            id="com.google.gwt.eclipse.core.editors.uiBinderXmlEditor"
+            icon="icons/gwt-uibinderxml-file_small.gif"
+            name="UiBinder Template Editor">
+         <contentTypeBinding
+               contentTypeId="com.google.gwt.eclipse.core.uibinder.content.xml">
+         </contentTypeBinding>
+      </editor>
+      <editor
+            class="com.google.gwt.eclipse.core.uibinder.sse.css.model.CssResourceTextEditor"
+            id="com.google.gwt.eclipse.core.editors.cssResourceEditor"
+            name="CSS Resource Editor">
+         <contentTypeBinding
+               contentTypeId="com.google.gwt.eclipse.core.clientbundle.content.css">
+         </contentTypeBinding>
+      </editor>
+   </extension>
+   <!-- This extension point is deprecated in Eclipse 3.7. It should only be used by Eclipse 3.5 and Eclipse 3.6. 
+        Make sure this section is kept in sync with the one below it. -->
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <content-type
+            base-type="org.eclipse.jdt.core.javaSource"
+            file-extensions="java"
+            id="gwtJavaSource"
+            name="GWT Java Source File"
+            priority="high">
+      </content-type>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            id="com.google.gwt.eclipse.core.uibinder.content.xml"
+            name="UiBinder Template"
+            priority="high">
+         <describer class="com.google.gwt.eclipse.core.uibinder.UiBinderXmlContentDescriber">
+         <parameter name="element" value="UiBinder" />
+         </describer>
+      </content-type>
+      <content-type
+            base-type="org.eclipse.wst.css.core.csssource"
+            id="com.google.gwt.eclipse.core.clientbundle.content.css"
+            name="CSS Resource file"
+            priority="high">
+         <describer class="com.google.gwt.eclipse.core.clientbundle.CssResourceContentDescriber" />
+      </content-type>
+   </extension>
+   <!-- This extension point is the replacement for org.eclispe.core.runtime.contentTypes in Eclipse 3.7. It will
+        be ignored by Eclipse 3.5 and Eclipse 3.6. Make sure this section is kept in sync with the one above it. -->
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.jdt.core.javaSource"
+            file-extensions="java"
+            id="gwtJavaSource"
+            name="GWT Java Source File"
+            priority="high">
+      </content-type>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            id="com.google.gwt.eclipse.core.uibinder.content.xml"
+            name="UiBinder Template"
+            priority="high">
+         <describer class="com.google.gwt.eclipse.core.uibinder.UiBinderXmlContentDescriber">
+         <parameter name="element" value="UiBinder" />
+         </describer>
+      </content-type>
+      <content-type
+            base-type="org.eclipse.wst.css.core.csssource"
+            id="com.google.gwt.eclipse.core.clientbundle.content.css"
+            name="CSS Resource file"
+            priority="high">
+         <describer class="com.google.gwt.eclipse.core.clientbundle.CssResourceContentDescriber" />
+      </content-type>
+   </extension>
+   <extension
+         point="org.eclipse.core.filebuffers.documentSetup">
+      <participant
+            class="com.google.gwt.eclipse.core.editors.java.GWTDocumentSetupParticipant"
+            contentTypeId="com.google.gwt.eclipse.core.gwtJavaSource">
+      </participant>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation
+            targetID="org.eclipse.jdt.ui.A_OpenActionSet">
+         <part
+               id="com.google.gwt.eclipse.core.editors.gwtJavaEditor">
+         </part>
+      </actionSetPartAssociation>
+      <actionSetPartAssociation
+            targetID="org.eclipse.jdt.ui.CodingActionSet">
+         <part
+               id="com.google.gwt.eclipse.core.editors.gwtJavaEditor">
+         </part>
+      </actionSetPartAssociation>
+      <actionSetPartAssociation
+            targetID="org.eclipse.jdt.ui.SearchActionSet">
+         <part
+               id="com.google.gwt.eclipse.core.editors.gwtJavaEditor">
+         </part>
+      </actionSetPartAssociation>
+      <actionSetPartAssociation
+            targetID="org.eclipse.jdt.ui.text.java.actionSet.presentation">
+         <part
+               id="com.google.gwt.eclipse.core.editors.gwtJavaEditor">
+         </part>
+      </actionSetPartAssociation>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="com.google.gwt.eclipse.core.launch.GWTJUnitLaunchDelegate"
+            delegateDescription="Runs a GWT JUnit test"
+            delegateName="GWT JUnit Test Launcher"
+            id="com.google.gwt.eclipse.core.launch.gwtJUnit"
+            modes="run, debug"
+            name="GWT JUnit Test"
+            sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
+            sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer">
+      </launchConfigurationType>
+   </extension>   
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="com.google.gwt.eclipse.core.launch.gwtJUnit"
+            icon="icons/gwt-junit_small.gif"
+         id="com.google.gwt.eclipse.core.launch.gwtJUnitImage">
+      </launchConfigurationTypeImage>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="com.google.gwt.eclipse.core.launch.ui.GWTJUnitTabGroup"
+            helpContextId="org.eclipse.jdt.junit.junit_tab_group"
+            id="com.google.gwt.eclipse.core.launch.gwtJUnitTabGroup"
+            type="com.google.gwt.eclipse.core.launch.gwtJUnit">
+         <launchMode
+               description="Debug a GWT JUnit Test"
+               mode="debug"
+               perspective="org.eclipse.debug.ui.DebugPerspective">
+         </launchMode>
+         <launchMode
+               description="Run a GWT JUnit Test"
+               mode="run">
+         </launchMode>
+      </launchConfigurationTabGroup>
+   </extension>
+
+   <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            category="gwt.junit"
+            class="com.google.gwt.eclipse.core.launch.ui.GWTJUnitLaunchShortcut"
+            description="Run a GWT JUnit Test"
+            icon="icons/gwt-junit_small.gif"
+            id="com.google.gwt.eclipse.core.launch.gwtJUnitShortcut"
+            label="GWT JUnit Test"
+            modes="run, debug">
+            
+			<contextualLaunch>
+            	<enablement>
+	               	<with variable="selection">
+	                	<count value= "1"/>
+	                    <iterate>
+	                    	<test property="com.google.gwt.launching.isGWTTest"/>
+	                  	</iterate>
+	              	</with>
+            	</enablement>
+         	</contextualLaunch>
+         <description
+               description="Runs a GWT JUnit Test"
+               mode="run">
+         </description>
+         <description
+               description="Debugs a GWT JUnit Test"
+               mode="debug">
+         </description>
+         <configurationType
+               id="com.google.gwt.eclipse.core.launch.gwtJUnit">
+         </configurationType>
+      </shortcut>
+      <shortcut
+            category="gwt.junit"
+            class="com.google.gwt.eclipse.core.launch.ui.GWTJUnitWebLaunchShortcut"
+            description="Run a GWT JUnit Test"
+            icon="icons/gwt-junit_small.gif"
+            id="com.google.gwt.eclipse.core.launch.gwtJUnitWebShortcut"
+            label="GWT JUnit Test (production mode)"
+            modes="run, debug">
+
+			<contextualLaunch>
+            	<enablement>
+	               	<with variable="selection">
+	                	<count value= "1"/>
+	                    <iterate>
+	                    	<test property="com.google.gwt.launching.isGWTTest"/>
+	                  	</iterate>
+	              	</with>
+            	</enablement>
+         	</contextualLaunch>
+         <description
+               description="Runs a GWT JUnit Test"
+               mode="run">
+         </description>
+         <description
+               description="Debugs a GWT JUnit Test"
+               mode="debug">
+         </description>
+         <configurationType
+               id="com.google.gwt.eclipse.core.launch.gwtJUnit">
+         </configurationType>
+      </shortcut>
+   </extension>
+   <!--
+   	Property tester to determine if a selection can be run as a GWT JUnit test 
+   	case.
+   -->
+   <extension point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="com.google.gwt.eclipse.core.launch.GWTJUnitPropertyTester"
+            id="GWTJUnitPropertyTester"
+            namespace="com.google.gwt.launching"
+            properties="isGWTTest"
+            type="org.eclipse.core.runtime.IAdaptable">
+      </propertyTester>            
+   </extension>
+   
+      <extension
+         point="org.eclipse.jdt.launching.classpathProviders">
+      <classpathProvider
+            class="com.google.gwt.eclipse.core.launch.ModuleClasspathProvider"
+            id="com.google.gwt.eclipse.core.moduleClasspathProvider">
+      </classpathProvider>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="com.google.gwt.eclipse.core.runtime.GWTRuntimeContainerInitializer"
+            id="com.google.gwt.eclipse.core.GWT_CONTAINER">
+      </classpathContainerInitializer>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.ui.classpathContainerPage">
+      <classpathContainerPage
+            class="com.google.gwt.eclipse.core.runtime.ui.GWTRuntimeContainerPage"
+            id="com.google.gwt.eclipse.core.GWT_CONTAINER"
+            name="Google Web Toolkit">
+      </classpathContainerPage>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.core.compilationParticipant">
+      <compilationParticipant
+            class="com.google.gwt.eclipse.core.validators.java.JavaCompilationParticipant"
+            createsProblems="true"
+            id="com.google.gwt.eclipse.core.javaCompilationParticipant">
+         <managedMarker
+               markerType="com.google.gwt.eclipse.core.javaProblemMarker">
+         </managedMarker>        
+         <managedMarker
+               markerType="com.google.gwt.eclipse.core.rpcProblemMarker">
+         </managedMarker>
+         <managedMarker
+               markerType="com.google.gwt.eclipse.core.clientBundleProblemMarker">
+         </managedMarker>
+         <managedMarker
+               markerType="com.google.gwt.eclipse.core.uiBinderJavaProblemMarker">
+         </managedMarker>
+      </compilationParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.ui.queryParticipants">
+      <queryParticipant
+            class="com.google.gwt.eclipse.core.search.JavaQueryParticipant"
+            id="gwtJavaQueryParticipant"
+            name="GWT Java Search Participant"
+            nature="org.eclipse.jdt.core.javanature">
+      </queryParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.debugModelPresentations">
+      <debugModelPresentation
+            class="com.google.gwt.eclipse.core.debug.ui.GWTDebugModelPresentation"
+            detailsViewerConfiguration="org.eclipse.jdt.internal.debug.ui.display.DetailsViewerConfiguration"
+            id="org.eclipse.jdt.debug">
+      </debugModelPresentation>
+   </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.renameParticipants">
+      <renameParticipant
+            class="com.google.gwt.eclipse.core.refactoring.GWTRenameTypeInJsniParticipant"
+            id="com.google.gwt.eclipse.core.refactoring.renameTypeInJsniParticipant"
+            name="Rename type in JSNI blocks">
+         <enablement>
+            <with
+                  variable="element">
+               <instanceof
+                     value="org.eclipse.jdt.core.IType">
+               </instanceof>
+            </with>
+            <with
+                  variable="affectedNatures">
+               <iterate
+                     operator="or">
+                  <equals
+                        value="org.eclipse.jdt.core.javanature">
+                  </equals>
+               </iterate>
+            </with>
+         </enablement>
+      </renameParticipant>
+      <renameParticipant
+            class="com.google.gwt.eclipse.core.refactoring.GWTRenameMemberInJsniParticipant"
+            id="com.google.gwt.eclipse.core.refactoring.renameMemberInJsniParticipant"
+            name="Rename member in JSNI blocks">
+         <enablement>
+            <with
+                  variable="element">
+               <or>
+               <instanceof
+                     value="org.eclipse.jdt.core.IMethod">
+               </instanceof>
+               <instanceof
+                     value="org.eclipse.jdt.core.IField">
+               </instanceof>
+            </or>
+            </with>
+            <with
+                  variable="affectedNatures">
+               <iterate
+                     operator="or">
+                  <equals
+                        value="org.eclipse.jdt.core.javanature">
+                  </equals>
+               </iterate>
+            </with>
+         </enablement>
+      </renameParticipant>
+      <renameParticipant
+            class="com.google.gwt.eclipse.core.refactoring.rpc.PairedInterfaceRenameParticipant"
+            id="com.google.gwt.eclipse.core.refactoring.rpc.pairedInterfaceRenameParticipant"
+            name="Rename a GWT RPC paired interface">
+         <enablement>
+            <with
+                  variable="element">
+               <instanceof
+                     value="org.eclipse.jdt.core.IType">
+               </instanceof>
+            </with>
+            <with
+                  variable="affectedNatures">
+               <iterate
+                     operator="or">
+                  <equals
+                        value="org.eclipse.jdt.core.javanature">
+                  </equals>
+               </iterate>
+            </with>
+         </enablement>
+      </renameParticipant>
+      <renameParticipant
+            class="com.google.gwt.eclipse.core.refactoring.rpc.PairedMethodRenameParticipant"
+            id="com.google.gwt.eclipse.core.refactoring.rpc.pairedMethodRenameParticipant"
+            name="Rename a method in a GWT RPC paired interface">
+         <enablement>
+            <with
+                  variable="element">
+               <instanceof
+                     value="org.eclipse.jdt.core.IMethod">
+               </instanceof>
+            </with>
+            <with
+                  variable="affectedNatures">
+               <iterate
+                     operator="or">
+                  <equals
+                        value="org.eclipse.jdt.core.javanature">
+                  </equals>
+               </iterate>
+            </with>
+         </enablement>
+      </renameParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.deleteParticipants">
+      <deleteParticipant
+            class="com.google.gwt.eclipse.core.refactoring.GWTDeleteCompilationUnitParticipant"
+            id="com.google.gwt.eclipse.core.refactoring.deleteCompilationUnitParticipant"
+            name="Delete GWT Java reference index entries">
+         <enablement>
+            <with
+                  variable="affectedNatures">
+               <iterate
+                     operator="or">
+                  <equals
+                        value="org.eclipse.jdt.core.javanature">
+                  </equals>
+               </iterate>
+            </with>
+            <with
+                  variable="element">
+               <instanceof
+                     value="org.eclipse.jdt.core.ICompilationUnit">
+               </instanceof>
+            </with>
+         </enablement>
+      </deleteParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.moveParticipants">
+      <moveParticipant
+            class="com.google.gwt.eclipse.core.refactoring.GWTMoveTypeInJsniParticipant"
+            id="com.google.gwt.eclipse.core.refactoring.moveTypeInJsniParticipant"
+            name="Move type in JSNI blocks">
+         <enablement>
+            <with
+                  variable="element">
+               <instanceof
+                     value="org.eclipse.jdt.core.IType">
+               </instanceof>
+            </with>
+            <with
+                  variable="affectedNatures">
+               <iterate
+                     operator="or">
+                  <equals
+                        value="org.eclipse.jdt.core.javanature">
+                  </equals>
+               </iterate>
+            </with>
+         </enablement>
+      </moveParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newEntryPointWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newHostPageWizard">
+         </newWizardShortcut>
+          <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newModuleWizard">
+         </newWizardShortcut>
+          <newWizardShortcut
+                id="com.google.gwt.eclipse.core.newClientBundleWizard">
+          </newWizardShortcut>
+          <newWizardShortcut
+                id="com.google.gwt.eclipse.core.newUiBinderWizard">
+          </newWizardShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaBrowsingPerspective">
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newEntryPointWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newHostPageWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newModuleWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newClientBundleWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newUiBinderWizard">
+         </newWizardShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaHierarchyPerspective">
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newEntryPointWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newHostPageWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newModuleWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newClientBundleWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newUiBinderWizard">
+         </newWizardShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.jst.j2ee.J2EEPerspective">
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newEntryPointWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newHostPageWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newModuleWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newClientBundleWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
+               id="com.google.gwt.eclipse.core.newUiBinderWizard">
+         </newWizardShortcut>
+      </perspectiveExtension>      
+   </extension>
+   <extension
+         id="jsniCompletionProposalComputer"
+         point="org.eclipse.jdt.ui.javaCompletionProposalComputer">
+      <javaCompletionProposalComputer
+            activate="false"
+            categoryId="org.eclipse.jdt.ui.defaultProposalCategory"
+            class="com.google.gwt.eclipse.core.editors.java.JsniMethodBodyCompletionProposalComputer">
+      </javaCompletionProposalComputer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            category="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage"
+            class="com.google.gwt.eclipse.core.properties.ui.GWTProjectPropertyPage"
+            id="com.google.gwt.eclipse.core.properties.ui.gwtProjectPropertyPage"
+            name="Web Toolkit">
+         <enabledWhen>
+            <adapt
+                  type="org.eclipse.core.resources.IProject">
+               <test
+                     property="org.eclipse.core.resources.projectNature"
+                     value="org.eclipse.jdt.core.javanature">
+               </test>
+            </adapt>
+         </enabledWhen>
+      </page>
+   </extension>
+   <!--
+   		Participate in the Google deployment process
+   -->
+   <extension
+         point="com.google.gdt.eclipse.core.deploymentParticipant">
+      <deploymentParticipant
+            class="com.google.gwt.eclipse.core.GWTDeploymentParticipant">
+      </deploymentParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="com.google.gwt.eclipse.core.projectGWTSettings"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="com.google.gwt.eclipse.core.actions.ProjectPropertiesAction"
+               id="com.google.gwt.eclipse.core.popupMenu.project.gwtSettings"
+               label="Web Toolkit Settings..."
+               menubarPath="com.google.gdt.eclipse.suite.popupMenu.project/settingsContent">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="com.google.gwt.eclipse.core.popupMenus.project.GWTCompile"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="com.google.gwt.eclipse.core.actions.GWTCompileToolbarAction"
+               icon="icons/gwt-compile_small.png"
+               id="com.google.gwt.eclipse.core.actions.GWTCompileProjectAction"
+               label="GWT Compile"
+               menubarPath="com.google.gdt.eclipse.suite.popupMenu.project/actionsContent">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="com.google.gwt.eclipse.core.popupMenus.project.SpeedTracerToolbarAction"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="com.google.gwt.eclipse.core.speedtracer.ui.SpeedTracerToolbarAction"
+               icon="icons/speed-tracer_small.png"
+               id="com.google.gwt.eclipse.core.actions.SpeedTracerToolbarAction"
+               label="Profile Using Speed Tracer"
+               menubarPath="com.google.gdt.eclipse.suite.popupMenu.project/actionsContent">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="com.google.gwt.eclipse.core.popupMenus.file.AddResourcesToClientBundle"
+            objectClass="org.eclipse.core.resources.IFile">
+         <action
+               class="com.google.gwt.eclipse.core.clientbundle.ui.AddResourcesToClientBundleAction"
+               enablesFor="+"
+               id="com.google.gwt.eclipse.core.actions.AddResourcesToClientBundleAction"
+               label="Add to ClientBundle..."
+               menubarPath="com.google.gdt.eclipse.suite.popupMenu.file/content">
+         </action>
+      </objectContribution>      
+   </extension>
+   <extension
+         id="gwtProjectValidator"
+         name="Google Web Toolkit Project Validator"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            callOnEmptyDelta="true"
+            hasNature="true"
+            isConfigurable="false">
+         <run
+               class="com.google.gwt.eclipse.core.validators.GWTProjectValidator">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="gwtProjectProblemMarker"
+         name="Google Web Toolkit Problem"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+            class="com.google.gwt.eclipse.core.markers.quickfixes.GWTValidatorMarkerResolutionGenerator"
+            markerType="com.google.gwt.eclipse.core.gwtProjectProblemMarker">
+      </markerResolutionGenerator>
+   </extension>
+   <extension
+         id="javaProblemMarker"
+         name="Google Web Toolkit Java Problem"
+         point="org.eclipse.core.resources.markers">
+      <persistent
+            value="true">
+      </persistent>
+      <super
+            type="org.eclipse.jdt.core.problem">
+      </super>
+   </extension>
+   <extension
+         id="rpcProblemMarker"
+         name="Google Web Toolkit RPC Problem"
+         point="org.eclipse.core.resources.markers">
+      <persistent
+            value="true">
+      </persistent>
+      <super 
+            type="com.google.gwt.eclipse.core.javaProblemMarker">
+      </super>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.ui.quickFixProcessors">
+      <quickFixProcessor
+            class="com.google.gwt.eclipse.core.markers.quickfixes.RemoteServiceProblemMarkerResolutionGenerator"
+            id="com.google.gwt.eclipse.core.rpcQuickFixProcessor"
+            name="GWT RPC QuickFix Processor">
+         <handledMarkerTypes>
+            <markerType
+                  id="com.google.gwt.eclipse.core.rpcProblemMarker">
+            </markerType>
+         </handledMarkerTypes>
+      </quickFixProcessor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+            class="com.google.gwt.eclipse.core.markers.quickfixes.RemoteServiceProblemMarkerResolutionGenerator"
+            markerType="com.google.gwt.eclipse.core.rpcProblemMarker">
+      </markerResolutionGenerator>
+   </extension>
+   <extension
+         id="uiBinderProblemMarker"
+         name="Google Web Toolkit UiBinder Problem"
+         point="org.eclipse.core.resources.markers">
+      <persistent
+            value="true">
+      </persistent>
+      <super 
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.launching.runtimeClasspathEntryResolvers">
+      <runtimeClasspathEntryResolver
+            class="com.google.gwt.eclipse.core.runtime.RuntimeClasspathEntryResolver"
+            container="com.google.gwt.eclipse.core.GWT_CONTAINER"
+            id="com.google.gwt.eclipse.core.runtime.runtimeClasspathEntryResolver">
+      </runtimeClasspathEntryResolver>
+   </extension>
+   <extension point="org.eclipse.wst.sse.core.modelHandler">
+      <!-- This is the only place for us to plug in our model handlers.  Unfortunately, these will
+           always be used for each respective content type, even if the user is not using our
+           specific editor. See UiBinderXmlTextEditor for more information. -->
+      <modelHandler
+            default="true"
+            class="com.google.gwt.eclipse.core.uibinder.sse.model.ModelHandlerForUiBinderXml"
+            associatedContentTypeId="com.google.gwt.eclipse.core.uibinder.content.xml"
+            id="com.google.gwt.eclipse.core.uibinder.content.modelhandler">
+      </modelHandler>
+      <modelHandler
+            default="true"
+            class="com.google.gwt.eclipse.core.uibinder.sse.css.model.ModelHandlerForCssResource"
+            associatedContentTypeId="com.google.gwt.eclipse.core.clientbundle.content.css"
+            id="com.google.gwt.eclipse.core.clientbundle.content.css.modelhandler">
+      </modelHandler>
+   </extension>
+   <!-- Even though this extension point is deprecated, we cannot simply remove the use of it. Other plugins
+        are still using this extension point, which means that they can contribute the wrong content type for .ui.xml files. Until
+        all other plugins (namely the wst.xml.core plugin) stop using this extension point, we must continue to
+        use it. -->    
+   <extension
+         point="org.eclipse.core.filebuffers.documentCreation"
+         id="org.eclipse.wst.xml.core.documentfactories">
+      <!-- This extension point is needed for our model handler to be used, see org.eclipse.core.internal.filebuffers.ExtensionsRegistry:getDocumentFactory. -->
+      <factory
+            contentTypeId="com.google.gwt.eclipse.core.uibinder.content.xml"
+            class="org.eclipse.wst.sse.core.internal.filebuffers.BasicStructuredDocumentFactory" />
+      <factory
+            contentTypeId="com.google.gwt.eclipse.core.clientbundle.content.css"
+            class="org.eclipse.wst.sse.core.internal.filebuffers.BasicStructuredDocumentFactory" />
+   </extension>
+   <extension
+         id="clientBundleProblemMarker"
+         name="Google Web Toolkit ClientBundle Problem"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="com.google.gwt.eclipse.core.javaProblemMarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         point="org.eclipse.wst.sse.ui.sourcevalidation">
+      <validator
+            class="com.google.gwt.eclipse.core.uibinder.validators.UiXmlEditorValidator"
+            id="com.google.gwt.eclipse.core.uibinder.validators.uiXmlEditorValidator"
+            scope="total">
+         <contentTypeIdentifier
+               id="com.google.gwt.eclipse.core.uibinder.content.xml">
+            <partitionType
+                  id="org.eclipse.wst.xml.XML_DEFAULT">
+            </partitionType>
+         </contentTypeIdentifier>
+         <contentTypeIdentifier
+               id="com.google.gwt.eclipse.core.uibinder.content.xml">
+            <partitionType
+                  id="org.eclipse.wst.css.STYLE">
+            </partitionType>
+         </contentTypeIdentifier>
+      </validator>
+   </extension>
+   <extension
+         id="uiBinderJavaProblemMarker"
+         name="Google Web Toolkit UiBinder Problem"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="com.google.gwt.eclipse.core.javaProblemMarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         point="org.eclipse.wst.xml.core.catalogContributions">
+      <catalogContribution>
+         <uri
+            name="urn:ui:com.google.gwt.uibinder"
+            uri="http://dl.google.com/gwt/dtd/uibinder.xsd" />
+      </catalogContribution>
+   </extension>
+   <extension
+         point="org.eclipse.wst.xml.core.catalogContributions">
+      <catalogContribution>
+         <uri
+            name="urn:import:com.google.gwt.user.client.ui"
+            uri="http://dl.google.com/gwt/dtd/com.google.gwt.user.client.ui.xsd" />
+      </catalogContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.google.gwt.eclipse.core.preferences.GwtPreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.core.variables.dynamicVariables">
+      <variable
+            description="Returns a unique ID for the Eclipse session."
+            name="unique_id"
+            resolver="com.google.gwt.eclipse.core.launch.UniqueIdVariableResolver">
+      </variable>
+   </extension>
+
+    <!-- Speed Tracer -->
+    <extension
+        point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+        <launchConfigurationTypeImage
+            icon="icons/speed-tracer_small.png"
+            configTypeID="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunch"
+            id="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunchImage">
+        </launchConfigurationTypeImage>
+    </extension>
+    <extension
+        point="org.eclipse.debug.ui.launchShortcuts">
+        <shortcut
+            class="com.google.gwt.eclipse.core.speedtracer.ui.SpeedTracerLaunchShortcut"
+            description="Profile Using Speed Tracer"
+            icon="icons/speed-tracer_small.png"
+            id="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunchShortcut"
+            label="Speed Tracer"
+            modes="profile">
+            <contextualLaunch>
+                <enablement>
+                    <with
+                        variable="selection">
+                        <count
+                            value="1" />
+                        <iterate>
+                            <!-- TODO: create a launch tester for ST -->
+                            <!--
+                                see code in
+                                com.google.gdt.eclipse.suite.propertytesters.LaunchTargetTester.java
+                            -->
+                            <test
+                                property="com.google.gdt.eclipse.suite.isLaunchTarget" />
+                        </iterate>
+                    </with>
+                </enablement>
+            </contextualLaunch>
+
+            <description
+                description="Profile Using Speed Tracer"
+                mode="profile" />
+            <configurationType
+                id="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunch" />
+        </shortcut>
+    </extension>
+    <extension
+          point="org.eclipse.ui.menus">
+       <menuContribution
+             allPopups="false"
+             locationURI="menu:com.google.gdt.eclipse.suite.GDTPulldown?after=toolbarGroup.compile">
+          <command
+                commandId="com.google.gwt.eclipse.core.gwtCompileProject"
+                icon="icons/gwt-compile_small.png"
+                label="GWT Compile Project..."
+                style="push"
+                tooltip="GWT Compile Project">
+          </command>
+       </menuContribution>
+       <menuContribution
+          allPopups="false"
+          locationURI="menu:com.google.gdt.eclipse.suite.GDTPulldown?after=toolbarGroup.profile">
+          <command
+                commandId="com.google.gwt.eclipse.core.speedTracerProfile"
+                icon="icons/speed-tracer_small.png"
+                label="Profile Using Speed Tracer..."
+                style="push"
+                tooltip="Profile Using Speed Tracer">
+          </command>
+       </menuContribution>
+    </extension>
+    <extension
+          point="org.eclipse.ui.commands">
+       <command
+             defaultHandler="com.google.gwt.eclipse.core.actions.GWTCompileToolbarHandler"
+             id="com.google.gwt.eclipse.core.gwtCompileProject"
+             name="GWT Compile Project">
+       </command>
+       <command
+             defaultHandler="com.google.gwt.eclipse.core.speedtracer.ui.SpeedTracerToolbarHandler"
+             id="com.google.gwt.eclipse.core.speedTracerProfile"
+             name="Profile Using Speed Tracer">
+       </command>
+    </extension>
+    <extension
+          id="GWTCodeFormatterApplication"
+          point="org.eclipse.core.runtime.applications">
+       <application
+             cardinality="singleton-global"
+             thread="main"
+             visible="true">
+          <run
+                class="com.google.gwt.eclipse.core.applications.GWTCodeFormatterApplication">
+          </run>
+       </application>
+    </extension>
+    <extension
+          point="org.eclipse.jdt.debug.javaLogicalStructures">
+       <javaLogicalStructure
+             description="GWT JSO Logical Structure"
+             subtypes="true"
+             type="com.google.gwt.core.client.JavaScriptObject"
+             value="com.google.gwt.core.client.debug.JsoInspector.convertToInspectableObject(this)">
+       </javaLogicalStructure>
+    </extension>
+    <extension
+          point="org.eclipse.jdt.debug.javaLogicalStructures">
+       <javaLogicalStructure
+             description="GWT JSO Property Logical Structure"
+             subtypes="true"
+             type="com.google.gwt.core.client.debug.JsoInspector$JsoProperty"
+             value="Class.forName(&quot;com.google.gwt.core.client.debug.JsoInspector$JsoProperty&quot;).getField(&quot;value&quot;).get(this)">
+       </javaLogicalStructure>
+    </extension>
+</plugin>

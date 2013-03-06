@@ -1,0 +1,12 @@
+{
+  "kind": "discovery#directoryItem",
+  "id": "appsmarket:v2sandbox",
+  "name": "appsmarket",
+  "version": "v2sandbox",
+  "description": "Google Apps Marketplace API",
+  "discoveryLink": "./describe/appsmarket/v2sandbox",
+  "labels": [
+    "labs"
+  ],
+  "preferred": true
+}

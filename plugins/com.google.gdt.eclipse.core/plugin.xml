@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="com.google.gdt.eclipse.core.deploymentParticipant" name="Deployment Participant" schema="schema/com.google.gdt.eclipse.core.deployParticipant.exsd"/>
+   <extension-point id="com.google.gdt.eclipse.core.webApplicationEnablementFinder" name="webApplicationEnablementFinder" schema="schema/com.google.gdt.eclipse.core.webApplicationEnablementFinder.exsd"/>
+   <extension-point id="com.google.gdt.eclipse.core.warOutputDirectoryLocator" name="WAR Folder Output Directory Locator" schema="schema/com.google.gdt.eclipse.core.warOutputDirectoryLocator.exsd"/>
+   <extension-point id="com.google.gdt.eclipse.core.managedWarOptionEnablementFinder" name="managedWarOptionEnablementFinder" schema="schema/com.google.gdt.eclipse.core.managedWarOptionEnablementFinder.exsd"/>
+   <extension-point id="com.google.gdt.eclipse.core.updateQueryArgContributor" name="UpdateQueryArgContributor" schema="schema/com.google.gdt.eclipse.core.updateQueryArgContributor.exsd"/>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="com.google.gdt.eclipse.core.properties.ui.CoreProjectPropertyPage"
+            id="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage"
+            name="%gpe.menu.label">
+         <enabledWhen>
+            <adapt
+                  type="org.eclipse.core.resources.IProject">
+               <test
+                     property="org.eclipse.core.resources.projectNature"
+                     value="org.eclipse.jdt.core.javanature">
+               </test>
+            </adapt>
+         </enabledWhen>
+      </page>
+      <page
+            category="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage"
+            class="com.google.gdt.eclipse.core.properties.ui.WebappProjectPropertyPage"
+            id="com.google.gdt.eclipse.core.properties.ui.webappProjectPropertyPage"
+            name="Web Application">
+         <enabledWhen>
+            <adapt
+                  type="org.eclipse.core.resources.IProject">
+               <test
+                     property="org.eclipse.core.resources.projectNature"
+                     value="org.eclipse.jdt.core.javanature">
+               </test>
+            </adapt>
+         </enabledWhen>
+      </page>
+   </extension>
+   <extension
+         id="webAppProjectValidator"
+         name="Google WebApp Project Validator"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            callOnEmptyDelta="true"
+            hasNature="false"
+            isConfigurable="false">
+         <run
+               class="com.google.gdt.eclipse.core.validators.WebAppProjectValidator">
+         </run>
+      </builder>
+   </extension>   
+    <extension
+         id="webAppProblemMarker"
+         name="Google Web App Problem"
+         point="org.eclipse.core.resources.markers">
+      <persistent
+            value="true">
+      </persistent>
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+            class="com.google.gdt.eclipse.core.markers.quickfixes.ValidatorProblemMarkerResolutionGenerator"
+            markerType="com.google.gdt.eclipse.core.webAppProblemMarker">
+      </markerResolutionGenerator>
+   </extension>
+   <extension
+         point="org.eclipse.ui.console.consolePageParticipants">
+      <consolePageParticipant
+            class="com.google.gdt.eclipse.core.console.CustomMessageConsole$ConsolePageParticipant"
+            id="com.google.gdt.eclipse.core.console.customMessageConsoleConsolePageParticipant">
+         <enablement>
+            <instanceof
+                  value="com.google.gdt.eclipse.core.console.CustomMessageConsole">
+            </instanceof>
+         </enablement>
+      </consolePageParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="com.google.gdt.eclipse.core.actionSet"
+            label="Sample Action Set"
+            visible="true">
+         <!-- This action is here just to get selection changed events -->
+         <action
+               class="com.google.gdt.eclipse.core.ActiveProjectFinder"
+               id="com.google.gdt.eclipse.core.actions.ActiveProjectFinder"
+               label="ActiveProjectFinder">
+         </action>
+      </actionSet>
+   </extension>
+</plugin>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+ <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            class="com.google.gdt.eclipse.mobile.android.wizards.NewAndroidCloudProjectWizard"
+            category="com.android.ide.eclipse.wizards.category"
+            id="com.google.gdt.eclipse.android.NewProjectWizard"
+            finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
+            hasPages="true"
+            icon="icons/new_adt_project.png"
+            name="App Engine Connected Android Project"
+            preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective"
+            project="true">
+      </wizard>
+      <wizard
+            category="com.google.gdt.eclipse.suite.newWizards"
+            class="com.google.gdt.eclipse.mobile.android.wizards.NewAndroidCloudProjectWizard"
+            finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
+            hasPages="true"
+            icon="icons/new_adt_project.png"
+            id="com.google.gdt.eclipse.android.NewProjectWizard"
+            name="App Engine Connected Android Project"
+            preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective"
+            project="true">
+      </wizard>
+   </extension>
+   <!-- Activity to control the display of the "App Engine Connected Android Project" UI. It should
+        only be displayed if ADT is present, and it meets the minimum version requirement. -->
+   <extension
+         point="org.eclipse.ui.activities">
+         <activity
+               name="GPE and ADT Activities"
+               id="com.google.gdt.eclipse.mobile.android.adtPresentActivity"
+               description="Activities that should be enabled whenever ADT is present">
+               <enabledWhen>
+                  <with
+                        variable="com.google.gdt.eclipse.mobile.android.adtPresentVar">
+                     <equals
+                           value="adtAvailable">
+                     </equals>
+                  </with>
+               </enabledWhen>
+         </activity>
+         <activityPatternBinding
+               activityId="com.google.gdt.eclipse.mobile.android.adtPresentActivity"
+               pattern="com.google.gdt.eclipse.mobile.android/com.google.gdt.eclipse.android.NewProjectWizard">
+         </activityPatternBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.services">
+      <sourceProvider
+            provider="com.google.gdt.eclipse.mobile.android.AdtPresentVarSourceProvider">
+         <variable
+               name="com.google.gdt.eclipse.mobile.android.adtPresentVar"
+               priorityLevel="workbench">
+         </variable>
+      </sourceProvider>
+   </extension>   
+</plugin>

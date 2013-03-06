@@ -1,0 +1,12 @@
+<project name="com.google.gdt.eclipse.suite.e42.feature"
+         default="build"
+         basedir=".">
+    <property name="feature_name"
+              value="com.google.gdt.eclipse.suite.e42.feature" />
+    <property name="project.tail" value="features/${feature_name}" />
+
+    <import file="${build.project.dir}/common.ant.xml" />
+    <property name="feature.version" value="${gdt.version}" />
+    <loadfile property="feature.license" srcfile="../../COPYING" />
+    <import file="${build.project.dir}/features/features.common.ant.xml" />
+</project>

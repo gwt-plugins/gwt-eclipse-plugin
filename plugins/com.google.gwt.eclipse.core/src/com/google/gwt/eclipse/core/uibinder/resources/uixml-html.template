@@ -1,0 +1,5 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="@UiBinderXmlNs@">
+@StyleElement@
+@MarkupElement@
+</ui:UiBinder>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+  <extension-point id="com.google.gdt.eclipse.managedapis.managedApiProjectStateTest" name="ManagedApiProjectStateTest" schema="schema/com.google.gdt.eclipse.managedapis.ManagedApiProjectStateTest.exsd"/>
+  <extension-point id="com.google.gdt.eclipse.managedapis.managedApiProjectInitializationCallback" name="ManagedApiProjectInitializationCallback" schema="schema/com.google.gdt.eclipse.managedapis.ManagedApiProjectInitializationCallback.exsd"/>
+  <extension
+      point="org.eclipse.ui.popupMenus">
+    <objectContribution
+        adaptable="true"
+        id="com.google.gdt.eclipse.suite.popupMenus.project.GoogleApiImport"
+        objectClass="org.eclipse.core.resources.IProject">
+      <action
+            class="com.google.gdt.eclipse.managedapis.ui.ApiImportProjectAction"
+            icon="icons/api-lb16.png"
+            id="com.google.gdt.eclipse.managedapis.popupMenu.project.apiImportProjectAction"
+            label="%ManagedApiMenuText"
+            menubarPath="com.google.gdt.eclipse.suite.popupMenu.project/actionsContent">
+      </action>
+    </objectContribution>
+    <!--
+    <objectContribution
+          adaptable="true"
+          id="com.google.appengine.eclipse.managedapis.ui.GoogleApiSettings"
+          objectClass="org.eclipse.core.resources.IProject">
+       <action
+             class="com.google.gdt.eclipse.managedapis.ui.ProjectPropertiesAction"
+             id="com.google.appengine.eclipse.managedapis.popupMenu.project.managedApiSettings"
+             label="%GoogleApiSettingsMenuText"
+             menubarPath="com.google.gdt.eclipse.suite.popupMenu.project/settingsContent">
+       </action>
+    </objectContribution>
+    -->
+  </extension>
+  
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <wizard
+            category="com.google.gdt.eclipse.suite.importWizards"
+            class="com.google.gdt.eclipse.managedapis.ui.ApiImportWizard"
+            icon="icons/api-lb16.png"
+            id="com.google.gdt.eclipse.managedapis.ui.ApiImportWizard"
+            name="%WizardNameText">
+         <description>%WizardDescriptionText</description>
+      </wizard>
+   </extension>
+  <extension point="org.eclipse.jdt.core.classpathContainerInitializer">
+    <classpathContainerInitializer
+        id="com.google.gdt.eclipse.managedapis.MANAGED_API_CONTAINER"
+        class="com.google.gdt.eclipse.managedapis.platform.ManagedApiContainerInitializer"/>
+  </extension>
+  <extension point="org.eclipse.jdt.ui.javaElementFilters">
+    <filter
+        id="com.google.gdt.eclipse.managedapis.ui.ManagedApiContainerFilter"
+        targetId="org.eclipse.jdt.ui.PackageExplorer"
+        enabled="true"
+        name="%ContainerFilterName"
+        description="%ContainerFilterDesc"
+        class="com.google.gdt.eclipse.managedapis.ui.ManagedApiContainerFilter"/>
+  </extension>
+  <extension point="org.eclipse.ui.decorators"> 
+    <decorator 
+        id="com.google.gdt.eclipse.managedapis.ui.ManagedApiContainerDecorator" 
+        label="%ContainerDecoratorName" 
+        state="true" 
+        class="com.google.gdt.eclipse.managedapis.ui.ManagedApiContainerDecorator" 
+        lightweight="true"
+        adaptable="true"> 
+      <description> 
+        %ContainerDecoratorDesc
+      </description> 
+    </decorator> 
+    <decorator 
+        id="com.google.gdt.eclipse.managedapis.ui.ManageApiInfoDecorator" 
+        label="%ContainerUpdateDecoratorName" 
+        state="true" 
+        class="com.google.gdt.eclipse.managedapis.ui.ManageApiInfoDecorator" 
+        lightweight="true"
+        adaptable="true"> 
+      <description> 
+        %ContainerDecoratorDesc
+      </description> 
+    </decorator> 
+  </extension>
+   <extension point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="com.google.gdt.eclipse.managedapis.platform.UpdateAvailablePropertyTester"
+            id="com.google.gdt.eclipse.managedapis.updateAvailablePropertyTester"
+            namespace="com.google.gdt.eclipse.managedapis"
+            properties="updateAvailable"
+            type="org.eclipse.jdt.internal.ui.packageview.ClassPathContainer">
+      </propertyTester>
+   </extension>
+   <extension point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="com.google.gdt.eclipse.managedapis.ui.ApiImportProjectHandler"
+            id="com.google.gdt.eclipse.managedapis.actions.apiImportProject"
+            name="%ManagedApiMenuText">
+      </command>
+      <command
+            id="com.google.gdt.eclipse.managedapis.updateCommand"
+            name="%ManagedApiUpdateText">
+      </command>
+   </extension>
+   <extension point="org.eclipse.ui.handlers">
+      <handler
+            class="com.google.gdt.eclipse.managedapis.ui.ManagedApiUpdateHandler"
+            commandId="com.google.gdt.eclipse.managedapis.updateCommand">
+         <enabledWhen>
+            <with variable="selection">
+               <and>
+                  <count value="+"/>
+                  <iterate operator="and">
+                     <test property="com.google.gdt.eclipse.managedapis.updateAvailable">
+                     </test>
+                  </iterate>
+               </and>
+            </with>
+         </enabledWhen>
+      </handler>
+   </extension>
+  <extension point="org.eclipse.ui.menus">
+     <menuContribution
+           allPopups="false"
+           locationURI="menu:com.google.gdt.eclipse.suite.GDTPulldown?after=toolbarGroup.googleapis">
+        <command
+              commandId="com.google.gdt.eclipse.managedapis.actions.apiImportProject"
+              icon="icons/api-lb16.png"
+              label="%ManagedApiMenuText"
+              style="push"
+              tooltip="%ManagedApiMenuText">
+        </command>
+     </menuContribution>
+     <!--
+     <menuContribution
+           allPopups="false"
+           locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+        <command
+              commandId="com.google.gdt.eclipse.managedapis.updateCommand"
+              label="%ManagedApiUpdateText">
+           <visibleWhen
+                 checkEnabled="true"/>
+        </command>
+     </menuContribution>
+     -->
+  </extension>
+  <!--
+   <extension point="org.eclipse.ui.propertyPages">
+      <page
+            category="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage"
+            class="com.google.gdt.eclipse.managedapis.ui.ManagedApiPropertyPage"
+            id="com.google.gdt.eclipse.managedapis.ui.managedApiPropertyPage"
+            name="Google APIs">
+         <enabledWhen>
+            <adapt
+                  type="org.eclipse.core.resources.IProject">
+               <test
+                     property="org.eclipse.core.resources.projectNature"
+                     value="org.eclipse.jdt.core.javanature">
+               </test>
+            </adapt>
+         </enabledWhen>
+      </page>
+   </extension>
+   -->
+</plugin>

@@ -1,0 +1,22 @@
+<project name="com.google.gdt.eclipse.core.test" default="build" basedir=".">
+
+    <!-- Project-specific properties -->
+    <property name="plugin_name" value="com.google.gdt.eclipse.core.test" />
+    <property name="host.plugin.name" value="com.google.gdt.eclipse.core" />
+
+    <property name="project.tail" value="plugins/${plugin_name}" />
+
+    <path id="plugin.src">
+        <pathelement location="${gwt.plugin.root}/plugins/com.google.gdt.eclipse.core/src" />
+    </path>
+
+    <import file="${build.project.dir}/common.ant.xml" />
+    <import file="${build.project.dir}/plugins/test.plugins.common.ant.xml" />
+
+    <target name="build">
+        <copy.plugin.src />
+        <gwt.plugin.eclipseantrunner builddir="."
+                                     buildfile="build.xml"
+                                     buildtarget="buildInEclipse" />
+    </target>
+</project>

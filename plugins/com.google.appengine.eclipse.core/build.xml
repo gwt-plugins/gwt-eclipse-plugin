@@ -1,0 +1,39 @@
+<project name="com.google.appengine.eclipse.core" default="build" basedir=".">
+
+    <!-- Project-specific properties -->
+    <property name="plugin_name" value="com.google.appengine.eclipse.core" />
+    <property name="project.tail" value="plugins/${plugin_name}" />
+
+    <import file="${build.project.dir}/common.ant.xml" />
+
+    <property name="plugin.version" value="${gdt.version}" />
+
+    <import file="${build.project.dir}/plugins/plugins.common.ant.xml" />
+
+    <target name="build">
+        <copy.plugin.src />
+        <property name="gae.tools.jar"
+                  value="${gae_home}${file.separator}lib${file.separator}appengine-tools-api.jar" />
+        <!--
+        Properties files must have backslashes escaped. In this case, the GAE
+        tools jar needs to be escaped from e.g. C:\test to C:\\test. The regexp
+        pattern is a single character \ and replace with \\ (there are 8 slashes
+        since we need to 1) escape for this XML, 2) escape for the regexp).
+        -->
+        <propertyregex property="backslash.escaped.gae.tools.jar"
+                       input="${gae.tools.jar}"
+                       global="true"
+                       regexp="[\\]"
+                       replace="\\\\\\\\"
+                       defaultValue="${gae.tools.jar}" />
+        <replace dir="${pde.src.path}">
+            <replacefilter token='kind="var" path="GAE_TOOLS_JAR"'
+                           value='kind="lib" path="${gae.tools.jar}"' />
+            <replacefilter token='GAE_TOOLS_JAR'
+                           value='${backslash.escaped.gae.tools.jar}' />
+        </replace>
+        <gwt.plugin.eclipseantrunner builddir="."
+                                     buildfile="build.xml"
+                                     buildtarget="buildInEclipse" />
+    </target>
+</project>

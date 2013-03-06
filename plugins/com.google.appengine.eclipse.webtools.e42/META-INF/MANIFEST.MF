@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: com.google.appengine.eclipse.webtools.e42;singleton:=true
+Bundle-Version: 0.0.0.qualifier
+Bundle-Vendor: Google, Inc.
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Name: Google App Engine Webtools Plugin (Eclipse 4.2)
+Require-Bundle: com.google.appengine.eclipse.core,
+ com.google.appengine.eclipse.webtools,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.emf.ecore.xmi,
+ org.eclipse.jdt.core,
+ org.eclipse.jpt.common.core;resolution:=optional,
+ org.eclipse.jpt.common.utility;resolution:=optional,
+ org.eclipse.jpt.jpa.core;resolution:=optional,
+ org.eclipse.jpt.jpa.db;resolution:=optional,
+ org.eclipse.wst.common.emf;resolution:=optional,
+ org.eclipse.wst.common.project.facet.core
