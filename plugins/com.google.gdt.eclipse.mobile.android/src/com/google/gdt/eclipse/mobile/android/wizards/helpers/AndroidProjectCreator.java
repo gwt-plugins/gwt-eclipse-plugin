@@ -161,8 +161,6 @@ public class AndroidProjectCreator {
       addStringDictionaryFile(androidProject, androidProjectDictionary, monitor);
     }
 
-    // add the main menu resource file
-    addMainMenuFile(androidProject, monitor);
     addLayoutFile(androidProject, "activity_main.xml", monitor);
     // add the default proguard config
     File libFolder = new File(
@@ -359,32 +357,6 @@ public class AndroidProjectCreator {
     if (!file.exists()) {
       copyFile(ProjectResourceUtils.getResourceAsString(
           TEMPLATES_DIRECTORY + "MainActivity.java", replacements), file, monitor); //$NON-NLS-N$
-    }
-  }
-
-  /**
-   * Adds the menu resource file.
-   * 
-   * @param project The Java Project to update.
-   * @param monitor An existing monitor.
-   * @throws CoreException if the method fails to update the project.
-   * @throws IOException if the method fails to create the files in the project.
-   */
-  private void addMainMenuFile(IProject project, IProgressMonitor monitor) throws CoreException,
-      IOException {
-
-    // create the IFile object and check if the file doesn't already exist.
-    IFile file = project.getFile(ProjectCreationConstants.RES_DIRECTORY
-        + ProjectCreationConstants.WS_SEP + ProjectCreationConstants.MENU_DIRECTORY
-        + ProjectCreationConstants.WS_SEP + ProjectCreationConstants.MAIN_MENU_FILE);
-    if (!file.exists()) {
-      // get the main_menus.xml template
-      Map<String, String> replacements = new HashMap<String, String>();
-      String mainMenuTemplate = ProjectResourceUtils.getResourceAsString(TEMPLATES_DIRECTORY
-          + "activity_main.xml", replacements); //$NON-NLS-N$
-      // Save in the project as UTF-8
-      InputStream stream = new ByteArrayInputStream(mainMenuTemplate.getBytes("UTF-8")); //$NON-NLS-1$
-      file.create(stream, false /* force */, new SubProgressMonitor(monitor, 10));
     }
   }
 

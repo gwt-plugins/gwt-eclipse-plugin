@@ -35,6 +35,9 @@ public class ProjectCreationConstants {
   public static final String PARAM_MIN_SDK_VERSION = "MIN_SDK_VERSION"; //$NON-NLS-1$
   public static final String PARAM_C2DM_EMAIL = "C2DM_EMAIL"; //$NON-NLS-N$
   public static final String PARAM_PROJECT_PATH = "PROJECT_PATH"; //$NON-NLS-N$
+  
+  public static final String PARAM_GCM_API_KEY = "GCM_API_KEY"; //$NON-NLS-N$
+  public static final String PARAM_GCM_PROJECT_NUMBER = "GCM_PROJECT_NUMBER"; //$NON-NLS-N$
 
   public static final String MAIN_MENU_FILE = "activity_main.xml"; //$NON-NLS-1$
 

@@ -127,6 +127,8 @@ public class NewAndroidCloudProjectWizard extends NewElementWizard implements IN
     mParameters.put(ProjectCreationConstants.PARAM_MIN_SDK_VERSION,
         newProjectPage.getMinSdkVersion());
     mParameters.put(ProjectCreationConstants.PARAM_SDK_TARGET, newProjectPage.getAndroidSdkTarget());
+    mParameters.put(ProjectCreationConstants.PARAM_GCM_API_KEY, newProjectPage.getAPIKey());
+    mParameters.put(ProjectCreationConstants.PARAM_GCM_PROJECT_NUMBER, newProjectPage.getProjectNumber());
     androidProjectParameters = mParameters;
 
     // create a dictionary of string that will contain name+content.
@@ -156,7 +158,8 @@ public class NewAndroidCloudProjectWizard extends NewElementWizard implements IN
 
     try {
 
-      final AndroidProjectCreator androidpc = AndroidProjectCreator.createNewAndroidProjectCreator();
+      final AndroidProjectCreator androidpc = 
+          AndroidProjectCreator.createNewAndroidProjectCreator();
       androidpc.setAndroidProjectDictionary(androidProjectDictionary);
       androidpc.setAndroidProjectParameters(androidProjectParameters);
       IProject androidProject = androidpc.create(subMonitor.newChild(25));
@@ -172,7 +175,9 @@ public class NewAndroidCloudProjectWizard extends NewElementWizard implements IN
         throw new OperationCanceledException();
       }
 
-      BackendGenerator gen = new BackendGenerator(androidProject, true);
+      BackendGenerator gen = new BackendGenerator(androidProject, true, 
+          (String) androidProjectParameters.get(ProjectCreationConstants.PARAM_GCM_PROJECT_NUMBER),
+          (String) androidProjectParameters.get(ProjectCreationConstants.PARAM_GCM_API_KEY));
       gen.generateBackendProject(subMonitor.newChild(75));
       
       if (subMonitor.isCanceled()) {

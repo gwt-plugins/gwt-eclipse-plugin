@@ -46,6 +46,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
@@ -102,6 +103,9 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
 
   private boolean useDefaultLocation = true;
   private Button useDefaultLocationButton;
+  
+  private Text gcmProjectNumberText;
+  private Text gcmApiKeyText;
 
   /**
    * Create the wizard.
@@ -133,8 +137,10 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
     container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
     createInfoSection(container);
-    Label filler = new Label(container, SWT.NONE);
+    new Label(container, SWT.NONE); // filler
     createProjectNameLocationSection(container);
+    new Label(container, SWT.NONE); // filler
+    createBackendConfigSection(container);
 
     createGoogleSdkSection(container);
 
@@ -196,6 +202,14 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
    */
   public IPath getLocationPath() {
     return new Path(getProjectLocation());
+  }
+  
+  public String getAPIKey() {
+    return gcmApiKeyText.getText().trim();
+  }
+  
+  public String getProjectNumber() {
+    return gcmProjectNumberText.getText().trim();
   }
 
   public String getMinSdkVersion() {
@@ -373,6 +387,62 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
     });
     browseButton.setEnabled(false);
   }
+  
+  /**
+   * Creates a group that allows entering project number and api key
+   * @param parent
+   */
+  private void createBackendConfigSection(Composite parent) {
+    Group configGroup = new Group(parent, SWT.SHADOW_ETCHED_IN);
+    configGroup.setText("Configuration Parameters");
+    configGroup.setLayout(new GridLayout(1, false));
+    configGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    
+    GridData textGridData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+    textGridData.widthHint = convertWidthInCharsToPixels(80);
+    Text configText = new Text(configGroup, SWT.WRAP);
+    configText.setLayoutData(textGridData);
+    // TODO(appu): this current doesn't show a link and is not selectable, it
+    // merely provides the information of the link to go to. Same goes for
+    // the content in GenerateBackendDialog.
+    configText.setText("These are required for a working example.  " +
+        "They can be obtained from the Google API console for your project.  " +
+        "If entered now they will be injected into the project. If " +
+        "left blank, they can manually entered into code after the " +
+        "project is generated. For more information visit " +
+        "https://developers.google.com/eclipse/docs/cloud_endpoints.");
+    
+    Composite formGroup = new Composite(configGroup, SWT.NONE); 
+    formGroup.setLayout(new GridLayout(2, false));
+    formGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    // api key label
+    final String gcmApiTip = "API Key for Google Cloud Messaging. " +
+        "This will be injected into the App Engine project. " +
+        "Can be left blank and manually entered later";
+    Label apiLabel = new Label(formGroup, SWT.NONE);
+    apiLabel.setText("API Key:");
+    apiLabel.setFont(parent.getFont());
+    apiLabel.setToolTipText(gcmApiTip);
+    // api key entry field
+    gcmApiKeyText = new Text(formGroup, SWT.BORDER);
+    gcmApiKeyText.setToolTipText(gcmApiTip);
+    gcmApiKeyText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    gcmApiKeyText.setFont(parent.getFont());
+    
+    // project number
+    final String gcmProjectNumberTip = "Project Number for Google Cloud Messaging. " +
+        "This will be injected into the Android project. " +
+        "Can be left blank and manually entered later";
+    Label pnLabel = new Label(formGroup, SWT.NONE);
+    pnLabel.setText("Project Number:");
+    pnLabel.setFont(parent.getFont());
+    pnLabel.setToolTipText(gcmProjectNumberTip);
+    // project number entry field
+    gcmProjectNumberText = new Text(formGroup, SWT.BORDER);
+    gcmProjectNumberText.setToolTipText(gcmProjectNumberTip);
+    gcmProjectNumberText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    gcmProjectNumberText.setFont(parent.getFont());
+  }
 
   /**
    * @param targets
@@ -411,7 +481,7 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
   private GaeSdk getSelectedGaeSdk() {
     return GaePreferences.getDefaultSdk();
   }
-
+  
   /**
    * Display a directory browser and update the location path field with the
    * selected path
