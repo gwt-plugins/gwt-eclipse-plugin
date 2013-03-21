@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *******************************************************************************/
 package com.google.gwt.eclipse.core.preferences;
 
@@ -47,11 +47,12 @@ import java.io.FileNotFoundException;
 /**
  * Contains static methods for retrieving and setting GWT plug-in preferences.
  */
+@SuppressWarnings("restriction")
 public class GWTPreferences {
 
   /**
-   * The key for storing the preference for removing terminated launches when a new
-   * launch is launched.
+   * The key for storing the preference for removing terminated launches when a
+   * new launch is launched.
    */
   private static final String REMOVE_TERMINATED_LAUNCHES = "removeTerminatedLaunches";
 
@@ -61,19 +62,20 @@ public class GWTPreferences {
 
   private static final String SPEEDTRACER_GEN_FOLDER_NAME = "speedTracerGenFolderName";
 
-  private static final String JSO_PROPERTY_TYPE =
-      "com.google.gwt.core.client.debug.JsoInspector$JsoProperty";
+  private static final String JSO_PROPERTY_TYPE = "com.google.gwt.core.client.debug.JsoInspector$JsoProperty";
 
   static {
     sdkManager = new SdkManager<GWTRuntime>(GWTRuntimeContainer.CONTAINER_ID,
         getEclipsePreferences(), GWTRuntime.getFactory());
 
     sdkManager.addSdkUpdateListener(new SdkManager.SdkUpdateListener<GWTRuntime>() {
-      public void onSdkUpdate(SdkUpdateEvent<GWTRuntime> sdkUpdateEvent)
-          throws CoreException {
+      public void onSdkUpdate(SdkUpdateEvent<GWTRuntime> sdkUpdateEvent) throws CoreException {
+
+        SdkManager<GWTRuntime>.SdkUpdateEventProcessor sdkUpdateEventProcessor = GWTPreferences.sdkManager.new SdkUpdateEventProcessor(
+            sdkUpdateEvent);
+
         // Update all of the WEB-INF/lib files
-        IJavaProject[] projects = JavaCore.create(
-            ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
+        IJavaProject[] projects = JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
         for (IJavaProject project : projects) {
           if (!GWTNature.isGWTProject(project.getProject())
               || GWTProjectsRuntime.isGWTRuntimeProject(project)) {
@@ -81,9 +83,8 @@ public class GWTPreferences {
           }
 
           try {
-            GWTRuntime sdk = GWTRuntime.findSdkFor(project);
-            if (sdk != null
-                && WebAppUtilities.hasManagedWarOut(project.getProject())) {
+            GWTRuntime sdk = sdkUpdateEventProcessor.getUpdatedSdkForProject(project);
+            if (sdk != null && WebAppUtilities.hasManagedWarOut(project.getProject())) {
               new GWTUpdateWebInfFolderCommand(project, sdk).execute();
             }
           } catch (FileNotFoundException e) {
@@ -109,7 +110,8 @@ public class GWTPreferences {
    *         located.
    */
   public static IPath computeSpeedTracerGeneratedFolderPath(IPath warOutLocation) {
-    String folderName = getEclipsePreferences().get(SPEEDTRACER_GEN_FOLDER_NAME, "genfilesforspeedtracer");
+    String folderName = getEclipsePreferences().get(SPEEDTRACER_GEN_FOLDER_NAME,
+        "genfilesforspeedtracer");
     return warOutLocation.append(folderName);
   }
 
@@ -140,8 +142,8 @@ public class GWTPreferences {
   }
 
   /**
-   * @return If terminated launches should be cleared from the devmode view
-   * when a new launch is launched.
+   * @return If terminated launches should be cleared from the devmode view when
+   *         a new launch is launched.
    */
   public static boolean getRemoveTerminatedLaunches() {
     return getEclipsePreferences().getBoolean(REMOVE_TERMINATED_LAUNCHES, true);
@@ -188,17 +190,13 @@ public class GWTPreferences {
    * updates the JSO detail formatter for the current workspace.
    */
   public static void setJsoDetailFormatting(boolean formatting) {
-    DetailFormatter formatter = new DetailFormatter(JSO_PROPERTY_TYPE,
-        "toString()", true);
+    DetailFormatter formatter = new DetailFormatter(JSO_PROPERTY_TYPE, "toString()", true);
     if (formatting) {
-      JavaDetailFormattersManager.getDefault().setAssociatedDetailFormatter(
-          formatter);
+      JavaDetailFormattersManager.getDefault().setAssociatedDetailFormatter(formatter);
       JDIDebugUIPlugin.getDefault().getPreferenceStore().setValue(
-          IJDIPreferencesConstants.PREF_SHOW_DETAILS,
-          IJDIPreferencesConstants.INLINE_FORMATTERS);
+          IJDIPreferencesConstants.PREF_SHOW_DETAILS, IJDIPreferencesConstants.INLINE_FORMATTERS);
     } else {
-      JavaDetailFormattersManager.getDefault().removeAssociatedDetailFormatter(
-          formatter);
+      JavaDetailFormattersManager.getDefault().removeAssociatedDetailFormatter(formatter);
     }
   }
 
@@ -215,7 +213,7 @@ public class GWTPreferences {
       CorePluginLog.logError(e);
     }
   }
-  
+
   public static void setSdks(SdkSet<GWTRuntime> sdkSet) {
     try {
       getSdkManager().setSdks(sdkSet);
@@ -239,12 +237,10 @@ public class GWTPreferences {
       CorePluginLog.logError(e);
     }
   }
-  
-  public static void setUiBinderWizardGenerateContentDefault(
-      boolean generateComments) {
+
+  public static void setUiBinderWizardGenerateContentDefault(boolean generateComments) {
     GWTPlugin.getDefault().getPluginPreferences().setValue(
-        GwtPreferenceConstants.UIBINDER_WIZARD_GENERATE_CONTENT_DEFAULT,
-        generateComments);
+        GwtPreferenceConstants.UIBINDER_WIZARD_GENERATE_CONTENT_DEFAULT, generateComments);
   }
 
   private static IEclipsePreferences getEclipsePreferences() {

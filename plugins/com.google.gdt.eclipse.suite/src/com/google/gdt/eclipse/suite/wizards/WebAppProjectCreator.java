@@ -418,8 +418,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     }
 
     if (useGae) {
-      GaeProjectProperties.setIsUseSdkFromDefault(javaProject.getProject(),
-          isUseGaeSdkFromDefault);
       // Update WEB-INF folder to get the latest datanucleus jars.
       new AppEngineUpdateWebInfFolderCommand(javaProject, getGaeSdk()).execute();
     }

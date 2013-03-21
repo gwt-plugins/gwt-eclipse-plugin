@@ -18,20 +18,15 @@ import com.google.appengine.eclipse.core.AppEngineCorePlugin;
 import com.google.appengine.eclipse.core.AppEngineCorePluginLog;
 import com.google.appengine.eclipse.core.datatools.SqlConnectionExtensionPopulator;
 import com.google.appengine.eclipse.core.nature.GaeNature;
-import com.google.appengine.eclipse.core.properties.GaeProjectProperties;
-import com.google.appengine.eclipse.core.resources.GaeProject;
 import com.google.appengine.eclipse.core.sdk.AppEngineBridge;
-import com.google.appengine.eclipse.core.sdk.AppEngineUpdateProjectSdkCommand;
 import com.google.appengine.eclipse.core.sdk.AppEngineUpdateWebInfFolderCommand;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.appengine.eclipse.core.sdk.GaeSdkContainer;
 import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.sdk.ClasspathContainerUpdateJob;
 import com.google.gdt.eclipse.core.sdk.SdkManager;
-import com.google.gdt.eclipse.core.sdk.SdkManager.SdkUpdate;
 import com.google.gdt.eclipse.core.sdk.SdkManager.SdkUpdateEvent;
 import com.google.gdt.eclipse.core.sdk.SdkSet;
-import com.google.gdt.eclipse.core.sdk.UpdateProjectSdkCommand.UpdateType;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -42,7 +37,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.osgi.service.prefs.BackingStoreException;
 
 import java.io.FileNotFoundException;
-import java.util.List;
 
 /**
  * Contains static methods for retrieving and setting GAE plug-in preferences.
@@ -52,45 +46,34 @@ public final class GaePreferences {
   private static SdkManager<GaeSdk> sdkManager;
 
   static {
-    sdkManager = new SdkManager<GaeSdk>(
-        GaeSdkContainer.CONTAINER_ID, getEclipsePreferences(), GaeSdk.getFactory());
+    sdkManager = new SdkManager<GaeSdk>(GaeSdkContainer.CONTAINER_ID, getEclipsePreferences(),
+        GaeSdk.getFactory());
+
     sdkManager.addSdkUpdateListener(new SdkManager.SdkUpdateListener<GaeSdk>() {
+
       public void onSdkUpdate(SdkUpdateEvent<GaeSdk> sdkUpdateEvent) throws CoreException {
-        IJavaProject[] projects =
-            JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
-        GaeSdk newDefaultSdk = null;
-        List<SdkUpdate<GaeSdk>> sdkUpdates = sdkUpdateEvent.getUpdates();
-        for (SdkUpdate<GaeSdk> sdkUpdate : sdkUpdates) {
-          if (sdkUpdate.getType() == SdkUpdate.Type.NEW_DEFAULT) {
-            newDefaultSdk = sdkUpdate.getSdk();
-            break;
-          }
-        }
+        IJavaProject[] projects = JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
+
+        SdkManager<GaeSdk>.SdkUpdateEventProcessor sdkUpdateEventProcessor = GaePreferences.
+            sdkManager.new SdkUpdateEventProcessor(
+            sdkUpdateEvent);
+
         for (IJavaProject project : projects) {
           if (!GaeNature.isGaeProject(project.getProject())) {
             continue;
           }
-          GaeSdk sdk = null;
+
           try {
-            if (GaeProjectProperties.getIsUseSdkFromDefault(project.getProject())) {
-              sdk = newDefaultSdk;
-            } else {
-              GaeProject p = GaeProject.create(project.getProject());
-              sdk = p.getSdk();
-            }
+            GaeSdk sdk = sdkUpdateEventProcessor.getUpdatedSdkForProject(project);
             if (sdk != null && WebAppUtilities.hasManagedWarOut(project.getProject())) {
-              UpdateType updateType = AppEngineUpdateProjectSdkCommand.computeUpdateType(
-                  GaeSdk.findSdkFor(project), sdk,
-                  GaeProjectProperties.getIsUseSdkFromDefault(project.getProject()));
-              new AppEngineUpdateProjectSdkCommand(
-                  project, GaeSdk.findSdkFor(project), sdk, updateType, null).execute();
               new AppEngineUpdateWebInfFolderCommand(project, sdk).execute();
 
-              // Finally make sure that DTP google_sql.jar driver is reset in dtp connections
+              // Finally make sure that DTP google_sql.jar driver is reset in
+              // dtp connections
               SqlConnectionExtensionPopulator.populateCloudSQLBridgeExtender(project,
                   sdk.getInstallationPath().toOSString()
-                  + AppEngineBridge.APPENGINE_CLOUD_SQL_JAR_PATH_IN_SDK
-                  + AppEngineBridge.APPENGINE_CLOUD_SQL_JAR);
+                      + AppEngineBridge.APPENGINE_CLOUD_SQL_JAR_PATH_IN_SDK
+                      + AppEngineBridge.APPENGINE_CLOUD_SQL_JAR);
             }
           } catch (FileNotFoundException e) {
             // Log the error and continue
@@ -139,8 +122,8 @@ public final class GaePreferences {
   }
 
   /**
-   * Sets the current {@link com.google.gdt.eclipse.core.sdk.SdkSet} 
-   * state without concern for merges, etc.
+   * Sets the current {@link com.google.gdt.eclipse.core.sdk.SdkSet} state
+   * without concern for merges, etc.
    */
   public static void setSdks(SdkSet<GaeSdk> sdkSet) {
     try {

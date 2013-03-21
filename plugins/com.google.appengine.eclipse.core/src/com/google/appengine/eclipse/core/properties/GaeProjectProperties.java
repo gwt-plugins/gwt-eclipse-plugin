@@ -59,8 +59,6 @@ public final class GaeProjectProperties {
 
   private static final String GAE_HRD_ENABLED = "gaeHrdEnabled";
 
-  private static final String GAE_IS_USE_SDK_FROM_DEFAULT = "gaeIsEclipseDefaultInstPath";
-
   private static final String GAE_DATANUCLEUS_ENABLED = "gaeDatanucleusEnabled";
 
   private static final String GAE_DATANUCLEUS_VERSION = "gaeDatanucleusVersion";
@@ -103,12 +101,6 @@ public final class GaeProjectProperties {
     // old/existing project - hence we default to false. New projects will
     // enable HRD upon creation.
     return prefs.getBoolean(GAE_HRD_ENABLED, false);
-  }
-
-  public static boolean getIsUseSdkFromDefault(IProject project) {
-    IEclipsePreferences prefs = getProjectProperties(project);
-    Boolean isUseSdkFromDefault = prefs.getBoolean(GAE_IS_USE_SDK_FROM_DEFAULT, true);
-    return isUseSdkFromDefault;
   }
 
   public static List<IPath> getOrmEnhancementInclusionPatterns(IProject project) {
@@ -200,22 +192,6 @@ public final class GaeProjectProperties {
     startWorkspaceJob(job, project);
   }
 
-  public static void jobSetIsUseSdkFromDefault(final IProject project,
-      final boolean isUseSdkFromDefault) {
-    Job job = new WorkspaceJob(PREFERENCES_JOB_NAME) {
-      @Override
-      public IStatus runInWorkspace(IProgressMonitor monitor) {
-        try {
-          setIsUseSdkFromDefault(project, isUseSdkFromDefault);
-          return Status.OK_STATUS;
-        } catch (BackingStoreException e) {
-          return StatusUtilities.newErrorStatus(e, AppEngineCorePlugin.PLUGIN_ID);
-        }
-      }
-    };
-    startWorkspaceJob(job, project);
-  }
-
   public static void setFileNamesCopiedToWebInfLib(IProject project,
       List<String> fileNamesCopiedToWebInfLib) throws BackingStoreException {
     IEclipsePreferences prefs = getProjectProperties(project);
@@ -266,13 +242,6 @@ public final class GaeProjectProperties {
       throws BackingStoreException {
     IEclipsePreferences prefs = getProjectProperties(project);
     prefs.putBoolean(GAE_HRD_ENABLED, hrdEnabled);
-    prefs.flush();
-  }
-
-  public static void setIsUseSdkFromDefault(IProject project, boolean isUseSdkFromDefault)
-      throws BackingStoreException {
-    IEclipsePreferences prefs = getProjectProperties(project);
-    prefs.putBoolean(GAE_IS_USE_SDK_FROM_DEFAULT, isUseSdkFromDefault);
     prefs.flush();
   }
 

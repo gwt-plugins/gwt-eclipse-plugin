@@ -270,7 +270,6 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     }
 
     if (useGae) {
-      GaeProjectProperties.jobSetIsUseSdkFromDefault(getProject(), sdkSelectionBlock.isDefault());
 
       saveChangesToAppEngineWebXml();
 
@@ -680,16 +679,6 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
       protected SdkManager<GaeSdk> doGetSdkManager() {
         return GaePreferences.getSdkManager();
       }
-
-      @Override
-      protected void setSdkSelectionBlockSelection(GaeSdk sdk) {
-        if (GaeProjectProperties.getIsUseSdkFromDefault(getProject())) {
-          setSelection(-1);
-        } else {
-          List<GaeSdk> specificSdks = doGetSpecificSdks();
-          setSelection(specificSdks.indexOf(sdk));
-        }
-      }
     };
 
     sdkSelectionBlock.addSdkSelectionListener(new SdkSelectionListener() {
@@ -931,8 +920,8 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     useDatanucleusLabel.setEnabled(shouldBeEnabled);
     boolean datanucleusVersionShouldBeEnabled = shouldBeEnabled
         && useDatanucleusCheckbox.getSelection()
-        && sdkSelectionBlock.getSdkSelection()
-            .getSelectedSdk().getCapabilities().contains(GaeSdkCapability.OPTIONAL_USER_LIB);
+        && sdkSelectionBlock.getSdkSelection().getSelectedSdk() != null
+        && sdkSelectionBlock.getSdkSelection().getSelectedSdk().getCapabilities().contains(GaeSdkCapability.OPTIONAL_USER_LIB);
     datanucleusVersionLabel.setEnabled(datanucleusVersionShouldBeEnabled);
     datanucleusVersionCombo.getCombo().setEnabled(datanucleusVersionShouldBeEnabled);
 
