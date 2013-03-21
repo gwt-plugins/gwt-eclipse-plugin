@@ -52,31 +52,6 @@ public class ManagedApiChecker {
       super(name);
     }
 
-    private IconCache loadIconCache(IProgressMonitor monitor) {
-      IconCache iconCache = null;
-      File iconCacheZip;
-      try {
-        iconCacheZip = File.createTempFile("temp",
-            Long.toString(System.nanoTime()), iconCacheParentDirectory);
-
-        URL downloadLink = new URL(
-            ManagedApiPlugin.getManagedApiIconBundleHref());
-
-        (new DownloadRunnable(downloadLink, iconCacheZip)).run(monitor);
-
-        File iconCacheRoot = File.createTempFile("temp",
-            Long.toString(System.nanoTime()), iconCacheParentDirectory);
-        iconCacheRoot.delete();
-        iconCacheRoot.mkdir();
-
-        iconCache = IconCache.createIconCache(iconCacheZip, iconCacheRoot);
-      } catch (IOException e) {
-        ManagedApiLogger.log(ManagedApiLogger.INFO, "Failed to load icon cache");
-      }
-
-      return iconCache;
-    }
-
     private void loadManagedApis(IProgressMonitor monitor) {
       ApiDirectory apiDirectory = factory.buildApiDirectory();
       apiDirectory.run(monitor);

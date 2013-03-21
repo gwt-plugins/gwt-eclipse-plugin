@@ -64,6 +64,10 @@ import java.util.List;
  * as necessary and refreshes the project to make the changes visible.
  */
 public class ManagedApiInstallJob extends Job {
+  
+  public static final String LANGUAGE_VERSION_PARAM = "&lv=" + ManagedApiPlugin.API_CLIENT_LANG_VERSION;
+  public static final String DESCRIPTOR_ONLY_PARAM = "&descriptor-only=1";
+  
   private static final int TICKS_CREATE_ROOT_FOLDER = 500;
   private static final int TICKS_DOWNLOAD_API_BUNDLE = 10000;
   private static final int TICKS_DELETE_EXISTING_API_FOLDER = 500;
@@ -74,7 +78,7 @@ public class ManagedApiInstallJob extends Job {
       + TICKS_EXTRACT_ZIP;
   private static final int TICKS_REGISTER_APIS = 1000;
   private static final String DEPENDENCIES_PARAM = "&dependencies=1";
-
+  
   /**
    * Utility method creates a target download File based on standardized naming
    * conventions.
@@ -153,7 +157,7 @@ public class ManagedApiInstallJob extends Job {
               if (!downloadLink.toString().contains(
                   ManagedApiProjectImpl.GDATA_FOLDER_NAME)) {
                 downloadLink = new URL(downloadLink.toString().concat(
-                    DEPENDENCIES_PARAM));
+                    DEPENDENCIES_PARAM).concat(LANGUAGE_VERSION_PARAM));
               }
               final File tmpFile = getDestinationFile();
               DownloadRunnable download = new DownloadRunnable(downloadLink,
