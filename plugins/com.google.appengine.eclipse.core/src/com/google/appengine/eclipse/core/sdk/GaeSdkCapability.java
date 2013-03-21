@@ -28,9 +28,10 @@ public enum GaeSdkCapability {
    */
   HRD("1.5.1"),
   GOOGLE_CLOUD_SQL("1.6.1"),
-  OPTIONAL_USER_LIB(AppEngineBridge.MIN_VERSION_FOR_OPT_DATANUCLEUS_LIB);
+  OPTIONAL_USER_LIB(AppEngineBridge.MIN_VERSION_FOR_OPT_DATANUCLEUS_LIB),
+  CLOUD_ENDPOINTS("1.7.5");
 
-  private final String minVersion, maxVersion;
+  public final String minVersion, maxVersion;
 
   private GaeSdkCapability() {
     this(null);
@@ -48,7 +49,11 @@ public enum GaeSdkCapability {
   /**
    * Verify whether a capability is supported by the given SDK.
    */
-  public boolean check(GaeSdk sdk) {
+  public boolean check(GaeSdk sdk) {    
+    if (sdk == null) {
+      return false;
+    }
+    
     String sdkVersion = sdk.getVersion();
 
     // If no restrictions are specified, assume the feature is always supported.

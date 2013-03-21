@@ -18,8 +18,11 @@ package com.google.gdt.eclipse.mobile.android.wizards;
 import com.google.appengine.eclipse.core.preferences.GaePreferences;
 import com.google.appengine.eclipse.core.preferences.ui.GaePreferencePage;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
+import com.google.appengine.eclipse.core.sdk.GaeSdkCapability;
 import com.google.gdt.eclipse.appengine.swarm_backend.impl.BackendGenerator;
-import com.google.gdt.eclipse.core.sdk.Sdk;
+import com.google.gdt.eclipse.core.browser.BrowserUtilities;
+import com.google.gdt.eclipse.core.ui.SdkSelectionBlock;
+import com.google.gdt.eclipse.core.ui.SdkSelectionBlock.SdkSelection;
 
 import com.android.sdklib.IAndroidTarget;
 
@@ -55,6 +58,8 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -64,8 +69,36 @@ import java.util.regex.Pattern;
 @SuppressWarnings("restriction")
 public class NewAndroidCloudProjectWizardPage extends WizardPage {
 
-  private static final String ANDROID_PREFERENCE_ID = "com.android.ide.eclipse.preferences.main"; //$NON-NLS-1$
+  private final class GaeWorkspaceSdkSelectionBlock extends SdkSelectionBlock<GaeSdk> {
+    private GaeWorkspaceSdkSelectionBlock(Composite parent, int style) {
+      super(parent, style);
 
+      updateSdkBlockControls();
+      initializeSdkComboBox();
+
+      setSelection(-1);
+    }
+
+    @Override
+    protected void doConfigure() {
+      if (Window.OK == PreferencesUtil.createPreferenceDialogOn(getShell(), GaePreferencePage.ID,
+          new String[] {GaePreferencePage.ID}, null).open()) {
+        NewAndroidCloudProjectWizardPage.this.updateControls();
+      }
+    }
+
+    @Override
+    protected GaeSdk doGetDefaultSdk() {
+      return GaePreferences.getDefaultSdk();
+    }
+
+    @Override
+    protected List<GaeSdk> doGetSpecificSdks() {
+      return new ArrayList<GaeSdk>(GaePreferences.getSdks());
+    }
+  }
+
+  private static final String ANDROID_PREFERENCE_ID = "com.android.ide.eclipse.preferences.main"; //$NON-NLS-1$
   /**
    * Initial value for all name fields (project, activity, application,
    * package). Used whenever a value is requested before controls are created.
@@ -73,6 +106,7 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
   private static final String INITIAL_NAME = ""; //$NON-NLS-1$
   // Initial value for the Use Default Location check box.
   private static final boolean INITIAL_USE_DEFAULT_LOCATION = true;
+
   /**
    * Pattern for characters accepted in a project name. Since this will be used
    * as a directory name, we're being a bit conservative on purpose. It cannot
@@ -81,8 +115,8 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
   private static final Pattern sProjectNamePattern = Pattern.compile("^[\\w][\\w. -]*$"); //$NON-NLS-1$
 
   private static final int MSG_ERROR = 2;
-
   private static final int MSG_NONE = 0;
+
   private static final int MSG_WARNING = 1;
 
   public static boolean isAndroidSdkInstalled() {
@@ -103,9 +137,11 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
 
   private boolean useDefaultLocation = true;
   private Button useDefaultLocationButton;
-  
+
   private Text gcmProjectNumberText;
   private Text gcmApiKeyText;
+
+  private GaeWorkspaceSdkSelectionBlock sdkSelectionBlock;
 
   /**
    * Create the wizard.
@@ -193,6 +229,10 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
     return target;
   }
 
+  public String getAPIKey() {
+    return gcmApiKeyText.getText().trim();
+  }
+
   /**
    * Returns the current project location path as entered by the user, or its
    * anticipated initial value. Note that if the default has been returned the
@@ -203,18 +243,79 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
   public IPath getLocationPath() {
     return new Path(getProjectLocation());
   }
-  
-  public String getAPIKey() {
-    return gcmApiKeyText.getText().trim();
-  }
-  
-  public String getProjectNumber() {
-    return gcmProjectNumberText.getText().trim();
-  }
 
   public String getMinSdkVersion() {
     // GCM is supported by api 8 and above
     return "8";
+  }
+
+  public String getProjectNumber() {
+    return gcmProjectNumberText.getText().trim();
+  }
+
+  public SdkSelection<GaeSdk> getGaeSdkSelection() {
+    return sdkSelectionBlock.getSdkSelection();
+  }
+
+  /**
+   * Creates a group that allows entering project number and api key
+   * 
+   * @param parent
+   */
+  private void createBackendConfigSection(Composite parent) {
+    Group configGroup = new Group(parent, SWT.SHADOW_ETCHED_IN);
+    configGroup.setText("Configuration Parameters");
+    configGroup.setLayout(new GridLayout(1, false));
+    configGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+    GridData textGridData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+    textGridData.widthHint = convertWidthInCharsToPixels(80);
+    Label configText = new Label(configGroup, SWT.WRAP);
+    configText.setLayoutData(textGridData);
+    configText.setText("These parameters are required for a working example.  "
+        + "They can be obtained from the Google API console for your project.\n\n"
+        + "If entered now they will be injected into the project. If "
+        + "left blank, they can be manually entered into code after the " + "project is generated.\n");
+
+    Link docsLink = new Link(configGroup, SWT.NONE);
+    docsLink.setText("For more information, click <a href=\"#\">here...</a>");
+    docsLink.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        BrowserUtilities.launchBrowserAndHandleExceptions("https://developers.google.com/eclipse/docs/endpoints-androidconnected-gae");
+      }
+    });
+
+    Composite formGroup = new Composite(configGroup, SWT.NONE);
+    formGroup.setLayout(new GridLayout(2, false));
+    formGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    // api key label
+    final String gcmApiTip = "API Key for Google Cloud Messaging. "
+        + "This will be injected into the App Engine project. "
+        + "Can be left blank and manually entered later.";
+    Label apiLabel = new Label(formGroup, SWT.NONE);
+    apiLabel.setText("API Key:");
+    apiLabel.setFont(parent.getFont());
+    apiLabel.setToolTipText(gcmApiTip);
+    // api key entry field
+    gcmApiKeyText = new Text(formGroup, SWT.BORDER);
+    gcmApiKeyText.setToolTipText(gcmApiTip);
+    gcmApiKeyText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    gcmApiKeyText.setFont(parent.getFont());
+
+    // project number
+    final String gcmProjectNumberTip = "Project Number for Google Cloud Messaging. "
+        + "This will be injected into the Android project. "
+        + "Can be left blank and manually entered later.";
+    Label pnLabel = new Label(formGroup, SWT.NONE);
+    pnLabel.setText("Project Number:");
+    pnLabel.setFont(parent.getFont());
+    pnLabel.setToolTipText(gcmProjectNumberTip);
+    // project number entry field
+    gcmProjectNumberText = new Text(formGroup, SWT.BORDER);
+    gcmProjectNumberText.setToolTipText(gcmProjectNumberTip);
+    gcmProjectNumberText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    gcmProjectNumberText.setFont(parent.getFont());
   }
 
   private void createConfigureAdtSdkLink(Composite parent) {
@@ -234,40 +335,23 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
   }
 
   /**
-   * Create link to configure App Engine SDK, if there is no default
-   */
-  private void createConfigureGaeSdkLink(Composite parent) {
-    configureOrDownloadLink = new Link(parent, SWT.NONE);
-    configureOrDownloadLink.setText("<a href=\"#\">" + "Configure App Engine SDK ..." + "</a>");
-    configureOrDownloadLink.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(final SelectionEvent e) {
-        if (Window.OK == PreferencesUtil.createPreferenceDialogOn(getShell(), GaePreferencePage.ID,
-            new String[] {GaePreferencePage.ID}, null).open()) {
-          updateControls();
-          validatePageComplete();
-        }
-      }
-    });
-    configureOrDownloadLink.setEnabled(true);
-  }
-
-  /**
    * Creates the group for Gae/ADT SDK Selection
    */
   private void createGoogleSdkSection(Composite container) {
-    boolean gaeSdkAvailable = (getSelectedGaeSdk() != null);
-    boolean androidSdkAvailable = isAndroidSdkInstalled();
+    Label filler = new Label(container, SWT.NONE);
+    Group sdkGroup = new Group(container, SWT.NONE);
+    sdkGroup.setText("App Engine SDK");
+    sdkGroup.setLayout(new GridLayout(3, false));
+    sdkGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-    if (!gaeSdkAvailable || !androidSdkAvailable) {
-      Label filler = new Label(container, SWT.NONE);
-    }
-
-    if (!gaeSdkAvailable) {
-      createConfigureGaeSdkLink(container);
-    }
-
-    if (!androidSdkAvailable) {
+    sdkSelectionBlock = new GaeWorkspaceSdkSelectionBlock(sdkGroup, SWT.NONE);   
+    sdkSelectionBlock.addSdkSelectionListener(new SdkSelectionBlock.SdkSelectionListener() {
+      public void onSdkSelection(SdkSelectionEvent e) {
+        validatePageComplete();
+      }
+    });
+    
+    if (!isAndroidSdkInstalled()) {
       createConfigureAdtSdkLink(container);
     }
   }
@@ -283,7 +367,7 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
     infoLabel.setText("This wizard creates a sample application that provides an Android app with an App Engine backend.\n\n"
         + "The Android App registers with the backend via an Endpoints API and receives messages from it via Google Cloud Messaging.\n\n"
         + "The App Engine backend provides an Endpoints API to register Android clients and a Web UI to broadcast messages to clients.");
-    
+
     GridData infoData = new GridData(GridData.FILL_HORIZONTAL);
     infoData.widthHint = convertWidthInCharsToPixels(80);
     infoLabel.setLayoutData(infoData);
@@ -387,62 +471,6 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
     });
     browseButton.setEnabled(false);
   }
-  
-  /**
-   * Creates a group that allows entering project number and api key
-   * @param parent
-   */
-  private void createBackendConfigSection(Composite parent) {
-    Group configGroup = new Group(parent, SWT.SHADOW_ETCHED_IN);
-    configGroup.setText("Configuration Parameters");
-    configGroup.setLayout(new GridLayout(1, false));
-    configGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    
-    GridData textGridData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-    textGridData.widthHint = convertWidthInCharsToPixels(80);
-    Text configText = new Text(configGroup, SWT.WRAP);
-    configText.setLayoutData(textGridData);
-    // TODO(appu): this current doesn't show a link and is not selectable, it
-    // merely provides the information of the link to go to. Same goes for
-    // the content in GenerateBackendDialog.
-    configText.setText("These are required for a working example.  " +
-        "They can be obtained from the Google API console for your project.  " +
-        "If entered now they will be injected into the project. If " +
-        "left blank, they can manually entered into code after the " +
-        "project is generated. For more information visit " +
-        "https://developers.google.com/eclipse/docs/cloud_endpoints.");
-    
-    Composite formGroup = new Composite(configGroup, SWT.NONE); 
-    formGroup.setLayout(new GridLayout(2, false));
-    formGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    // api key label
-    final String gcmApiTip = "API Key for Google Cloud Messaging. " +
-        "This will be injected into the App Engine project. " +
-        "Can be left blank and manually entered later";
-    Label apiLabel = new Label(formGroup, SWT.NONE);
-    apiLabel.setText("API Key:");
-    apiLabel.setFont(parent.getFont());
-    apiLabel.setToolTipText(gcmApiTip);
-    // api key entry field
-    gcmApiKeyText = new Text(formGroup, SWT.BORDER);
-    gcmApiKeyText.setToolTipText(gcmApiTip);
-    gcmApiKeyText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    gcmApiKeyText.setFont(parent.getFont());
-    
-    // project number
-    final String gcmProjectNumberTip = "Project Number for Google Cloud Messaging. " +
-        "This will be injected into the Android project. " +
-        "Can be left blank and manually entered later";
-    Label pnLabel = new Label(formGroup, SWT.NONE);
-    pnLabel.setText("Project Number:");
-    pnLabel.setFont(parent.getFont());
-    pnLabel.setToolTipText(gcmProjectNumberTip);
-    // project number entry field
-    gcmProjectNumberText = new Text(formGroup, SWT.BORDER);
-    gcmProjectNumberText.setToolTipText(gcmProjectNumberTip);
-    gcmProjectNumberText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    gcmProjectNumberText.setFont(parent.getFont());
-  }
 
   /**
    * @param targets
@@ -478,10 +506,6 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
     }
   }
 
-  private GaeSdk getSelectedGaeSdk() {
-    return GaePreferences.getDefaultSdk();
-  }
-  
   /**
    * Display a directory browser and update the location path field with the
    * selected path
@@ -737,7 +761,7 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
    * @return The wizard message type, one of MSG_ERROR, MSG_WARNING or MSG_NONE.
    */
   private int validateSdks() {
-    Sdk selectedGaeSdk = getSelectedGaeSdk();
+    GaeSdk selectedGaeSdk = getGaeSdkSelection().getSelectedSdk();
     if (selectedGaeSdk == null) {
       return setStatus("Please configure an App Engine SDK.", MSG_ERROR);
     }
@@ -749,6 +773,13 @@ public class NewAndroidCloudProjectWizardPage extends WizardPage {
           MSG_ERROR);
     }
 
+    if (!GaeSdkCapability.CLOUD_ENDPOINTS.check(selectedGaeSdk)) {
+      return setStatus(
+          "App Engine Connected Android Projects require an App Engine SDK with version " + GaeSdkCapability.CLOUD_ENDPOINTS.minVersion + " or higher.",
+          MSG_ERROR);
+    }
+    
+    // Check SDK Version
     if (!isAndroidSdkInstalled()) {
       return setStatus("Please configure an Android SDK.", MSG_ERROR);
     }

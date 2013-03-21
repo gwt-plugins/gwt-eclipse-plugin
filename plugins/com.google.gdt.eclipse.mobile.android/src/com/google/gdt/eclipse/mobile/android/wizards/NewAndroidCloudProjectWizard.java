@@ -14,7 +14,9 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.mobile.android.wizards;
 
+import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.gdt.eclipse.appengine.swarm_backend.impl.BackendGenerator;
+import com.google.gdt.eclipse.core.ui.SdkSelectionBlock.SdkSelection;
 import com.google.gdt.eclipse.mobile.android.GdtAndroidImages;
 import com.google.gdt.eclipse.mobile.android.GdtAndroidPlugin;
 import com.google.gdt.eclipse.mobile.android.wizards.helpers.AndroidProjectCreator;
@@ -66,6 +68,7 @@ public class NewAndroidCloudProjectWizard extends NewElementWizard implements IN
   // android project
   private Map<String, Object> androidProjectParameters;
   private NewAndroidCloudProjectWizardPage newProjectPage;
+  private SdkSelection<GaeSdk> sdkSelection;
 
   public NewAndroidCloudProjectWizard() {
     NewAndroidCloudProjectWizardPage.isAndroidSdkInstalled();
@@ -148,6 +151,8 @@ public class NewAndroidCloudProjectWizard extends NewElementWizard implements IN
     
     IPath path = newProjectPage.getLocationPath();
     androidProjectParameters.put(ProjectCreationConstants.PARAM_PROJECT_PATH, path);
+    
+    sdkSelection = newProjectPage.getGaeSdkSelection();
   }
 
   @Override
@@ -177,7 +182,7 @@ public class NewAndroidCloudProjectWizard extends NewElementWizard implements IN
 
       BackendGenerator gen = new BackendGenerator(androidProject, true, 
           (String) androidProjectParameters.get(ProjectCreationConstants.PARAM_GCM_PROJECT_NUMBER),
-          (String) androidProjectParameters.get(ProjectCreationConstants.PARAM_GCM_API_KEY));
+          (String) androidProjectParameters.get(ProjectCreationConstants.PARAM_GCM_API_KEY), sdkSelection);
       gen.generateBackendProject(subMonitor.newChild(75));
       
       if (subMonitor.isCanceled()) {

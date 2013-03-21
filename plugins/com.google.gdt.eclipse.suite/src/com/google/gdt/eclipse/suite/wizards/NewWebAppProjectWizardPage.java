@@ -71,6 +71,7 @@ import java.util.List;
  * Wizard page where the user specifies the parameters for a new GWT project.
  */
 public class NewWebAppProjectWizardPage extends WizardPage {
+
   /**
    * Select a {@link GaeSdk} from the set of {@link Sdk} known to the workspace.
    */
