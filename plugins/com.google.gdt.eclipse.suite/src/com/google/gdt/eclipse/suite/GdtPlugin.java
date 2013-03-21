@@ -1,39 +1,32 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *******************************************************************************/
 package com.google.gdt.eclipse.suite;
 
-import com.google.appengine.eclipse.core.markers.AppEngineProblemType;
 import com.google.appengine.eclipse.core.nature.GaeNature;
 import com.google.gdt.eclipse.core.AbstractGooglePlugin;
 import com.google.gdt.eclipse.core.BuilderUtilities;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.Logger;
 import com.google.gdt.eclipse.core.markers.GdtProblemSeverities;
-import com.google.gdt.eclipse.core.markers.ProjectStructureOrSdkProblemType;
 import com.google.gdt.eclipse.core.natures.NatureUtils;
 import com.google.gdt.eclipse.core.projects.ProjectUtilities;
 import com.google.gdt.eclipse.suite.launch.processors.LaunchConfigAffectingChangesListener;
 import com.google.gdt.eclipse.suite.preferences.GdtPreferences;
 import com.google.gdt.eclipse.suite.resources.GdtImages;
 import com.google.gdt.eclipse.suite.wizards.WebAppProjectCreator;
-import com.google.gwt.eclipse.core.markers.ClientBundleProblemType;
-import com.google.gwt.eclipse.core.markers.GWTProblemType;
 import com.google.gwt.eclipse.core.nature.GWTNature;
-import com.google.gwt.eclipse.core.uibinder.problems.UiBinderTemplateProblemType;
-import com.google.gwt.eclipse.core.uibinder.problems.java.UiBinderJavaProblemType;
-import com.google.gwt.eclipse.core.validators.rpc.RemoteServiceProblemType;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -74,11 +67,9 @@ public class GdtPlugin extends AbstractGooglePlugin {
    * Perspectives that we monitor and optionally add our new wizards to.
    */
   private static final List<String> PERSPECTIVES_TO_ADD_WIZARDS_TO = new ArrayList<String>(
-      Arrays.asList(new String[]{
-          "org.eclipse.jdt.ui.JavaPerspective",
-          "org.eclipse.jdt.ui.JavaBrowsingPerspective",
-          "org.eclipse.jdt.ui.JavaHierarchyPerspective",
-          "org.eclipse.jst.j2ee.J2EEPerspective"}));
+      Arrays.asList(new String[] {
+          "org.eclipse.jdt.ui.JavaPerspective", "org.eclipse.jdt.ui.JavaBrowsingPerspective",
+          "org.eclipse.jdt.ui.JavaHierarchyPerspective", "org.eclipse.jst.j2ee.J2EEPerspective"}));
 
   private static GdtPlugin plugin;
 
@@ -89,7 +80,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
    * could query the extension registry and add all GDT contributed wizards.
    */
   private static final List<String> WIZARDS_TO_ADD_TO_PERSPECTIVES = new ArrayList<String>(
-      Arrays.asList(new String[]{
+      Arrays.asList(new String[] {
           "com.google.gdt.eclipse.suite.wizards.newProjectWizard",
           "com.google.gwt.eclipse.core.newModuleWizard",
           "com.google.gwt.eclipse.core.newHostPageWizard",
@@ -128,12 +119,10 @@ public class GdtPlugin extends AbstractGooglePlugin {
   }
 
   public static Version getVersion() {
-    return new Version((String) getDefault().getBundle().getHeaders().get(
-        Constants.BUNDLE_VERSION));
+    return new Version((String) getDefault().getBundle().getHeaders().get(Constants.BUNDLE_VERSION));
   }
 
-  private static void rebuildGoogleProjectIfPluginVersionChanged(
-      IProject project) {
+  private static void rebuildGoogleProjectIfPluginVersionChanged(IProject project) {
     try {
       // We're only worried about Google projects
       if (NatureUtils.hasNature(project, GWTNature.NATURE_ID)
@@ -143,14 +132,12 @@ public class GdtPlugin extends AbstractGooglePlugin {
         Version currentPluginVersion = GdtPlugin.getVersion();
 
         if (!lastForcedRebuildAt.equals(currentPluginVersion)) {
-          GdtPreferences.setVersionForLastForcedRebuild(project,
-              currentPluginVersion);
+          GdtPreferences.setVersionForLastForcedRebuild(project, currentPluginVersion);
 
           BuilderUtilities.scheduleRebuild(project);
-          CorePluginLog.logInfo("Scheduled rebuild of project "
-              + project.getName()
-              + " because of plugin update (current version: "
-              + currentPluginVersion.toString() + ")");
+          CorePluginLog.logInfo("Scheduled rebuild of project " + project.getName()
+              + " because of plugin update (current version: " + currentPluginVersion.toString()
+              + ")");
         }
       }
     } catch (CoreException e) {
@@ -179,8 +166,8 @@ public class GdtPlugin extends AbstractGooglePlugin {
           IResourceDelta delta = event.getDelta();
           if (delta != null) {
             // Find any project-level changes
-            IResourceDelta[] projectDeltas = delta.getAffectedChildren(
-                IResourceDelta.CHANGED, IResource.PROJECT);
+            IResourceDelta[] projectDeltas = delta.getAffectedChildren(IResourceDelta.CHANGED,
+                IResource.PROJECT);
 
             // The master delta may include more than one project delta
             for (IResourceDelta projectDelta : projectDeltas) {
@@ -200,10 +187,8 @@ public class GdtPlugin extends AbstractGooglePlugin {
 
   private final PerspectiveAdapter perspectiveListener = new PerspectiveAdapter() {
     @Override
-    public void perspectiveActivated(IWorkbenchPage page,
-        IPerspectiveDescriptor perspectiveDesc) {
-      maybeAddNewWizardActionsToPerspective((WorkbenchPage) page,
-          perspectiveDesc);
+    public void perspectiveActivated(IWorkbenchPage page, IPerspectiveDescriptor perspectiveDesc) {
+      maybeAddNewWizardActionsToPerspective((WorkbenchPage) page, perspectiveDesc);
     }
   };
 
@@ -243,12 +228,11 @@ public class GdtPlugin extends AbstractGooglePlugin {
    * 
    * Note: This method can only be called once the workbench has been started.
    */
-  private void maybeAddNewWizardActionsToPerspective(WorkbenchPage page,
-      IPerspectiveDescriptor desc) {
+  private void maybeAddNewWizardActionsToPerspective(WorkbenchPage page, IPerspectiveDescriptor desc) {
     if (page == null || desc == null) {
       return;
     }
-    
+
     if (PERSPECTIVES_TO_ADD_WIZARDS_TO.contains(desc.getId())) {
       // Perspective perspective = page.findPerspective(desc);
       // if (perspective != null) {
@@ -295,8 +279,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
    * 
    * Note: This method can only be called once the workbench has been started.
    */
-  private void maybeAddNewWizardActionsToWindow(
-      IWorkbenchWindow activeWorkbenchWindow) {
+  private void maybeAddNewWizardActionsToWindow(IWorkbenchWindow activeWorkbenchWindow) {
     if (activeWorkbenchWindow == null) {
       return;
     }
@@ -356,13 +339,21 @@ public class GdtPlugin extends AbstractGooglePlugin {
 
     LaunchConfigAffectingChangesListener.INSTANCE.start();
 
-    // Load problem severities
-    GdtProblemSeverities.initializeInstance(new Class<?>[]{
-        AppEngineProblemType.class, GWTProblemType.class,
-        RemoteServiceProblemType.class, UiBinderJavaProblemType.class,
-        ClientBundleProblemType.class, ProjectStructureOrSdkProblemType.class,
-        UiBinderTemplateProblemType.class},
-        GdtPreferences.getEncodedProblemSeverities());
+    /*
+     * We've already loaded the specific problem type enums in the specific
+     * plugin activators that define them (GWTPlugin.java,
+     * AppEngineCorePlugin.java). Now we need to load the problem severities.
+     * 
+     * There is a small window between the time that this plugin is loaded and a
+     * plugin-specific builder (i.e. for GWT, or App Engine) can be invoked. It
+     * may be the case that a user will get a problem marker that has a severity
+     * that mismatches what they've defined. This will be fixed up on their next
+     * rebuild. If we hear of reports of this being a nuisance, we can work out
+     * a clever way to rebuild possibly-affected projects when this plugin loads
+     * (or, perhaps have a latch that prevents problem markers from being
+     * created until this plugin loads).
+     */
+    GdtProblemSeverities.getInstance().loadSeverities(GdtPreferences.getEncodedProblemSeverities());
 
     rebuildGoogleProjectsIfPluginVersionChanged();
 

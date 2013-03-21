@@ -1,25 +1,27 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *******************************************************************************/
 package com.google.appengine.eclipse.core;
 
+import com.google.appengine.eclipse.core.markers.AppEngineProblemType;
 import com.google.appengine.eclipse.core.resources.GaeImages;
 import com.google.appengine.eclipse.core.sdk.AppEngineBridge;
 import com.google.appengine.eclipse.core.sdk.AppEngineUpdateWebInfFolderCommand;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.gdt.eclipse.core.AbstractGooglePlugin;
 import com.google.gdt.eclipse.core.PluginProperties;
+import com.google.gdt.eclipse.core.markers.GdtProblemSeverities;
 import com.google.gdt.eclipse.core.sdk.Sdk;
 import com.google.gdt.eclipse.core.sdk.UpdateWebInfFolderCommand;
 import com.google.gdt.eclipse.core.sdk.WebInfFolderUpdater;
@@ -35,8 +37,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Map;
 
 /**
@@ -82,26 +82,7 @@ public class AppEngineCorePlugin extends AbstractGooglePlugin {
   }
 
   public static String getVersion() {
-    return (String) getDefault().getBundle().getHeaders().get(
-        Constants.BUNDLE_VERSION);
-  }
-
-  private static void closeStreams(InputStream is, OutputStream os) {
-    if (os != null) {
-      try {
-        os.close();
-      } catch (IOException ioe) {
-        AppEngineCorePluginLog.logError(ioe);
-      }
-    }
-
-    if (is != null) {
-      try {
-        is.close();
-      } catch (IOException ioe) {
-        AppEngineCorePluginLog.logError(ioe);
-      }
-    }
+    return (String) getDefault().getBundle().getHeaders().get(Constants.BUNDLE_VERSION);
   }
 
   /**
@@ -111,14 +92,12 @@ public class AppEngineCorePlugin extends AbstractGooglePlugin {
    * @throws IOException
    */
   private static void extractAppEngineProxyJar() throws IOException {
-    extractJar(AppEngineCorePlugin.getDefault(),
-        AppEngineBridge.APPENGINE_PROXY_JAR_NAME,
+    extractJar(AppEngineCorePlugin.getDefault(), AppEngineBridge.APPENGINE_PROXY_JAR_NAME,
         AppEngineBridge.APPENGINE_PROXY_JAR_NAME);
   }
 
   private static void extractAppEngineToolsApiJar() throws IOException {
-    extractJar(AppEngineCorePlugin.getDefault(),
-        "lib/" + AppEngineBridge.APPENGINE_TOOLS_JAR_NAME,
+    extractJar(AppEngineCorePlugin.getDefault(), "lib/" + AppEngineBridge.APPENGINE_TOOLS_JAR_NAME,
         AppEngineBridge.APPENGINE_TOOLS_JAR_NAME);
   }
 
@@ -134,8 +113,7 @@ public class AppEngineCorePlugin extends AbstractGooglePlugin {
     }
 
     @Override
-    protected UpdateWebInfFolderCommand getUpdateCommand(
-        IJavaProject javaProject, Sdk sdk) {
+    protected UpdateWebInfFolderCommand getUpdateCommand(IJavaProject javaProject, Sdk sdk) {
       return new AppEngineUpdateWebInfFolderCommand(javaProject, sdk);
     }
   };
@@ -149,8 +127,8 @@ public class AppEngineCorePlugin extends AbstractGooglePlugin {
    * implementation from appengine-api-proxy.jar, or proxy_bin.
    */
   public boolean inDevelopmentMode() {
-    return (FileLocator.find(AppEngineCorePlugin.getDefault().getBundle(),
-        new Path("proxy_bin"), (Map<?, ?>) null) != null);
+    return (FileLocator.find(AppEngineCorePlugin.getDefault().getBundle(), new Path("proxy_bin"),
+        (Map<?, ?>) null) != null);
   }
 
   @Override
@@ -158,13 +136,15 @@ public class AppEngineCorePlugin extends AbstractGooglePlugin {
     super.start(context);
     plugin = this;
 
+    // Load problem severities
+    GdtProblemSeverities.getInstance().addProblemTypeEnums(new Class<?>[] {AppEngineProblemType.class});
+
     if (!inDevelopmentMode()) {
       /*
-       * Extracts appengine-api-proxy.jar and appengine-tools-api.jar
-       *  from the plugin jar, and copies it
-       * into the plugin's state location, overwriting any existing copy that
-       * may exist. We have to do this because URLClassLoaders are not able to
-       * load classes from jars within jars.
+       * Extracts appengine-api-proxy.jar and appengine-tools-api.jar from the
+       * plugin jar, and copies it into the plugin's state location, overwriting
+       * any existing copy that may exist. We have to do this because
+       * URLClassLoaders are not able to load classes from jars within jars.
        * 
        * If the jar cannot be extracted, an IOException will be thrown, which
        * will escape and prevent this plugin from loading.
@@ -186,7 +166,6 @@ public class AppEngineCorePlugin extends AbstractGooglePlugin {
 
   @Override
   protected void initializeImageRegistry(ImageRegistry reg) {
-    reg.put(GaeImages.APP_ENGINE_DEPLOY_LARGE,
-        imageDescriptorFromPath("icons/ae-deploy_90x79.png"));
+    reg.put(GaeImages.APP_ENGINE_DEPLOY_LARGE, imageDescriptorFromPath("icons/ae-deploy_90x79.png"));
   }
 }
