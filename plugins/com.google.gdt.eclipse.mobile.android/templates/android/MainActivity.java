@@ -3,7 +3,6 @@ package @PackageName@;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.view.Menu;
 
 /**
  * The Main Activity.
