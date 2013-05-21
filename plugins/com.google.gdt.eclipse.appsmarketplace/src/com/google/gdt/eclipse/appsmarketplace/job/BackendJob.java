@@ -14,14 +14,13 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.appsmarketplace.job;
 
-import com.google.api.client.googleapis.GoogleUrl;
 import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.json.JsonHttpContent;
-import com.google.api.client.http.json.JsonHttpParser;
 import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.gdt.eclipse.appsmarketplace.AppsMarketplacePluginLog;
 import com.google.gdt.eclipse.appsmarketplace.data.AppListing;
@@ -140,7 +139,7 @@ public class BackendJob implements Runnable {
 
   private JsonFactory jsonFactory;
 
-  private JsonHttpParser jsonHttpParser;
+  private JsonObjectParser jsonHttpParser;
 
   public BackendJob(String name, Type type, HttpRequestFactory requestFactory,
       AppsMarketplaceProject appsMarketplaceProject) {
@@ -149,7 +148,7 @@ public class BackendJob implements Runnable {
     this.type = type;
     this.appsMarketplaceProject = appsMarketplaceProject;
     jsonFactory = new JacksonFactory();
-    jsonHttpParser = new JsonHttpParser(jsonFactory);
+    jsonHttpParser = new JsonObjectParser(jsonFactory);
   }
 
   public boolean getOperationStatus() {
@@ -243,7 +242,7 @@ public class BackendJob implements Runnable {
 
   private void runCreateAppListing() {
     DataStorage.clearListedAppListing();
-    GenericUrl url = new GoogleUrl(
+    GenericUrl url = new GenericUrl(
         EnterpriseMarketplaceUrl.generateAppListingUrl()
         + DataStorage.getVendorProfile().vendorId);
 
@@ -253,7 +252,7 @@ public class BackendJob implements Runnable {
     AppListing appListing;
     try {
       HttpRequest request = requestFactory.buildPostRequest(url, content);
-      request.addParser(jsonHttpParser);
+      request.setParser(jsonHttpParser);
       request.setReadTimeout(readTimeout);
       HttpResponse response = request.execute();
       appListing = response.parseAs(AppListing.class);
@@ -269,7 +268,7 @@ public class BackendJob implements Runnable {
 
   private void runCreateVendorProfile() {
     DataStorage.clearVendorProfile();
-    GenericUrl url = new GoogleUrl(
+    GenericUrl url = new GenericUrl(
         EnterpriseMarketplaceUrl.generateVendorProfileUrl());
 
     VendorProfile body = buildVendorProfile();
@@ -279,7 +278,7 @@ public class BackendJob implements Runnable {
     VendorProfile vendorProfile = null;
     try {
       HttpRequest request = requestFactory.buildPostRequest(url, content);
-      request.addParser(jsonHttpParser);
+      request.setParser(jsonHttpParser);
       request.setReadTimeout(readTimeout);
       HttpResponse response = request.execute();
       vendorProfile = response.parseAs(VendorProfile.class);
@@ -295,14 +294,14 @@ public class BackendJob implements Runnable {
 
   private void runGetAppListing() {
     DataStorage.clearAppListings();
-    GenericUrl url = new GoogleUrl(
+    GenericUrl url = new GenericUrl(
         EnterpriseMarketplaceUrl.generateAppListingUrl()
         + DataStorage.getVendorProfile().vendorId);
 
     AppListingList appListingList;
     try {
       HttpRequest request = requestFactory.buildGetRequest(url);
-      request.addParser(jsonHttpParser);
+      request.setParser(jsonHttpParser);
       request.setReadTimeout(readTimeout);
       HttpResponse response = request.execute();
       appListingList = response.parseAs(AppListingList.class);
@@ -318,13 +317,13 @@ public class BackendJob implements Runnable {
 
   private void runGetVendorProfile() {
     DataStorage.clearVendorProfile();
-    GenericUrl url = new GoogleUrl(
+    GenericUrl url = new GenericUrl(
         EnterpriseMarketplaceUrl.generateVendorProfileUrl());
 
     VendorProfile vendorProfile = null;
     try {
       HttpRequest request = requestFactory.buildGetRequest(url);
-      request.addParser(jsonHttpParser);
+      request.setParser(jsonHttpParser);
       request.setReadTimeout(readTimeout);
       HttpResponse response = request.execute();
       vendorProfile = response.parseAs(VendorProfile.class);
@@ -342,7 +341,7 @@ public class BackendJob implements Runnable {
 
   private void runUpdateAppListing() {
     DataStorage.clearListedAppListing();
-    GenericUrl url = new GoogleUrl(
+    GenericUrl url = new GenericUrl(
         EnterpriseMarketplaceUrl.generateAppListingUrl()
         + DataStorage.getVendorProfile().vendorId);
 
@@ -353,7 +352,7 @@ public class BackendJob implements Runnable {
     AppListing appListing;
     try {
       HttpRequest request = requestFactory.buildPutRequest(url, content);
-      request.addParser(jsonHttpParser);
+      request.setParser(jsonHttpParser);
       request.setReadTimeout(readTimeout);
       HttpResponse response = request.execute();
       appListing = response.parseAs(AppListing.class);

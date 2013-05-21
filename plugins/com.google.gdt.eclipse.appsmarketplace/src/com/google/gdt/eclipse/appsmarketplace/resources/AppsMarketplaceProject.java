@@ -14,7 +14,7 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.appsmarketplace.resources;
 
-import com.google.api.client.googleapis.GoogleUrl;
+import com.google.api.client.http.GenericUrl;
 import com.google.common.base.Strings;
 import com.google.gdt.eclipse.appsmarketplace.AppsMarketplacePlugin;
 import com.google.gdt.eclipse.appsmarketplace.properties.AppsMarketplaceProjectProperties;
@@ -99,7 +99,7 @@ public class AppsMarketplaceProject {
   class UrlEditOperation extends XmlUtilities.EditOperation {
     private final String dummyDomain = "www.example.com";
     private final String dummyAppId = "10000";
-    private GoogleUrl newBaseAppUrl;
+    private GenericUrl newBaseAppUrl;
 
     public UrlEditOperation(IFile xmlFile, String newAppUrl) {
       super(xmlFile);
@@ -132,10 +132,10 @@ public class AppsMarketplaceProject {
      * Extracts the base url from newAppUrl. E.g: http://abc.com:1234/abc/ will
      * return http://abc.com:1234/
      */
-    private GoogleUrl createNewBaseUrl(String newAppUrl) {
+    private GenericUrl createNewBaseUrl(String newAppUrl) {
       newAppUrl = replaceMarketplaceToken(newAppUrl);
-      GoogleUrl newParsedUrl = new GoogleUrl(newAppUrl);
-      GoogleUrl newBaseUrl = new GoogleUrl();
+      GenericUrl newParsedUrl = new GenericUrl(newAppUrl);
+      GenericUrl newBaseUrl = new GenericUrl();
       // Copy only the base part of URL
       newBaseUrl.setScheme(newParsedUrl.getScheme());
       newBaseUrl.setHost(newParsedUrl.getHost());
@@ -147,13 +147,13 @@ public class AppsMarketplaceProject {
      * Creates a new url by appending the new base url to the old url.
      */
     private String createNewUrlValue(String oldUrl) {
-      GoogleUrl oldParsedUrl;
+      GenericUrl oldParsedUrl;
       if (StringUtilities.isEmpty(oldUrl)) {
-        oldParsedUrl = new GoogleUrl();
+        oldParsedUrl = new GenericUrl();
       } else {
         oldUrl = replaceMarketplaceToken(oldUrl);
         try {
-          oldParsedUrl = new GoogleUrl(oldUrl);
+          oldParsedUrl = new GenericUrl(oldUrl);
         } catch (Exception e) {
           // Catch all Exceptions resulting from mal-formatted URLs.
           return "";

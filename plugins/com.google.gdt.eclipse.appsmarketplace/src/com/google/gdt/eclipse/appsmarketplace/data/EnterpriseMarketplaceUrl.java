@@ -14,7 +14,7 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.appsmarketplace.data;
 
-import com.google.api.client.googleapis.GoogleUrl;
+import com.google.api.client.http.GenericUrl;
 import com.google.gdt.eclipse.core.StringUtilities;
 
 /**
@@ -27,35 +27,35 @@ public class EnterpriseMarketplaceUrl {
       "MARKETPLACE_FRONTEND_HOST");
 
   public static String generateAppListingUrl() {
-    GoogleUrl url = new GoogleUrl(getApiHost());
-    url.setPathParts(GoogleUrl.toPathParts("/appsmarket/v2/appListing/"));
+    GenericUrl url = new GenericUrl(getApiHost());
+    url.setPathParts(GenericUrl.toPathParts("/appsmarket/v2/appListing/"));
     return url.toString();
   }
 
   public static String generateFrontendCreateListingUrl() {
-    GoogleUrl url = new GoogleUrl(getFrontendHost());
-    url.setPathParts(GoogleUrl.toPathParts(
+    GenericUrl url = new GenericUrl(getFrontendHost());
+    url.setPathParts(GenericUrl.toPathParts(
         "/enterprise/marketplace/blankListing"));
     return url.toString();
   }
 
   public static String generateFrontendCreateVendorProfileUrl() {
-    GoogleUrl url = new GoogleUrl(getFrontendHost());
+    GenericUrl url = new GenericUrl(getFrontendHost());
     url.setPathParts(
-        GoogleUrl.toPathParts("/enterprise/marketplace/myProfile"));
+        GenericUrl.toPathParts("/enterprise/marketplace/myProfile"));
     return url.toString();
   }
 
   public static String generateFrontendViewListingUrl() {
-    GoogleUrl url = new GoogleUrl(getFrontendHost());
-    url.setPathParts(GoogleUrl.toPathParts(
+    GenericUrl url = new GenericUrl(getFrontendHost());
+    url.setPathParts(GenericUrl.toPathParts(
         "/enterprise/marketplace/viewVendorProfile"));
     return url.toString();
   }
 
   public static String generateVendorProfileUrl() {
-    GoogleUrl url = new GoogleUrl(getApiHost());
-    url.setPathParts(GoogleUrl.toPathParts("/appsmarket/v2/vendorProfile"));
+    GenericUrl url = new GenericUrl(getApiHost());
+    url.setPathParts(GenericUrl.toPathParts("/appsmarket/v2/vendorProfile"));
     return url.toString();
   }
 

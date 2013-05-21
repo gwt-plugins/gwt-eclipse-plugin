@@ -14,13 +14,13 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.gph;
 
-import com.google.api.client.googleapis.GoogleUrl;
+import com.google.api.client.http.GenericUrl;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestFactory;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpResponseException;
-import com.google.api.client.http.json.JsonHttpParser;
 import com.google.api.client.json.GenericJson;
+import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.client.util.Key;
 import com.google.gdt.eclipse.gph.model.GPHProject;
@@ -136,13 +136,14 @@ public class ProjectHostingService {
      * @throws IOException
      */
     public static GPHUserDTO fromTransport(HttpRequestFactory requestFactory,
-        GoogleUrl url) throws IOException {
+        GenericUrl url) throws IOException {
       HttpRequest request = requestFactory.buildGetRequest(url);
       HttpResponse resp = request.execute();
       // System.out.println("[" + resp.parseAsString() + "]");
 
-      JsonHttpParser parser = new JsonHttpParser(new JacksonFactory());
-      return parser.parse(resp, GPHUserDTO.class);
+      JsonObjectParser parser = new JsonObjectParser(new JacksonFactory());
+      request.setParser(parser);
+      return resp.parseAs(GPHUserDTO.class);
     }
 
     /**
@@ -217,7 +218,7 @@ public class ProjectHostingService {
   private List<GPHProject> getProjectsImpl(HttpRequestFactory requestFactory)
       throws IOException {
 
-    GoogleUrl hostingUrl = new GoogleUrl(PROJECT_HOSTING_URL);
+    GenericUrl hostingUrl = new GenericUrl(PROJECT_HOSTING_URL);
     GPHUserDTO userDTO = GPHUserDTO.fromTransport(requestFactory, hostingUrl);
 
     GPHUser user = new GPHUser(GoogleLogin.getInstance().getEmail(),
