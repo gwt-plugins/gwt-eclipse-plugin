@@ -547,7 +547,7 @@ public class DeployProjectDialog extends TitleAreaDialog {
     compliancePreferenceLink.addSelectionListener(new SelectionAdapter() {
       @Override
       public void widgetSelected(SelectionEvent e) {
-        BrowserUtilities.launchBrowserAndHandleExceptions("https://devsite.googleplex.com/eclipse/docs/jdk_compliance");
+        BrowserUtilities.launchBrowserAndHandleExceptions("https://developers.google.com/eclipse/docs/jdk_compliance");
       }
     });
   }
