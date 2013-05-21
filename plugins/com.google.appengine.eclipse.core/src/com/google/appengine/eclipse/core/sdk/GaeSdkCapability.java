@@ -29,7 +29,7 @@ public enum GaeSdkCapability {
   HRD("1.5.1"),
   GOOGLE_CLOUD_SQL("1.6.1"),
   OPTIONAL_USER_LIB(AppEngineBridge.MIN_VERSION_FOR_OPT_DATANUCLEUS_LIB),
-  CLOUD_ENDPOINTS("1.7.5");
+  CLOUD_ENDPOINTS("1.7.7");
 
   public final String minVersion, maxVersion;
 

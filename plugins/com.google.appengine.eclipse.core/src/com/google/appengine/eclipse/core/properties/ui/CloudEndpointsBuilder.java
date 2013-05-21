@@ -31,11 +31,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Notifies that Gae project has chamnged to all plugins implementing
+ * Notifies that Gae project has changed to all plugins implementing
  * gaeProjectChange extension.
  * 
+ * TODO(rdayal): We really need to fix this guy. This builder is way to
+ * aggressive. We should use a JavaCompilationParticipant and look for changes
+ * in @Api-annotated files. Only then should we do anything related to Cloud
+ * Endpoint updating. Also, it's not clear why this second builder was
+ * introduced (next to GaeProjectValidator) and placed in this plugin (as opposed
+ * to the Cloud Endpoints plugin).
  */
-public class GaeProjectChangeNotifier extends IncrementalProjectBuilder {
+public class CloudEndpointsBuilder extends IncrementalProjectBuilder {
   private boolean appEngineWebXmlChanged = false;
   private boolean classFileChanged = false;
 

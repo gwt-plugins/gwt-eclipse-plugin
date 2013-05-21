@@ -86,7 +86,8 @@ public class ManagedApiPlugin extends AbstractGooglePlugin {
       MANAGED_API_SESSION_KEY_QNAME = new QualifiedName(
           PLUGIN_ID, "MANAGED_API_SESSION_KEY");
   
-  public static final String API_CLIENT_LANG_VERSION = "1.13.2-beta";
+  // Latest in the 1.14 series
+  public static final String API_CLIENT_LANG_VERSION = "1.14.x";
 
   public static final long API_DIRECTORY_CACHE_TTL = 4 * 60 * 60 * 1000; // 4HRS
 

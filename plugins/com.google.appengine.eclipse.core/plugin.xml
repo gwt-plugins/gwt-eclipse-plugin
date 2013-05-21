@@ -161,14 +161,17 @@
          </run>
       </builder>
    </extension>
+   
+   <!-- This is really a builder for the cloud endpoint feature, but we're keeping the id as 
+        gaeProjectChangeNotifier to preserve backwards compatibility. -->
    <extension
          id="gaeProjectChangeNotifier"
-         name="Google App Engine Project Change Notifier"
+         name="Google App Engine Cloud Endpoints Builder"
          point="org.eclipse.core.resources.builders">
       <builder
             hasNature="true">
          <run
-               class="com.google.appengine.eclipse.core.properties.ui.GaeProjectChangeNotifier">
+               class="com.google.appengine.eclipse.core.properties.ui.CloudEndpointsBuilder">
          </run>
       </builder>
    </extension>
