@@ -18,6 +18,7 @@ import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import com.google.gdt.eclipse.core.properties.WebAppProjectProperties;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -28,6 +29,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.ui.util.CoreUtility;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
@@ -37,6 +39,7 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import java.io.InputStream;
 import java.util.List;
+
 
 /**
  * Utilities related to web apps (those that have a defined WAR directory).
@@ -92,6 +95,19 @@ public class WebAppUtilities {
   }
 
   /**
+   * Returns the project default output location
+   * 
+   * @param project
+   * @return The absolute path to the resource, check with {@link IResource#exists()}, can be null
+   * @throws JavaModelException if unable to find the output location from the project
+   */
+  public static IPath getOutputFolderPath(IJavaProject project) throws JavaModelException {
+    IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+    IFolder outputLoc = workspaceRoot.getFolder(project.getOutputLocation());
+    return outputLoc.getLocation();
+  }
+
+  /**
    * Returns the same output as
    * {@link WebAppUtilities#getWarOutLocationOrPrompt(IProject)}, except that
    * this does nt prompt the user. <code>null</code> is returned if the path is
@@ -100,12 +116,15 @@ public class WebAppUtilities {
    * @return the set WAR directory path, or null if not found
    */
   public static IPath getWarOutLocation(IProject project) {
-    ExtensionQuery<IOutputWarDirectoryLocator> extQuery = new ExtensionQuery<IOutputWarDirectoryLocator>(
-        CorePlugin.PLUGIN_ID, "warOutputDirectoryLocator", "class");
-    List<ExtensionQuery.Data<IOutputWarDirectoryLocator>> warOutputDirectoryLocators = extQuery.getData();
-    for (ExtensionQuery.Data<IOutputWarDirectoryLocator> warOutputDirectoryLocator : warOutputDirectoryLocators) {
-      IFolder warOutputDir = warOutputDirectoryLocator.getExtensionPointData().getOutputWarDirectory(
-          project);
+    ExtensionQuery<IOutputWarDirectoryLocator> extQuery = 
+        new ExtensionQuery<IOutputWarDirectoryLocator>(CorePlugin.PLUGIN_ID, 
+            "warOutputDirectoryLocator", "class");
+    List<ExtensionQuery.Data<IOutputWarDirectoryLocator>> warOutputDirectoryLocators = 
+        extQuery.getData();
+    for (ExtensionQuery.Data<IOutputWarDirectoryLocator> warOutputDirectoryLocator : 
+        warOutputDirectoryLocators) {
+      IFolder warOutputDir = warOutputDirectoryLocator.getExtensionPointData()
+          .getOutputWarDirectory(project);
       if (warOutputDir != null) {
         return warOutputDir.getLocation();
       }
@@ -197,6 +216,21 @@ public class WebAppUtilities {
   }
 
   /**
+   * Get the path to an existing WEB-INF directory in source
+   * 
+   * @param project
+   * @return The absolute path to the resource, check with {@link IResource#exists()}, can be null
+   */
+  public static IPath getWebInfPath(IProject project) {
+    if (!isWebApp(project)) {
+      throw new IllegalArgumentException("Project " + project.getName() +
+          " is not a web-app project");
+    }
+    IFolder webinf = WebAppUtilities.getWebInfSrc(project);
+    return webinf.getLocation();
+  }
+
+  /**
    * Returns the WAR <b>source</b> directory's WEB-INF folder.
    * 
    * The return value is a resource handle, so don't forget to call
@@ -205,6 +239,22 @@ public class WebAppUtilities {
   public static IFolder getWebInfSrc(IProject project) {
     assert (isWebApp(project));
     return getWarSrc(project).getFolder("WEB-INF");
+  }
+
+  /**
+   * Get path to an existing web.xml
+   * 
+   * @param project
+   * @return The absolute path to the resource, check with {@link IResource#exists()}, can be null
+   */
+  public static IPath getWebXmlPath(IProject project) {
+    if (!isWebApp(project)) {
+      throw new IllegalArgumentException("Project " + project.getName() +
+          " is not a web-app project");
+    }
+    IFolder webinf = WebAppUtilities.getWebInfSrc(project);
+    IFile webxml = webinf.getFile("web.xml");
+    return webxml.getLocation();
   }
 
   /**
@@ -226,6 +276,30 @@ public class WebAppUtilities {
   }
 
   /**
+   * This is nearly a clone of the method of the same name in BuildPathsBlock,
+   * except here we force delete files, so out-of-sync files don't result in
+   * exceptions.
+   * 
+   * TODO: we can revert back to using BuildPathsBlock's method if we update
+   * EnhancerJob to refresh any files it touches.
+   */
+  private static void removeOldClassfiles(IResource resource)
+      throws CoreException {
+    if (resource.isDerived()) {
+      resource.delete(true, null);
+    } else {
+      IContainer resourceAsContainer = AdapterUtilities.getAdapter(resource,
+          IContainer.class);
+      if (resourceAsContainer != null) {
+        IResource[] members = resourceAsContainer.members();
+        for (int i = 0; i < members.length; i++) {
+          removeOldClassfiles(members[i]);
+        }
+      }
+    }
+  }
+
+  /**
    * Sets the project's WAR source directory to "/war" and configures it as a
    * managed WAR output directory as well.
    * 
@@ -238,7 +312,7 @@ public class WebAppUtilities {
     WebAppProjectProperties.setWarSrcDirIsOutput(project, true);
     CorePlugin.getDefault().savePluginPreferences();
   }
-
+  
   /**
    * Sets the project's default output directory to the WAR output directory's
    * WEB-INF/classes folder. If the WAR output directory does not have a WEB-INF
@@ -283,7 +357,7 @@ public class WebAppUtilities {
       javaProject.setOutputLocation(outputPath, monitor);
     }
   }
-
+  
   /**
    * Throws a {@link CoreException} if this project is not a web app or does not
    * have a managed WAR output directory. If no exception results, it is safe to
@@ -297,7 +371,7 @@ public class WebAppUtilities {
           CorePlugin.PLUGIN_ID, project.getName()));
     }
   }
-
+  
   /**
    * Throws a {@link CoreException} if this project is not a web app.
    */
@@ -308,28 +382,5 @@ public class WebAppUtilities {
           project.getName()));
     }
   }
-
-  /**
-   * This is nearly a clone of the method of the same name in BuildPathsBlock,
-   * except here we force delete files, so out-of-sync files don't result in
-   * exceptions.
-   * 
-   * TODO: we can revert back to using BuildPathsBlock's method if we update
-   * EnhancerJob to refresh any files it touches.
-   */
-  private static void removeOldClassfiles(IResource resource)
-      throws CoreException {
-    if (resource.isDerived()) {
-      resource.delete(true, null);
-    } else {
-      IContainer resourceAsContainer = AdapterUtilities.getAdapter(resource,
-          IContainer.class);
-      if (resourceAsContainer != null) {
-        IResource[] members = resourceAsContainer.members();
-        for (int i = 0; i < members.length; i++) {
-          removeOldClassfiles(members[i]);
-        }
-      }
-    }
-  }
+  
 }
