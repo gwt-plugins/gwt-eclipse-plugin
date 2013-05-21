@@ -1,16 +1,14 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  *******************************************************************************/
 package com.google.gdt.eclipse.managedapis.ui;
 
@@ -20,6 +18,8 @@ import com.google.gdt.eclipse.managedapis.ManagedApiPlugin;
 import com.google.gdt.eclipse.managedapis.Resources;
 import com.google.gdt.eclipse.managedapis.directory.ManagedApiEntry;
 import com.google.gdt.eclipse.managedapis.impl.ManagedApiListingSourceFactory;
+import com.google.gdt.googleapi.core.ApiDirectoryItem;
+import com.google.gdt.googleapi.core.ApiDirectoryListing;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -44,16 +44,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 /**
- * Represents a (currently the only) page in the ApiImportWizard. This page
- * wraps the ApiViewer and provides event handling glue to the containing
- * wizard.
+ * Represents a (currently the only) page in the ApiImportWizard. This page wraps the ApiViewer and
+ * provides event handling glue to the containing wizard.
  * 
- * suggestion: tabs to include search, recent popular, installed. These were
- * part of this view originally.
+ * suggestion: tabs to include search, recent popular, installed. These were part of this view
+ * originally.
  */
 public class ApiListingPage extends WizardPage implements IShellProvider {
   private static final String WILL_BE_IMPORTED = "Click Finish to add {0} to your project.";
   private static final String DEFAULT_DESCRIPTION = "Choose a Google Managed Api to add.";
+  private static final String REVISION_UPDATE_NEEDED =
+      "The dependencies of this API have changed. Please click Finish to update the API.";
+  private static final String UPDATE_NEEDED = "There is an updated version of this API. "
+      + "Please click <a href=\"#\"> here </a> to go to the preferred version.";
 
   private SelectionListener doubleClickListener = new SelectionAdapter() {
     @Override
@@ -81,6 +84,8 @@ public class ApiListingPage extends WizardPage implements IShellProvider {
   private boolean updated;
   private ApiViewer viewer;
   private ManagedApiEntryViewer apiEntryViewer;
+  private Link updateLink;
+  private ApiDirectoryListing apiDirectoryListing;
 
   protected ApiListingPage(String pageName,
       ManagedApiListingSourceFactory managedApiListingSourceFactory) {
@@ -118,10 +123,25 @@ public class ApiListingPage extends WizardPage implements IShellProvider {
     GridLayoutFactory.fillDefaults().margins(0, 0).applyTo(apiEntryContainer);
 
     apiEntryViewer = new ManagedApiEntryViewer(apiEntryContainer);
-    GridDataFactory.fillDefaults().grab(true, true).applyTo(
-        apiEntryViewer.getControl());
+    GridDataFactory.fillDefaults().grab(true, true).applyTo(apiEntryViewer.getControl());
 
     sash.setWeights(new int[] {45, 55});
+
+    updateLink = new Link(composite, SWT.NONE);
+    GridDataFactory.fillDefaults().grab(true, true).hint(10, 20).applyTo(updateLink);
+    updateLink.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(final SelectionEvent e) {
+        // Change selection to preferred version of the selected API
+        ManagedApiEntry managedApiEntry = selected.get(selected.size() - 1);
+
+        if (apiDirectoryListing != null) {
+          ApiDirectoryItem preferredApi =
+              apiDirectoryListing.getPreferredByName(managedApiEntry.getName());
+          viewer.selectApi(preferredApi);
+        }
+      }
+    });
 
     setControl(composite);
   }
@@ -180,15 +200,14 @@ public class ApiListingPage extends WizardPage implements IShellProvider {
 
       try {
         getContainer().run(true, true, new IRunnableWithProgress() {
-          public void run(IProgressMonitor monitor)
-              throws InvocationTargetException, InterruptedException {
+          public void run(IProgressMonitor monitor) throws InvocationTargetException,
+              InterruptedException {
 
-            monitor.beginTask("Retrieving API listings...",
-                IProgressMonitor.UNKNOWN);
+            monitor.beginTask("Retrieving API listings...", IProgressMonitor.UNKNOWN);
 
             // Can also pass the monitor into this method -
             statusResult[0] = viewer.updateListing(new NullProgressMonitor());
-
+            apiDirectoryListing = viewer.getApiDirectoryListing();
             monitor.done();
           }
         });
@@ -220,8 +239,21 @@ public class ApiListingPage extends WizardPage implements IShellProvider {
   private void updateApiEntryViewer(List<ManagedApiEntry> selection) {
     if (selection.size() == 0) {
       apiEntryViewer.setManagedApiEntry(null);
+      updateLink.setText("");
     } else {
       apiEntryViewer.setManagedApiEntry(selection.get(selection.size() - 1));
+      // If selected managed API is installed,
+      // check to see if any updates are available and display necessary message
+      ManagedApiEntry managedApiEntry = selection.get(selection.size() - 1);
+      if (managedApiEntry.isInstalled()) {
+        if (managedApiEntry.isInstalledUpdateAvailable()) {
+          updateLink.setText(UPDATE_NEEDED);
+        } else if (managedApiEntry.isRevisionUpdateAvailable()) {
+          updateLink.setText(REVISION_UPDATE_NEEDED);
+        }
+      } else {
+        updateLink.setText("");
+      }
     }
   }
 

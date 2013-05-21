@@ -22,6 +22,7 @@ import com.google.gdt.eclipse.managedapis.directory.ApiDirectoryFactory;
 import com.google.gdt.eclipse.managedapis.directory.ManagedApiListing;
 import com.google.gdt.eclipse.managedapis.directory.ManagedApiListingSource;
 import com.google.gdt.eclipse.managedapis.directory.StructuredApiCollection;
+import com.google.gdt.googleapi.core.ApiDirectoryListing;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -41,6 +42,11 @@ public class ManagedApiListingSourceFactory {
     return new ManagedApiListingSource() {
 
       private ManagedApiListing listing;
+      private ApiDirectoryListing apiDirectoryListing;
+
+      public ApiDirectoryListing getApiDirectoryListing() {
+        return apiDirectoryListing;
+      }
 
       public ManagedApiListing getManagedApiListing() {
         return listing;
@@ -48,10 +54,13 @@ public class ManagedApiListingSourceFactory {
 
       public IStatus run(IProgressMonitor monitor) {
         monitor.beginTask("Loading APIs", 100);
-        IStatus jobStatus = checkConfiguration()
-            ? Status.OK_STATUS
-            : new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
-                "Unable to run ManagedApiListingSource without proper configuration");
+        IStatus jobStatus =
+            checkConfiguration() ?
+                Status.OK_STATUS
+                : new Status(
+                    IStatus.ERROR,
+                    ManagedApiPlugin.PLUGIN_ID,
+                    "Unable to run ManagedApiListingSource without proper configuration");
 
         StructuredApiCollection structuredApiListing = new LatestVersionOnlyStructuredApiCollection();
 
@@ -64,8 +73,7 @@ public class ManagedApiListingSourceFactory {
         }
         monitor.worked(5);
 
-        SubMonitor loadApiDirectoryMon = SubMonitor.convert(monitor,
-            "Load API Directory", 90);
+        SubMonitor loadApiDirectoryMon = SubMonitor.convert(monitor, "Load API Directory", 90);
         jobStatus = apiDirectory.run(loadApiDirectoryMon);
         if (monitor.isCanceled()) {
           return Status.CANCEL_STATUS;
@@ -75,7 +83,8 @@ public class ManagedApiListingSourceFactory {
         }
 
         monitor.setTaskName("Merge API listing data");
-        structuredApiListing.addAll(apiDirectory.getApiDirectoryListing().getItems());
+        apiDirectoryListing = apiDirectory.getApiDirectoryListing();
+        structuredApiListing.addAll(apiDirectoryListing.getItems());
         monitor.worked(5);
         if (monitor.isCanceled()) {
           return Status.CANCEL_STATUS;

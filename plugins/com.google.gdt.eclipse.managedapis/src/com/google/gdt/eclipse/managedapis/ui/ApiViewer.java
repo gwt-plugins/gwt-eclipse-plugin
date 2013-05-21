@@ -25,6 +25,8 @@ import com.google.gdt.eclipse.managedapis.directory.ManagedApiEntry;
 import com.google.gdt.eclipse.managedapis.directory.ManagedApiListing;
 import com.google.gdt.eclipse.managedapis.directory.ManagedApiListingSource;
 import com.google.gdt.eclipse.managedapis.impl.ManagedApiListingSourceFactory;
+import com.google.gdt.googleapi.core.ApiDirectoryItem;
+import com.google.gdt.googleapi.core.ApiDirectoryListing;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -71,6 +73,8 @@ public class ApiViewer {
   private ManagedApiListing listing;
 
   private ManagedApiEntryContentProvider managedApiContentProvider;
+
+  private ApiDirectoryListing apiDirectoryListing;
 
   private Comparator<ManagedApiEntry> managedApiEntryDefaultComparator = new Comparator<ManagedApiEntry>() {
     Collator collator = Collator.getInstance();
@@ -181,6 +185,13 @@ public class ApiViewer {
     apiViewer.setContentFilter(searchFilter);
   }
 
+  /**
+   * Return the API directory listing.
+   */
+  public ApiDirectoryListing getApiDirectoryListing() {
+    return apiDirectoryListing;
+  }
+
   public Control getControl() {
     return container;
   }
@@ -198,11 +209,21 @@ public class ApiViewer {
     selectionProvider.removeSelectionChangedListener(listener);
   }
 
+  /**
+   * Selects the specified directoryItem in the Api Viewer UI
+   * 
+   * @param directoryItem
+   */
+  public void selectApi(ApiDirectoryItem directoryItem) {
+    ManagedApiEntry entry = listing.getEntryByIdentifier(directoryItem.getIdentifier());
+    apiViewer.selectItem(entry);
+  }
+
   public void setManagedApiListingSourceFactory(
       ManagedApiListingSourceFactory managedApiListingSourceFactory) {
     this.managedApiListingSourceFactory = managedApiListingSourceFactory;
   }
-  
+
   public void setResources(Resources resources) {
     this.resources = resources;
   }
@@ -211,6 +232,7 @@ public class ApiViewer {
     final ManagedApiListingSource managedApiListingSource = managedApiListingSourceFactory.buildManagedApiListingSource();
 
     IStatus result = managedApiListingSource.run(monitor);
+    apiDirectoryListing = managedApiListingSource.getApiDirectoryListing();
 
     if (!result.isOK()) {
       return result;

@@ -272,6 +272,13 @@ public class ManagedApiEntry implements Searchable {
   }
 
   /**
+   * Returns the version of the installed API
+   */
+  public String getVersion() {
+    return installed.getVersion();
+  }
+
+  /**
    * Determine whether an uninstalled listing exists for this entry.
    */
   public boolean hasDirectoryEntry() {
@@ -297,6 +304,20 @@ public class ManagedApiEntry implements Searchable {
    */
   public boolean isInstalled() {
     return null != installed;
+  }
+
+  /**
+   * Returns whether an update is available.
+   */
+  public boolean isInstalledUpdateAvailable() {
+    return installed.isUpdateAvailable();
+  }
+
+  /**
+   * Returns whether there is a revision update available.
+   */
+  public boolean isRevisionUpdateAvailable() {
+    return installed.isRevisionUpdateAvailable();
   }
 
   /**

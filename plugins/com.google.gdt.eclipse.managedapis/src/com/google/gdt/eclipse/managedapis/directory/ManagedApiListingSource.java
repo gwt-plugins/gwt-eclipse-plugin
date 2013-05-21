@@ -15,6 +15,8 @@
 package com.google.gdt.eclipse.managedapis.directory;
 
 
+import com.google.gdt.googleapi.core.ApiDirectoryListing;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 
@@ -22,6 +24,11 @@ import org.eclipse.core.runtime.IStatus;
  * Factory interface for providing a managed API Listing.
  */
 public interface ManagedApiListingSource {
+
+  /**
+   * Returns directory level access to the listing.
+   */
+  public abstract ApiDirectoryListing getApiDirectoryListing();
 
   /**
    * After being run, this method on the source provides access to listings.

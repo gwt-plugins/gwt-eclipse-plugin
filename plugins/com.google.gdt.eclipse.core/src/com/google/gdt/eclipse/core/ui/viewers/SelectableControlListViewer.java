@@ -22,7 +22,10 @@ import com.google.gdt.eclipse.core.ui.controls.SelectionChangeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,6 +93,30 @@ public class SelectableControlListViewer<T, C extends SelectableControl> {
 
   public SelectableControlList<C> getSelectableControlList() {
     return selectableControlList;
+  }
+
+  /**
+   * Select the specified entry item in the API Viewer. Highlight the item and scroll into view.
+   */
+  public void selectItem(T entry) {
+    selectableControlList.clearSelections();
+    List<C> items = selectableControlList.getItems();
+
+    int i = 0;
+    for (; i < displayElements.size(); i++) {
+      if (displayElements.get(i).equals(entry)) {
+        items.get(i).setSelected(true);
+        break;
+      }
+    }
+
+    if (i < displayElements.size()) {
+      Rectangle bounds = ((Control) items.get(i)).getBounds();
+      Point origin = selectableControlList.getOrigin();
+      origin.y = Math.max(0, bounds.y);
+      selectableControlList.setOrigin(origin);
+      fireSelectionChangeEvent();
+    }
   }
 
   public void setContentFilter(SelectableControlListContentFilter<T> filter) {

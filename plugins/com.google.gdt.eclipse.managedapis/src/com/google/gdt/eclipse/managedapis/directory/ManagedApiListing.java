@@ -15,6 +15,8 @@
 package com.google.gdt.eclipse.managedapis.directory;
 
 
+import com.google.gdt.googleapi.core.ApiDirectoryItem;
+
 import java.util.List;
 
 /**
@@ -29,6 +31,25 @@ public class ManagedApiListing {
 
   public List<ManagedApiEntry> getEntries() {
     return entries;
+  }
+
+  /**
+   * Returns the managed API with the specified identifier
+   * 
+   * @param identifier Id of the managed API to search for
+   * @return managed API with the specified identifier
+   */
+  public ManagedApiEntry getEntryByIdentifier(String identifier) {
+    for (ManagedApiEntry entry : entries) {
+      ApiDirectoryItem item = entry.getDirectoryEntry();
+      if (item != null) {
+        String id = item.getIdentifier();
+        if (id != null && id.equals(identifier)) {
+          return entry;
+        }
+      }
+    }
+    return null;
   }
 
   public ManagedApiEntry getEntryByName(String name) {
