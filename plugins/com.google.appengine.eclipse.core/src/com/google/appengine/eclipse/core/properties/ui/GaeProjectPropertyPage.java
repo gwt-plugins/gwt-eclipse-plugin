@@ -1134,7 +1134,8 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
   private IStatus validateHrd() {
     GaeSdk sdk = sdkSelectionBlock.getSdkSelection().getSelectedSdk();
     if (sdk != null) {
-      if (!sdk.getCapabilities().contains(GaeSdkCapability.HRD)) {
+      hrdSupport = sdk.getCapabilities().contains(GaeSdkCapability.HRD);
+      if (!hrdSupport) {
         return StatusUtilities.newInfoStatus("The selected SDK does not support HRD.",
             AppEngineCorePlugin.PLUGIN_ID);
       }
