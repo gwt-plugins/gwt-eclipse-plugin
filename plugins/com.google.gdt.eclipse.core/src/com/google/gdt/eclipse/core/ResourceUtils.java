@@ -55,8 +55,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Static utility methods that have to do with resources and editors.
@@ -156,22 +156,6 @@ public class ResourceUtils {
   }
 
   /**
-   * Copies all the contents of srcFolder to destFolder.
-   */
-  public static void copyFolder(File srcFolder, File destFolder)
-      throws CoreException, IOException {
-    for (File file : srcFolder.listFiles()) {
-      if (file.isDirectory()) {
-        copyFolder(file, new File(destFolder.getAbsolutePath() + File.separator
-            + file.getName()));
-      } else {
-        ResourceUtils.copyFile(file, new File(destFolder.getAbsolutePath()
-            + File.separator + file.getName()));
-      }
-    }
-  }
-
-  /**
    * Copies the source file into the destination file. The destination file's
    * parent directories will be created (if they do not exist already). The
    * destination file will be overwritten if it already exists.
@@ -214,6 +198,22 @@ public class ResourceUtils {
         if (fos != null) {
           fos.close();
         }
+      }
+    }
+  }
+
+  /**
+   * Copies all the contents of srcFolder to destFolder.
+   */
+  public static void copyFolder(File srcFolder, File destFolder)
+      throws CoreException, IOException {
+    for (File file : srcFolder.listFiles()) {
+      if (file.isDirectory()) {
+        copyFolder(file, new File(destFolder.getAbsolutePath() + File.separator
+            + file.getName()));
+      } else {
+        ResourceUtils.copyFile(file, new File(destFolder.getAbsolutePath()
+            + File.separator + file.getName()));
       }
     }
   }
@@ -311,17 +311,6 @@ public class ResourceUtils {
   }
 
   /**
-   * Deletes from the folder tree any file present in filesToRemoveList.
-   * 
-   * @throws CoreException
-   */
-  public static void deleteFiles(IFolder folder, List<String> filesToRemoveList)
-      throws CoreException {
-    deleteFiles(folder.getLocation().toFile(), filesToRemoveList);
-    folder.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
-  }
-
-  /**
    * Like {@link #deleteFiles(File, List)}, except at the
    * <code>java.io.File</code> layer. The workspace is not refreshed after the
    * deletions occur.
@@ -336,6 +325,37 @@ public class ResourceUtils {
         deleteFiles(resource, filesToRemoveList);
       } else if (filesToRemoveList.contains(resource.getName())) {
         resource.delete();
+      }
+    }
+  }
+
+  /**
+   * Deletes from the folder tree any file present in filesToRemoveList.
+   * 
+   * @throws CoreException
+   */
+  public static void deleteFiles(IFolder folder, List<String> filesToRemoveList)
+      throws CoreException {
+    deleteFiles(folder.getLocation().toFile(), filesToRemoveList);
+    folder.refreshLocal(IResource.DEPTH_INFINITE, new NullProgressMonitor());
+  }
+
+  /**
+   * Deletes files from targetFolder that are not in fileList.
+   * 
+   * @param folder The folder files would be deleted from.
+   * @param dependecyFiles List of files that should not be removed from targetFolder.
+   */
+  public static void deleteUnlistedFiles(File folder, Set<String> dependecyFiles) {
+    if (!folder.exists() || (dependecyFiles == null)) {
+      return;
+    }
+
+    for (File resource : folder.listFiles()) {
+      if (resource.isDirectory()) {
+        deleteUnlistedFiles(resource, dependecyFiles);
+      } else if (!dependecyFiles.contains(resource.getName())) {
+          resource.delete();
       }
     }
   }
@@ -623,18 +643,6 @@ public class ResourceUtils {
   /**
    * Reads the contents of a file.
    * 
-   * @param path the absolute filesystem path to the file
-   * @return the contents of the file
-   * @throws IOException
-   */
-  public static String readFileContents(IPath path) throws IOException {
-    File file = new File(path.toOSString());
-    return readFileContents(file);
-  }
- 
-  /**
-   * Reads the contents of a file.
-   * 
    * @param file A file object
    * @return the contents of the file
    * @throws IOException
@@ -656,6 +664,18 @@ public class ResourceUtils {
     return sb.toString();
   }
 
+  /**
+   * Reads the contents of a file.
+   * 
+   * @param path the absolute filesystem path to the file
+   * @return the contents of the file
+   * @throws IOException
+   */
+  public static String readFileContents(IPath path) throws IOException {
+    File file = new File(path.toOSString());
+    return readFileContents(file);
+  }
+ 
   /**
    * Resolves a linked resource to its target resource, or returns the given
    * resource if it is not linked or the target resource cannot be resolved.

@@ -27,7 +27,12 @@ import com.google.gdt.eclipse.managedapis.ManagedApiUtils;
 import com.google.gdt.eclipse.managedapis.directory.ManagedApiEntry;
 import com.google.gdt.eclipse.managedapis.impl.ApiPlatformType;
 import com.google.gdt.eclipse.managedapis.impl.EclipseJavaProject;
+import com.google.gdt.eclipse.managedapis.impl.IconInfo;
 import com.google.gdt.eclipse.managedapis.impl.ManagedApiProjectImpl;
+import com.google.gdt.eclipse.managedapis.impl.ProguardConfig.Info;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.apache.tools.ant.util.FileUtils;
 import org.eclipse.core.commands.ExecutionException;
@@ -56,6 +61,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Job that composes several sub-actions to install managed apis in the current
@@ -64,10 +70,10 @@ import java.util.List;
  * as necessary and refreshes the project to make the changes visible.
  */
 public class ManagedApiInstallJob extends Job {
-  
+
   public static final String LANGUAGE_VERSION_PARAM = "&lv=" + ManagedApiPlugin.API_CLIENT_LANG_VERSION;
   public static final String DESCRIPTOR_ONLY_PARAM = "&descriptor-only=1";
-  
+
   private static final int TICKS_CREATE_ROOT_FOLDER = 500;
   private static final int TICKS_DOWNLOAD_API_BUNDLE = 10000;
   private static final int TICKS_DELETE_EXISTING_API_FOLDER = 500;
@@ -78,7 +84,7 @@ public class ManagedApiInstallJob extends Job {
       + TICKS_EXTRACT_ZIP;
   private static final int TICKS_REGISTER_APIS = 1000;
   private static final String DEPENDENCIES_PARAM = "&dependencies=1";
-  
+
   /**
    * Utility method creates a target download File based on standardized naming
    * conventions.
@@ -198,7 +204,7 @@ public class ManagedApiInstallJob extends Job {
                 }
               }
 
-              // Modifying taget folder (and so classpath container name to
+              // Modifying target folder (and so classpath container name to
               // include revision and language version in addition to name and
               // version. This will make sure container initializer gets
               // triggered on addition of library with new revision / language
@@ -231,15 +237,29 @@ public class ManagedApiInstallJob extends Job {
                   ApiDependencies apiDependencies = ManagedApiJsonClasses.GSON_CODEC.fromJson(
                       localDescriptorContent, ApiDependencies.class);
                   ApiPlatformType platformType = ApiPlatformType.getAndroidPlatformType(project);
-                  
+
+                  try {
+                    String parentFolderName =
+                        localDescriptorFile.getFullPath().removeLastSegments(1).lastSegment();
+                    IFolder parentFolder = targetFolder.getFolder(parentFolderName);
+
+                    if (parentFolder.exists()) {
+                      deleteUnlistedFiles(parentFolder, apiDependencies, localDescriptorContent);
+                    }
+                  } catch (IndexOutOfBoundsException e) {
+                    ManagedApiPlugin.getDefault().getLog().log(
+                        new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
+                            "Exception caught while searching descriptor.json's parent folder", e));
+                  }
+
                   if (platformType == null) {
                     /*
-                     * It has to be App Engine, since we only allow the addition of Managed
-                     * APIs to App Engine or Android projects.
+                     * It has to be App Engine, since we only allow the addition of Managed APIs to
+                     * App Engine or Android projects.
                      */
                     platformType = ApiPlatformType.APPENGINE;
                   }
-                  
+
                   ResourceUtils.deleteFiles(targetFolder,
                       ManagedApiUtils.computeDependenciesToRemove(apiDependencies, platformType));
                 }
@@ -306,4 +326,54 @@ public class ManagedApiInstallJob extends Job {
     }
     return Status.OK_STATUS;
   }
+
+  /**
+   * Deletes files that are not specified in the descriptor.json files for a managed API.
+   * 
+   * @param folder The folder files would be deleted from. Usually a folder in the ".google_apis"
+   *          folder.
+   * @param apiDependencies The dependencies for the managed API.
+   * @param descriptorContent The contents of a descriptor.json file.
+   */
+  private void deleteUnlistedFiles(IFolder folder, ApiDependencies apiDependencies,
+      String descriptorContent) {
+    Set<String> dependencyFiles = ManagedApiUtils.computeDependecyFileNames(apiDependencies);
+    if (dependencyFiles == null) {
+      return;
+    }
+
+    Gson infoGson =
+        new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_DASHES).create();
+    Info proguardInfo = infoGson.fromJson(descriptorContent, Info.class);
+    String proguardConfig = proguardInfo.getProguardConfig();
+    if (proguardConfig.contains("/")) {
+      proguardConfig = proguardConfig.substring(proguardConfig.lastIndexOf('/') + 1);
+    }
+
+    Gson iconInfoGson =
+        new GsonBuilder().setFieldNamingPolicy(
+        FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
+    IconInfo iconInfo = iconInfoGson.fromJson(descriptorContent, IconInfo.class);
+
+    String x32Path = iconInfo.getIconFiles().getX32();
+    if (x32Path.contains("/")) {
+      x32Path = x32Path.substring(x32Path.lastIndexOf('/') + 1);
+    }
+
+    String x16Path = iconInfo.getIconFiles().getX16();
+    if (x16Path.contains("/")) {
+      x16Path = x16Path.substring(x16Path.lastIndexOf('/') + 1);
+    }
+
+    dependencyFiles.add(ManagedApiJsonClasses.DESCRIPTOR_FILENAME);
+    dependencyFiles.add(proguardConfig);
+    dependencyFiles.add(x32Path);
+    dependencyFiles.add(x16Path);
+    dependencyFiles.add("LICENSE.txt");
+    dependencyFiles.add("classpath-include");
+    dependencyFiles.add("readme.html");
+
+    ResourceUtils.deleteUnlistedFiles(folder.getLocation().toFile(), dependencyFiles);
+  }
+
 }

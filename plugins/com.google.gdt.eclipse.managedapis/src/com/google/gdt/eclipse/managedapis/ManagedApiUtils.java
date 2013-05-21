@@ -36,59 +36,14 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A set of utility classes that are useful for working with managed APIs.
  */
 public class ManagedApiUtils {
-
-  /**
-   * Given a root folder, search for the descriptor.json file for a managed API.
-   * Once it is found, deserialize the dependency information.
-   * 
-   * Returns null if the folder does not exist, descriptor.json cannot be found
-   * under the file tree, or the dependency information cannot be deserialized
-   * correctly.
-   */
-  public static ApiDependencies findAndReadDependencyFile(File folder)
-      throws IllegalArgumentException, InvocationTargetException,
-      CoreException, IOException {
-    if (!folder.exists()) {
-      return null;
-    }
-    ApiDependencies apiDependencies = null;
-    for (File resource : folder.listFiles()) {
-      if (resource.isDirectory()) {
-        apiDependencies = findAndReadDependencyFile(resource);
-        if (apiDependencies != null) {
-          return apiDependencies;
-        }
-      } else if (resource.getName().equals(
-          ManagedApiJsonClasses.DESCRIPTOR_FILENAME)) {
-        return ManagedApiJsonClasses.GSON_CODEC.fromJson(
-            ResourceUtils.readFileContents(resource), ApiDependencies.class);
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Scans the a root folder of a managed API in a Managed API project. Returns
-   * a {@see ManagedApiResourceVisitor}.
-   * 
-   * @param project The project
-   * @param rootDir An IFolder representing the root directory for a managed API
-   *          (should be something like <code>.google_apis/apiname..</code>).
-   */
-  public static ManagedApiResourceVisitor scanManagedApiFiles(
-      final EclipseProject project, final IFolder rootDir) throws CoreException {
-    ManagedApiResourceVisitor visitor = new ManagedApiResourceVisitor();
-    visitor.setProject(project);
-    visitor.setRootDir(rootDir);
-    rootDir.accept(visitor);
-    return visitor;
-  }
 
   /**
    * Given a set of dependencies for an API and a platform type, return the
@@ -125,6 +80,39 @@ public class ManagedApiUtils {
       }
     }
     return libJarsList;
+  }
+
+  /**
+   * Returns a list of all file names and dependency files names for an API. The returned file names
+   * do not include paths.
+   * 
+   * Returns null if apiDepenencies is null.
+   * 
+   * @param apiDependencies The dependencies of a managed API
+   */
+  public static Set<String> computeDependecyFileNames(ApiDependencies apiDependencies) {
+
+    if (apiDependencies == null) {
+      return null;
+    }
+
+    Set<String> fileList = new HashSet<String>();
+
+    for (ApiDependencies.ApiDependency dependency : apiDependencies.getDependencies()) {
+      for (ApiDependencies.File file : dependency.getFiles()) {
+        if (file.getPath() != null) {
+          fileList.add(file.getPath().substring(file.getPath().lastIndexOf('/') + 1));
+        }
+      }
+    }
+
+    for (ApiDependencies.File file : apiDependencies.getFiles()) {
+      if (file.getPath() != null) {
+        fileList.add(file.getPath().substring(file.getPath().lastIndexOf('/') + 1));
+      }
+    }
+
+    return fileList;
   }
 
   /**
@@ -169,6 +157,36 @@ public class ManagedApiUtils {
     }
 
     return dependencyToRemoveList;
+  }
+
+  /**
+   * Given a root folder, search for the descriptor.json file for a managed API.
+   * Once it is found, deserialize the dependency information.
+   * 
+   * Returns null if the folder does not exist, descriptor.json cannot be found
+   * under the file tree, or the dependency information cannot be deserialized
+   * correctly.
+   */
+  public static ApiDependencies findAndReadDependencyFile(File folder)
+      throws IllegalArgumentException, InvocationTargetException,
+      CoreException, IOException {
+    if (!folder.exists()) {
+      return null;
+    }
+    ApiDependencies apiDependencies = null;
+    for (File resource : folder.listFiles()) {
+      if (resource.isDirectory()) {
+        apiDependencies = findAndReadDependencyFile(resource);
+        if (apiDependencies != null) {
+          return apiDependencies;
+        }
+      } else if (resource.getName().equals(
+          ManagedApiJsonClasses.DESCRIPTOR_FILENAME)) {
+        return ManagedApiJsonClasses.GSON_CODEC.fromJson(
+            ResourceUtils.readFileContents(resource), ApiDependencies.class);
+      }
+    }
+    return null;
   }
 
   /**
@@ -254,5 +272,22 @@ public class ManagedApiUtils {
     }
 
     return beforeState;
+  }
+
+  /**
+   * Scans the a root folder of a managed API in a Managed API project. Returns
+   * a {@see ManagedApiResourceVisitor}.
+   * 
+   * @param project The project
+   * @param rootDir An IFolder representing the root directory for a managed API
+   *          (should be something like <code>.google_apis/apiname..</code>).
+   */
+  public static ManagedApiResourceVisitor scanManagedApiFiles(
+      final EclipseProject project, final IFolder rootDir) throws CoreException {
+    ManagedApiResourceVisitor visitor = new ManagedApiResourceVisitor();
+    visitor.setProject(project);
+    visitor.setRootDir(rootDir);
+    rootDir.accept(visitor);
+    return visitor;
   }
 }
