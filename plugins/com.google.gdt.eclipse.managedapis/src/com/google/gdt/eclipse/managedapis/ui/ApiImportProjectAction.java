@@ -29,7 +29,7 @@ public class ApiImportProjectAction implements IActionDelegate {
   private IProject appEngineProject;
 
   public void run(IAction action) {
-    if (!AppEngineAndroidCheckDialog.isAppEngineAndroidProject(appEngineProject)) {
+    if (!JavaProjectCheckDialog.canAddGoogleApi(appEngineProject)) {
       return;
     }
     new ApiImportProjectHandler().execute(null);
