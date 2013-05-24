@@ -349,21 +349,6 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
         fieldChanged();
       }
     });
-
-    myApplicationsLink.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-        openBrowser(APPENGINE_CREATE_APP_URL);
-      }
-    });
-
-    existingVersionsLink.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-        assert (appId != null);
-        openBrowser(APPENGINE_APP_VERSIONS_URL + appId);
-      }
-    });
     useGoogleCloudSqlLink.addListener(SWT.Selection, new Listener() {
       public void handleEvent(Event ev) {
         BrowserUtilities.launchBrowserAndHandleExceptions(ev.text);
