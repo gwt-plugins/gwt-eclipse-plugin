@@ -49,14 +49,14 @@ import java.util.List;
 @SuppressWarnings("restriction")
 public class GaeProject {
 
-  private class ReadAppEngineXmlOperation extends XmlUtilities.ReadOperation {
+  private static class ReadAppEngineXmlOperation extends XmlUtilities.ReadOperation {
 
     private final String elementTagName;
 
     private String elementText = "";
 
-    public ReadAppEngineXmlOperation(String elementTagName) {
-      super(getAppEngineWebXml());
+    public ReadAppEngineXmlOperation(String elementTagName, IFile appEngineXmlFile) {
+      super(appEngineXmlFile);
       this.elementTagName = elementTagName;
     }
 
@@ -111,23 +111,94 @@ public class GaeProject {
 
   /**
    * Returns the GaeProject for the specified IProject.
-   * 
+   *
    * @param project the project
    * @return a GaeProject instance, or <code>null</code> if the project does not
    *         have the GAE nature
    */
   public static GaeProject create(IProject project) {
-    assert (project != null);
+    assert project != null;
     if (GaeNature.isGaeProject(project)) {
       return new GaeProject(JavaCore.create(project));
     }
     return null;
   }
 
+  /**
+   * Utility method for get App ID value.
+   */
+  public static String getAppId(IFile appEngineXmlFile) {
+    if (appEngineXmlFile == null) {
+      return "";
+    }
+
+    try {
+      ReadAppEngineXmlOperation op = new ReadAppEngineXmlOperation(
+          "application", appEngineXmlFile);
+      op.run();
+      return op.getElementText();
+    } catch (Exception e) {
+      AppEngineCorePluginLog.logError(e);
+      return "";
+    }
+  }
+
+  /**
+   * Utility method for get App Version value.
+   */
+  public static String getAppVersion(IFile appEngineXmlFile) {
+    if (appEngineXmlFile == null) {
+      return "";
+    }
+
+    try {
+      ReadAppEngineXmlOperation op = new ReadAppEngineXmlOperation("version", appEngineXmlFile);
+      op.run();
+      return op.getElementText();
+    } catch (Exception e) {
+      AppEngineCorePluginLog.logError(e);
+      return "";
+    }
+  }
+
+  /**
+   * Utility method for set App ID value.
+   */
+  public static void setAppId(IFile appEngineWebXml, final String appId, boolean forceSave)
+      throws IOException, CoreException {
+    new XmlUtilities.EditOperation(appEngineWebXml) {
+      @Override
+      protected void edit(IDOMDocument document) {
+        NodeList nodes = document.getDocumentElement().getElementsByTagName(
+            "application");
+        if (nodes.getLength() == 1) {
+          XmlUtilities.setElementText(document, (Element) nodes.item(0), appId);
+        }
+      }
+    }.run(forceSave);
+  }
+
+  /**
+   * Utility method for set App Version value.
+   */
+  public static void setAppVersion(IFile appEngineXmlFile, final String version,
+      boolean forceSave) throws IOException, CoreException {
+
+    new XmlUtilities.EditOperation(appEngineXmlFile) {
+      @Override
+      protected void edit(IDOMDocument document) {
+        NodeList nodes = document.getDocumentElement().getElementsByTagName("version");
+        if (nodes.getLength() == 1) {
+          XmlUtilities.setElementText(document, (Element) nodes.item(0), version);
+        }
+      }
+    }.run(forceSave);
+  }
+
   private final IJavaProject javaProject;
 
   protected GaeProject(IJavaProject project) {
-    this.javaProject = project;
+    javaProject = project;
   }
 
   public IFile getAppEngineWebXml() {
@@ -135,34 +206,11 @@ public class GaeProject {
   }
 
   public String getAppId() {
-    if (getAppEngineWebXml() == null) {
-      return "";
-    }
-
-    try {
-      ReadAppEngineXmlOperation op = new ReadAppEngineXmlOperation(
-          "application");
-      op.run();
-      return op.getElementText();
-    } catch (Exception e) {
-      AppEngineCorePluginLog.logError(e);
-      return "";
-    }
+    return getAppId(getAppEngineWebXml());
   }
 
   public String getAppVersion() {
-    if (getAppEngineWebXml() == null) {
-      return "";
-    }
-
-    try {
-      ReadAppEngineXmlOperation op = new ReadAppEngineXmlOperation("version");
-      op.run();
-      return op.getElementText();
-    } catch (Exception e) {
-      AppEngineCorePluginLog.logError(e);
-      return "";
-    }
+    return getAppVersion(getAppEngineWebXml());
   }
 
   public List<String> getBackendNames() {
@@ -235,49 +283,25 @@ public class GaeProject {
     setAppId(appId, false);
   }
 
-  public void setAppId(final String appId, boolean forceSave)
-      throws IOException, CoreException {
+  public void setAppId(final String appId, boolean forceSave) throws IOException, CoreException {
     IFile appEngineWebXml = getAppEngineWebXml();
     if (appEngineWebXml == null) {
-      throw new FileNotFoundException(
-          "Could not find appengine-web.xml in project " + getName());
+      throw new FileNotFoundException("Could not find appengine-web.xml in project " + getName());
     }
-
-    new XmlUtilities.EditOperation(appEngineWebXml) {
-      @Override
-      protected void edit(IDOMDocument document) {
-        NodeList nodes = document.getDocumentElement().getElementsByTagName(
-            "application");
-        if (nodes.getLength() == 1) {
-          XmlUtilities.setElementText(document, (Element) nodes.item(0), appId);
-        }
-      }
-    }.run(forceSave);
+    setAppId(appEngineWebXml, appId, forceSave);
   }
 
   public void setAppVersion(String version) throws IOException, CoreException {
     setAppVersion(version, false);
   }
 
-  public void setAppVersion(final String version, boolean forceSave)
-      throws IOException, CoreException {
-    IFile appEngineWebXml = getAppEngineWebXml();
-    if (appEngineWebXml == null) {
-      throw new FileNotFoundException(
-          "Could not find appengine-web.xml in project " + getName());
+  public void setAppVersion(final String version, boolean forceSave) throws IOException,
+      CoreException {
+    IFile appEngineXmlFile = getAppEngineWebXml();
+    if (appEngineXmlFile == null) {
+      throw new FileNotFoundException("Could not find appengine-web.xml in project " + getName());
     }
-
-    new XmlUtilities.EditOperation(appEngineWebXml) {
-      @Override
-      protected void edit(IDOMDocument document) {
-        NodeList nodes = document.getDocumentElement().getElementsByTagName(
-            "version");
-        if (nodes.getLength() == 1) {
-          XmlUtilities.setElementText(document, (Element) nodes.item(0),
-              version);
-        }
-      }
-    }.run(forceSave);
+    setAppVersion(appEngineXmlFile, version, forceSave);
   }
 
   private IFile getXmlFile(String name) {
