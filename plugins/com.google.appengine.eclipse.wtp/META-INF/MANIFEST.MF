@@ -1,0 +1,50 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: com.google.appengine.eclipse.wtp;singleton:=true
+Bundle-Version: 0.0.1.qualifier
+Bundle-Localization: plugin
+Bundle-Activator: com.google.appengine.eclipse.wtp.AppEnginePlugin
+Bundle-Vendor: %providerName
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.jdt.core,
+ org.eclipse.jst.common.frameworks,
+ org.eclipse.jst.common.project.facet.core,
+ org.eclipse.jst.j2ee,
+ org.eclipse.jst.j2ee.web,
+ org.eclipse.jst.server.core,
+ org.eclipse.wst.server.core,
+ org.eclipse.wst.server.ui,
+ org.eclipse.wst.common.project.facet.core,
+ org.eclipse.ui.forms,
+ org.eclipse.ui.ide,
+ org.eclipse.emf.edit.ui,
+ org.eclipse.debug.ui,
+ org.eclipse.jdt.debug.ui,
+ org.eclipse.jdt.ui,
+ org.eclipse.wst.common.frameworks.ui,
+ org.eclipse.jdt.launching,
+ org.eclipse.jem.util,
+ com.google.gdt.eclipse.suite,
+ org.eclipse.ui.console,
+ com.google.appengine.eclipse.core,
+ com.google.gdt.eclipse.login,
+ org.eclipse.emf.codegen,
+ org.eclipse.jpt.common.core,
+ org.eclipse.jpt.jpa.core,
+ org.eclipse.jpt.jpa.db,
+ org.eclipse.persistence.jpa.jpql,
+ org.eclipse.jpt.jpa.ui,
+ org.eclipse.jst.common.project.facet.ui
+Bundle-ActivationPolicy: lazy
+Export-Package: com.google.appengine.eclipse.wtp
+Import-Package: org.eclipse.core.expressions,
+ org.eclipse.jdt.launching,
+ org.eclipse.jdt.ui.wizards,
+ org.eclipse.wst.common.project.facet.ui
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+
+
+
+
+
