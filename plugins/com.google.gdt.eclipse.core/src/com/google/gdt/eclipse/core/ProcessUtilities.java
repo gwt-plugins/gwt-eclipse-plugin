@@ -97,6 +97,39 @@ public class ProcessUtilities {
     return computeJavaCompilerExecutablePathFromJavaExecutablePath(computeJavaExecutableFullyQualifiedPath(javaProject));
   }
 
+  public static String computeJavaCompilerExecutablePathFromJavaExecutablePath(
+      String fullyQualifiedJavaExecutableSystemPath) {
+
+    assert fullyQualifiedJavaExecutableSystemPath != null;
+
+    IPath javaExecutablePath = new Path(fullyQualifiedJavaExecutableSystemPath);
+    File javaExecutableFile = javaExecutablePath.toFile();
+    File javaExecutableDir = javaExecutableFile.getParentFile();
+
+    File javaCompilerExecutableFile = findJavaCompilerExecutableInDir(javaExecutableDir);
+
+    if (javaCompilerExecutableFile != null) {
+      return javaCompilerExecutableFile.getAbsolutePath();
+    }
+
+    /*
+     * If we didn't find a javac executable as a peer of the java executable,
+     * then the java executable was located in <jdk home>/jre/bin.
+     */
+    if (javaExecutablePath.segmentCount() < 3) {
+      return null;
+    }
+
+    File jdkHomeBinDir = javaExecutablePath.removeLastSegments(3).append("bin").toFile();
+    javaCompilerExecutableFile = findJavaCompilerExecutableInDir(jdkHomeBinDir);
+
+    if (javaCompilerExecutableFile != null) {
+      return javaCompilerExecutableFile.getAbsolutePath();
+    }
+
+    return null;
+  }
+
   /**
    * Computes the fully qualified path to the java executable for the JRE/JDK
    * used by this project.
@@ -155,6 +188,40 @@ public class ProcessUtilities {
               "Unable to find a java executable for the JVM that Eclipse is running on (located at "
                   + javaHomeDir.getAbsolutePath()
                   + "). Please verify that this JVM is installed properly."));
+    }
+
+    return javaExecutable.getAbsolutePath();
+  }
+
+  public static String getJavaExecutableForVMInstall(IVMInstall vmInstall)
+      throws CoreException {
+
+    assert vmInstall != null;
+
+    File vmInstallLocation = vmInstall.getInstallLocation();
+
+    if (vmInstallLocation == null) {
+      throw new CoreException(
+          new Status(
+              Status.ERROR,
+              CorePlugin.PLUGIN_ID,
+              "Unable to determine the path for the JVM "
+                  + vmInstall.getName()
+                  + ". Please verify that this JVM is installed properly by inspecting your project's build path."));
+    }
+
+    File javaExecutable = StandardVMType.findJavaExecutable(vmInstallLocation);
+
+    if (javaExecutable == null || !javaExecutable.exists()) {
+      throw new CoreException(
+          new Status(
+              Status.ERROR,
+              CorePlugin.PLUGIN_ID,
+              "Unable to find a java executable for the JVM   "
+                  + vmInstall.getName()
+                  + " located at "
+                  + vmInstallLocation.getAbsolutePath()
+                  + ". Please verify that this JVM is installed properly by inspecting your project's build path."));
     }
 
     return javaExecutable.getAbsolutePath();
@@ -471,39 +538,6 @@ public class ProcessUtilities {
     p.destroy();
   }
 
-  private static String computeJavaCompilerExecutablePathFromJavaExecutablePath(
-      String fullyQualifiedJavaExecutableSystemPath) {
-
-    assert (fullyQualifiedJavaExecutableSystemPath != null);
-
-    IPath javaExecutablePath = new Path(fullyQualifiedJavaExecutableSystemPath);
-    File javaExecutableFile = javaExecutablePath.toFile();
-    File javaExecutableDir = javaExecutableFile.getParentFile();
-
-    File javaCompilerExecutableFile = findJavaCompilerExecutableInDir(javaExecutableDir);
-
-    if (javaCompilerExecutableFile != null) {
-      return javaCompilerExecutableFile.getAbsolutePath();
-    }
-
-    /*
-     * If we didn't find a javac executable as a peer of the java executable,
-     * then the java executable was located in <jdk home>/jre/bin.
-     */
-    if (javaExecutablePath.segmentCount() < 3) {
-      return null;
-    }
-
-    File jdkHomeBinDir = javaExecutablePath.removeLastSegments(3).append("bin").toFile();
-    javaCompilerExecutableFile = findJavaCompilerExecutableInDir(jdkHomeBinDir);
-
-    if (javaCompilerExecutableFile != null) {
-      return javaCompilerExecutableFile.getAbsolutePath();
-    }
-
-    return null;
-  }
-
   private static File findJavaCompilerExecutableInDir(File dir) {
     if (dir == null || !dir.exists() || !dir.isDirectory()) {
       return null;
@@ -518,40 +552,6 @@ public class ProcessUtilities {
     }
 
     return null;
-  }
-
-  private static String getJavaExecutableForVMInstall(IVMInstall vmInstall)
-      throws CoreException {
-
-    assert (vmInstall != null);
-
-    File vmInstallLocation = vmInstall.getInstallLocation();
-
-    if (vmInstallLocation == null) {
-      throw new CoreException(
-          new Status(
-              Status.ERROR,
-              CorePlugin.PLUGIN_ID,
-              "Unable to determine the path for the JVM "
-                  + vmInstall.getName()
-                  + ". Please verify that this JVM is installed properly by inspecting your project's build path."));
-    }
-
-    File javaExecutable = StandardVMType.findJavaExecutable(vmInstallLocation);
-
-    if (javaExecutable == null || !javaExecutable.exists()) {
-      throw new CoreException(
-          new Status(
-              Status.ERROR,
-              CorePlugin.PLUGIN_ID,
-              "Unable to find a java executable for the JVM   "
-                  + vmInstall.getName()
-                  + " located at "
-                  + vmInstallLocation.getAbsolutePath()
-                  + ". Please verify that this JVM is installed properly by inspecting your project's build path."));
-    }
-
-    return javaExecutable.getAbsolutePath();
   }
 
   /*
