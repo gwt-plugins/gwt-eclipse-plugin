@@ -58,8 +58,9 @@ public final class GaeFacetInstallDelegate implements IDelegate {
       IProgressMonitor monitor) throws CoreException {
     IDataModel model = (IDataModel) config;
     List<IDataModelOperation> operations = Lists.newArrayList();
-    // add custom builder
+    // add custom builders
     BuilderUtilities.addBuilderToProject(project, ProjectChangeNotifier.BUILDER_ID);
+    BuilderUtilities.addBuilderToProject(project, AppEnginePlugin.PLUGIN_ID + ".projectValidator");
     // do create project contents
     if (JavaEEProjectUtilities.isDynamicWebProject(project)) {
       // add "appengine-web.xml" file

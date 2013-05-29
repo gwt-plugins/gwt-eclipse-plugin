@@ -87,13 +87,16 @@
         </project-facet>
         <project-facet-version facet="com.google.appengine.facet" version="1">
             <constraint>
-                <or>
-                    <requires facet="jst.web" version="2.2"/>
-                    <requires facet="jst.web" version="2.3"/>
-                    <requires facet="jst.web" version="2.4"/>
-                    <requires facet="jst.web" version="2.5"/>
-                    <!--requires facet="jst.web" version="3.0"/-->
-                </or>
+                <and>
+                    <or>
+                        <requires facet="jst.web" version="2.2"/>
+                        <requires facet="jst.web" version="2.3"/>
+                        <requires facet="jst.web" version="2.4"/>
+                        <requires facet="jst.web" version="2.5"/>
+                        <!--requires facet="jst.web" version="3.0"/-->
+                    </or>
+                    <requires facet="java" version="[1.6"/>
+                </and>
             </constraint>
         </project-facet-version>
         <action
@@ -193,6 +196,26 @@
             <run class="com.google.appengine.eclipse.wtp.building.ProjectChangeNotifier"/>
         </builder>
     </extension>
+    <extension
+         point="org.eclipse.core.resources.builders"
+         id="enhancerbuilder"
+         name="Enhancer">
+      <builder hasNature="false">
+         <run class="com.google.appengine.eclipse.core.orm.enhancement.AutoEnhancer"/>
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.core.resources.builders"
+         id="projectValidator"
+         name="Google App Engine Project Validator">
+      <builder
+            callOnEmptyDelta="true"
+            hasNature="false"
+            isConfigurable="false">
+         <run class="com.google.appengine.eclipse.core.validators.GaeProjectValidator"/>
+      </builder>
+   </extension>
+    
     
     <extension point="org.eclipse.core.expressions.propertyTesters">
       <propertyTester
@@ -229,7 +252,6 @@
                 </iterate>
             </and>
         </definition>
-        
         <definition id="com.google.appengine.eclipse.wtp.isGae">
             <adapt type="org.eclipse.wst.server.core.IServer">
                 <and>
@@ -240,6 +262,13 @@
         </definition>   
         <definition id="com.google.appengine.eclipse.wtp.server.isRunning">
            <test property="com.google.appengine.eclipse.wtp.server.isRunning"/>
+        </definition>
+        <definition id="com.google.appengine.eclipse.wtp.isGaeProject">
+            <adapt type="org.eclipse.core.resources.IProject">
+                <test forcePluginActivation="true"
+                      property="org.eclipse.wst.common.project.facet.core.projectFacet"
+                      value="com.google.appengine.facet"/>
+            </adapt>
         </definition>
     </extension>
     <extension point="org.eclipse.ui.commands">
@@ -347,11 +376,7 @@
               name="%projectpropertypage.root"
               class="com.google.gdt.eclipse.core.properties.ui.CoreProjectPropertyPage">
             <enabledWhen>
-                <adapt type="org.eclipse.core.resources.IProject">
-                    <test forcePluginActivation="true"
-                          property="org.eclipse.wst.common.project.facet.core.projectFacet"
-                          value="com.google.appengine.facet"/>
-                </adapt>
+                <reference definitionId="com.google.appengine.eclipse.wtp.isGaeProject"/>
             </enabledWhen>
         </page>
         <page id="com.google.appengine.eclipse.wtp.deployProperties"
@@ -359,11 +384,15 @@
               category="com.google.appengine.eclipse.wtp.gaeProjectProperties"
               class="com.google.appengine.eclipse.wtp.properties.ui.DeployPropertiesPage">
             <enabledWhen>
-                <adapt type="org.eclipse.core.resources.IProject">
-                    <test forcePluginActivation="true"
-                          property="org.eclipse.wst.common.project.facet.core.projectFacet"
-                          value="com.google.appengine.facet"/>
-                </adapt>
+                <reference definitionId="com.google.appengine.eclipse.wtp.isGaeProject"/>
+            </enabledWhen>
+        </page>
+        <page id="com.google.appengine.eclipse.core.properties.gaeProjectValidationPropertyPage"
+              name="%projectpropertypage.validation"
+              category="com.google.appengine.eclipse.wtp.gaeProjectProperties"
+              class="com.google.appengine.eclipse.core.properties.ui.GaeValidationProjectPropertyPage">
+            <enabledWhen>
+                <reference definitionId="com.google.appengine.eclipse.wtp.isGaeProject"/>
             </enabledWhen>
         </page>
         <page id="com.google.appengine.eclipse.wtp.gaeProjectOrmPropertyPage"
@@ -400,6 +429,19 @@
              label="Google App Engine (Datanucleus)">
        </jpaPlatform>
     </extension>
+    
+    <extension
+         point="org.eclipse.jdt.core.compilationParticipant">
+      <compilationParticipant
+            class="com.google.appengine.eclipse.wtp.validators.GaeCompilationParticipant"
+            createsProblems="true"
+            id="com.google.appengine.eclipse.wtp.javaCompilationParticipant">
+         <managedMarker
+               markerType="com.google.appengine.eclipse.core.javaProblemMarker">
+         </managedMarker>
+      </compilationParticipant>
+   </extension>
+    
     <extension
           point="org.eclipse.jst.common.project.facet.core.libraryProviders">
        <provider
@@ -460,12 +502,23 @@
        </classpathContainerInitializer>
     </extension>
     
-    <!-- <extension
+    <extension
           point="org.eclipse.jpt.jpa.ui.jpaPlatformUis">
        <jpaPlatformUi
-             factoryClass="com.google.appengine.eclipse.wtp.jpa.JpaPlatformUiFactory1"
+             factoryClass="com.google.appengine.eclipse.wtp.jpa.GaeJpaPlatformUiFactory"
              id="com.google.appengine.eclipse.wtp.jpa.GaePlatformUI"
              jpaPlatform="com.google.appengine.eclipse.wtp.jpa.GaePlatform">
        </jpaPlatformUi>
-    </extension> -->
+    </extension>
+    <extension
+         point="org.eclipse.wst.common.project.facet.core.listeners">
+      <listener
+            class="com.google.appengine.eclipse.wtp.jpa.JpaFacetPostInstallListener"
+            eventTypes="POST_INSTALL">
+      </listener>
+      <listener
+            class="com.google.appengine.eclipse.wtp.jpa.JpaFacetUninstallListener"
+            eventTypes="PRE_UNINSTALL">
+      </listener>
+   </extension>
 </plugin>

@@ -13,6 +13,9 @@
 package com.google.appengine.eclipse.wtp.utils;
 
 import com.google.appengine.eclipse.core.resources.GaeProject;
+import com.google.appengine.eclipse.core.sdk.GaeSdk;
+import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
+import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
 import com.google.gdt.eclipse.core.DynamicWebProjectUtilities;
 
 import org.eclipse.core.resources.IFile;
@@ -20,9 +23,18 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jst.j2ee.internal.J2EEConstants;
 import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetDataModelProperties;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
+import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
+import org.eclipse.wst.common.project.facet.core.IFacetedProject;
+import org.eclipse.wst.common.project.facet.core.IProjectFacet;
+import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.eclipse.wst.common.project.facet.core.runtime.IRuntime;
+import org.eclipse.wst.common.project.facet.core.runtime.IRuntimeComponent;
+import org.eclipse.wst.common.project.facet.core.runtime.IRuntimeComponentType;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -72,6 +84,22 @@ public final class ProjectUtils {
   }
 
   /**
+   * @return {@link GaeSdk} location if given project is faceted project and runs against
+   *         GaeRuntime. Otherwise returns <code>null</code>.
+   */
+  public static IPath getGaeSdkLocation(IProject project) throws CoreException {
+    if (FacetedProjectFramework.isFacetedProject(project)) {
+      IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+      IRuntime primaryRuntime = facetedProject.getPrimaryRuntime();
+      if (primaryRuntime == null) {
+        return null;
+      }
+      return getSdkPath(primaryRuntime);
+    }
+    return null;
+  }
+
+  /**
    * @return IProject instance associated with model.
    */
   public static IProject getProject(IDataModel model) {
@@ -80,6 +108,25 @@ public final class ProjectUtils {
       return ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
     }
     return null;
+  }
+
+  /**
+   * @return <code>true</code> if this project is faceted project and has AppEngine facet installed.
+   */
+  public static boolean isGaeProject(IJavaProject javaProject) throws CoreException {
+    return isGaeProject(javaProject.getProject());
+  }
+
+  /**
+   * @return <code>true</code> if this project is faceted project and has AppEngine facet installed.
+   */
+  public static boolean isGaeProject(IProject project) throws CoreException {
+    if (FacetedProjectFramework.isFacetedProject(project)) {
+      IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+      IProjectFacet gaeFacet = ProjectFacetsManager.getProjectFacet(IGaeFacetConstants.GAE_FACET_ID);
+      return facetedProject.hasProjectFacet(gaeFacet);
+    }
+    return false;
   }
 
   /**
@@ -106,6 +153,19 @@ public final class ProjectUtils {
           + project.getName());
     }
     GaeProject.setAppVersion(appEngineWebXml, appId, forceSave);
+  }
+
+  /**
+   * Searches for {@link GaeSdk} location.
+   */
+  private static IPath getSdkPath(IRuntime primaryRuntime) {
+    for (IRuntimeComponent component : primaryRuntime.getRuntimeComponents()) {
+      IRuntimeComponentType type = component.getRuntimeComponentType();
+      if (GaeRuntime.GAE_RUNTIME_ID.equals(type.getId())) {
+        return new Path(component.getProperty("location"));
+      }
+    }
+    return null;
   }
 
   /**

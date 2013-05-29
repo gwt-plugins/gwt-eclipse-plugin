@@ -35,7 +35,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jpt.jpa.db,
  org.eclipse.persistence.jpa.jpql,
  org.eclipse.jpt.jpa.ui,
- org.eclipse.jst.common.project.facet.ui
+ org.eclipse.jst.common.project.facet.ui,
+ org.eclipse.jpt.common.ui,
+ org.eclipse.jpt.common.utility
 Bundle-ActivationPolicy: lazy
 Export-Package: com.google.appengine.eclipse.wtp
 Import-Package: org.eclipse.core.expressions,

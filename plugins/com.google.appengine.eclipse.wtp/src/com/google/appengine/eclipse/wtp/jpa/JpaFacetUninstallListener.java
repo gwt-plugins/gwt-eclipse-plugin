@@ -10,28 +10,35 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
-package com.google.appengine.eclipse.wtp.facet;
+package com.google.appengine.eclipse.wtp.jpa;
 
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
-import com.google.appengine.eclipse.wtp.building.ProjectChangeNotifier;
 import com.google.gdt.eclipse.core.BuilderUtilities;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.common.project.facet.core.IDelegate;
-import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
+import org.eclipse.wst.common.project.facet.core.events.IFacetedProjectEvent;
+import org.eclipse.wst.common.project.facet.core.events.IFacetedProjectListener;
+import org.eclipse.wst.common.project.facet.core.events.IProjectFacetActionEvent;
 
 /**
- * Facet delegate for uninstalling GAE facet.
+ * Listener for removing JPA facet.
  */
-public final class GaeFacetUninstallDelegate implements IDelegate {
+public final class JpaFacetUninstallListener implements IFacetedProjectListener {
+
   @Override
-  public void execute(IProject project, IProjectFacetVersion fv, Object config,
-      IProgressMonitor monitor) throws CoreException {
-    // remove notifying builder
-    BuilderUtilities.removeBuilderFromProject(project, ProjectChangeNotifier.BUILDER_ID);
-    BuilderUtilities.removeBuilderFromProject(project, AppEnginePlugin.PLUGIN_ID
-        + ".projectValidator");
+  public void handleEvent(IFacetedProjectEvent event) {
+    IProjectFacetActionEvent actionEvent = (IProjectFacetActionEvent) event;
+    // handle JPA facet only
+    if ("jpt.jpa".equals(actionEvent.getProjectFacet().getId())) {
+      try {
+        // remove enhancer
+        BuilderUtilities.removeBuilderFromProject(actionEvent.getProject().getProject(),
+            AppEnginePlugin.PLUGIN_ID + ".enhancerbuilder");
+      } catch (CoreException e) {
+        // TODO: actually don't need to log this.
+        AppEnginePlugin.logMessage(e);
+      }
+    }
   }
+
 }
