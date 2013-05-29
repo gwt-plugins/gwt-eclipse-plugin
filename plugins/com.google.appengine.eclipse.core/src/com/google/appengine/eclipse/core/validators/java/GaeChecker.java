@@ -45,7 +45,7 @@ import java.util.Set;
  * Checks that only Google App Engine supported JRE types are used by a
  * {@link CompilationUnit}, and no imports from com.google.appengine.repackaged
  * are used.
- * 
+ *
  * TODO: This class requires {@link ITypeBinding}s in order to determine the
  * fully qualified name of the type referenced by a {@link SimpleName} node.
  * However, these are expensive; it seems like there should be a lighter weight
@@ -56,11 +56,11 @@ public class GaeChecker {
    * Validates that the {@link CompilationUnit} uses only JRE type that are
    * supported by the Google App Engine. A {@link CategorizedProblem} will be
    * added to the {@link #problems} for each use of an unsupported JRE type.
-   * 
+   *
    * Also validates that there are no imports from
    * com.google.appengine.repackaged. A {@link CategorizedProblem} will be added
    * to the {@link #problems} for each such import.
-   * 
+   *
    * TODO: We maybe able to refactor this validation into a visitor that
    * collects all references to JRE members and a utility class that iterates
    * over the references and creates the {@link CategorizedProblem}s.
@@ -70,7 +70,7 @@ public class GaeChecker {
     /**
      * Returns <code>true</code> if the type is part of the JRE,
      * <code>false</code> otherwise.
-     * 
+     *
      * @throws JavaModelException
      */
     private static boolean isJreType(IType type) throws JavaModelException {
@@ -94,11 +94,15 @@ public class GaeChecker {
 
     GaeValidationVisitor(GaeProject gaeProject,
         List<CategorizedProblem> problems) {
-      this.javaProject = gaeProject.getJavaProject();
+      this(gaeProject.getJavaProject(), gaeProject.getSdk(), problems);
+    }
+
+    GaeValidationVisitor(IJavaProject javaProject, GaeSdk sdk,
+        List<CategorizedProblem> problems) {
+      this.javaProject = javaProject;
       this.problems = problems;
-      GaeSdk sdk = gaeProject.getSdk();
-      assert (sdk != null);
-      this.whiteList = sdk.getWhiteList();
+      assert sdk != null;
+      whiteList = sdk.getWhiteList();
     }
 
     @Override
@@ -135,13 +139,13 @@ public class GaeChecker {
     /**
      * Validate that the <code>resolvedBinding</code> Record the
      * <code>node</code> if it references a JRE type.
-     * 
+     *
      * @param typeNode type node to inspect
      * @TODO: javadoc out of whack.
      */
     private void validateTypeReference(ASTNode node,
         ITypeBinding resolvedBinding) {
-      assert (resolvedBinding != null);
+      assert resolvedBinding != null;
 
       if (resolvedBinding.isPrimitive()) {
         // Primitive types cannot cause problems for GAE
@@ -192,7 +196,7 @@ public class GaeChecker {
    * Returns a {@link CategorizedProblem} for each use of a JRE type that is not
    * supported by the Google App Engine, and for each import from
    * com.google.appengine.repackaged. Package declarations are ignored.
-   * 
+   *
    * @param compilationUnit {@link CompilationUnit} to check
    * @param javaProject project that owns the {@link CompilationUnit}
    * @return {@link CategorizedProblem} for each use of a JRE type that is not
@@ -201,12 +205,20 @@ public class GaeChecker {
    */
   public static List<CategorizedProblem> check(
       CompilationUnit compilationUnit, IJavaProject javaProject) {
-    List<CategorizedProblem> problems = new ArrayList<CategorizedProblem>();
     IProject project = javaProject.getProject();
     GaeProject gaeProject = GaeProject.create(project);
     GaeSdk sdk = gaeProject.getSdk();
+    return check(compilationUnit, javaProject, sdk);
+  }
+
+  /**
+   * Convenient version for {@link #check(CompilationUnit, IJavaProject)}
+   */
+  public static List<CategorizedProblem> check(CompilationUnit compilationUnit,
+      IJavaProject javaProject, GaeSdk sdk) {
+    List<CategorizedProblem> problems = new ArrayList<CategorizedProblem>();
     if (sdk != null && sdk.validate().isOK()) {
-      GaeValidationVisitor visitor = new GaeValidationVisitor(gaeProject,
+      GaeValidationVisitor visitor = new GaeValidationVisitor(javaProject, sdk,
           problems);
       compilationUnit.accept(visitor);
     } else {

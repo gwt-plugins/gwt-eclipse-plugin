@@ -71,13 +71,7 @@
             id="com.google.appengine.eclipse.core.gaeProjectPropertyPage"
             name="App Engine">
          <enabledWhen>
-            <adapt
-                  type="org.eclipse.core.resources.IProject">
-               <test
-                     property="org.eclipse.core.resources.projectNature"
-                     value="org.eclipse.jdt.core.javanature">
-               </test>
-            </adapt>
+            <reference definitionId="com.google.gdt.eclipse.core.isGpeSelected"/>
          </enabledWhen>
       </page>
       <page
@@ -86,13 +80,7 @@
             id="com.google.appengine.eclipse.core.properties.gaeProjectValidationPropertyPage"
             name="Validation">
          <enabledWhen>
-            <adapt
-                  type="org.eclipse.core.resources.IProject">
-               <test
-                     property="org.eclipse.core.resources.projectNature"
-                     value="org.eclipse.jdt.core.javanature">
-               </test>
-            </adapt>
+            <reference definitionId="com.google.gdt.eclipse.core.isGpeSelected"/>
          </enabledWhen>
       </page>
       <page
@@ -101,13 +89,7 @@
             id="com.google.appengine.eclipse.core.properties.gaeProjectOrmPropertyPage"
             name="ORM">
          <enabledWhen>
-            <adapt
-                  type="org.eclipse.core.resources.IProject">
-               <test
-                     property="org.eclipse.core.resources.projectNature"
-                     value="org.eclipse.jdt.core.javanature">
-               </test>
-            </adapt>
+            <reference definitionId="com.google.gdt.eclipse.core.isGpeSelected"/>
          </enabledWhen>
       </page>
    </extension>

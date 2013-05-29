@@ -262,6 +262,44 @@ public class GaeSdk extends AbstractSdk {
     return null;
   }
 
+  /**
+   * Create an array of class path entries for given <code>classpathFiles</code> attempting to bind
+   * source archive. TODO: move to {@link SdkUtils}?
+   */
+  public static IClasspathEntry[] getClasspathEntries(List<File> classpathFiles, IPath installationPath) {
+
+    IPath javadocLocation = installationPath.append(
+        new Path("docs/javadoc"));
+    IClasspathAttribute[] extraAttributes = new IClasspathAttribute[0];
+
+    if (javadocLocation.toFile().exists()) {
+      extraAttributes = new IClasspathAttribute[] {JavaCore.newClasspathAttribute(
+          IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME,
+          javadocLocation.toFile().toURI().toString())};
+    }
+
+    List<IClasspathEntry> buildpath = new ArrayList<IClasspathEntry>();
+
+    for (File file : classpathFiles) {
+      IPath path = new Path(file.getAbsolutePath());
+
+      String possibleSourceName = file.getName().replace(".jar", "-src.zip");
+      IPath sourcePath = null;
+      for (String source : SOURCE_LOCATIONS) {
+        IPath possibleSource = installationPath.append(source).append(possibleSourceName);
+        if (possibleSource.toFile().exists()) {
+          sourcePath = possibleSource;
+          break;
+        }
+      }
+
+      buildpath.add(JavaCore.newLibraryEntry(path, sourcePath, null,
+          new IAccessRule[0], extraAttributes, false));
+    }
+
+    return buildpath.toArray(NO_ICLASSPATH_ENTRIES);
+  }
+
   public static SdkFactory<GaeSdk> getFactory() {
     return factory;
   }
@@ -504,36 +542,6 @@ public class GaeSdk extends AbstractSdk {
   }
 
   private IClasspathEntry[] getClasspathEntries(List<File> classpathFiles) {
-
-    IPath javadocLocation = getInstallationPath().append(
-        new Path("docs/javadoc"));
-    IClasspathAttribute[] extraAttributes = new IClasspathAttribute[0];
-
-    if (javadocLocation.toFile().exists()) {
-      extraAttributes = new IClasspathAttribute[] {JavaCore.newClasspathAttribute(
-          IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME,
-          javadocLocation.toFile().toURI().toString())};
-    }
-
-    List<IClasspathEntry> buildpath = new ArrayList<IClasspathEntry>();
-
-    for (File file : classpathFiles) {
-      IPath path = new Path(file.getAbsolutePath());
-
-      String possibleSourceName = file.getName().replace(".jar", "-src.zip");
-      IPath sourcePath = null;
-      for (String source : SOURCE_LOCATIONS) {
-        IPath possibleSource = getInstallationPath().append(source).append(possibleSourceName);
-        if (possibleSource.toFile().exists()) {
-          sourcePath = possibleSource;
-          break;
-        }
-      }
-
-      buildpath.add(JavaCore.newLibraryEntry(path, sourcePath, null,
-          new IAccessRule[0], extraAttributes, false));
-    }
-
-    return buildpath.toArray(NO_ICLASSPATH_ENTRIES);
+    return getClasspathEntries(classpathFiles, getInstallationPath());
   }
 }

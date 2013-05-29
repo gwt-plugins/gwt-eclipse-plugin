@@ -72,7 +72,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
     }
   }
 
-  public static List<? extends CategorizedProblem> validateCompilationUnit(
+  protected List<? extends CategorizedProblem> validateCompilationUnit(
       ASTNode ast) {
     CompilationUnit root = (CompilationUnit) ast.getRoot();
     ICompilationUnit cu = (ICompilationUnit) root.getJavaElement();
@@ -99,9 +99,16 @@ public class JavaCompilationParticipant extends CompilationParticipant {
       return Collections.emptyList();
     }
 
+    return doValidateCompilationUnit(root, cu);
+  }
+
+  /**
+   * Performs validation.
+   */
+  protected List<CategorizedProblem> doValidateCompilationUnit(CompilationUnit root,
+      ICompilationUnit cu) {
     List<CategorizedProblem> problems = GoogleCloudSqlChecker.check(root, cu.getJavaProject());
     problems.addAll(GaeChecker.check(root, cu.getJavaProject()));
-    
     return problems;
   }
 
@@ -189,7 +196,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
     } catch (OperationCanceledException e) {
       // Thrown by Eclipse to abort long-running processes
       throw e;
-    } catch (Exception e) {
+    } catch (Throwable e) {
       // Don't want to allow any unexpected exceptions to escape
       AppEngineCorePluginLog.logError(e,
           "Unexpected error while validating {0}", cu.getElementName());
@@ -253,7 +260,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
       } catch (OperationCanceledException e) {
         // Thrown by Eclipse to abort long-running processes
         throw e;
-      } catch (Exception e) {
+      } catch (Throwable e) {
         // Don't want to allow any unexpected exceptions to escape
         AppEngineCorePluginLog.logError(e,
             "Unexpected error while validating {0}", file.getName());

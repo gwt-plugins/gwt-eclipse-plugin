@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<plugin>  
+    <extension point="org.eclipse.debug.core.launchConfigurationTypes">
+        <launchConfigurationType
+            id="com.google.appengine.eclipse.wtp.GaeLaunchConfigurationType"
+            name="%appengine.ConfigurationTypeName"
+            delegate="com.google.appengine.eclipse.wtp.GaeLaunchConfigurationDelegate"
+            modes="run, debug, profile"
+            sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
+            sourcePathComputerId="com.google.appengine.sourcePathComputer"/>
+    </extension> 
+    
+    <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+       <launchConfigurationTypeImage
+            id="com.google.appengine.ExternalLaunchConfigurationTypeImage"
+            configTypeID="com.google.appengine.eclipse.wtp.GaeLaunchConfigurationType"
+            icon="icons/ae-deploy_16x16.png">
+        </launchConfigurationTypeImage>
+    </extension>
+    
+    <extension point="org.eclipse.debug.core.sourcePathComputers">
+        <sourcePathComputer
+            id="com.google.appengine.sourcePathComputer"
+            class="com.google.appengine.eclipse.wtp.deps.GenericServerSourcePathComputerDelegate"/>
+    </extension>    
+
+    <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+        <launchConfigurationTabGroup
+            id="com.google.appengine.launchConfigurationTabGroup"
+            type="com.google.appengine.eclipse.wtp.GaeLaunchConfigurationType"
+            class="com.google.appengine.eclipse.wtp.GaeLaunchConfigurationTabGroup">
+        </launchConfigurationTabGroup>
+    </extension>
+    
+    <extension point="org.eclipse.wst.server.core.runtimeTypes">
+        <runtimeType
+            id="com.google.appengine.runtime.id1"
+            name="%runtimeTypeName" description="%runtimeTypeDescription"
+            vendor="%runtimeTypeVendor" version="1"
+            class="com.google.appengine.eclipse.wtp.runtime.GaeRuntime">
+            <moduleType types="jst.web" versions="2.2, 2.3, 2.4, 2.5"/>
+            <moduleType types="jst.connector" versions="1.0, 1.5, 1.6"/>
+            <moduleType types="jst.utility"  versions="1.0"/>
+        </runtimeType>
+    </extension>
+    
+    <extension point="org.eclipse.wst.server.core.serverTypes">
+        <serverType
+              behaviourClass="com.google.appengine.eclipse.wtp.GaeServerBehaviour"
+              class="com.google.appengine.eclipse.wtp.GaeServer"
+              description="%serverTypeDescription"
+              hasConfiguration="false"
+              id="com.google.appengine.server.id"
+              initialState="stopped"
+              launchConfigId="com.google.appengine.eclipse.wtp.GaeLaunchConfigurationType"
+              launchModes="run,debug,profile"
+              name="%serverTypeName"
+              runtime="true"
+              runtimeTypeId="com.google.appengine.runtime.id1"
+              startBeforePublish="false"
+              supportsRemoteHosts="true">         
+        </serverType>   
+    </extension>
+  
+    <extension point="org.eclipse.wst.server.ui.wizardFragments">
+       <fragment id="org.eclipse.jst.server.generic.runtime"
+                  typeIds="com.google.appengine.runtime.id1"
+                  class="com.google.appengine.eclipse.wtp.wizards.GaeRuntimeWizardFragment"/>           
+       <fragment id="org.eclipse.jst.server.generic.server"
+                  typeIds="com.google.appengine.server.id"
+                  class="com.google.appengine.eclipse.wtp.wizards.GaeServerWizardFragment"/>       
+    </extension>
+    
+    <extension point="org.eclipse.wst.server.ui.serverImages">
+        <image id="com.google.appengine.image"
+               icon="icons/ae-deploy_16x16.png"
+               typeIds="com.google.appengine.runtime.id1,com.google.appengine.server.id"
+               />
+    </extension>
+    
+    <extension  point="org.eclipse.wst.common.project.facet.core.facets">        
+        <project-facet id="com.google.appengine.facet">
+            <label>%gaefacetlabel</label>
+            <description>%gaefacetdescription</description>
+        </project-facet>
+        <project-facet-version facet="com.google.appengine.facet" version="1">
+            <constraint>
+                <and>
+                    <or>
+                        <requires facet="jst.web" version="2.2"/>
+                        <requires facet="jst.web" version="2.3"/>
+                        <requires facet="jst.web" version="2.4"/>
+                        <requires facet="jst.web" version="2.5"/>
+                        <!--requires facet="jst.web" version="3.0"/-->
+                    </or>
+                    <requires facet="java" version="[1.6"/>
+                </and>
+            </constraint>
+        </project-facet-version>
+        <action
+              facet="com.google.appengine.facet"
+              id="com.google.appengine.facet.install"
+              type="install">
+            <delegate class="com.google.appengine.eclipse.wtp.facet.GaeFacetInstallDelegate"/>
+            <config-factory
+                  class="com.google.appengine.eclipse.wtp.facet.GaeFacetInstallDataModelProvider">
+            </config-factory>
+        </action>
+        <action
+              facet="com.google.appengine.facet"
+              id="com.google.appengine.facet.uninstall"
+              type="uninstall">
+            <delegate class="com.google.appengine.eclipse.wtp.facet.GaeFacetUninstallDelegate"/>
+        </action>
+    </extension>
+    <extension
+          point="org.eclipse.wst.common.project.facet.core.presets">
+       <dynamic-preset
+             id="com.google.appengine.jpaPreset">
+          <factory
+                class="com.google.appengine.eclipse.wtp.facet.GaeJpaPresetFactory">
+          </factory>
+       </dynamic-preset>
+    </extension>
+    
+    <extension point="org.eclipse.jst.server.core.runtimeClasspathProviders">
+        <runtimeClasspathProvider  id="com.google.appengine.server.runtimeTarget"
+        runtimeTypeIds="com.google.appengine.runtime.id*"
+        class="com.google.appengine.eclipse.wtp.runtime.GaeRuntimeTargetHandler"/>
+    </extension>
+    
+    <extension point="org.eclipse.wst.common.project.facet.core.runtimes">
+        <runtime-component-type   id="com.google.appengine.runtime.id"/>
+        <runtime-component-version type="com.google.appengine.runtime.id"  version="1"/>
+        <adapter>
+            <runtime-component id="com.google.appengine.runtime.id"/>
+            <factory class="org.eclipse.jst.server.core.internal.RuntimeClasspathProvider$Factory"/>
+            <type class="org.eclipse.jst.common.project.facet.core.IClasspathProvider"/>
+        </adapter>
+        <supported>
+            <runtime-component id="com.google.appengine.runtime.id" version="1"/> 
+            <facet id="com.google.appengine.facet" version="1"/>
+            <facet id="jst.web" version="2.2,2.3,2.4,2.5"/>
+            <facet id="jst.utility"  version="1.0"/> 
+            <facet id="jst.webfragment" version="3.0" />
+        </supported>
+    </extension>
+    
+    <extension point="org.eclipse.jst.server.core.runtimeFacetMappings">
+        <runtimeFacetMapping runtimeTypeId="com.google.appengine.runtime.id1"
+                             runtime-component="com.google.appengine.runtime.id"  version="1"/>
+    </extension>    
+    
+    <extension point="org.eclipse.wst.common.project.facet.ui.images">
+        <image runtime-component-type="com.google.appengine.runtime.id"
+               path="icons/ae-deploy_16x16.png"/>
+    </extension>    
+    
+    <extension id="com.google.appengine.defaultFacets"
+               name="%gaefacetlabel"
+               point="org.eclipse.wst.common.project.facet.core.defaultFacets">
+        <default-facets>
+            <runtime-component id="com.google.appengine.runtime.id" version="1"/>
+            <facet id="com.google.appengine.facet" version="1" />
+        </default-facets>
+    </extension>      
+  
+    <extension point="org.eclipse.wst.server.ui.editorPageSections">
+        <section id="com.google.appengine.section" order="10"
+                 insertionId="org.eclipse.wst.server.editor.overview.left"
+                 typeIds="com.google.appengine.server.*"
+                 class="com.google.appengine.eclipse.wtp.ServerSection">
+        </section>
+    </extension>
+
+    <extension point="org.eclipse.wst.server.core.publishTasks">
+       <publishTask
+             class="com.google.appengine.eclipse.wtp.GaePublishTaskDelegate"
+             id="com.google.appengine.eclipse.wtp.publishTask"
+             typeIds="com.google.appengine.server.id">
+       </publishTask>
+    </extension>
+
+    <extension point="org.eclipse.wst.server.core.launchableAdapters">
+        <launchableAdapter
+            class="com.google.appengine.eclipse.wtp.GaeLaunchableAdapterDelegate"
+            id="com.google.appengine.server.web"/>
+    </extension>
+    
+    <extension point="org.eclipse.core.resources.builders"
+               id="gaeWtpProjectChangeNotifier"
+               name="Google App Engine WTP Project Change Notifier">
+        <builder>
+            <run class="com.google.appengine.eclipse.wtp.building.ProjectChangeNotifier"/>
+        </builder>
+    </extension>
+    <extension
+         point="org.eclipse.core.resources.builders"
+         id="enhancerbuilder"
+         name="Enhancer">
+      <builder hasNature="false">
+         <run class="com.google.appengine.eclipse.core.orm.enhancement.AutoEnhancer"/>
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.core.resources.builders"
+         id="projectValidator"
+         name="Google App Engine Project Validator">
+      <builder
+            callOnEmptyDelta="true"
+            hasNature="false"
+            isConfigurable="false">
+         <run class="com.google.appengine.eclipse.core.validators.GaeProjectValidator"/>
+      </builder>
+   </extension>
+    
+    
+    <extension point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+           class="com.google.appengine.eclipse.wtp.handlers.ServerPropertyTester"
+           id="com.google.appengine.eclipse.wtp.ServerStateTester"
+           namespace="com.google.appengine.eclipse.wtp.server"
+           properties="isRunning,hasModule"
+           type="org.eclipse.wst.server.core.IServer">
+      </propertyTester>
+    </extension>
+    <extension point="org.eclipse.core.expressions.definitions">
+        <definition id="com.google.appengine.eclipse.wtp.isGaeSelected">
+            <and>
+                <count value="1"/>
+                <iterate ifEmpty="false">
+                    <reference definitionId="com.google.appengine.eclipse.wtp.isGae"/>
+                </iterate>
+            </and>
+        </definition>
+        <definition id="com.google.appengine.eclipse.wtp.isGaeSelectedAndRunning">
+            <and>
+                <count value="1"/>
+                <iterate ifEmpty="false" operator="and">
+                    <reference definitionId="com.google.appengine.eclipse.wtp.isGae"/>
+                    <reference definitionId="com.google.appengine.eclipse.wtp.server.isRunning"/>
+                </iterate>
+            </and>
+        </definition>
+        <definition id="com.google.appengine.eclipse.wtp.server.hasModule">
+            <and>
+                <count value="1"/>
+                <iterate ifEmpty="false">
+                    <test property="com.google.appengine.eclipse.wtp.server.hasModule"/>
+                </iterate>
+            </and>
+        </definition>
+        <definition id="com.google.appengine.eclipse.wtp.isGae">
+            <adapt type="org.eclipse.wst.server.core.IServer">
+                <and>
+                    <test property="org.eclipse.wst.server.ui.serverType"
+                          value="com.google.appengine.server.*"/>
+                </and>
+            </adapt>
+        </definition>   
+        <definition id="com.google.appengine.eclipse.wtp.server.isRunning">
+           <test property="com.google.appengine.eclipse.wtp.server.isRunning"/>
+        </definition>
+        <definition id="com.google.appengine.eclipse.wtp.isGaeProject">
+            <adapt type="org.eclipse.core.resources.IProject">
+                <test forcePluginActivation="true"
+                      property="org.eclipse.wst.common.project.facet.core.projectFacet"
+                      value="com.google.appengine.facet"/>
+            </adapt>
+        </definition>
+    </extension>
+    <extension point="org.eclipse.ui.commands">
+        <category name="gaewtp-commands" id="com.google.appengine.eclipse.wtp.commands.category"/>
+        <command
+              categoryId="com.google.appengine.eclipse.wtp.commands.category"
+              description="%menu.deploy"
+              id="com.google.appengine.eclipse.wtp.commands.DeployCommand"
+              name="%menu.deploy"/>
+        <command
+              categoryId="com.google.appengine.eclipse.wtp.commands.category"
+              description="%menu.opendevconsole"
+              id="com.google.appengine.eclipse.wtp.commands.OpenLocalAdminConsoleCommand"
+              name="%menu.opendevconsole"/>
+        <command
+              categoryId="com.google.appengine.eclipse.wtp.commands.category"
+              defaultHandler="com.google.appengine.eclipse.wtp.handlers.OpenDropDownMenuHandler"
+              description="%menu.gaetopmenu"
+              id="com.google.appengine.wtp.actions.pulldownMenu"
+              name="%menu.gaetopmenu">
+        </command>
+    </extension>
+    <extension point="org.eclipse.ui.handlers">
+        <handler class="com.google.appengine.eclipse.wtp.handlers.DeployHandler"
+                 commandId="com.google.appengine.eclipse.wtp.commands.DeployCommand">
+            <enabledWhen>
+                <and>
+                    <reference definitionId="com.google.appengine.eclipse.wtp.isGaeSelected"/>
+                    <reference definitionId="com.google.appengine.eclipse.wtp.server.hasModule"/>
+                </and>
+            </enabledWhen>
+        </handler>
+        <handler class="com.google.appengine.eclipse.wtp.handlers.OpenLocalAdminConsoleHandler"
+                 commandId="com.google.appengine.eclipse.wtp.commands.OpenLocalAdminConsoleCommand">
+            <enabledWhen>
+                <reference definitionId="com.google.appengine.eclipse.wtp.isGaeSelectedAndRunning"/>
+            </enabledWhen>
+        </handler>
+    </extension>
+    <extension point="org.eclipse.ui.menus">
+        <menuContribution allPopups="false" locationURI="popup:org.eclipse.wst.server.ui.ServersView?after=additions">
+           <menu
+                 icon="icons/ae-deploy_16x16.png"
+                 id="com.google.appengine.wtp.actions.subMenu"
+                 label="%menu.gaetopmenu">
+              <visibleWhen
+                    checkEnabled="false">
+                 <reference
+                       definitionId="com.google.appengine.eclipse.wtp.isGaeSelected">
+                 </reference>
+              </visibleWhen>
+              <command
+                    commandId="com.google.appengine.eclipse.wtp.commands.DeployCommand"
+                    icon="icons/ae-srv-deploy_16x16.gif"
+                    style="push">
+              </command>
+              <command
+                    commandId="com.google.appengine.eclipse.wtp.commands.OpenLocalAdminConsoleCommand"
+                    style="push">
+              </command>
+           </menu>
+        </menuContribution>
+        <menuContribution
+              allPopups="false"
+              locationURI="toolbar:org.eclipse.wst.server.ui.ServersView?after=additions">
+           <separator
+                 name="com.google.appengine.eclipse.wtp.separator1"
+                 visible="true">
+           </separator>
+           <command
+                 commandId="com.google.appengine.wtp.actions.pulldownMenu"
+                 icon="icons/ae-deploy_16x16.png"
+                 id="com.google.appengine.wtp.actions.pulldownMenu"
+                 style="pulldown">
+              <visibleWhen>
+                 <reference
+                       definitionId="com.google.appengine.eclipse.wtp.isGaeSelected">
+                 </reference>
+              </visibleWhen>
+           </command>
+        </menuContribution>
+        <menuContribution
+              allPopups="false"
+              locationURI="menu:com.google.appengine.wtp.actions.pulldownMenu">
+           <command
+                 commandId="com.google.appengine.eclipse.wtp.commands.DeployCommand"
+                 icon="icons/ae-srv-deploy_16x16.gif"
+                 style="push">
+           </command>
+           <command
+                 commandId="com.google.appengine.eclipse.wtp.commands.OpenLocalAdminConsoleCommand"
+                 style="push">
+           </command>
+        </menuContribution>
+    </extension>
+
+    <extension point="org.eclipse.wst.common.project.facet.ui.wizardPages">
+        <wizard-pages action="com.google.appengine.facet.install">
+            <page class="com.google.appengine.eclipse.wtp.wizards.GaeFacetWizardPage"/>
+        </wizard-pages>
+    </extension>
+
+    <extension point="org.eclipse.ui.propertyPages">
+        <page id="com.google.appengine.eclipse.wtp.gaeProjectProperties"
+              name="%projectpropertypage.root"
+              class="com.google.gdt.eclipse.core.properties.ui.CoreProjectPropertyPage">
+            <enabledWhen>
+                <reference definitionId="com.google.appengine.eclipse.wtp.isGaeProject"/>
+            </enabledWhen>
+        </page>
+        <page id="com.google.appengine.eclipse.wtp.deployProperties"
+              name="%projectpropertypage.deploy"
+              category="com.google.appengine.eclipse.wtp.gaeProjectProperties"
+              class="com.google.appengine.eclipse.wtp.properties.ui.DeployPropertiesPage">
+            <enabledWhen>
+                <reference definitionId="com.google.appengine.eclipse.wtp.isGaeProject"/>
+            </enabledWhen>
+        </page>
+        <page id="com.google.appengine.eclipse.core.properties.gaeProjectValidationPropertyPage"
+              name="%projectpropertypage.validation"
+              category="com.google.appengine.eclipse.wtp.gaeProjectProperties"
+              class="com.google.appengine.eclipse.core.properties.ui.GaeValidationProjectPropertyPage">
+            <enabledWhen>
+                <reference definitionId="com.google.appengine.eclipse.wtp.isGaeProject"/>
+            </enabledWhen>
+        </page>
+        <page id="com.google.appengine.eclipse.wtp.gaeProjectOrmPropertyPage"
+              name="Google App Engine ORM"
+              category="org.eclipse.jpt.jpa.ui.jpaProjectProperties"
+              class="com.google.appengine.eclipse.core.properties.ui.GaeOrmProjectPropertyPage">
+            <enabledWhen>
+                <adapt type="org.eclipse.core.resources.IProject">
+                    <test forcePluginActivation="true"
+                          property="org.eclipse.wst.common.project.facet.core.projectFacet"
+                          value="jpt.jpa"/>
+                </adapt>
+            </enabledWhen>
+        </page>
+    </extension>
+    
+    <extension point="org.eclipse.wst.server.core.internalStartup">
+      <startup
+            class="com.google.appengine.eclipse.wtp.runtime.GaeRuntimeConfigurator"
+            id="com.google.appengine.eclipse.wtp.runtime.startup">
+      </startup>
+    </extension>
+    <extension
+          point="org.eclipse.jpt.jpa.core.jpaPlatforms">
+       <jpaPlatformGroup
+             id="com.google.appengine.eclipse.wtp.jpa.GaePlatformGroup"
+             label="GaePlatformGroup">
+       </jpaPlatformGroup>
+       <jpaPlatform
+             default="true"
+             factoryClass="com.google.appengine.eclipse.wtp.jpa.GaeJpaPlatformFactory"
+             group="com.google.appengine.eclipse.wtp.jpa.GaePlatformGroup"
+             id="com.google.appengine.eclipse.wtp.jpa.GaePlatform"
+             label="Google App Engine (Datanucleus)">
+       </jpaPlatform>
+    </extension>
+    
+    <extension
+         point="org.eclipse.jdt.core.compilationParticipant">
+      <compilationParticipant
+            class="com.google.appengine.eclipse.wtp.validators.GaeCompilationParticipant"
+            createsProblems="true"
+            id="com.google.appengine.eclipse.wtp.javaCompilationParticipant">
+         <managedMarker
+               markerType="com.google.appengine.eclipse.core.javaProblemMarker">
+         </managedMarker>
+      </compilationParticipant>
+   </extension>
+    
+    <extension
+          point="org.eclipse.jst.common.project.facet.core.libraryProviders">
+       <provider
+             abstract="false"
+             hidden="false"
+             id="com.google.appengine.eclipse.wtp.jpa.GaeLibraryProvider">
+          <label>
+             Google App Engine SDK
+          </label>
+          <action type="INSTALL">
+             <operation class="com.google.appengine.eclipse.wtp.jpa.libprov.GaeLibraryProviderInstallOperation"/>
+             <config class="com.google.appengine.eclipse.wtp.jpa.libprov.GaeLibraryProviderOperationConfig"/>
+          </action>
+          <action type="UNINSTALL">
+             <operation class="com.google.appengine.eclipse.wtp.jpa.libprov.GaeLibraryProviderUninstallOperation"/>
+          </action>
+          <enablement>
+              <and>
+                  <with variable="requestingProjectFacet">
+                      <test property="org.eclipse.wst.common.project.facet.core.projectFacet" value="jpt.jpa" forcePluginActivation="true"/>
+                  </with>
+                  <with variable="jpaPlatform">
+                      <equals value="com.google.appengine.eclipse.wtp.jpa.GaePlatform"/>
+                  </with>
+                  <with variable="targetedRuntimes">
+                      <test property="com.google.appengine.eclipse.wtp.jpa.libprov.isEnabledFor" 
+                        value="com.google.appengine.facet" 
+                        forcePluginActivation="true"/>
+                  </with>
+              </and>
+          </enablement>
+          <priority>
+             2000
+          </priority>
+       </provider>
+    </extension>
+    <extension point="org.eclipse.core.expressions.propertyTesters">
+        <propertyTester
+           class="com.google.appengine.eclipse.wtp.jpa.libprov.TargetRuntimePropertyTester"
+           id="com.google.appengine.eclipse.wtp.jpa.libprov.TargetRuntimeTester"
+           namespace="com.google.appengine.eclipse.wtp.jpa.libprov"
+           properties="isEnabledFor"
+           type="java.util.Set">
+        </propertyTester>
+    </extension>
+    <extension
+          point="org.eclipse.jst.common.project.facet.ui.libraryProviderActionPanels">
+       <panel
+             class="com.google.appengine.eclipse.wtp.jpa.libprov.GaeLibraryProviderActionPanel"
+             provider="com.google.appengine.eclipse.wtp.jpa.GaeLibraryProvider">
+       </panel>
+    </extension>
+    <extension
+          point="org.eclipse.jdt.core.classpathContainerInitializer">
+       <classpathContainerInitializer
+             class="com.google.appengine.eclipse.wtp.jpa.libprov.DatanucleusClasspathContainerInitializer"
+             id="com.google.appengine.eclipse.wtp.DATANUCLEUS_CONTAINER">
+       </classpathContainerInitializer>
+    </extension>
+    
+    <extension
+          point="org.eclipse.jpt.jpa.ui.jpaPlatformUis">
+       <jpaPlatformUi
+             factoryClass="com.google.appengine.eclipse.wtp.jpa.GaeJpaPlatformUiFactory"
+             id="com.google.appengine.eclipse.wtp.jpa.GaePlatformUI"
+             jpaPlatform="com.google.appengine.eclipse.wtp.jpa.GaePlatform">
+       </jpaPlatformUi>
+    </extension>
+    <extension
+         point="org.eclipse.wst.common.project.facet.core.listeners">
+      <listener
+            class="com.google.appengine.eclipse.wtp.jpa.JpaFacetPostInstallListener"
+            eventTypes="POST_INSTALL">
+      </listener>
+      <listener
+            class="com.google.appengine.eclipse.wtp.jpa.JpaFacetUninstallListener"
+            eventTypes="PRE_UNINSTALL">
+      </listener>
+   </extension>
+</plugin>

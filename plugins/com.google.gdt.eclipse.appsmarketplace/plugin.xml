@@ -77,13 +77,7 @@
       id="com.google.gdt.eclipse.appsmarketplace.appsMarketplaceProjectPropertyPage"
       name="Google Apps Marketplace">
       <enabledWhen>
-        <adapt
-          type="org.eclipse.core.resources.IProject">
-          <test
-            property="org.eclipse.core.resources.projectNature"
-            value="org.eclipse.jdt.core.javanature">
-          </test>
-        </adapt>
+        <reference definitionId="com.google.gdt.eclipse.core.isGpeSelected"/>
       </enabledWhen>
     </page>
   </extension>
