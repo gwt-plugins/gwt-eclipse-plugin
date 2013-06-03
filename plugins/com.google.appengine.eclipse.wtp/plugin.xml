@@ -387,7 +387,7 @@
                 <reference definitionId="com.google.appengine.eclipse.wtp.isGaeProject"/>
             </enabledWhen>
         </page>
-        <page id="com.google.appengine.eclipse.core.properties.gaeProjectValidationPropertyPage"
+        <page id="com.google.appengine.eclipse.wtp.gaeProjectValidationPropertyPage"
               name="%projectpropertypage.validation"
               category="com.google.appengine.eclipse.wtp.gaeProjectProperties"
               class="com.google.appengine.eclipse.core.properties.ui.GaeValidationProjectPropertyPage">
