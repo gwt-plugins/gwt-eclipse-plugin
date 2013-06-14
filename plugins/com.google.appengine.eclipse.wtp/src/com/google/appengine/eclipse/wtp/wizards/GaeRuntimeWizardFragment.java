@@ -239,7 +239,7 @@ public final class GaeRuntimeWizardFragment extends WizardFragment {
   }
 
   private String getDescription() {
-    return NLS.bind("Define a new {0} runtime", getRuntimeName());
+    return NLS.bind("Define a new {0} runtime", getRuntimeTitle());
   }
 
   private GaeRuntime getRuntimeDelegate() {
@@ -250,15 +250,13 @@ public final class GaeRuntimeWizardFragment extends WizardFragment {
     return (GaeRuntime) wc.loadAdapter(GaeRuntime.class, new NullProgressMonitor());
   }
 
-  private String getRuntimeName() {
-    if (runtime != null && runtime.getRuntime() != null) {
-      return runtime.getRuntime().getName();
-    }
-    return "<unknown>";
+  private String getRuntimeTitle() {
+    IRuntimeType runtimeType = runtime.getRuntime().getRuntimeType();
+    return runtimeType.getName();
   }
 
   private String getTitle() {
-    return NLS.bind("New {0} Runtime", getRuntimeName());
+    return NLS.bind("New {0} Runtime", getRuntimeTitle());
   }
 
   private void selectJRE(IVMInstall vmInstall) {
@@ -267,7 +265,9 @@ public final class GaeRuntimeWizardFragment extends WizardFragment {
     if (isDefault) {
       jreBlock.setPath(JavaRuntime.newDefaultJREContainerPath());
     } else {
-      jreBlock.setPath(JavaRuntime.newJREContainerPath(vmInstall));
+      if (vmInstall != null) {
+        jreBlock.setPath(JavaRuntime.newJREContainerPath(vmInstall));
+      }
     }
   }
 
