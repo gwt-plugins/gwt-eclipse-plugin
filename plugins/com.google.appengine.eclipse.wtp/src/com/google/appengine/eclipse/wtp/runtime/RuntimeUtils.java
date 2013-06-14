@@ -26,6 +26,8 @@ import java.util.List;
  * Various utility methods for GaeRuntime.
  */
 public final class RuntimeUtils {
+  public static final String MIN_SDK_VERSION_USING_AUTORELOAD = "1.8.1";
+
   private static final String ARG_XMX512M = "-Xmx512m";
   private static final String ARG_XSTART_ON_FIRST_THREAD = "-XstartOnFirstThread";
   private static final String BOOTCLASSPATH_PREFIX = "-Xbootclasspath/p:";
@@ -76,7 +78,7 @@ public final class RuntimeUtils {
   /**
    * @return the list of VM arguments required by runtime.
    */
-  public static List<String> getRuntimeVMArguments(GaeRuntime runtime) {
+  public static List<String> getDefaultRuntimeVMArguments(GaeRuntime runtime) {
     List<String> args = Lists.newArrayList();
     if (runtime == null) {
       return args;

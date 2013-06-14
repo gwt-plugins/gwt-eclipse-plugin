@@ -13,9 +13,9 @@
 package com.google.appengine.eclipse.wtp.handlers;
 
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
-import com.google.appengine.eclipse.wtp.GaeServer;
 import com.google.appengine.eclipse.wtp.deploy.DeployJob;
 import com.google.appengine.eclipse.wtp.properties.ui.DeployPropertiesPage;
+import com.google.appengine.eclipse.wtp.server.GaeServer;
 import com.google.gdt.eclipse.core.console.CustomMessageConsole;
 import com.google.gdt.eclipse.core.console.MessageConsoleUtilities;
 import com.google.gdt.eclipse.core.console.TerminateJobAction;

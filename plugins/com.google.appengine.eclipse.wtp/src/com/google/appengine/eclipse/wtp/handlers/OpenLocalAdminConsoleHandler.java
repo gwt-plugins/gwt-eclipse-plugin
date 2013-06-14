@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.handlers;
 
-import com.google.appengine.eclipse.wtp.GaeServer;
+import com.google.appengine.eclipse.wtp.server.GaeServer;
 import com.google.gdt.eclipse.core.browser.BrowserUtilities;
 
 import org.eclipse.core.commands.ExecutionEvent;

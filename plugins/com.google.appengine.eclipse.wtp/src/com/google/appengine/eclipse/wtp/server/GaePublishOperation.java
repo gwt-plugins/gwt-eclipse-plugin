@@ -1,5 +1,6 @@
-package com.google.appengine.eclipse.wtp;
+package com.google.appengine.eclipse.wtp.server;
 
+import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.common.collect.Lists;
 
 import org.eclipse.core.runtime.CoreException;

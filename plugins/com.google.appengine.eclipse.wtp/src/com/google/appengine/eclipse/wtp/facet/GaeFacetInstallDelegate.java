@@ -12,17 +12,22 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.facet;
 
+import com.google.appengine.eclipse.core.preferences.GaePreferences;
 import com.google.appengine.eclipse.core.resources.GaeProjectResources;
+import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.building.ProjectChangeNotifier;
 import com.google.appengine.eclipse.wtp.facet.ops.AppEngineXmlCreateOperation;
 import com.google.appengine.eclipse.wtp.facet.ops.GaeFileCreateOperation;
 import com.google.appengine.eclipse.wtp.facet.ops.SampleServletCreateOperation;
-import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
+import com.google.appengine.eclipse.wtp.runtime.RuntimeUtils;
+import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 import com.google.common.collect.Lists;
 import com.google.gdt.eclipse.core.BuilderUtilities;
 import com.google.gdt.eclipse.core.StatusUtilities;
 import com.google.gdt.eclipse.core.StringUtilities;
+import com.google.gdt.eclipse.core.sdk.SdkSet;
+import com.google.gdt.eclipse.core.sdk.SdkUtils;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
@@ -39,8 +44,6 @@ import org.eclipse.wst.common.project.facet.core.IDelegate;
 import org.eclipse.wst.common.project.facet.core.IFacetedProjectWorkingCopy;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.runtime.IRuntime;
-import org.eclipse.wst.common.project.facet.core.runtime.IRuntimeComponent;
-import org.eclipse.wst.common.project.facet.core.runtime.IRuntimeComponentType;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -59,14 +62,21 @@ public final class GaeFacetInstallDelegate implements IDelegate {
     IDataModel model = (IDataModel) config;
     List<IDataModelOperation> operations = Lists.newArrayList();
     // add custom builders
-    BuilderUtilities.addBuilderToProject(project, ProjectChangeNotifier.BUILDER_ID);
+    IPath sdkLocation = getSdkLocation(model);
+    GaeSdk sdk = getSdk(sdkLocation);
+    if (sdk != null) {
+      // since 1.8.1 Development server scans and reloads application automatically
+      if (SdkUtils.compareVersionStrings(sdk.getVersion(),
+          RuntimeUtils.MIN_SDK_VERSION_USING_AUTORELOAD) < 0) {
+        BuilderUtilities.addBuilderToProject(project, ProjectChangeNotifier.BUILDER_ID);
+      }
+    }
     BuilderUtilities.addBuilderToProject(project, AppEnginePlugin.PLUGIN_ID + ".projectValidator");
     // do create project contents
     if (JavaEEProjectUtilities.isDynamicWebProject(project)) {
       // add "appengine-web.xml" file
       operations.add(new AppEngineXmlCreateOperation(model));
       // add "logging.properties"
-      IPath sdkLocation = getSdkLocation(model);
       if (sdkLocation != null) {
         final File loggingPropertiesFile = sdkLocation.append("config/user/logging.properties").toFile();
         if (loggingPropertiesFile.exists()) {
@@ -142,23 +152,25 @@ public final class GaeFacetInstallDelegate implements IDelegate {
   }
 
   /**
+   * @return the {@link GaeSdk} for given {@link IPath} (location in filesystem) or
+   *         <code>null</code> if SDK is not found.
+   */
+  private GaeSdk getSdk(IPath sdkLocation) {
+    if (sdkLocation != null) {
+      SdkSet<GaeSdk> sdks = GaePreferences.getSdkManager().getSdks();
+      return SdkUtils.findSdkForInstallationPath(sdks, sdkLocation);
+    }
+    return null;
+  }
+
+  /**
    * Searches runtime components and retrieves runtime location (GAE SDK location). Returns
    * <code>null</code>, if cannot be found.
    */
   private IPath getSdkLocation(IDataModel model) {
     IFacetedProjectWorkingCopy fpwc = (IFacetedProjectWorkingCopy) model.getProperty(IFacetDataModelProperties.FACETED_PROJECT_WORKING_COPY);
     IRuntime primaryRuntime = fpwc.getPrimaryRuntime();
-    for (IRuntimeComponent component : primaryRuntime.getRuntimeComponents()) {
-      IRuntimeComponentType type = component.getRuntimeComponentType();
-      if (GaeRuntime.GAE_RUNTIME_ID.equals(type.getId())) {
-        String location = component.getProperty("location");
-        if (location == null) {
-          return null;
-        }
-        return new Path(location);
-      }
-    }
-    return null;
+    return ProjectUtils.getSdkPath(primaryRuntime);
   }
 
   /**

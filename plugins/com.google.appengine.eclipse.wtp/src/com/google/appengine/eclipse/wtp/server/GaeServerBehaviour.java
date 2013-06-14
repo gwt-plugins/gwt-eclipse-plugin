@@ -10,13 +10,15 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
-package com.google.appengine.eclipse.wtp;
+package com.google.appengine.eclipse.wtp.server;
 
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
+import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
 import com.google.appengine.eclipse.wtp.runtime.RuntimeUtils;
 import com.google.appengine.eclipse.wtp.utils.IOUtils;
 import com.google.common.collect.Lists;
+import com.google.gdt.eclipse.core.sdk.SdkUtils;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -54,12 +56,14 @@ import java.util.Properties;
 public final class GaeServerBehaviour extends ServerBehaviourDelegate {
   private static final String ARG_PORT = "--port=";
   private static final String ARG_DISABLE_UPDATE_CHECK = "--disable_update_check";
+  private static final String ARG_ENABLE_AUTO_RELOAD = "-Dappengine.fullscan.seconds=";
   private static final String GAE_DEV_SERVER_MAIN = "com.google.appengine.tools.development.DevAppServerMain";
+
   private IDebugEventSetListener processListener;
   private PingThread pingThread;
 
   /**
-   * @return
+   * @return the directory at which module will be published.
    */
   public IPath getModuleDeployDirectory(IModule module) {
     return getRuntimeBaseDirectory().append(module.getName());
@@ -185,6 +189,9 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
     terminate();
   }
 
+  /**
+   * Set up process listener to be able to handle debug events.
+   */
   protected void addProcessListener(final IProcess newProcess) {
     if (processListener != null || newProcess == null) {
       return;
@@ -269,7 +276,6 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
             "Cannot start App Engine Server, server port " + port + " is not available."));
       }
     }
-
     setServerRestartState(false);
     setServerState(IServer.STATE_STARTING);
     setMode(launchMode);
@@ -287,7 +293,7 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
   }
 
   /**
-   *
+   * Stops the ping thread and removes debug listener.
    */
   protected void stopImpl() {
     if (pingThread != null) {
@@ -321,12 +327,15 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
   }
 
   /**
-   *
+   * @return {@link GaeRuntime} bound to the server representing by this delegate.
    */
   private GaeRuntime getGaeRuntime() {
     return (GaeRuntime) getServer().getRuntime().loadAdapter(GaeRuntime.class, null);
   }
 
+  /**
+   * @return {@link GaeServer} representing by this delegate.
+   */
   private GaeServer getGaeServer() {
     return (GaeServer) getServer().loadAdapter(GaeServer.class, null);
   }
@@ -335,7 +344,18 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
    * @return an array of VM arguments
    */
   private List<String> getRuntimeVMArguments() {
-    return RuntimeUtils.getRuntimeVMArguments(getGaeRuntime());
+    GaeRuntime gaeRuntime = getGaeRuntime();
+    List<String> vmArguments = RuntimeUtils.getDefaultRuntimeVMArguments(gaeRuntime);
+    if (gaeRuntime != null
+        && SdkUtils.compareVersionStrings(gaeRuntime.getGaeSdkVersion(),
+            RuntimeUtils.MIN_SDK_VERSION_USING_AUTORELOAD) >= 0) {
+      // add autoreload
+      StringBuilder args = new StringBuilder();
+      args.append(ARG_ENABLE_AUTO_RELOAD);
+      args.append(getGaeServer().getAutoReloadTime());
+      vmArguments.add(args.toString());
+    }
+    return vmArguments;
   }
 
   /**

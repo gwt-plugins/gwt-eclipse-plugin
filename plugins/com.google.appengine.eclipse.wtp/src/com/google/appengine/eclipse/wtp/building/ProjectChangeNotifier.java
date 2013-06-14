@@ -35,6 +35,8 @@ import java.util.Map;
 /**
  * A builder providing touch to 'appengine-web.xml' in order GAE dev server to apply changes made in
  * java files.
+ * 
+ * Note: this is obsolete and it is not used for SDK versions >= 1.8.1.
  */
 @SuppressWarnings("restriction")
 public final class ProjectChangeNotifier extends IncrementalProjectBuilder {

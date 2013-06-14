@@ -1,4 +1,4 @@
-package com.google.appengine.eclipse.wtp;
+package com.google.appengine.eclipse.wtp.server;
 
 import org.eclipse.wst.server.core.IServer;
 

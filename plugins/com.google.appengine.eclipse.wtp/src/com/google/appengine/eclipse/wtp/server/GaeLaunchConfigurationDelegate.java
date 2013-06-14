@@ -10,7 +10,9 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
-package com.google.appengine.eclipse.wtp;
+package com.google.appengine.eclipse.wtp.server;
+
+import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;

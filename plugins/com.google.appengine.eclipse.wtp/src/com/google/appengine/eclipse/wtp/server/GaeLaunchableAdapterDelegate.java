@@ -10,7 +10,8 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
-package com.google.appengine.eclipse.wtp;
+package com.google.appengine.eclipse.wtp.server;
+
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jst.server.core.IWebModule;
@@ -44,5 +45,4 @@ public final class GaeLaunchableAdapterDelegate extends LaunchableAdapterDelegat
     URL url = ((IURLProvider) server.loadAdapter(IURLProvider.class, null)).getModuleRootURL(moduleArtifact.getModule());
     return new HttpLaunchable(url);
   }
-
 }

@@ -6,7 +6,7 @@
         <launchConfigurationType
             id="com.google.appengine.eclipse.wtp.GaeLaunchConfigurationType"
             name="%appengine.ConfigurationTypeName"
-            delegate="com.google.appengine.eclipse.wtp.GaeLaunchConfigurationDelegate"
+            delegate="com.google.appengine.eclipse.wtp.server.GaeLaunchConfigurationDelegate"
             modes="run, debug, profile"
             sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
             sourcePathComputerId="com.google.appengine.sourcePathComputer"/>
@@ -30,7 +30,7 @@
         <launchConfigurationTabGroup
             id="com.google.appengine.launchConfigurationTabGroup"
             type="com.google.appengine.eclipse.wtp.GaeLaunchConfigurationType"
-            class="com.google.appengine.eclipse.wtp.GaeLaunchConfigurationTabGroup">
+            class="com.google.appengine.eclipse.wtp.server.GaeLaunchConfigurationTabGroup">
         </launchConfigurationTabGroup>
     </extension>
     
@@ -48,8 +48,8 @@
     
     <extension point="org.eclipse.wst.server.core.serverTypes">
         <serverType
-              behaviourClass="com.google.appengine.eclipse.wtp.GaeServerBehaviour"
-              class="com.google.appengine.eclipse.wtp.GaeServer"
+              behaviourClass="com.google.appengine.eclipse.wtp.server.GaeServerBehaviour"
+              class="com.google.appengine.eclipse.wtp.server.GaeServer"
               description="%serverTypeDescription"
               hasConfiguration="false"
               id="com.google.appengine.server.id"
@@ -171,13 +171,13 @@
         <section id="com.google.appengine.section" order="10"
                  insertionId="org.eclipse.wst.server.editor.overview.left"
                  typeIds="com.google.appengine.server.*"
-                 class="com.google.appengine.eclipse.wtp.ServerSection">
+                 class="com.google.appengine.eclipse.wtp.server.ui.ServerSection">
         </section>
     </extension>
 
     <extension point="org.eclipse.wst.server.core.publishTasks">
        <publishTask
-             class="com.google.appengine.eclipse.wtp.GaePublishTaskDelegate"
+             class="com.google.appengine.eclipse.wtp.server.GaePublishTaskDelegate"
              id="com.google.appengine.eclipse.wtp.publishTask"
              typeIds="com.google.appengine.server.id">
        </publishTask>
@@ -185,7 +185,7 @@
 
     <extension point="org.eclipse.wst.server.core.launchableAdapters">
         <launchableAdapter
-            class="com.google.appengine.eclipse.wtp.GaeLaunchableAdapterDelegate"
+            class="com.google.appengine.eclipse.wtp.server.GaeLaunchableAdapterDelegate"
             id="com.google.appengine.server.web"/>
     </extension>
     

@@ -10,8 +10,9 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
-package com.google.appengine.eclipse.wtp;
+package com.google.appengine.eclipse.wtp.server;
 
+import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
 import com.google.appengine.eclipse.wtp.utils.ModuleUtils;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
@@ -50,14 +51,16 @@ import java.util.Map;
  * a {@link ServerDelegate} for Google App Engine.
  */
 public final class GaeServer extends ServerDelegate implements IURLProvider {
-  private static final String ATTR_GENERIC_SERVER_MODULES = "gae_server_modules_list";
+  private static final String ATTR_GENERIC_SERVER_MODULES = "gae-server-modules-list";
   /**
    * Property which specifies the directory where web applications are published.
    */
-  public static final String PROPERTY_DEPLOY_DIR = "deployDir";
-  public static final String PROPERTY_SERVERPORT = "serverportnumber";
+  public static final String PROPERTY_DEPLOY_DIR = "deploy-directory";
+  public static final String PROPERTY_SERVERPORT = "server-port-number";
+  public static final String PROPERTY_AUTORELOAD_TIME = "server-autoreload-time";
   public static final String DEFAULT_DEPLOYDIR = "wtpwebapps";
   public static final String DEFAULT_SERVER_PORT = "8888";
+  public static final String DEFAULT_AUTORELOAD_TIME = "5";
 
   /**
    * @return a {@link GaeServer} instance which associated with gives {@link IServer} instance.
@@ -183,6 +186,13 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
     return ProjectUtils.getAppId(project);
   }
 
+  /**
+   * @return the autoreload timeout as it set in properties.
+   */
+  public String getAutoReloadTime() {
+    return getServerInstanceProperties().get(PROPERTY_AUTORELOAD_TIME);
+  }
+
   @Override
   public IModule[] getChildModules(IModule[] module) {
     if (module[0] != null && module[0].getModuleType() != null) {
@@ -236,17 +246,17 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
         return null;
       }
       String host = getServer().getHost();
-      String url = "http://" + host; //$NON-NLS-1$
+      String url = "http://" + host;
       ServerPort serverPort = getMainPort();
       if (serverPort == null) {
         return null;
       }
-      int port = ServerUtil.getMonitoredPort(getServer(), serverPort.getPort(), "web"); //$NON-NLS-1$
+      int port = ServerUtil.getMonitoredPort(getServer(), serverPort.getPort(), "web");
       if (port != 80) {
-        url += ":" + port; //$NON-NLS-1$
+        url += ":" + port;
       }
-      if (!url.endsWith("/")) { //$NON-NLS-1$
-        url += "/"; //$NON-NLS-1$
+      if (!url.endsWith("/")) {
+        url += "/";
       }
       return new URL(url);
     } catch (Throwable e) {
@@ -318,7 +328,6 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
   @SuppressWarnings("unchecked")
   public void modifyModules(IModule[] add, IModule[] remove, IProgressMonitor monitor)
       throws CoreException {
-
     List<String> modules = this.getAttribute(ATTR_GENERIC_SERVER_MODULES, (List<String>) null);
 
     if (add != null && add.length > 0) {
@@ -358,13 +367,9 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
   }
 
   @Override
-  public void saveConfiguration(IProgressMonitor m) throws CoreException {
-    super.saveConfiguration(m);
-  }
-
-  @Override
   public void setDefaults(IProgressMonitor monitor) {
     setServerPort(DEFAULT_SERVER_PORT);
+    setAutoreloadTime(DEFAULT_AUTORELOAD_TIME);
   }
 
   public void setServerInstanceProperties(Map<String, String> properties) {
@@ -376,6 +381,10 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
    */
   public IStatus validate() {
     String serverPort = getServerPort();
+    if (serverPort == null || serverPort.trim().length() == 0) {
+      return StatusUtilities.newErrorStatus("Server port value cannot be empty",
+          AppEnginePlugin.PLUGIN_ID);
+    }
     int port;
     try {
       port = Integer.parseInt(serverPort);
@@ -387,6 +396,18 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
       return StatusUtilities.newErrorStatus("TCP port value is out of range: " + serverPort,
           AppEnginePlugin.PLUGIN_ID);
     }
+    String autoreloadTime = getAutoReloadTime();
+    if (autoreloadTime == null || autoreloadTime.trim().length() == 0) {
+      return StatusUtilities.newErrorStatus("Auto-reload delay value cannot be empty",
+          AppEnginePlugin.PLUGIN_ID);
+    }
+    try {
+      Integer.parseInt(autoreloadTime);
+    } catch (Throwable e) {
+      return StatusUtilities.newErrorStatus("Invalid autoreload delay time: " + autoreloadTime,
+          AppEnginePlugin.PLUGIN_ID);
+    }
+
     return new Status(IStatus.OK, AppEnginePlugin.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
   }
 
@@ -434,6 +455,13 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
    */
   private String getServerPort() {
     return getServerInstanceProperties().get(PROPERTY_SERVERPORT);
+  }
+
+  /**
+   * Set the time after which server will reload app upon resource change. 0 means never reload.
+   */
+  private void setAutoreloadTime(String seconds) {
+    getServerInstanceProperties().put(PROPERTY_AUTORELOAD_TIME, seconds);
   }
 
   /**

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp;
 
+import com.google.appengine.eclipse.wtp.server.GaeServer;
+
 import org.eclipse.core.commands.operations.AbstractOperation;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;

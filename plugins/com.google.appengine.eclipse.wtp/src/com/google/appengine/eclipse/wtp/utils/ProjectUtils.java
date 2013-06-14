@@ -111,6 +111,20 @@ public final class ProjectUtils {
   }
 
   /**
+   * Searches for {@link GaeSdk} location.
+   */
+  public static IPath getSdkPath(IRuntime primaryRuntime) {
+    for (IRuntimeComponent component : primaryRuntime.getRuntimeComponents()) {
+      IRuntimeComponentType type = component.getRuntimeComponentType();
+      if (GaeRuntime.GAE_RUNTIME_ID.equals(type.getId())) {
+        String location = component.getProperty("location");
+        return location == null ? null : new Path(location);
+      }
+    }
+    return null;
+  }
+
+  /**
    * @return <code>true</code> if this project is faceted project and has AppEngine facet installed.
    */
   public static boolean isGaeProject(IJavaProject javaProject) throws CoreException {
@@ -153,19 +167,6 @@ public final class ProjectUtils {
           + project.getName());
     }
     GaeProject.setAppVersion(appEngineWebXml, appId, forceSave);
-  }
-
-  /**
-   * Searches for {@link GaeSdk} location.
-   */
-  private static IPath getSdkPath(IRuntime primaryRuntime) {
-    for (IRuntimeComponent component : primaryRuntime.getRuntimeComponents()) {
-      IRuntimeComponentType type = component.getRuntimeComponentType();
-      if (GaeRuntime.GAE_RUNTIME_ID.equals(type.getId())) {
-        return new Path(component.getProperty("location"));
-      }
-    }
-    return null;
   }
 
   /**

@@ -10,7 +10,13 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
-package com.google.appengine.eclipse.wtp;
+package com.google.appengine.eclipse.wtp.server.ui;
+
+import com.google.appengine.eclipse.wtp.GaeCommands;
+import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
+import com.google.appengine.eclipse.wtp.runtime.RuntimeUtils;
+import com.google.appengine.eclipse.wtp.server.GaeServer;
+import com.google.gdt.eclipse.core.sdk.SdkUtils;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -39,7 +45,9 @@ import java.beans.PropertyChangeListener;
 public final class ServerSection extends ServerEditorSection implements PropertyChangeListener {
 
   private GaeServer gaeServer;
-  private Text serverPortNumber = null;
+  private Text serverPortNumberText;
+  private Text autoreloadTimeText;
+  private Label autoreloadTimeLabel;
 
   @Override
   public void createSection(Composite parent) {
@@ -52,7 +60,7 @@ public final class ServerSection extends ServerEditorSection implements Property
         | ExpandableComposite.FOCUS_TITLE);
 
     section.setText("Application Server");
-    section.setDescription("Edit some runtime properties for the Google App Engine");
+    section.setDescription("Edit runtime properties for the Google App Engine");
     section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 
     Composite comp = toolkit.createComposite(section);
@@ -67,22 +75,26 @@ public final class ServerSection extends ServerEditorSection implements Property
     GridDataFactory txtGDF = GridDataFactory.fillDefaults().grab(true, false).span(2, 1).hint(50,
         SWT.DEFAULT);
 
-    createLabel(comp, "Dev Server Port", toolkit);
-    serverPortNumber = toolkit.createText(comp, String.valueOf(gaeServer.getMainPort().getPort()),
-        SWT.BORDER);
-    txtGDF.applyTo(serverPortNumber);
+    {
+      createLabel(comp, "Dev Server Port", toolkit);
+      serverPortNumberText = toolkit.createText(comp,
+          String.valueOf(gaeServer.getMainPort().getPort()), SWT.BORDER);
+      txtGDF.applyTo(serverPortNumberText);
+    }
+    {
+      autoreloadTimeLabel = createLabel(comp,
+          "Auto reload when resources change, sec (after publish, 0 - never reload)", toolkit);
+      autoreloadTimeText = toolkit.createText(comp, String.valueOf(gaeServer.getAutoReloadTime()),
+          SWT.BORDER);
+      txtGDF.applyTo(autoreloadTimeText);
+    }
     // add listeners
-    serverPortNumber.addModifyListener(new ModifyListener() {
-      @Override
-      public void modifyText(ModifyEvent e) {
-        execute(new GaeCommands(server, serverPortNumber.getText(), GaeServer.PROPERTY_SERVERPORT));
-      }
-    });
+    addListeners();
   }
 
   @Override
   public void dispose() {
-    gaeServer.removePropertyChangeListener(this);
+    gaeServer.getServerWorkingCopy().removePropertyChangeListener(this);
     super.dispose();
   }
 
@@ -96,12 +108,38 @@ public final class ServerSection extends ServerEditorSection implements Property
   public void init(IEditorSite site, IEditorInput input) {
     super.init(site, input);
     gaeServer = GaeServer.getGaeServer(server);
-    gaeServer.addPropertyChangeListener(this);
+    gaeServer.getServerWorkingCopy().addPropertyChangeListener(this);
   }
 
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
-    // TODO: not used?
+    if ("runtime-id".equals(evt.getPropertyName())) {
+      // hide auto-reload delay controls as not applicable for SDKs < 1.8.1
+      GaeRuntime gaeRuntime = GaeServer.getGaeServer(gaeServer.getServerWorkingCopy()).getGaeRuntime();
+      if (gaeRuntime != null) {
+        boolean isUsingAutoreload = SdkUtils.compareVersionStrings(gaeRuntime.getGaeSdkVersion(),
+            RuntimeUtils.MIN_SDK_VERSION_USING_AUTORELOAD) >= 0;
+        autoreloadTimeText.setVisible(isUsingAutoreload);
+        autoreloadTimeLabel.setVisible(isUsingAutoreload);
+      }
+    }
+  }
+
+  private void addListeners() {
+    serverPortNumberText.addModifyListener(new ModifyListener() {
+      @Override
+      public void modifyText(ModifyEvent e) {
+        execute(new GaeCommands(server, serverPortNumberText.getText().trim(),
+            GaeServer.PROPERTY_SERVERPORT));
+      }
+    });
+    autoreloadTimeText.addModifyListener(new ModifyListener() {
+      @Override
+      public void modifyText(ModifyEvent e) {
+        execute(new GaeCommands(server, autoreloadTimeText.getText().trim(),
+            GaeServer.PROPERTY_AUTORELOAD_TIME));
+      }
+    });
   }
 
   private Label createLabel(Composite parent, String text, FormToolkit toolkit) {

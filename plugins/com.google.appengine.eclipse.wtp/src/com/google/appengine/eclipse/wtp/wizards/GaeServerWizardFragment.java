@@ -13,9 +13,14 @@
 package com.google.appengine.eclipse.wtp.wizards;
 
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
-import com.google.appengine.eclipse.wtp.GaeServer;
+import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
+import com.google.appengine.eclipse.wtp.runtime.RuntimeUtils;
+import com.google.appengine.eclipse.wtp.server.GaeServer;
 import com.google.common.collect.Maps;
+import com.google.gdt.eclipse.core.sdk.SdkUtils;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -37,10 +42,14 @@ import java.util.Map;
 
 public final class GaeServerWizardFragment extends WizardFragment {
 
-  boolean isValid = false;
   private IWizardHandle wizard;
   private Text serverPortText;
+  private Text autoreloadText;
+  private Label autoreloadLabel;
+
   private String serverPort = GaeServer.DEFAULT_SERVER_PORT;
+  private String autoreloadTime = GaeServer.DEFAULT_AUTORELOAD_TIME;
+  boolean isValid = false;
 
   @Override
   public Composite createComposite(Composite parent, IWizardHandle handle) {
@@ -52,19 +61,22 @@ public final class GaeServerWizardFragment extends WizardFragment {
     handle.setTitle("Google App Engine Development Server");
     handle.setDescription("Enter the configuration parameters for Google App Engine");
     // create UI
-    Label serverportLabel = new Label(container, SWT.NONE);
-    serverportLabel.setText("Server Port");
-    serverPortText = new Text(container, SWT.SHADOW_IN | SWT.BORDER);
-    serverPortText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-    serverPortText.setText(serverPort);
+    {
+      Label serverportLabel = new Label(container, SWT.NONE);
+      serverportLabel.setText("Server Port");
+      serverPortText = new Text(container, SWT.SHADOW_IN | SWT.BORDER);
+      serverPortText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+      serverPortText.setText(serverPort);
+    }
+    {
+      autoreloadLabel = new Label(container, SWT.NONE);
+      autoreloadLabel.setText("Auto-reload delay when resources change, sec (0 - never)");
+      autoreloadText = new Text(container, SWT.SHADOW_IN | SWT.BORDER);
+      autoreloadText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+      autoreloadText.setText(autoreloadTime);
+    }
     // add listeners
-    serverPortText.addModifyListener(new ModifyListener() {
-      @Override
-      public void modifyText(ModifyEvent e) {
-        isValid = validate();
-        updateFields();
-      }
-    });
+    addListeners();
     Dialog.applyDialogFont(parent);
 
     return container;
@@ -72,21 +84,20 @@ public final class GaeServerWizardFragment extends WizardFragment {
 
   @Override
   public void enter() {
+    // hide auto-reload delay controls as not applicable for SDKs < 1.8.1
+    GaeRuntime gaeRuntime = GaeServer.getGaeServer(getServerWorkingCopy()).getGaeRuntime();
+    if (gaeRuntime != null) {
+      boolean isUsingAutoreload = SdkUtils.compareVersionStrings(gaeRuntime.getGaeSdkVersion(),
+          RuntimeUtils.MIN_SDK_VERSION_USING_AUTORELOAD) >= 0;
+      autoreloadLabel.setVisible(isUsingAutoreload);
+      autoreloadText.setVisible(isUsingAutoreload);
+    }
     isValid = validate();
   }
 
   @Override
   public void exit() {
     isValid = validate();
-  }
-
-  /**
-   * Returns the server instance property name/value pairs.
-   */
-  public Map<String, String> getServerProperties() {
-    Map<String, String> propertyMap = Maps.newHashMap();
-    propertyMap.put(GaeServer.PROPERTY_SERVERPORT, serverPort);
-    return propertyMap;
   }
 
   @Override
@@ -97,6 +108,36 @@ public final class GaeServerWizardFragment extends WizardFragment {
   @Override
   public boolean isComplete() {
     return isValid;
+  }
+
+  @Override
+  public void performCancel(IProgressMonitor monitor) throws CoreException {
+    // restore defaults as wizard fragment is being re-used
+    serverPort = GaeServer.DEFAULT_SERVER_PORT;
+    autoreloadTime = GaeServer.DEFAULT_AUTORELOAD_TIME;
+    super.performCancel(monitor);
+  }
+
+  private void addListeners() {
+    ModifyListener defaultListener = new ModifyListener() {
+      @Override
+      public void modifyText(ModifyEvent e) {
+        updateFields();
+        isValid = validate();
+      }
+    };
+    serverPortText.addModifyListener(defaultListener);
+    autoreloadText.addModifyListener(defaultListener);
+  }
+
+  /**
+   * Returns the server instance property name/value pairs.
+   */
+  private Map<String, String> getServerProperties() {
+    Map<String, String> propertyMap = Maps.newHashMap();
+    propertyMap.put(GaeServer.PROPERTY_SERVERPORT, serverPort);
+    propertyMap.put(GaeServer.PROPERTY_AUTORELOAD_TIME, autoreloadTime);
+    return propertyMap;
   }
 
   /**
@@ -111,6 +152,7 @@ public final class GaeServerWizardFragment extends WizardFragment {
    */
   private void updateFields() {
     serverPort = serverPortText.getText().trim();
+    autoreloadTime = autoreloadText.getText().trim();
   }
 
   /**
