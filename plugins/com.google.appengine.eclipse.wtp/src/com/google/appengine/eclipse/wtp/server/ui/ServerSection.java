@@ -83,7 +83,7 @@ public final class ServerSection extends ServerEditorSection implements Property
     }
     {
       autoreloadTimeLabel = createLabel(comp,
-          "Auto reload when resources change, sec (after publish, 0 - never reload)", toolkit);
+          "Auto scan for resources change, sec (0 - never scan)", toolkit);
       autoreloadTimeText = toolkit.createText(comp, String.valueOf(gaeServer.getAutoReloadTime()),
           SWT.BORDER);
       txtGDF.applyTo(autoreloadTimeText);

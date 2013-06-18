@@ -70,7 +70,7 @@ public final class GaeServerWizardFragment extends WizardFragment {
     }
     {
       autoreloadLabel = new Label(container, SWT.NONE);
-      autoreloadLabel.setText("Auto-reload delay when resources change, sec (0 - never)");
+      autoreloadLabel.setText("Auto scan for resources change, sec (0 - never)");
       autoreloadText = new Text(container, SWT.SHADOW_IN | SWT.BORDER);
       autoreloadText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
       autoreloadText.setText(autoreloadTime);
