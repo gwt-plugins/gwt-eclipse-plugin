@@ -61,8 +61,10 @@ public class GWTPreferences {
   private static final String SOURCE_VIEWER_SERVER_PORT = "sourceViewerServerPort";
 
   private static final String SPEEDTRACER_GEN_FOLDER_NAME = "speedTracerGenFolderName";
+  private static final String SPEED_TRACER_ENABLED = "speedTracerEnabled";
 
-  private static final String JSO_PROPERTY_TYPE = "com.google.gwt.core.client.debug.JsoInspector$JsoProperty";
+  private static final String JSO_PROPERTY_TYPE =
+      "com.google.gwt.core.client.debug.JsoInspector$JsoProperty";
 
   static {
     sdkManager = new SdkManager<GWTRuntime>(GWTRuntimeContainer.CONTAINER_ID,
@@ -71,11 +73,12 @@ public class GWTPreferences {
     sdkManager.addSdkUpdateListener(new SdkManager.SdkUpdateListener<GWTRuntime>() {
       public void onSdkUpdate(SdkUpdateEvent<GWTRuntime> sdkUpdateEvent) throws CoreException {
 
-        SdkManager<GWTRuntime>.SdkUpdateEventProcessor sdkUpdateEventProcessor = GWTPreferences.sdkManager.new SdkUpdateEventProcessor(
-            sdkUpdateEvent);
+        SdkManager<GWTRuntime>.SdkUpdateEventProcessor sdkUpdateEventProcessor =
+            GWTPreferences.sdkManager.new SdkUpdateEventProcessor(sdkUpdateEvent);
 
         // Update all of the WEB-INF/lib files
-        IJavaProject[] projects = JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
+        IJavaProject[] projects =
+            JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
         for (IJavaProject project : projects) {
           if (!GWTNature.isGWTProject(project.getProject())
               || GWTProjectsRuntime.isGWTRuntimeProject(project)) {
@@ -129,8 +132,11 @@ public class GWTPreferences {
     // JavaDetailFormattersManager.hasAssociatedDetailFormatter() here because
     // it requires an IJavaType which cannot be resolved without a known
     // context.
-    String[] formatters = JavaDebugOptionsManager.parseList(JDIDebugUIPlugin.getDefault().getPreferenceStore().getString(
-        IJDIPreferencesConstants.PREF_DETAIL_FORMATTERS_LIST));
+    String[] formatters =
+        JavaDebugOptionsManager.parseList(
+            JDIDebugUIPlugin.getDefault()
+                .getPreferenceStore()
+                .getString(IJDIPreferencesConstants.PREF_DETAIL_FORMATTERS_LIST));
 
     for (String formatter : formatters) {
       if (JSO_PROPERTY_TYPE.equals(formatter)) {
@@ -175,6 +181,10 @@ public class GWTPreferences {
    */
   public static int getSourceViewerServerPort() {
     return getEclipsePreferences().getInt(SOURCE_VIEWER_SERVER_PORT, 50313);
+  }
+
+  public static boolean getSpeedTracerEnabled() {
+    return getEclipsePreferences().getBoolean(SPEED_TRACER_ENABLED, false);
   }
 
   public static boolean getUiBinderWizardGenerateContentDefault() {
@@ -231,6 +241,16 @@ public class GWTPreferences {
   public static void setSourceViewerServerPort(int port) {
     IEclipsePreferences workspacePreferences = getEclipsePreferences();
     workspacePreferences.putInt(SOURCE_VIEWER_SERVER_PORT, port);
+    try {
+      workspacePreferences.flush();
+    } catch (BackingStoreException e) {
+      CorePluginLog.logError(e);
+    }
+  }
+
+  public static void setSpeedTracerEnabled(boolean enabled) {
+    IEclipsePreferences workspacePreferences = getEclipsePreferences();
+    workspacePreferences.putBoolean(SPEED_TRACER_ENABLED, enabled);
     try {
       workspacePreferences.flush();
     } catch (BackingStoreException e) {

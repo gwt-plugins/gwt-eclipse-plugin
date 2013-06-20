@@ -25,6 +25,7 @@ import com.google.gwt.eclipse.core.clientbundle.ClientBundleResourceDependencyIn
 import com.google.gwt.eclipse.core.launch.SpeedTracerLaunchListener;
 import com.google.gwt.eclipse.core.markers.ClientBundleProblemType;
 import com.google.gwt.eclipse.core.markers.GWTProblemType;
+import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.resources.GWTImages;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateWebInfFolderCommand;
@@ -122,15 +123,16 @@ public class GWTPlugin extends AbstractGooglePlugin {
 
     addLaunchListener();
 
-    try {
-      SourceViewerServer.INSTANCE.start();
-    } catch (BindException be) {
-      // Ignore this exception - it's already been logged.
+    if (GWTPreferences.getSpeedTracerEnabled()) {
+      try {
+        SourceViewerServer.INSTANCE.start();
+      } catch (BindException be) {
+        // Ignore this exception - it's already been logged.
 
-    } catch (Throwable e) {
-      GWTPluginLog.logError(e, "Could not start source viewer server.");
+      } catch (Throwable e) {
+        GWTPluginLog.logError(e, "Could not start source viewer server.");
+      }
     }
-
     ClientBundleResourceChangeListener.addToWorkspace();
     UiBinderReferenceManager.INSTANCE.start();
 
@@ -170,7 +172,8 @@ public class GWTPlugin extends AbstractGooglePlugin {
 
     reg.put(GWTImages.JSNI_DEFAULT_METHOD_SMALL, imageDescriptorFromPath("icons/methdef_obj.gif"));
     reg.put(GWTImages.JSNI_PRIVATE_METHOD_SMALL, imageDescriptorFromPath("icons/methpri_obj.gif"));
-    reg.put(GWTImages.JSNI_PROTECTED_METHOD_SMALL, imageDescriptorFromPath("icons/methpro_obj.gif"));
+    reg.put(GWTImages.JSNI_PROTECTED_METHOD_SMALL,
+        imageDescriptorFromPath("icons/methpro_obj.gif"));
     reg.put(GWTImages.JSNI_PUBLIC_METHOD_SMALL, imageDescriptorFromPath("icons/methpub_obj.gif"));
 
     reg.put(GWTImages.NEW_ASYNC_INTERFACE_LARGE,

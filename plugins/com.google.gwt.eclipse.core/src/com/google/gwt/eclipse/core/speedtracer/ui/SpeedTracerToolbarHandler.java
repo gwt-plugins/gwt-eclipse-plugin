@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *******************************************************************************/
 package com.google.gwt.eclipse.core.speedtracer.ui;
 
@@ -18,6 +18,7 @@ import com.google.gdt.eclipse.core.ActiveProjectFinder;
 import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.launch.SpeedTracerLaunchListener;
+import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -49,7 +50,16 @@ public class SpeedTracerToolbarHandler extends AbstractHandler {
 
   public Object execute(ExecutionEvent event) {
 
-    if (!SpeedTracerLaunchListener.INSTANCE.isSpeedTracerRunning()) {
+    if (!GWTPreferences.getSpeedTracerEnabled()) {
+      MessageDialog.openInformation(Display.getDefault().getActiveShell(),
+          "Speed Tracer", "Speed Tracer is not enabled. To enable it, go to "
+              + "Window > Preferences > Google > Speed Tracer");
+    } else if (SpeedTracerLaunchListener.INSTANCE.isSpeedTracerRunning()) {
+      MessageDialog.openInformation(Display.getDefault().getActiveShell(),
+          "Speed Tracer",
+          "Speed Tracer is already running. Please stop the current session through"
+              + " the Console View before starting a new one.");
+    } else {
 
       ExtensionQuery<AlternateSpeedTracerDialog> extQuery = new ExtensionQuery<AlternateSpeedTracerDialog>(
           GWTPlugin.PLUGIN_ID, "alternateSpeedTracerDialog", "class");
@@ -57,18 +67,16 @@ public class SpeedTracerToolbarHandler extends AbstractHandler {
 
       for (ExtensionQuery.Data<AlternateSpeedTracerDialog> d : dialogs) {
         AlternateSpeedTracerDialog dialog = d.getExtensionPointData();
-        dialog.open(Display.getDefault().getActiveShell(), ActiveProjectFinder.getInstance().getProject());
+        dialog.open(Display.getDefault().getActiveShell(),
+            ActiveProjectFinder.getInstance().getProject());
         return null; // take the first dialog
       }
 
-      new SpeedTracerDialog(Display.getDefault().getActiveShell(), ActiveProjectFinder.getInstance().getProject()).open();
+      new SpeedTracerDialog(Display.getDefault().getActiveShell(),
+          ActiveProjectFinder.getInstance().getProject()).open();
 
-    } else {
-      MessageDialog.openInformation(Display.getDefault().getActiveShell(), "Speed Tracer",
-          "Speed Tracer is already running. Please stop the current session through"
-              + " the Console View before starting a new one.");
     }
-    
+
     return null;
   }
 
