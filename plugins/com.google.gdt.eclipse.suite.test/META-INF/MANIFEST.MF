@@ -6,7 +6,4 @@ Bundle-Version: 1.0.0
 Bundle-Vendor: Google Inc.
 Fragment-Host: com.google.gdt.eclipse.suite
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.junit,
- com.google.gdt.eclipse.login,
- com.google.gdt.eclipse.swtbot,
- org.eclipse.swtbot.eclipse.finder
+Require-Bundle: org.junit
