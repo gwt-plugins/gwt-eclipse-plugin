@@ -64,6 +64,32 @@ public final class SwtBotProjectActions {
       }
     });
   }
+  
+  /**
+   * Creates a java project with the specified project name.
+   * @param bot the SWTWorkbenchBot
+   * @param projectName the name of the java project to create
+   */
+  public static void createJavaProject(SWTWorkbenchBot bot, String projectName) {
+    // Open Java Perspective
+    bot.perspectiveById("org.eclipse.jdt.ui.JavaPerspective").activate();
+
+    // Open the list of new project wizards
+    bot.menu("File").menu("New").menu("Project...").click();
+
+    // Select the Java project
+    SWTBotTree projectSelectionTree = bot.tree();
+    SWTBotTreeItem projectSelectionGoogleTreeItem =
+        SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, "Java", "Java Project");
+    SwtBotTestingUtilities.selectTreeItem(bot, projectSelectionGoogleTreeItem, "Java Project");
+
+    bot.button("Next >").click();
+
+    // Configure the project and then create it
+    bot.textWithLabel("Project name:").setText(projectName);
+
+    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, bot.button("Finish")); 
+  }
 
   public static void createUiBinder(final SWTWorkbenchBot bot,
       String projectName, String packageName, String name,
@@ -138,6 +164,34 @@ public final class SwtBotProjectActions {
   }
 
   /**
+   * Returns true if the specified project can be found in the 'Package Explorer' or 'Project View',
+   * otherwise returns false. Throws a WidgetNotFoundException exception if the 'Package Explorer'
+   * or 'Project Explorer' view cannot be found.
+   * 
+   * @param bot The SWTWorkbenchBot.
+   * @param projectName The name of the project to be found.
+   * @return
+   */
+  public static boolean doesProjectExist (final SWTWorkbenchBot bot, String projectName) {
+    SWTBotView explorer = getPackageExplorer(bot);
+    if (explorer == null) {
+      throw new WidgetNotFoundException(
+          "Could not find the 'Package Explorer' or 'Project Explorer' view.");
+    }
+
+    // Select the root of the project tree in the explorer view
+    Widget explorerWidget = explorer.getWidget();
+    Tree explorerTree = (Tree) bot.widget(widgetOfType(Tree.class), explorerWidget);
+    SWTBotTreeItem[] allItems = new SWTBotTree(explorerTree).getAllItems();
+    for (int i = 0; i < allItems.length; i++) {
+      if (allItems[i].getText().equals(projectName)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Returns the Google context menu label. Throws WidgetNotFoundException if it cannot find it.
    */
   public static String getGoogleMenuLabel(SWTWorkbenchBot bot) {
@@ -160,24 +214,33 @@ public final class SwtBotProjectActions {
     throw new WidgetNotFoundException("Cannot determine the Google menu label");
   }
 
-  /**
-   * Returns the project root tree in Package Explorer.
+  /*
+   * Choose either the Package Explorer View or the Project Explorer view. Eclipse 3.3 and 3.4 start
+   * with the Java Perspective, which has the Package Explorer View open by default, whereas Eclipse
+   * 3.5 starts with the Resource Perspective, which has the Project Explorer View open.
    */
-  public static SWTBotTree getProjectRootTree(final SWTWorkbenchBot bot) {
-    // Get the project root tree in Package Explorer
+  public static SWTBotView getPackageExplorer(final SWTWorkbenchBot bot) {
     SWTBotView explorer = null;
     for (SWTBotView view : bot.views()) {
-      if (view.getTitle().equals("Package Explorer")
-          || view.getTitle().equals("Project Explorer")) {
+      if (view.getTitle().equals("Package Explorer") ||
+          view.getTitle().equals("Project Explorer")) {
         explorer = view;
         break;
       }
     }
+    return explorer;
+  }
+
+  /**
+   * Returns the project root tree in Package Explorer.
+   */
+  public static SWTBotTree getProjectRootTree(SWTWorkbenchBot bot) {
+    SWTBotView explorer = getPackageExplorer(bot);
     
     if (explorer == null) {
       throw new WidgetNotFoundException("Cannot find Package Explorer or Project Explorer");
     }
-    
+
     Tree tree = (Tree) bot.widget(widgetOfType(Tree.class), explorer.getWidget());
     return new SWTBotTree(tree);
   }
@@ -222,13 +285,21 @@ public final class SwtBotProjectActions {
     });
   }
 
+  /**
+   * Returns the specified project. Throws a WidgetNotFoundException if the 'Package Explorer' or
+   * 'Project Explorer' view cannot be found or if the specified project cannot be found.
+   * 
+   * @param bot The SWTWorkbenchBot.
+   * @param projectName The name of the project to select.
+   * @return
+   */
   public static SWTBotTreeItem selectProject(final SWTWorkbenchBot bot, String projectName) {
     /*
      * Choose either the Package Explorer View or the Project Explorer view. Eclipse 3.3 and 3.4
      * start with the Java Perspective, which has the Package Explorer View open by default, whereas
      * Eclipse 3.5 starts with the Resource Perspective, which has the Project Explorer View open.
      */
-    SWTBotView explorer = null;
+    SWTBotView explorer = getPackageExplorer(bot);
     for (SWTBotView view : bot.views()) {
       if (view.getTitle().equals("Package Explorer") ||
           view.getTitle().equals("Project Explorer")) {
@@ -236,6 +307,7 @@ public final class SwtBotProjectActions {
         break;
       }
     }
+
 
     if (explorer == null) {
       throw new WidgetNotFoundException(
