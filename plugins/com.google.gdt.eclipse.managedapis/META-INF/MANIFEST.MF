@@ -34,11 +34,14 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.wst.common.modulecore,
  com.google.gdt.eclipse.core,
  org.eclipse.ui.forms,
- org.eclipse.core.expressions
+ org.eclipse.core.expressions,
+ org.eclipse.m2e.core,
+ org.eclipse.m2e.maven.runtime
 Bundle-ClassPath: .,
  lib/gson-1.6.jar,
  lib/joda-time-1.6.2.jar,
  lib/com.google.gdt.googleapi.core.jar
 Bundle-Activator: com.google.gdt.eclipse.managedapis.ManagedApiPlugin
 Bundle-Localization: plugin
-Import-Package: com.google.appengine.eclipse.core.nature
+Import-Package: com.google.appengine.eclipse.core.nature,
+ com.google.gdt.eclipse.maven

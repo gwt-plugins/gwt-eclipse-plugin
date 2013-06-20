@@ -25,38 +25,13 @@ import java.util.List;
  */
 public class ManagedApiJsonClasses {
 
-  public static final Gson GSON_CODEC = new Gson();
-
-  /**
-   * Class used for getting revision and language version from descriptor.json.
-   */
-  public static class ApiRevision {
-    // Variable names as in JSON labels so gson can get their values from JSON
-    // file.
-    private String revision;
-    private String language_version;
-
-    public String getLanguage_version() {
-      return language_version;
-    }
-
-    public String getRevision() {
-      return revision;
-    }
-
-    public void setLanguage_version(String language_version) {
-      this.language_version = language_version;
-    }
-
-    public void setRevision(String revision) {
-      this.revision = revision;
-    }
-  }
-
   /**
    * Class used for getting dependency information from descriptor.json.
    */
   public static class ApiDependencies {
+    /**
+     * Class holding "environments" and "files" members of "dependencies" in the descriptor.json.
+     */
     public static class ApiDependency {
       private List<String> environments = new ArrayList<String>();
       private List<File> files = new ArrayList<File>();
@@ -70,6 +45,10 @@ public class ManagedApiJsonClasses {
       }
 
     }
+
+    /**
+     * Class holding "path" and "type" members of "files" in the descriptor.json.
+     */
     public static class File {
       private String path;
       private String type;
@@ -100,6 +79,52 @@ public class ManagedApiJsonClasses {
     }
 
   }
+
+  /**
+   * Class used for getting name, version, revision and language version from descriptor.json.
+   */
+  public static class ApiRevision {
+    // Variable names as in JSON labels so gson can get their values from JSON
+    // file.
+    private String name;
+    private String revision;
+    private String version;
+    private String language_version;
+
+    public String getLanguage_version() {
+      return language_version;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public String getRevision() {
+      return revision;
+    }
+
+    public String getVersion() {
+      return version;
+    }
+
+    public void setLanguage_version(String language_version) {
+      this.language_version = language_version;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    public void setRevision(String revision) {
+      this.revision = revision;
+    }
+
+    public void setVersion(String version) {
+      this.version = version;
+    }
+  }
+
+  public static final Gson GSON_CODEC = new Gson();
 
   /**
    * The filename identifying the resource as an API descriptor.
