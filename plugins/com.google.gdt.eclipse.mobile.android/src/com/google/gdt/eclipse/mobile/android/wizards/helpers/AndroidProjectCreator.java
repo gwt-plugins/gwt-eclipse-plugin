@@ -118,7 +118,7 @@ public class AndroidProjectCreator {
 
     androidProject.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(monitor, 10));
     // Add the Java and android nature to the project
-    AndroidNature.setupProjectNatures(androidProject, monitor);
+    AndroidNature.setupProjectNatures(androidProject, monitor, true);
 
     // Create folders in the project if they don't already exist
     addDefaultDirectories(androidProject, AdtConstants.WS_ROOT,
