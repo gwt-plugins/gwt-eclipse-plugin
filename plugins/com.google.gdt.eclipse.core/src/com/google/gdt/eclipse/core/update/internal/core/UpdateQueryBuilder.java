@@ -60,9 +60,12 @@ public class UpdateQueryBuilder {
 
   public static final String ENDPOINTS_GEN_APP_ENGINE_BACKEND = "endpoints_genbackend";
 
-  public static final String ENDPOINTS_GEN_APP_ENGINE_CONNECTED_ANDROID = "endpoints_genconnectedandroid";
+  public static final String ENDPOINTS_GEN_APP_ENGINE_CONNECTED_ANDROID =
+      "endpoints_genconnectedandroid";
 
   public static final String ENDPOINTS_GEN_ENDPOINT_CLASS = "endpoints_genclass";
+  
+  public static final String APPS_SCRIPT_IMPORT = "apps_script_import";
 
   /**
    * Stores count of RPC layers used if Gae Project is App Engine Connected
