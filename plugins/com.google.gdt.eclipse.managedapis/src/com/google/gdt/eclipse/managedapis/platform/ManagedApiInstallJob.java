@@ -16,6 +16,7 @@ import com.google.gdt.eclipse.core.ResourceUtils;
 import com.google.gdt.eclipse.core.SWTUtilities;
 import com.google.gdt.eclipse.core.jobs.DownloadRunnable;
 import com.google.gdt.eclipse.core.jobs.UnzipToIFilesRunnable;
+import com.google.gdt.eclipse.core.natures.NatureUtils;
 import com.google.gdt.eclipse.managedapis.ManagedApiJsonClasses;
 import com.google.gdt.eclipse.managedapis.ManagedApiJsonClasses.ApiDependencies;
 import com.google.gdt.eclipse.managedapis.ManagedApiJsonClasses.ApiRevision;
@@ -29,7 +30,6 @@ import com.google.gdt.eclipse.managedapis.impl.IconInfo;
 import com.google.gdt.eclipse.managedapis.impl.ManagedApiMavenInfo;
 import com.google.gdt.eclipse.managedapis.impl.ManagedApiProjectImpl;
 import com.google.gdt.eclipse.managedapis.impl.ProguardConfig.Info;
-import com.google.gdt.eclipse.maven.MavenUtils;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -130,6 +130,22 @@ public class ManagedApiInstallJob extends Job {
     return tmpFile;
   }
 
+  /**
+   * Returns <code>true</code> if the given project has the Maven 2 nature. This checks for the old
+   * maven nature (till m2Eclipse 0.12) and the new Maven nature (m2Eclipse 1.0.0 and up).
+   * 
+   * @throws CoreException
+   */
+  private static boolean hasMavenNature(IProject project) throws CoreException {
+    if (NatureUtils.hasNature(project, MAVEN2_NATURE_ID)) {
+      return true;
+    }
+    if (NatureUtils.hasNature(project, OLD_MAVEN2_NATURE_ID)) {
+      return true;
+    }
+    return false;
+  }
+
   private List<IStatus> subtaskStati;
 
   private List<ApiRevision> apiRevisionList;
@@ -193,7 +209,7 @@ public class ManagedApiInstallJob extends Job {
         if (entryCount > 0) {
           subtaskStati = new ArrayList<IStatus>(entryCount);
 
-          boolean isMavenProject = MavenUtils.hasMavenNature(project);
+          boolean isMavenProject = hasMavenNature(project);
 
           // Download and set up all the API files
           for (ManagedApiEntry entry : entries) {
@@ -299,7 +315,7 @@ public class ManagedApiInstallJob extends Job {
 
     ResourceUtils.deleteUnlistedFiles(folder.getLocation().toFile(), dependencyFiles);
   }
-  
+
   /**
    * Downloads the zip file for the specified managed API.
    * 
@@ -488,7 +504,7 @@ public class ManagedApiInstallJob extends Job {
    */
   private void updateMavenDependecyList() {
     try {
-      if (!MavenUtils.hasMavenNature(project)) {
+      if (!hasMavenNature(project)) {
         return;
       }
 
