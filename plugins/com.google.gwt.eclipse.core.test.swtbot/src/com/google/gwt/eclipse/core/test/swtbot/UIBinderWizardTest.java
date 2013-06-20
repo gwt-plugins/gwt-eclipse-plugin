@@ -35,8 +35,8 @@ public class UIBinderWizardTest extends TestCase {
   public void testUIBinderWizard() {
     SwtBotSdkActions.setupGwtSdk(bot);
 
-    SwtBotProjectActions.createWebAppProject(bot, PROJECT_NAME,
-        "com.example.webapp", true, false);
+    SwtBotProjectActions.createWebAppProject(bot, PROJECT_NAME, "com.example.webapp", true, false,
+        true);
 
     SwtBotProjectActions.createUiBinder(bot, PROJECT_NAME,
         "com.example.webapp", "TestWithContent", true, true);

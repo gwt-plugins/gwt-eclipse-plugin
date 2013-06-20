@@ -21,23 +21,20 @@ import com.google.gdt.eclipse.swtbot.SwtBotWorkbenchActions;
 import junit.framework.TestCase;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 
 /**
  * Test the properties process.
  */
-@SuppressWarnings("deprecation")
 public class GaePropertyPageTest extends TestCase {
 
   private static final String PROJECT_NAME = "javaProject";
 
-  @SuppressWarnings("deprecation")
   private SWTWorkbenchBot bot = new SWTWorkbenchBot();
 
   public void testPropertyPageWithJavaProject() {
     // Open a Java Project
-    createJavaProject();
+    SwtBotTestingUtilities.createJavaProject(bot, PROJECT_NAME);
 
     // Open Java project properties
     SwtBotProjectActions.openProjectProperties(bot, PROJECT_NAME);
@@ -57,30 +54,6 @@ public class GaePropertyPageTest extends TestCase {
 
     // Delete project
     SwtBotProjectActions.deleteProject(bot, PROJECT_NAME);
-  }
-
-  private void createJavaProject() {
-    // Open Java Perspective
-    bot.perspectiveById("org.eclipse.jdt.ui.JavaPerspective").activate();
-
-    // Open the list of new project wizards
-    bot.menu("File").menu("New").menu("Project...").click();
-
-    // Select the Java project
-    SWTBotTree projectSelectionTree = bot.tree();
-    SWTBotTreeItem projectSelectionGoogleTreeItem =
-        SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, "Java",
-            "Java Project");
-    SwtBotTestingUtilities.selectTreeItem(bot, projectSelectionGoogleTreeItem,
-        "Java Project");
-
-    bot.button("Next >").click();
-
-    // Configure the project and then create it
-    bot.textWithLabel("Project name:").setText(PROJECT_NAME);
-
-    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot,
-        bot.button("Finish"));
   }
 
   @Override

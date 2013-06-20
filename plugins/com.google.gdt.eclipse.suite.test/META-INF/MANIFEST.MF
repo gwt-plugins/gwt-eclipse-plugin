@@ -3,7 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Test Fragment
 Bundle-SymbolicName: com.google.gdt.eclipse.suite.test;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Vendor: GOOGLE
-Fragment-Host: com.google.gdt.eclipse.suite;bundle-version="0.0.0"
+Bundle-Vendor: Google Inc.
+Fragment-Host: com.google.gdt.eclipse.suite
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.junit
+Require-Bundle: org.junit,
+ com.google.gdt.eclipse.login,
+ com.google.gdt.eclipse.swtbot,
+ org.eclipse.swtbot.eclipse.finder

@@ -14,24 +14,56 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.swtbot;
 
+import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
+
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.finders.ContextMenuHelper;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
-import org.hamcrest.core.IsInstanceOf;
 
 /**
  * SWTBot utility methods that perform general workbench actions.
  */
 public final class SwtBotProjectActions {
+  private static final String SOURCE_FOLDER = "src";
   /**
    * Possible names for the GPE menu label.
    */
   public static final String[] GOOGLE_MENU_LABELS = {"GPE Tools", "Google"};
+
+  /**
+   * Creates a java class with the specified name.
+   * 
+   * @param bot The SWTWorkbenchBot.
+   * @param projectName The name of the project the class should be created in.
+   * @param packageName The name of the package the class should be created in.
+   * @param className The name of the java class to be created.
+   */
+  public static void createJavaClass(final SWTWorkbenchBot bot, String projectName,
+      String packageName, final String className) {
+    SWTBotTreeItem project = SwtBotProjectActions.selectProject(bot, projectName);
+    selectProjectItem(project, SOURCE_FOLDER, packageName).select();
+    SwtBotTestingUtilities.performAndWaitForWindowChange(bot, new Runnable() {
+      public void run() {
+        MenuItem menuItem = ContextMenuHelper.contextMenu(getProjectRootTree(bot), "New", "Class");
+        new SWTBotMenu(menuItem).click();
+      }
+    });
+
+    SwtBotTestingUtilities.performAndWaitForWindowChange(bot, new Runnable() {
+      public void run() {
+        bot.activeShell();
+        bot.textWithLabel("Name:").setText(className);
+        SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, bot.button("Finish"));
+      }
+    });
+  }
 
   public static void createUiBinder(final SWTWorkbenchBot bot,
       String projectName, String packageName, String name,
@@ -48,7 +80,7 @@ public final class SwtBotProjectActions {
     bot.button("Next >").click();
 
     // Configure the UiBinder and then create it
-    String sourceFolder = projectName + "/src";
+    String sourceFolder = projectName + "/" + SOURCE_FOLDER;
     bot.textWithLabel("Source folder:").setText(sourceFolder);
     bot.textWithLabel("Package:").setText(packageName);
     bot.textWithLabel("Name:").setText(name);
@@ -62,9 +94,8 @@ public final class SwtBotProjectActions {
         bot.button("Finish"));
   }
 
-  public static void createWebAppProject(final SWTWorkbenchBot bot,
-      String projectName, String packageName, boolean useGwt,
-      boolean useAppEngine) {
+  public static void createWebAppProject(final SWTWorkbenchBot bot, String projectName,
+      String packageName, boolean useGwt, boolean useAppEngine, boolean generateSampleCode) {
     // Open the list of new project wizards
     bot.menu("File").menu("New").menu("Project...").click();
 
@@ -79,16 +110,14 @@ public final class SwtBotProjectActions {
 
     // Configure the project and then create it
     bot.textWithLabel("Project name:").setText(projectName);
-    bot.textWithLabel("Package: (e.g. com.example.myproject)").setText(
-        packageName);
+    bot.textWithLabel("Package: (e.g. com.example.myproject)").setText(packageName);
 
-    SwtBotTestingUtilities.setCheckBox(bot.checkBox("Use Google Web Toolkit"),
-        useGwt);
-    SwtBotTestingUtilities.setCheckBox(bot.checkBox("Use Google App Engine"),
-        useAppEngine);
+    SwtBotTestingUtilities.setCheckBox(bot.checkBox("Use Google Web Toolkit"), useGwt);
+    SwtBotTestingUtilities.setCheckBox(bot.checkBox("Use Google App Engine"), useAppEngine);
+    SwtBotTestingUtilities.setCheckBox(bot.checkBox("Generate project sample code"),
+        generateSampleCode);
 
-    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot,
-        bot.button("Finish"));
+    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, bot.button("Finish"));
   }
 
   public static void deleteProject(final SWTWorkbenchBot bot,
@@ -106,6 +135,72 @@ public final class SwtBotProjectActions {
 
     SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot,
         bot.button("OK"));
+  }
+
+  /**
+   * Returns the Google context menu label. Throws WidgetNotFoundException if it cannot find it.
+   */
+  public static String getGoogleMenuLabel(SWTWorkbenchBot bot) {
+    // Open the list of new project wizards
+    bot.menu("File").menu("New").menu("Other...").click();
+
+    SWTBotTree projectSelectionTree = bot.tree();
+     SWTBotTreeItem[] itemsArray = projectSelectionTree.getAllItems();
+    
+     for (SWTBotTreeItem item : itemsArray) {
+      for (String label : GOOGLE_MENU_LABELS) {
+        if (item.getText().equals(label)) {
+          bot.button("Cancel").click();
+          return label;
+        }
+       }
+     }
+
+    bot.button("Cancel").click();
+    throw new WidgetNotFoundException("Cannot determine the Google menu label");
+  }
+
+  /**
+   * Returns the project root tree in Package Explorer.
+   */
+  public static SWTBotTree getProjectRootTree(final SWTWorkbenchBot bot) {
+    // Get the project root tree in Package Explorer
+    SWTBotView explorer = null;
+    for (SWTBotView view : bot.views()) {
+      if (view.getTitle().equals("Package Explorer")
+          || view.getTitle().equals("Project Explorer")) {
+        explorer = view;
+        break;
+      }
+    }
+    
+    if (explorer == null) {
+      throw new WidgetNotFoundException("Cannot find Package Explorer or Project Explorer");
+    }
+    
+    Tree tree = (Tree) bot.widget(widgetOfType(Tree.class), explorer.getWidget());
+    return new SWTBotTree(tree);
+  }
+
+  /**
+   * Returns true if there are errors in the Problem view. Returns false otherwise.
+   */
+  public static boolean hasErrorsInProblemsView(SWTWorkbenchBot bot) {
+    // Open Problems View by Window -> show view -> Problems
+    bot.menu("Window").menu("Show View").menu("Problems").click();
+
+    SWTBotView view = bot.viewByTitle("Problems");
+    view.show();
+    SWTBotTree tree = view.bot().tree();
+
+    for (SWTBotTreeItem item : tree.getAllItems()) {
+      String text = item.getText();
+      if (text != null && text.startsWith("Errors")) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**
@@ -127,18 +222,16 @@ public final class SwtBotProjectActions {
     });
   }
 
-  public static SWTBotTreeItem selectProject(final SWTWorkbenchBot bot,
-      String projectName) {
+  public static SWTBotTreeItem selectProject(final SWTWorkbenchBot bot, String projectName) {
     /*
-     * Choose either the Package Explorer View or the Project Explorer view.
-     * Eclipse 3.3 and 3.4 start with the Java Perspective, which has the
-     * Package Explorer View open by default, whereas Eclipse 3.5 starts with
-     * the Resource Perspective, which has the Project Explorer View open.
+     * Choose either the Package Explorer View or the Project Explorer view. Eclipse 3.3 and 3.4
+     * start with the Java Perspective, which has the Package Explorer View open by default, whereas
+     * Eclipse 3.5 starts with the Resource Perspective, which has the Project Explorer View open.
      */
     SWTBotView explorer = null;
     for (SWTBotView view : bot.views()) {
-      if (view.getTitle().equals("Package Explorer")
-          || view.getTitle().equals("Project Explorer")) {
+      if (view.getTitle().equals("Package Explorer") ||
+          view.getTitle().equals("Project Explorer")) {
         explorer = view;
         break;
       }
@@ -150,10 +243,28 @@ public final class SwtBotProjectActions {
     }
 
     // Select the root of the project tree in the explorer view
-    IsInstanceOf matcher = new IsInstanceOf(Tree.class);
     Widget explorerWidget = explorer.getWidget();
-    Tree explorerTree = (Tree) bot.widget(matcher, explorerWidget);
+    Tree explorerTree = (Tree) bot.widget(widgetOfType(Tree.class), explorerWidget);
     return new SWTBotTree(explorerTree).getTreeItem(projectName).select();
+  }
+
+  /**
+   * Select a file/folder by providing a parent tree, and a list folders that lead to the
+   * file/folder.
+   * 
+   * @param item Root tree item.
+   * @param folderPath List of folder names that lead to file.
+   * @return Returns a SWTBotTreeItem of the last name in texts.
+   */
+  public static SWTBotTreeItem selectProjectItem(SWTBotTreeItem item, String... folderPath) {
+    for (String folder : folderPath) {
+      if (item == null) {
+        return null;
+      }
+      item.doubleClick();
+      item = item.getNode(folder);
+    }
+    return item;
   }
 
   private SwtBotProjectActions() {

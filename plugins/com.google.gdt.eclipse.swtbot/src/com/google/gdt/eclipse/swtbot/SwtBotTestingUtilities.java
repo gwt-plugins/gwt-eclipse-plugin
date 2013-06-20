@@ -1,16 +1,14 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  *******************************************************************************/
 package com.google.gdt.eclipse.swtbot;
 
@@ -28,6 +26,7 @@ import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCheckBox;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 
@@ -74,13 +73,40 @@ public class SwtBotTestingUtilities {
    */
   public static final int EVENT_DOWN_UP_DELAY_MS = 100;
 
-  public static void clickButtonAndWaitForWindowChange(SWTBot bot,
-      final SWTBotButton button) {
+  public static void clickButtonAndWaitForWindowChange(SWTBot bot, final SWTBotButton button) {
     performAndWaitForWindowChange(bot, new Runnable() {
       public void run() {
         button.click();
       }
     });
+  }
+
+  /**
+   * Create a java project with the specified project name. This function opens up the Java
+   * Perspective.
+   * 
+   * @param bot The current SWTWorkbenchBot object
+   * @param projectName Name of java project to be created
+   */
+  public static void createJavaProject(SWTWorkbenchBot bot, String projectName) {
+    // Open Java Perspective
+    bot.perspectiveById("org.eclipse.jdt.ui.JavaPerspective").activate();
+
+    // Open the list of new project wizards
+    bot.menu("File").menu("New").menu("Project...").click();
+
+    // Select the Java project
+    SWTBotTree projectSelectionTree = bot.tree();
+    SWTBotTreeItem projectSelectionGoogleTreeItem =
+        SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, "Java", "Java Project");
+    SwtBotTestingUtilities.selectTreeItem(bot, projectSelectionGoogleTreeItem, "Java Project");
+
+    bot.button("Next >").click();
+
+    // Configure the project and then create it
+    bot.textWithLabel("Project name:").setText(projectName);
+
+    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, bot.button("Finish"));
   }
 
   /**
@@ -90,8 +116,7 @@ public class SwtBotTestingUtilities {
    * @param nodeText the text on the node.
    * @return the child tree item with the specified text.
    */
-  public static TreeItem getTreeItem(final TreeItem widget,
-      final String nodeText) {
+  public static TreeItem getTreeItem(final TreeItem widget, final String nodeText) {
     return UIThreadRunnable.syncExec(new WidgetResult<TreeItem>() {
       public TreeItem run() {
         TreeItem[] items = widget.getItems();
@@ -122,8 +147,7 @@ public class SwtBotTestingUtilities {
     waitUntilShellIsNotActive(bot, shell);
   }
 
-  public static void selectTreeItem(SWTBot bot, SWTBotTreeItem tree,
-      String itemText) {
+  public static void selectTreeItem(SWTBot bot, SWTBotTreeItem tree, String itemText) {
     waitUntilTreeItemHasItem(bot, tree, itemText);
     tree.select(itemText);
   }
@@ -131,10 +155,8 @@ public class SwtBotTestingUtilities {
   /**
    * Injects a key or character via down and up events.
    * 
-   * @param keyCode the keycode of the key (only this or character have to be
-   *          provided.)
-   * @param character the character to press (only this or keyCode have to be
-   *          provided.)
+   * @param keyCode the keycode of the key (only this or character have to be provided.)
+   * @param character the character to press (only this or keyCode have to be provided.)
    */
   public static void sendKeyDownAndUp(SWTBot bot, int keyCode, char character) {
     Event ev = new Event();
@@ -182,8 +204,7 @@ public class SwtBotTestingUtilities {
   /**
    * Blocks the caller until the given shell is no longer active.
    */
-  public static void waitUntilShellIsNotActive(SWTBot bot,
-      final SWTBotShell shell) {
+  public static void waitUntilShellIsNotActive(SWTBot bot, final SWTBotShell shell) {
     bot.waitUntil(new DefaultCondition() {
       public String getFailureMessage() {
         return "Shell " + shell.getText() + " did not close"; //$NON-NLS-1$
@@ -196,15 +217,15 @@ public class SwtBotTestingUtilities {
   }
 
   /**
-   * Blocks the caller until all of the direct children of the tree have text.
-   * The assumption is that the tree does not have any "empty" children.
+   * Blocks the caller until all of the direct children of the tree have text. The assumption is
+   * that the tree does not have any "empty" children.
    * 
    * TODO: Refactor some of this logic; it follows the same general pattern as
    * {@link #waitUntilTreeItemHasItem(SWTBot, SWTBotTreeItem, String)}.
    * 
    * @param tree the tree to search
-   * @throws TimeoutException if all of the direct children of the tree do not
-   *           have text within the timeout period
+   * @throws TimeoutException if all of the direct children of the tree do not have text within the
+   *           timeout period
    */
   public static void waitUntilTreeHasText(SWTBot bot, final SWTBotTreeItem tree)
       throws TimeoutException {
@@ -245,8 +266,7 @@ public class SwtBotTestingUtilities {
   }
 
   /**
-   * Helper method to check whether a given tree is expanded which can be called
-   * from any thread.
+   * Helper method to check whether a given tree is expanded which can be called from any thread.
    */
   private static boolean isTreeExpanded(final TreeItem tree) {
     return UIThreadRunnable.syncExec(new Result<Boolean>() {
@@ -259,8 +279,7 @@ public class SwtBotTestingUtilities {
   private static void printTree(final TreeItem tree) {
     UIThreadRunnable.syncExec(new VoidResult() {
       public void run() {
-        System.err.println(String.format("%s has %d items:", tree.getText(),
-            tree.getItemCount()));
+        System.err.println(String.format("%s has %d items:", tree.getText(), tree.getItemCount()));
         for (TreeItem item : tree.getItems()) {
           System.err.println(String.format("  - %s", item.getText()));
         }
@@ -268,8 +287,8 @@ public class SwtBotTestingUtilities {
     });
   }
 
-  private static boolean waitUntilTreeHasItemImpl(SWTBot bot,
-      final TreeItem tree, final String nodeText) {
+  private static boolean waitUntilTreeHasItemImpl(SWTBot bot, final TreeItem tree,
+      final String nodeText) {
     try {
       bot.waitUntil(new DefaultCondition() {
         public String getFailureMessage() {
@@ -287,8 +306,7 @@ public class SwtBotTestingUtilities {
     return true;
   }
 
-  private static boolean waitUntilTreeHasTextImpl(SWTBot bot,
-      final TreeItem tree) {
+  private static boolean waitUntilTreeHasTextImpl(SWTBot bot, final TreeItem tree) {
     try {
       bot.waitUntil(new DefaultCondition() {
         public String getFailureMessage() {
@@ -311,11 +329,11 @@ public class SwtBotTestingUtilities {
    * 
    * @param tree the tree item to search
    * @param nodeText the item text to look for
-   * @throws org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException if
-   *           the item could not be found within the timeout period
+   * @throws org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException if the item could not
+   *           be found within the timeout period
    */
-  private static void waitUntilTreeItemHasItem(SWTBot bot,
-      final SWTBotTreeItem tree, final String nodeText) {
+  private static void waitUntilTreeItemHasItem(SWTBot bot, final SWTBotTreeItem tree,
+      final String nodeText) {
 
     // Attempt #1
     if (!waitUntilTreeHasItemImpl(bot, tree.widget, nodeText)) {
@@ -333,10 +351,9 @@ public class SwtBotTestingUtilities {
 
       if (!waitUntilTreeHasItemImpl(bot, tree.widget, nodeText)) {
         printTree(tree.widget);
-        throw new TimeoutException(String.format(
-            "Timed out waiting for %s, giving up...", nodeText));
+        throw new TimeoutException(
+            String.format("Timed out waiting for %s, giving up...", nodeText));
       }
     }
   }
-
 }
