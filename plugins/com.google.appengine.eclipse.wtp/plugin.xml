@@ -42,8 +42,8 @@
             class="com.google.appengine.eclipse.wtp.runtime.GaeRuntime">
             <moduleType types="jst.ear" versions="1.2, 1.3, 1.4, 5.0, 6.0"/>
             <moduleType types="jst.web" versions="2.2, 2.3, 2.4, 2.5"/>
-<!--            <moduleType types="jst.connector" versions="1.0, 1.5, 1.6"/>
-            <moduleType types="jst.utility"  versions="1.0"/> -->
+            <moduleType types="jst.connector" versions="1.0, 1.5, 1.6"/>
+            <moduleType types="jst.utility"  versions="1.0"/>
         </runtimeType>
     </extension>
     
