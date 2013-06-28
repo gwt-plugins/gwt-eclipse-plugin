@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jst.j2ee.project.EarUtilities;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -31,10 +32,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
- * GAE WTP project deployment property page.
+ * GAE WTP Web project deployment property page.
  */
-public final class DeployPropertiesPage extends AbstractProjectPropertyPage {
-  public static final String ID = AppEnginePlugin.PLUGIN_ID + ".deployProperties";
+public final class DeployWebPropertiesPage extends AbstractProjectPropertyPage {
+  public static final String ID = AppEnginePlugin.PLUGIN_ID + ".web.deployProperties";
 
   private DeployComponent deployComponent = new DeployComponent();
   private String currentAppId;
@@ -55,6 +56,11 @@ public final class DeployPropertiesPage extends AbstractProjectPropertyPage {
     });
 
     initializeValues();
+
+    // disable app id if the project is part of EAR project.
+    boolean standaloneProject = EarUtilities.isStandaloneProject(getProject());
+    deployComponent.getAppIdTextControl().setEnabled(standaloneProject);
+
     return composite;
   }
 
@@ -91,17 +97,20 @@ public final class DeployPropertiesPage extends AbstractProjectPropertyPage {
    * Do validate app ID.
    */
   private IStatus validateAppId() throws CoreException {
-    String enteredAppId = deployComponent.getAppId();
-    if (enteredAppId.length() > 0) {
-      IFile appEngineWebXml = ProjectUtils.getAppEngineWebXml(getProject());
-      if (!appEngineWebXml.exists()) {
-        return StatusUtilities.newErrorStatus(
-            "Cannot set application ID (appengine-web.xml is missing)", AppEnginePlugin.PLUGIN_ID);
+    if (EarUtilities.isStandaloneProject(getProject())) {
+      // validate only if it is not a part of EAR project.
+      String enteredAppId = deployComponent.getAppId();
+      if (enteredAppId.length() > 0) {
+        IFile appEngineWebXml = ProjectUtils.getAppEngineWebXml(getProject());
+        if (!appEngineWebXml.exists()) {
+          return StatusUtilities.newErrorStatus(
+              "Cannot set application ID (appengine-web.xml is missing)", AppEnginePlugin.PLUGIN_ID);
+        }
+      } else {
+        return StatusUtilities.newWarningStatus(
+            "You won't be able to deploy to Google without valid Application ID.",
+            AppEnginePlugin.PLUGIN_ID);
       }
-    } else {
-      return StatusUtilities.newWarningStatus(
-          "You won't be able to deploy to Google without valid Application ID.",
-          AppEnginePlugin.PLUGIN_ID);
     }
     return StatusUtilities.OK_STATUS;
   }

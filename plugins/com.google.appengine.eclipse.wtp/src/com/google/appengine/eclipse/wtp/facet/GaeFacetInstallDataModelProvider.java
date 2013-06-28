@@ -16,7 +16,6 @@ import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.gdt.eclipse.core.StatusUtilities;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.wst.common.componentcore.datamodel.FacetInstallDataModelProvider;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IActionConfig;
 
@@ -25,8 +24,8 @@ import java.util.Set;
 /**
  * {@link IActionConfig} instance for GAE Facet install operation with {@link IDataModel}.
  */
-public final class GaeFacetInstallDataModelProvider extends FacetInstallDataModelProvider implements
-    IGaeFacetConstants {
+public final class GaeFacetInstallDataModelProvider extends
+    GaeFacetInstallAbstractDataModelProvider implements IGaeFacetConstants {
 
   @Override
   public Object getDefaultProperty(String propertyName) {
@@ -48,7 +47,6 @@ public final class GaeFacetInstallDataModelProvider extends FacetInstallDataMode
   @SuppressWarnings({"rawtypes", "unchecked"})
   public Set getPropertyNames() {
     Set propertyNames = super.getPropertyNames();
-    propertyNames.add(GAE_PROPERTY_APP_ID);
     propertyNames.add(GAE_PROPERTY_APP_VERSION);
     propertyNames.add(GAE_PROPERTY_CREATE_SAMPLE);
     propertyNames.add(GAE_PROPERTY_PACKAGE);
@@ -57,13 +55,10 @@ public final class GaeFacetInstallDataModelProvider extends FacetInstallDataMode
 
   @Override
   public IStatus validate(String propertyName) {
-    if (GAE_PROPERTY_APP_ID.equals(propertyName)) {
-      String value = (String) getProperty(GAE_PROPERTY_APP_ID);
-      if (value == null || value.trim().length() == 0) {
-        return StatusUtilities.newWarningStatus(
-            "Please enter Application ID. You won't be able to deploy to Google without valid Application ID.",
-            AppEnginePlugin.PLUGIN_ID);
-      }
+    // app id should go first, so use special method in superclass.
+    IStatus status = validateAppId(propertyName);
+    if (!status.isOK()) {
+      return status;
     }
     if (GAE_PROPERTY_APP_VERSION.equals(propertyName)) {
       String value = (String) getProperty(GAE_PROPERTY_APP_VERSION);

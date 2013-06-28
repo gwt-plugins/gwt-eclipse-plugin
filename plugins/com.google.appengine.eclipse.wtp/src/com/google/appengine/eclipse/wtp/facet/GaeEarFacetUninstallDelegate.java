@@ -12,30 +12,31 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.facet;
 
-import com.google.appengine.eclipse.wtp.AppEnginePlugin;
-import com.google.appengine.eclipse.wtp.building.ProjectChangeNotifier;
-import com.google.gdt.eclipse.core.BuilderUtilities;
-
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jst.j2ee.project.JavaEEProjectUtilities;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.wst.common.componentcore.ComponentCore;
+import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
+import org.eclipse.wst.common.componentcore.resources.IVirtualFolder;
 import org.eclipse.wst.common.project.facet.core.IDelegate;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
 /**
- * Facet delegate for uninstalling GAE facet.
+ * Removes Google App Engine related data from project.
  */
-public final class GaeFacetUninstallDelegate implements IDelegate {
+public final class GaeEarFacetUninstallDelegate implements IDelegate {
   @Override
   public void execute(IProject project, IProjectFacetVersion fv, Object config,
       IProgressMonitor monitor) throws CoreException {
-    if (JavaEEProjectUtilities.isDynamicWebProject(project)) {
-      // remove notifying builder
-      BuilderUtilities.removeBuilderFromProject(project, ProjectChangeNotifier.BUILDER_ID);
-      // remove project validator
-      BuilderUtilities.removeBuilderFromProject(project, AppEnginePlugin.PLUGIN_ID
-          + ".projectValidator");
+    // remove "appengine-application.xml" descriptor
+    IVirtualComponent component = ComponentCore.createComponent(project, false);
+    IVirtualFolder earroot = component.getRootFolder();
+    IFile appEngineXmlFile = earroot.getUnderlyingFolder().getFile(
+        new Path("META-INF/appengine-application.xml"));
+    if (appEngineXmlFile.exists()) {
+      appEngineXmlFile.delete(true, true, monitor);
     }
   }
 }

@@ -26,7 +26,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jst.j2ee.internal.J2EEConstants;
+import org.eclipse.jst.j2ee.project.JavaEEProjectUtilities;
+import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetDataModelProperties;
+import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
@@ -44,6 +47,29 @@ import java.io.IOException;
  */
 @SuppressWarnings("restriction")
 public final class ProjectUtils {
+  /**
+   * @return IFile representing "appengine-application.xml" file or <code>null</code> if file cannot
+   *         be found.
+   */
+  public static IFile getAppEngineApplicationXml(IProject project) throws CoreException {
+    if (!JavaEEProjectUtilities.isEARProject(project)) {
+      return null;
+    }
+    IVirtualComponent component = ComponentCore.createComponent(project);
+    if (component != null && component.exists()) {
+      IPath path = component.getRootFolder().getWorkspaceRelativePath();
+      if (project.getFullPath().isPrefixOf(path)) {
+        IPath earContentFolder = path.removeFirstSegments(project.getFullPath().segmentCount());
+        if (earContentFolder != null) {
+          IFile file = project.getFile(earContentFolder.append(J2EEConstants.META_INF).append(
+              "appengine-application.xml"));
+          return file.exists() ? file : null;
+        }
+      }
+    }
+    return null;
+  }
+
   /**
    * @return IFile representing "appengine-web.xml" file or <code>null</code> if file cannot be
    *         found.
@@ -65,11 +91,12 @@ public final class ProjectUtils {
    * Reads and returns AppID associated with given project or <code>null</code> if not set.
    */
   public static String getAppId(IProject project) throws CoreException {
-    IFile appEngineXmlFile = getAppEngineWebXml(project);
-    if (appEngineXmlFile == null) {
+    IFile ddFile = JavaEEProjectUtilities.isEARProject(project)
+        ? getAppEngineApplicationXml(project) : getAppEngineWebXml(project);
+    if (ddFile == null) {
       return null;
     }
-    return GaeProject.getAppId(appEngineXmlFile);
+    return GaeProject.getAppId(ddFile);
   }
 
   /**
@@ -144,16 +171,19 @@ public final class ProjectUtils {
   }
 
   /**
-   * Sets given App ID into appengine-web.xml
+   * Sets given App ID into deployment descriptor file (appengine-web.xml or
+   * appengine-application.xml)
    */
   public static void setAppId(IProject project, final String appId, boolean forceSave)
       throws IOException, CoreException {
-    IFile appEngineWebXml = getAppEngineWebXml(project);
-    if (appEngineWebXml == null) {
-      throw new FileNotFoundException("Could not find appengine-web.xml in project "
+    boolean isEar = JavaEEProjectUtilities.isEARProject(project);
+    IFile ddFile = isEar ? getAppEngineApplicationXml(project) : getAppEngineWebXml(project);
+    if (ddFile == null) {
+      throw new FileNotFoundException("Could not find "
+          + (isEar ? "appengien-application.xml" : "appengine-web.xml") + " in project "
           + project.getName());
     }
-    GaeProject.setAppId(appEngineWebXml, appId, forceSave);
+    GaeProject.setAppId(ddFile, appId, forceSave);
   }
 
   /**

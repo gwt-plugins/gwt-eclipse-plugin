@@ -14,7 +14,8 @@ package com.google.appengine.eclipse.wtp.handlers;
 
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.deploy.DeployJob;
-import com.google.appengine.eclipse.wtp.properties.ui.DeployPropertiesPage;
+import com.google.appengine.eclipse.wtp.properties.ui.DeployEarPropertiesPage;
+import com.google.appengine.eclipse.wtp.properties.ui.DeployWebPropertiesPage;
 import com.google.appengine.eclipse.wtp.server.GaeServer;
 import com.google.gdt.eclipse.core.console.CustomMessageConsole;
 import com.google.gdt.eclipse.core.console.MessageConsoleUtilities;
@@ -29,6 +30,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.jst.j2ee.project.JavaEEProjectUtilities;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PreferencesUtil;
@@ -76,9 +78,10 @@ public final class DeployHandler extends AbstractSingleServerHandler {
         return;
       }
       if (appId == null || appId.trim().length() == 0) {
+        String pageId = JavaEEProjectUtilities.isEARProject(project) ? DeployEarPropertiesPage.ID
+            : DeployWebPropertiesPage.ID;
         PreferenceDialog page = PreferencesUtil.createPropertyDialogOn(
-            Display.getDefault().getActiveShell(), project, DeployPropertiesPage.ID,
-            new String[] {DeployPropertiesPage.ID}, null);
+            Display.getDefault().getActiveShell(), project, pageId, new String[] {pageId}, null);
         if (Window.OK != page.open()) {
           return;
         }

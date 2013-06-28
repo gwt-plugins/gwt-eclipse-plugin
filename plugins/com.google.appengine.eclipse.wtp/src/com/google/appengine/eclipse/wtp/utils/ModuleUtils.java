@@ -18,7 +18,7 @@ import org.eclipse.wst.server.core.IModule;
  * Utility methods to work with {@link IModule}.
  */
 public final class ModuleUtils {
-  public static final String MODULETYPE_JSR_EAR = "jst.ear";
+  public static final String MODULETYPE_JST_EAR = "jst.ear";
   public static final String MODULETYPE_JST_WEB = "jst.web";
 
   /**

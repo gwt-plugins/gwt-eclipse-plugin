@@ -132,5 +132,4 @@ public final class GaeLaunchConfigurationDelegate extends AbstractJavaLaunchConf
     throw new CoreException(new Status(IStatus.ERROR, AppEnginePlugin.PLUGIN_ID, code,
         message, exception));
   }
-
 }

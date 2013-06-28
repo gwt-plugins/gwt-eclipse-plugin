@@ -12,10 +12,10 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.facet.ops;
 
-import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.utils.IOUtils;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -40,7 +40,7 @@ public class GaeFileCreateOperation extends GaeResourceCreateOperation {
   }
 
   @Override
-  protected void createResource() {
+  protected void createResource() throws ExecutionException {
     IFile file = (IFile) resource;
     InputStream is = null;
     try {
@@ -49,7 +49,7 @@ public class GaeFileCreateOperation extends GaeResourceCreateOperation {
         file.create(is, false, null);
       }
     } catch (Throwable e) {
-      AppEnginePlugin.logMessage(e);
+      throw new ExecutionException("Cannot create resource: " + resource, e);
     } finally {
       IOUtils.closeQuietly(is);
     }

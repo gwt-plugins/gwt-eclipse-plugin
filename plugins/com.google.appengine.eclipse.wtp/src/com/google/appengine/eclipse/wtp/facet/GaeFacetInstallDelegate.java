@@ -61,19 +61,19 @@ public final class GaeFacetInstallDelegate implements IDelegate {
       IProgressMonitor monitor) throws CoreException {
     IDataModel model = (IDataModel) config;
     List<IDataModelOperation> operations = Lists.newArrayList();
-    // add custom builders
     IPath sdkLocation = getSdkLocation(model);
     GaeSdk sdk = getSdk(sdkLocation);
-    if (sdk != null) {
-      // since 1.8.1 Development server scans and reloads application automatically
-      if (SdkUtils.compareVersionStrings(sdk.getVersion(),
-          RuntimeUtils.MIN_SDK_VERSION_USING_AUTORELOAD) < 0) {
-        BuilderUtilities.addBuilderToProject(project, ProjectChangeNotifier.BUILDER_ID);
-      }
-    }
-    BuilderUtilities.addBuilderToProject(project, AppEnginePlugin.PLUGIN_ID + ".projectValidator");
     // do create project contents
     if (JavaEEProjectUtilities.isDynamicWebProject(project)) {
+      // add custom builders
+      if (sdk != null) {
+        // since 1.8.1 Development server scans and reloads application automatically
+        if (SdkUtils.compareVersionStrings(sdk.getVersion(),
+            RuntimeUtils.MIN_SDK_VERSION_USING_AUTORELOAD) < 0) {
+          BuilderUtilities.addBuilderToProject(project, ProjectChangeNotifier.BUILDER_ID);
+        }
+      }
+      BuilderUtilities.addBuilderToProject(project, AppEnginePlugin.PLUGIN_ID + ".projectValidator");
       // add "appengine-web.xml" file
       operations.add(new AppEngineXmlCreateOperation(model));
       // add "logging.properties"
@@ -126,7 +126,7 @@ public final class GaeFacetInstallDelegate implements IDelegate {
       }
     } catch (ExecutionException e) {
       // TODO: perform undo?
-      AppEnginePlugin.logMessage(e);
+      throw new CoreException(StatusUtilities.newErrorStatus(e, AppEnginePlugin.PLUGIN_ID));
     }
   }
 

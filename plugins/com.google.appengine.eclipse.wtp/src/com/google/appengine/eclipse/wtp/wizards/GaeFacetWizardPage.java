@@ -12,9 +12,7 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.wizards;
 
-import com.google.appengine.eclipse.core.AppEngineCorePlugin;
 import com.google.appengine.eclipse.core.properties.ui.DeployComponent;
-import com.google.appengine.eclipse.core.resources.GaeImages;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
@@ -31,18 +29,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.wst.common.frameworks.datamodel.AbstractDataModelProvider;
-import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
-import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
-import org.eclipse.wst.common.frameworks.internal.datamodel.ui.DataModelWizardPage;
 import org.eclipse.wst.common.project.facet.ui.IFacetWizardPage;
-import org.eclipse.wst.common.project.facet.ui.IWizardContext;
 
 /**
  * A {@link IFacetWizardPage} for configuring GAE Facet.
  */
 @SuppressWarnings("restriction")
-public class GaeFacetWizardPage extends DataModelWizardPage implements IFacetWizardPage,
+public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage implements
     IGaeFacetConstants {
 
   private static final String WIZARD_PAGE_NAME = IGaeFacetConstants.GAE_FACET_ID + ".install.page";
@@ -54,33 +47,7 @@ public class GaeFacetWizardPage extends DataModelWizardPage implements IFacetWiz
    * Default ctor
    */
   public GaeFacetWizardPage() {
-    super(DataModelFactory.createDataModel(new AbstractDataModelProvider() {
-      // fake one, to make super constructor happy, real model will be set in setConfig()
-    }), WIZARD_PAGE_NAME);
-    setTitle("Google App Engine");
-    setDescription("Configure Google App Engine");
-    setImageDescriptor(AppEngineCorePlugin.getDefault().getImageDescriptor(
-        GaeImages.APP_ENGINE_DEPLOY_LARGE));
-  }
-
-  @Override
-  public void setConfig(Object config) {
-    model.removeListener(this);
-    synchHelper.dispose();
-
-    model = (IDataModel) config;
-    model.addListener(this);
-    synchHelper = initializeSynchHelper(model);
-  }
-
-  @Override
-  public void setWizardContext(IWizardContext context) {
-    // do nothing here
-  }
-
-  @Override
-  public void transferStateToConfig() {
-    // do nothing here
+    super(WIZARD_PAGE_NAME);
   }
 
   @Override
@@ -133,11 +100,6 @@ public class GaeFacetWizardPage extends DataModelWizardPage implements IFacetWiz
     model.setBooleanProperty(GAE_PROPERTY_CREATE_SAMPLE,
         (Boolean) model.getDefaultProperty(GAE_PROPERTY_CREATE_SAMPLE));
     synchHelper.synchAllUIWithModel();
-  }
-
-  @Override
-  protected boolean showValidationErrorsOnEnter() {
-    return true;
   }
 
   private void addModificationListeners() {

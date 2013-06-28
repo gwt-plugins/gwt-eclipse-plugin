@@ -12,7 +12,6 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.server;
 
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jst.server.core.IWebModule;
 import org.eclipse.jst.server.core.Servlet;
@@ -35,11 +34,11 @@ public final class GaeLaunchableAdapterDelegate extends LaunchableAdapterDelegat
     if (server.getAdapter(GaeServer.class) == null) {
       return null;
     }
-    if (!(moduleArtifact instanceof Servlet) && !(moduleArtifact instanceof WebResource)) {
-      return null;
-    }
+
     if (moduleArtifact.getModule().loadAdapter(IWebModule.class, null) == null) {
-      return null;
+      if (!(moduleArtifact instanceof Servlet) && !(moduleArtifact instanceof WebResource)) {
+        return null;
+      }
     }
 
     URL url = ((IURLProvider) server.loadAdapter(IURLProvider.class, null)).getModuleRootURL(moduleArtifact.getModule());

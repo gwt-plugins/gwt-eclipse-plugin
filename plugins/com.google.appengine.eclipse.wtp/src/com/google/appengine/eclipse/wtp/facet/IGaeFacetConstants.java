@@ -22,5 +22,7 @@ public interface IGaeFacetConstants {
   static final String GAE_PROPERTY_CREATE_SAMPLE = GAE_FACET_ID + ".property.createSample";
   static final String GAE_PROPERTY_PACKAGE = GAE_FACET_ID + ".property.package";
 
+  static final String GAE_EAR_FACET_ID = "com.google.appengine.facet.ear";
+
   static final String DEFAULT_PACKAGE_NAME = "com.example.myproject";
 }

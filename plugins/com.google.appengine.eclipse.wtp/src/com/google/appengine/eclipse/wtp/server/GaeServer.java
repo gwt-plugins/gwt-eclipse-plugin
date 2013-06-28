@@ -116,7 +116,8 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
             null);
       }
       for (IModule module : add) {
-        if (!ModuleUtils.isModuleType(module, ModuleUtils.MODULETYPE_JST_WEB)) {
+        if (!ModuleUtils.isModuleType(module, ModuleUtils.MODULETYPE_JST_WEB)
+            && !ModuleUtils.isModuleType(module, ModuleUtils.MODULETYPE_JST_EAR)) {
           return new Status(IStatus.ERROR, AppEnginePlugin.PLUGIN_ID, 0, "Unsupported module", null);
         }
 
@@ -197,7 +198,7 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
   public IModule[] getChildModules(IModule[] module) {
     if (module[0] != null && module[0].getModuleType() != null) {
       if (module.length == 1) {
-        if (ModuleUtils.isModuleType(module[0], ModuleUtils.MODULETYPE_JSR_EAR)) {
+        if (ModuleUtils.isModuleType(module[0], ModuleUtils.MODULETYPE_JST_EAR)) {
           IEnterpriseApplication enterpriseApplication = (IEnterpriseApplication) module[0].loadAdapter(
               IEnterpriseApplication.class, null);
           if (enterpriseApplication != null) {
@@ -428,7 +429,7 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
   }
 
   private IModule[] doGetParentModules(IModule module) {
-    IModule[] earModules = ServerUtil.getModules(ModuleUtils.MODULETYPE_JSR_EAR); //$NON-NLS-1$
+    IModule[] earModules = ServerUtil.getModules(ModuleUtils.MODULETYPE_JST_EAR); //$NON-NLS-1$
     ArrayList<IModule> list = new ArrayList<IModule>();
     for (IModule earModule : earModules) {
       IEnterpriseApplication earApp = (IEnterpriseApplication) earModule.loadAdapter(

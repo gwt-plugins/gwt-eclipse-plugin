@@ -1,6 +1,7 @@
 package com.google.appengine.eclipse.wtp.server;
 
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
+import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 import com.google.common.collect.Lists;
 
 import org.eclipse.core.runtime.CoreException;
@@ -84,7 +85,12 @@ public final class GaePublishOperation extends PublishOperation {
       if (childModule != null && childModule.isBinary()) {
         publishArchiveModule(childURI, moduleUrls, statusList, monitor);
       } else {
-        publishJar(childURI, moduleUrls, statusList, monitor);
+        if (ProjectUtils.isGaeProject(module[1].getProject())) {
+          // GAE WTP projects should be published as a directory
+          publishDir(childURI, moduleUrls, statusList, monitor);
+        } else {
+          publishJar(childURI, moduleUrls, statusList, monitor);
+        }
       }
       server.saveModulePublishLocations(moduleUrls);
     }
@@ -128,7 +134,6 @@ public final class GaePublishOperation extends PublishOperation {
         file.delete();
       }
       mapping.remove(module[1].getId());
-
       if (deltaKind == ServerBehaviourDelegate.REMOVED) {
         return;
       }
@@ -183,6 +188,65 @@ public final class GaePublishOperation extends PublishOperation {
       IStatus[] publishStatus = helper.publishDelta(delta, path, monitor);
       statusList.addAll(Arrays.asList(publishStatus));
     }
+  }
+
+  /**
+   * Publish child module as directory if not binary.
+   */
+  private void publishDir(String dirURI, Properties mapping, List<IStatus> statusList,
+      IProgressMonitor monitor) throws CoreException {
+    IPath path = server.getModuleDeployDirectory(module[0]);
+    boolean isMoving = false;
+    // check older publish
+    String oldURI = (String) mapping.get(module[1].getId());
+    if (oldURI != null && dirURI != null) {
+      isMoving = !oldURI.equals(dirURI);
+    }
+    // create uri if needed
+    if (dirURI == null) {
+      dirURI = J2EEConstants.WEB_INF_LIB + "/" + module[1].getName() + ".war";
+    }
+    // setup target
+    IPath dirPath = path.append(dirURI);
+    // remove if needed
+    if (isMoving || kind == IServer.PUBLISH_CLEAN || deltaKind == ServerBehaviourDelegate.REMOVED) {
+      File file = path.append(oldURI).toFile();
+      if (file.exists()) {
+        IStatus[] status = PublishHelper.deleteDirectory(file, monitor);
+        statusList.addAll(Arrays.asList(status));
+      }
+      mapping.remove(module[1].getId());
+      if (deltaKind == ServerBehaviourDelegate.REMOVED) {
+        return;
+      }
+    }
+    // check for changes
+    if (!isMoving && kind != IServer.PUBLISH_CLEAN && kind != IServer.PUBLISH_FULL) {
+      IModuleResourceDelta[] delta = server.getPublishedResourceDelta(module);
+      if (delta == null || delta.length == 0) {
+        return;
+      }
+    }
+    // ensure directory exists
+    if (!dirPath.toFile().exists()) {
+      dirPath.toFile().mkdirs();
+    }
+    // do publish resources
+    // republish or publish fully
+    if (kind == IServer.PUBLISH_CLEAN || kind == IServer.PUBLISH_FULL) {
+      IModuleResource[] resources = server.getResources(module);
+      IStatus[] publishStatus = helper.publishFull(resources, dirPath, monitor);
+      statusList.addAll(Arrays.asList(publishStatus));
+    } else {
+      // publish changes only
+      IModuleResourceDelta[] deltas = server.getPublishedResourceDelta(module);
+      for (IModuleResourceDelta delta : deltas) {
+        IStatus[] publishStatus = helper.publishDelta(delta, dirPath, monitor);
+        statusList.addAll(Arrays.asList(publishStatus));
+      }
+    }
+    // store into mapping
+    mapping.put(module[1].getId(), dirURI);
   }
 
   /**
