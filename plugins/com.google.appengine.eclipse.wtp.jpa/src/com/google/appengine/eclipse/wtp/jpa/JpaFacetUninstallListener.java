@@ -12,7 +12,6 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.jpa;
 
-import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.gdt.eclipse.core.BuilderUtilities;
 
 import org.eclipse.core.runtime.CoreException;
@@ -33,10 +32,10 @@ public final class JpaFacetUninstallListener implements IFacetedProjectListener 
       try {
         // remove enhancer
         BuilderUtilities.removeBuilderFromProject(actionEvent.getProject().getProject(),
-            AppEnginePlugin.PLUGIN_ID + ".enhancerbuilder");
+            AppEngineJpaPlugin.PLUGIN_ID + ".enhancerbuilder");
       } catch (CoreException e) {
         // TODO: actually don't need to log this.
-        AppEnginePlugin.logMessage(e);
+        AppEngineJpaPlugin.logMessage(e);
       }
     }
   }

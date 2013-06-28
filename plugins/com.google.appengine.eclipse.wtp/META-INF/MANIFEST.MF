@@ -41,7 +41,9 @@ Require-Bundle: com.google.appengine.eclipse.core,
  org.eclipse.wst.server.ui,
  org.eclipse.wst.xml.core
 Bundle-ActivationPolicy: lazy
-Export-Package: com.google.appengine.eclipse.wtp
+Export-Package: com.google.appengine.eclipse.wtp,
+ com.google.appengine.eclipse.wtp.facet,
+ com.google.appengine.eclipse.wtp.utils
 Import-Package: org.eclipse.core.expressions,
  org.eclipse.jdt.launching,
  org.eclipse.jdt.ui.wizards,

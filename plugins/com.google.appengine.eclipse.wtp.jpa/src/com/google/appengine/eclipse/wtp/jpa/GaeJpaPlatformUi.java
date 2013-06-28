@@ -17,7 +17,6 @@ import org.eclipse.jpt.common.ui.jface.ItemTreeStateProviderFactoryProvider;
 import org.eclipse.jpt.jpa.core.JpaProject;
 import org.eclipse.jpt.jpa.ui.JpaPlatformUi;
 import org.eclipse.jpt.jpa.ui.JpaPlatformUiProvider;
-import org.eclipse.jpt.jpa.ui.internal.JptUiMessages;
 import org.eclipse.jpt.jpa.ui.internal.platform.base.AbstractJpaPlatformUi;
 import org.eclipse.jpt.jpa.ui.internal.wizards.conversion.java.GenericJavaGeneratorConversionWizardPage;
 import org.eclipse.jpt.jpa.ui.internal.wizards.conversion.java.GenericJavaQueryConversionWizardPage;
@@ -28,7 +27,7 @@ import org.eclipse.jpt.jpa.ui.internal.wizards.conversion.java.GenericJavaQueryC
 @SuppressWarnings("restriction")
 public class GaeJpaPlatformUi extends AbstractJpaPlatformUi {
 
-  protected GaeJpaPlatformUi(ItemTreeStateProviderFactoryProvider navigatorFactoryProvider,
+  public GaeJpaPlatformUi(ItemTreeStateProviderFactoryProvider navigatorFactoryProvider,
       JpaPlatformUiProvider platformUiProvider) {
     super(navigatorFactoryProvider, platformUiProvider);
   }
@@ -45,7 +44,7 @@ public class GaeJpaPlatformUi extends AbstractJpaPlatformUi {
 
   @Override
   public void generateDDL(JpaProject project, IStructuredSelection selection) {
-    this.displayMessage(JptUiMessages.GenericPlatformUiDialog_notSupportedMessageTitle,
-        JptUiMessages.GenericPlatformUiDialog_notSupportedMessageText);
+    this.displayMessage("Generate Tables from Entities",
+        "Generate Tables from Entities is not supported by the Generic Platform");
   }
 }

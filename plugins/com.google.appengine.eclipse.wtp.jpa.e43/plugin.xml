@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<plugin>
+    <extension
+          point="org.eclipse.jpt.jpa.core.jpaPlatforms">
+       <jpaPlatformGroup
+             id="com.google.appengine.eclipse.wtp.jpa.GaePlatformGroup"
+             label="GaePlatformGroup">
+       </jpaPlatformGroup>
+       <jpaPlatform
+             default="true"
+             factoryClass="com.google.appengine.eclipse.wtp.jpa.GaeJpaPlatformFactory"
+             group="com.google.appengine.eclipse.wtp.jpa.GaePlatformGroup"
+             id="com.google.appengine.eclipse.wtp.jpa.GaePlatform"
+             label="Google App Engine (Datanucleus)">
+       </jpaPlatform>
+    </extension>
+    <extension
+          point="org.eclipse.jpt.jpa.ui.jpaPlatformUis">
+       <jpaPlatformUi
+             factoryClass="com.google.appengine.eclipse.wtp.jpa.GaeJpaPlatformUiFactory"
+             id="com.google.appengine.eclipse.wtp.jpa.GaePlatformUI"
+             jpaPlatform="com.google.appengine.eclipse.wtp.jpa.GaePlatform">
+       </jpaPlatformUi>
+    </extension>
+    <extension
+         point="org.eclipse.wst.common.project.facet.core.listeners">
+      <listener
+            class="com.google.appengine.eclipse.wtp.jpa.JpaFacetPostInstallListener"
+            eventTypes="POST_INSTALL">
+      </listener>
+   </extension>
+</plugin>

@@ -15,7 +15,7 @@ package com.google.appengine.eclipse.wtp.jpa.libprov;
 import com.google.appengine.eclipse.core.sdk.AppEngineBridge;
 import com.google.appengine.eclipse.core.sdk.AppEngineBridgeFactory;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
-import com.google.appengine.eclipse.wtp.AppEnginePlugin;
+import com.google.appengine.eclipse.wtp.jpa.AppEngineJpaPlugin;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 
 import org.eclipse.core.runtime.IPath;
@@ -31,7 +31,7 @@ import java.util.List;
  * Classpath container for Datanucleus libs.
  */
 public final class DatanucleusClasspathContainer implements IClasspathContainer {
-  public static final String CONTAINER_ID = AppEnginePlugin.PLUGIN_ID + ".DATANUCLEUS_CONTAINER";
+  public static final String CONTAINER_ID = AppEngineJpaPlugin.PLUGIN_ID + ".DATANUCLEUS_CONTAINER";
   public static final Path CONTAINER_PATH = new Path(CONTAINER_ID);
 
   private IClasspathEntry[] entries;
@@ -50,18 +50,18 @@ public final class DatanucleusClasspathContainer implements IClasspathContainer 
       try {
         IPath sdkPath = ProjectUtils.getGaeSdkLocation(project.getProject());
         if (sdkPath == null) {
-          AppEnginePlugin.logMessage("JPA install: no runtime.");
+          AppEngineJpaPlugin.logMessage("JPA install: no runtime.");
           return entries;
         }
         AppEngineBridge appEngineBridge = AppEngineBridgeFactory.getAppEngineBridge(sdkPath);
         if (appEngineBridge == null) {
-          AppEnginePlugin.logMessage("JPA install: no GAE SDK found.");
+          AppEngineJpaPlugin.logMessage("JPA install: no GAE SDK found.");
           return entries;
         }
         List<File> userLibFiles = appEngineBridge.getUserLibFiles("datanucleus", "v2");
         entries = GaeSdk.getClasspathEntries(userLibFiles, sdkPath);
       } catch (Throwable e) {
-        AppEnginePlugin.logMessage(e);
+        AppEngineJpaPlugin.logMessage(e);
         return entries;
       }
     }

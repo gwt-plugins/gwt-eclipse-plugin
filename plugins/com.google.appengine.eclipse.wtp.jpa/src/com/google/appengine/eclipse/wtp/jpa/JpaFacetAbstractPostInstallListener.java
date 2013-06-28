@@ -12,7 +12,6 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.jpa;
 
-import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
 import com.google.appengine.eclipse.wtp.jpa.libprov.IGaeLibraryProvider;
 import com.google.gdt.eclipse.core.BuilderUtilities;
@@ -25,13 +24,9 @@ import org.eclipse.jpt.common.utility.model.event.CollectionChangeEvent;
 import org.eclipse.jpt.common.utility.model.event.CollectionClearEvent;
 import org.eclipse.jpt.common.utility.model.event.CollectionRemoveEvent;
 import org.eclipse.jpt.common.utility.model.listener.CollectionChangeListener;
-import org.eclipse.jpt.jpa.core.JpaFacet;
 import org.eclipse.jpt.jpa.core.JpaProject;
 import org.eclipse.jpt.jpa.core.JpaProjectManager;
-import org.eclipse.jpt.jpa.core.context.persistence.Persistence;
-import org.eclipse.jpt.jpa.core.context.persistence.PersistenceUnit;
 import org.eclipse.jpt.jpa.core.internal.facet.JpaFacetDataModelProperties;
-import org.eclipse.jpt.jpa.core.resource.xml.JpaXmlResource;
 import org.eclipse.jst.common.project.facet.core.libprov.ILibraryProvider;
 import org.eclipse.jst.common.project.facet.core.libprov.LibraryProviderFramework;
 import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetDataModelProperties;
@@ -49,9 +44,9 @@ import org.eclipse.wst.common.project.facet.core.runtime.IRuntime;
  * {@link JpaProject} creation/adding.
  */
 @SuppressWarnings("restriction")
-public final class JpaFacetPostInstallListener implements IFacetedProjectListener {
+public abstract class JpaFacetAbstractPostInstallListener implements IFacetedProjectListener {
 
-  private static final class JpaProjectChangeListener implements CollectionChangeListener,
+  protected static abstract class JpaProjectChangeListener implements CollectionChangeListener,
       IDatanucleusConstants {
     @Override
     public void collectionChanged(CollectionChangeEvent event) {
@@ -64,41 +59,7 @@ public final class JpaFacetPostInstallListener implements IFacetedProjectListene
     @Override
     public void itemsAdded(CollectionAddEvent event) {
       Iterable<?> items = event.getItems();
-      // since it is 'itemsAdded' then 'items' should always has next element.
-      for (Object object : items) {
-        if (!(object instanceof JpaProject)) {
-          continue;
-        }
-        final JpaProject jpaProject = (JpaProject) object;
-        if (!isUsingGaeLibProv(jpaProject.getProject())) {
-          continue;
-        }
-        JpaXmlResource resource = jpaProject.getPersistenceXmlResource();
-        Persistence persistence = jpaProject.getRootContextNode().getPersistenceXml().getPersistence();
-        PersistenceUnit unit;
-        if (persistence.getPersistenceUnitsSize() != 0) {
-          unit = persistence.getPersistenceUnits().iterator().next();
-        } else {
-          // create a persistence unit if there isn't one
-          unit = persistence.addPersistenceUnit();
-          unit.setName(jpaProject.getName());
-        }
-        // initial setup for properties
-        if (unit.getProvider() == null) {
-          unit.setProvider(PERSISTENCE_PROVIDER);
-        }
-        if (unit.getProperty(PROP_NONTRANSACTIONAL_READ) == null) {
-          unit.setProperty(PROP_NONTRANSACTIONAL_READ, "true");
-        }
-        if (unit.getProperty(PROP_NONTRANSACTIONAL_WRITE) == null) {
-          unit.setProperty(PROP_NONTRANSACTIONAL_WRITE, "true");
-        }
-        if (unit.getProperty(PROP_CONNECTION_URL) == null) {
-          unit.setProperty(PROP_CONNECTION_URL, "appengine");
-        }
-        // save
-        resource.save();
-      }
+      initializePersistenceUnit(items);
       // done, remove this listener
       JpaProjectManager manager = (JpaProjectManager) ResourcesPlugin.getWorkspace().getAdapter(
           JpaProjectManager.class);
@@ -108,16 +69,19 @@ public final class JpaFacetPostInstallListener implements IFacetedProjectListene
     @Override
     public void itemsRemoved(CollectionRemoveEvent event) {
     }
+
+    protected abstract void initializePersistenceUnit(Iterable<?> items);
   }
 
   /**
    * @return <code>true</code> if the project is configured for using GAE library provider.
    */
-  private static boolean isUsingGaeLibProv(IProject project) {
+  public static boolean isUsingGaeLibProv(IProject project) {
     if (project == null) {
       return false;
     }
-    ILibraryProvider provider = LibraryProviderFramework.getCurrentProvider(project, JpaFacet.FACET);
+    IProjectFacet jpaFacet = ProjectFacetsManager.getProjectFacet("jpt.jpa");
+    ILibraryProvider provider = LibraryProviderFramework.getCurrentProvider(project, jpaFacet);
     return provider != null && IGaeLibraryProvider.PROVIDER_ID.equals(provider.getId());
   }
 
@@ -141,17 +105,19 @@ public final class JpaFacetPostInstallListener implements IFacetedProjectListene
             // since JpaProject is not available yet, add listener which will later setup
             // Datanucleus stuff.
             manager.addCollectionChangeListener(JpaProjectManager.JPA_PROJECTS_COLLECTION,
-                new JpaProjectChangeListener());
+                createJpaListener());
             try {
               // setup enhancer builder
               BuilderUtilities.addBuilderToProject(installEvent.getProject().getProject(),
-                  AppEnginePlugin.PLUGIN_ID + ".enhancerbuilder");
+                  AppEngineJpaPlugin.PLUGIN_ID + ".enhancerbuilder");
             } catch (CoreException e) {
-              AppEnginePlugin.logMessage(e);
+              AppEngineJpaPlugin.logMessage(e);
             }
           }
         }
       }
     }
   }
+
+  protected abstract JpaProjectChangeListener createJpaListener();
 }

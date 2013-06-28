@@ -12,8 +12,6 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.jpa.libprov;
 
-import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
-
 import org.eclipse.jst.common.project.facet.core.libprov.LibraryProviderOperationConfig;
 import org.eclipse.jst.common.project.facet.ui.libprov.LibraryProviderOperationPanel;
 import org.eclipse.swt.SWT;
@@ -37,7 +35,7 @@ public final class GaeLibraryProviderActionPanel extends LibraryProviderOperatio
     String labelText = "Using " + primaryRuntime.getName();
     for (IRuntimeComponent component : primaryRuntime.getRuntimeComponents()) {
       IRuntimeComponentType type = component.getRuntimeComponentType();
-      if (GaeRuntime.GAE_RUNTIME_ID.equals(type.getId())) {
+      if ("com.google.appengine.runtime.id".equals(type.getId())) {
         String location = component.getProperty("location");
         if (location != null && location.trim().length() > 0) {
           labelText += " at " + location;

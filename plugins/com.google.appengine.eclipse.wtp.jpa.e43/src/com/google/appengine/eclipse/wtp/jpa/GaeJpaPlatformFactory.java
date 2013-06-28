@@ -13,8 +13,8 @@
 package com.google.appengine.eclipse.wtp.jpa;
 
 import org.eclipse.jpt.common.core.JptResourceType;
-import org.eclipse.jpt.jpa.core.JpaFacet;
 import org.eclipse.jpt.jpa.core.JpaPlatform;
+import org.eclipse.jpt.jpa.core.JpaPlatform.Config;
 import org.eclipse.jpt.jpa.core.JpaPlatform.Version;
 import org.eclipse.jpt.jpa.core.JpaPlatformFactory;
 import org.eclipse.jpt.jpa.core.JpaPlatformVariation;
@@ -22,45 +22,49 @@ import org.eclipse.jpt.jpa.core.context.AccessType;
 import org.eclipse.jpt.jpa.core.internal.GenericJpaPlatform;
 import org.eclipse.jpt.jpa.core.internal.GenericJpaPlatformFactory;
 import org.eclipse.jpt.jpa.core.internal.JpaAnnotationProvider;
-import org.eclipse.jpt.jpa.core.internal.jpa2.Generic2_0JpaAnnotationDefinitionProvider;
-import org.eclipse.jpt.jpa.core.internal.jpa2.Generic2_0JpaPlatformProvider;
+import org.eclipse.jpt.jpa.core.internal.jpa2.GenericJpaAnnotationDefinitionProvider2_0;
 import org.eclipse.jpt.jpa.core.internal.jpa2.GenericJpaFactory2_0;
+import org.eclipse.jpt.jpa.core.internal.jpa2.GenericJpaPlatformProvider2_0;
+import org.eclipse.jpt.jpa.core.jpa2.JpaProject2_0;
 import org.eclipse.persistence.jpa.jpql.parser.JPQLGrammar2_0;
 
 /**
- * TODO: work in progress
+ * {@link JpaPlatformFactory} implemented currently as generic JPA factory for version 2.0.
  */
 @SuppressWarnings("restriction")
 public class GaeJpaPlatformFactory implements JpaPlatformFactory {
 
-  @Override
-  public JpaPlatform buildJpaPlatform(String id) {
-    return new GenericJpaPlatform(id, buildJpaVersion(), new GenericJpaFactory2_0(),
-        new JpaAnnotationProvider(Generic2_0JpaAnnotationDefinitionProvider.instance()),
-        Generic2_0JpaPlatformProvider.instance(), buildJpaPlatformVariation(),
-        JPQLGrammar2_0.instance());
-  }
+	@Override
+	public JpaPlatform buildJpaPlatform(Config config) {
+		return new GenericJpaPlatform(config, buildJpaVersion(),
+				new GenericJpaFactory2_0(), new JpaAnnotationProvider(
+						GenericJpaAnnotationDefinitionProvider2_0.instance()),
+				GenericJpaPlatformProvider2_0.instance(),
+				buildJpaPlatformVariation(), JPQLGrammar2_0.instance());
+	}
 
-  protected JpaPlatformVariation buildJpaPlatformVariation() {
-    return new JpaPlatformVariation() {
-      @Override
-      public AccessType[] getSupportedAccessTypes(JptResourceType resourceType) {
-        return GENERIC_SUPPORTED_ACCESS_TYPES;
-      }
+	protected JpaPlatformVariation buildJpaPlatformVariation() {
+		return new JpaPlatformVariation() {
+			@Override
+			public AccessType[] getSupportedAccessTypes(
+					JptResourceType resourceType) {
+				return GENERIC_SUPPORTED_ACCESS_TYPES;
+			}
 
-      @Override
-      public Supported getTablePerConcreteClassInheritanceIsSupported() {
-        return Supported.MAYBE;
-      }
+			@Override
+			public Supported getTablePerConcreteClassInheritanceIsSupported() {
+				return Supported.MAYBE;
+			}
 
-      @Override
-      public boolean isJoinTableOverridable() {
-        return false;
-      }
-    };
-  }
+			@Override
+			public boolean isJoinTableOverridable() {
+				return false;
+			}
+		};
+	}
 
-  private Version buildJpaVersion() {
-    return new GenericJpaPlatformFactory.SimpleVersion(JpaFacet.VERSION_2_0.getVersionString());
-  }
+	private Version buildJpaVersion() {
+		return new GenericJpaPlatformFactory.GenericJpaPlatformVersion(
+				JpaProject2_0.FACET_VERSION_STRING);
+	}
 }

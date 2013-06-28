@@ -10,9 +10,10 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
-package com.google.appengine.eclipse.wtp.facet;
+package com.google.appengine.eclipse.wtp.jpa;
 
-import com.google.common.collect.Sets;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.common.project.facet.core.IDynamicPreset;
@@ -25,8 +26,8 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import org.eclipse.wst.common.project.facet.core.internal.DefaultFacetsExtensionPoint;
 import org.eclipse.wst.common.project.facet.core.runtime.IRuntime;
 
-import java.util.Map;
-import java.util.Set;
+import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
+import com.google.common.collect.Sets;
 
 /**
  * {@link IPresetFactory} instance which adds JPA facet into Google App Engine default

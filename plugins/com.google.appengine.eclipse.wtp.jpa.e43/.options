@@ -1,0 +1,4 @@
+# Debugging options for the com.google.appengine.eclipse.wtp.jpa plugin
+
+# Turn on general debugging
+com.google.appengine.eclipse.wtp.jpa.e42/debug=true
