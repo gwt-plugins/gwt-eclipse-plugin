@@ -13,6 +13,7 @@
 package com.google.appengine.eclipse.wtp.facet;
 
 import com.google.appengine.eclipse.core.preferences.GaePreferences;
+import com.google.appengine.eclipse.core.properties.GaeProjectProperties;
 import com.google.appengine.eclipse.core.resources.GaeProjectResources;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
@@ -44,6 +45,7 @@ import org.eclipse.wst.common.project.facet.core.IDelegate;
 import org.eclipse.wst.common.project.facet.core.IFacetedProjectWorkingCopy;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.runtime.IRuntime;
+import org.osgi.service.prefs.BackingStoreException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -117,6 +119,18 @@ public final class GaeFacetInstallDelegate implements IDelegate {
         });
       }
     }
+    // setup deployment options
+    try {
+      GaeProjectProperties.setGaeEnableJarSplitting(project,
+          model.getBooleanProperty(IGaeFacetConstants.GAE_PROPERTY_ENABLE_JAR_SPLITTING));
+      GaeProjectProperties.setGaeDoJarClasses(project,
+          model.getBooleanProperty(IGaeFacetConstants.GAE_PROPERTY_DO_JAR_CLASSES));
+      GaeProjectProperties.setGaeRetaingStagingDir(project,
+          model.getBooleanProperty(IGaeFacetConstants.GAE_PROPERTY_RETAIN_STAGING_DIR));
+    } catch (BackingStoreException e) {
+      AppEnginePlugin.logMessage("Cannot setup deployment option", e);
+    }
+
     try {
       for (IDataModelOperation operation : operations) {
         IStatus status = operation.execute(monitor, null);

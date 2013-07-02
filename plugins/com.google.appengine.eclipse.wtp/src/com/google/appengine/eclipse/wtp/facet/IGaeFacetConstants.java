@@ -21,6 +21,9 @@ public interface IGaeFacetConstants {
   static final String GAE_PROPERTY_APP_VERSION = GAE_FACET_ID + ".property.app.version";
   static final String GAE_PROPERTY_CREATE_SAMPLE = GAE_FACET_ID + ".property.createSample";
   static final String GAE_PROPERTY_PACKAGE = GAE_FACET_ID + ".property.package";
+  static final String GAE_PROPERTY_ENABLE_JAR_SPLITTING = ".property.enableJarSplitting";
+  static final String GAE_PROPERTY_DO_JAR_CLASSES = ".property.jarClasses";
+  static final String GAE_PROPERTY_RETAIN_STAGING_DIR = ".property.retainStagingDirectory";
 
   static final String GAE_EAR_FACET_ID = "com.google.appengine.facet.ear";
 

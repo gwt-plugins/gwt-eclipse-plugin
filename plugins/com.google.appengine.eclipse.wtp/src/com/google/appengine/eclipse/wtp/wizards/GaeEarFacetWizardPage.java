@@ -27,8 +27,7 @@ import org.eclipse.wst.common.project.facet.ui.IFacetWizardPage;
  * A {@link IFacetWizardPage} for configuring GAE EAR Facet.
  */
 @SuppressWarnings("restriction")
-public final class GaeEarFacetWizardPage extends GaeFacetAbstractWizardPage implements
-    IGaeFacetConstants {
+public final class GaeEarFacetWizardPage extends GaeFacetAbstractWizardPage {
 
   private static final String WIZARD_PAGE_NAME = IGaeFacetConstants.GAE_EAR_FACET_ID
       + ".install.page";
@@ -39,6 +38,12 @@ public final class GaeEarFacetWizardPage extends GaeFacetAbstractWizardPage impl
    */
   public GaeEarFacetWizardPage() {
     super(WIZARD_PAGE_NAME);
+  }
+
+  @Override
+  protected void addModificationListeners() {
+    super.addModificationListeners();
+    synchHelper.synchText(applicationIdText, GAE_PROPERTY_APP_ID, null);
   }
 
   @Override
@@ -56,6 +61,7 @@ public final class GaeEarFacetWizardPage extends GaeFacetAbstractWizardPage impl
       applicationIdText = new Text(deployGroup, SWT.BORDER);
       applicationIdText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
     }
+    createDeployOptionsComponent(composite);
     addModificationListeners();
     return composite;
   }
@@ -69,9 +75,5 @@ public final class GaeEarFacetWizardPage extends GaeFacetAbstractWizardPage impl
   protected void restoreDefaultSettings() {
     super.restoreDefaultSettings();
     synchHelper.synchAllUIWithModel();
-  }
-
-  private void addModificationListeners() {
-    synchHelper.synchText(applicationIdText, GAE_PROPERTY_APP_ID, null);
   }
 }

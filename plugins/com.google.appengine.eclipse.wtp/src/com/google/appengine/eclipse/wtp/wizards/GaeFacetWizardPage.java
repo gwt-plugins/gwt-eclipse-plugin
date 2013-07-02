@@ -35,8 +35,7 @@ import org.eclipse.wst.common.project.facet.ui.IFacetWizardPage;
  * A {@link IFacetWizardPage} for configuring GAE Facet.
  */
 @SuppressWarnings("restriction")
-public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage implements
-    IGaeFacetConstants {
+public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
 
   private static final String WIZARD_PAGE_NAME = IGaeFacetConstants.GAE_FACET_ID + ".install.page";
   private DeployComponent deployComponent = new DeployComponent();
@@ -48,6 +47,22 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage impleme
    */
   public GaeFacetWizardPage() {
     super(WIZARD_PAGE_NAME);
+  }
+
+  @Override
+  protected void addModificationListeners() {
+    super.addModificationListeners();
+    synchHelper.synchText(deployComponent.getAppIdTextControl(), GAE_PROPERTY_APP_ID, null);
+    synchHelper.synchText(deployComponent.getVersionTextControl(), GAE_PROPERTY_APP_VERSION, null);
+    synchHelper.synchText(packageText, GAE_PROPERTY_PACKAGE, null);
+    deployComponent.setModifyListener(new ModifyListener() {
+      @Override
+      public void modifyText(ModifyEvent e) {
+        // to make it check for app id
+        deployComponent.setEnabled(true);
+      }
+    });
+    synchHelper.synchCheckbox(shouldCreateSampleButton, GAE_PROPERTY_CREATE_SAMPLE, null);
   }
 
   @Override
@@ -69,11 +84,14 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage impleme
       deployComponent.createContents(composite);
     }
     {
+      createDeployOptionsComponent(composite);
+    }
+    {
       Group sampleGroup = new Group(composite, SWT.NONE);
       sampleGroup.setText("Sample Code");
       sampleGroup.setLayout(new GridLayout());
       sampleGroup.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
-      shouldCreateSampleButton = new Button(sampleGroup, SWT.CHECK);
+      shouldCreateSampleButton = new Button(sampleGroup, SWT.CHECK | SWT.LEFT);
       shouldCreateSampleButton.setText("Generate project sample code");
     }
     addModificationListeners();
@@ -100,19 +118,5 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage impleme
     model.setBooleanProperty(GAE_PROPERTY_CREATE_SAMPLE,
         (Boolean) model.getDefaultProperty(GAE_PROPERTY_CREATE_SAMPLE));
     synchHelper.synchAllUIWithModel();
-  }
-
-  private void addModificationListeners() {
-    synchHelper.synchText(deployComponent.getAppIdTextControl(), GAE_PROPERTY_APP_ID, null);
-    synchHelper.synchText(deployComponent.getVersionTextControl(), GAE_PROPERTY_APP_VERSION, null);
-    synchHelper.synchText(packageText, GAE_PROPERTY_PACKAGE, null);
-    deployComponent.setModifyListener(new ModifyListener() {
-      @Override
-      public void modifyText(ModifyEvent e) {
-        // to make it check for app id
-        deployComponent.setEnabled(true);
-      }
-    });
-    synchHelper.synchCheckbox(shouldCreateSampleButton, GAE_PROPERTY_CREATE_SAMPLE, null);
   }
 }

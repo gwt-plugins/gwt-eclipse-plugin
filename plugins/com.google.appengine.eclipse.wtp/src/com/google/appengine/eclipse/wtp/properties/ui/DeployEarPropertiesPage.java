@@ -15,7 +15,6 @@ package com.google.appengine.eclipse.wtp.properties.ui;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 import com.google.gdt.eclipse.core.StatusUtilities;
-import com.google.gdt.eclipse.core.ui.AbstractProjectPropertyPage;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -36,7 +35,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * GAE WTP EAR project deployment property page.
  */
-public final class DeployEarPropertiesPage extends AbstractProjectPropertyPage {
+public final class DeployEarPropertiesPage extends DeployPropertiesPage {
   public static final String ID = AppEnginePlugin.PLUGIN_ID + ".ear.deployProperties";
 
   private String currentAppId;
@@ -64,10 +63,28 @@ public final class DeployEarPropertiesPage extends AbstractProjectPropertyPage {
         }
       });
     }
+    {
+      createDeploymentOptionsComponent(composite);
+    }
 
     initializeValues();
 
     return composite;
+  }
+
+  /**
+   * Setup current values.
+   */
+  @Override
+  protected void initializeValues() {
+    super.initializeValues();
+    try {
+      IProject project = getProject();
+      currentAppId = ProjectUtils.getAppId(project);
+      applicationIdText.setText(currentAppId);
+    } catch (CoreException e) {
+      AppEnginePlugin.logMessage(e);
+    }
   }
 
   @Override
@@ -78,19 +95,7 @@ public final class DeployEarPropertiesPage extends AbstractProjectPropertyPage {
     if (!appId.equals(currentAppId)) {
       ProjectUtils.setAppId(project, appId, true);
     }
-  }
-
-  /**
-   * Setup current values.
-   */
-  private void initializeValues() {
-    try {
-      IProject project = getProject();
-      currentAppId = ProjectUtils.getAppId(project);
-      applicationIdText.setText(currentAppId);
-    } catch (CoreException e) {
-      AppEnginePlugin.logMessage(e);
-    }
+    super.saveProjectProperties();
   }
 
   /**

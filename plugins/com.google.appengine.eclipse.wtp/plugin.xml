@@ -308,9 +308,14 @@
        <category name="gaewtp-commands" id="com.google.appengine.eclipse.wtp.commands.category"/>
        <command
              categoryId="com.google.appengine.eclipse.wtp.commands.category"
-             description="%menu.deploy"
-             id="com.google.appengine.eclipse.wtp.commands.DeployCommand"
-             name="%menu.deploy"/>
+             id="com.google.appengine.eclipse.wtp.commands.ParametrizedRemoteOperationCommand"
+             name="ParametrizedRemoteOperationCommand">
+          <commandParameter
+                id="com.google.appengine.eclipse.wtp.params.jobClass"
+                name="jobClass"
+                optional="false">
+          </commandParameter>
+       </command>
        <command
              categoryId="com.google.appengine.eclipse.wtp.commands.category"
              description="%menu.opendevconsole"
@@ -325,8 +330,8 @@
        </command>
     </extension>
     <extension point="org.eclipse.ui.handlers">
-        <handler class="com.google.appengine.eclipse.wtp.handlers.DeployHandler"
-                 commandId="com.google.appengine.eclipse.wtp.commands.DeployCommand">
+        <handler class="com.google.appengine.eclipse.wtp.handlers.ParameterizedRemoteOperationHandler"
+                 commandId="com.google.appengine.eclipse.wtp.commands.ParametrizedRemoteOperationCommand">
             <enabledWhen>
                 <and>
                     <reference definitionId="com.google.appengine.eclipse.wtp.isGaeSelected"/>
@@ -354,10 +359,28 @@
                  </reference>
               </visibleWhen>
               <command
-                    commandId="com.google.appengine.eclipse.wtp.commands.DeployCommand"
+                    commandId="com.google.appengine.eclipse.wtp.commands.ParametrizedRemoteOperationCommand"
                     icon="icons/ae-srv-deploy_16x16.gif"
+                    label="%menu.deploy"
                     style="push">
+                 <parameter
+                       name="com.google.appengine.eclipse.wtp.params.jobClass"
+                       value="deploy">
+                 </parameter>
               </command>
+              <command
+                    commandId="com.google.appengine.eclipse.wtp.commands.ParametrizedRemoteOperationCommand"
+                    label="%menu.rollback"
+                    style="push">
+                 <parameter
+                       name="com.google.appengine.eclipse.wtp.params.jobClass"
+                       value="rollback">
+                 </parameter>
+              </command>
+              <separator
+                    name="com.google.appengine.eclipse.wtp.separator3"
+                    visible="true">
+              </separator>
               <command
                     commandId="com.google.appengine.eclipse.wtp.commands.OpenLocalAdminConsoleCommand"
                     style="push">
@@ -387,10 +410,28 @@
               allPopups="false"
               locationURI="menu:com.google.appengine.wtp.actions.pulldownMenu">
            <command
-                 commandId="com.google.appengine.eclipse.wtp.commands.DeployCommand"
+                 commandId="com.google.appengine.eclipse.wtp.commands.ParametrizedRemoteOperationCommand"
                  icon="icons/ae-srv-deploy_16x16.gif"
+                 label="%menu.deploy"
                  style="push">
+              <parameter
+                    name="com.google.appengine.eclipse.wtp.params.jobClass"
+                    value="deploy">
+              </parameter>
            </command>
+           <command
+                 commandId="com.google.appengine.eclipse.wtp.commands.ParametrizedRemoteOperationCommand"
+                 label="%menu.rollback"
+                 style="push">
+              <parameter
+                    name="com.google.appengine.eclipse.wtp.params.jobClass"
+                    value="rollback">
+              </parameter>
+           </command>
+           <separator
+                 name="com.google.appengine.eclipse.wtp.separator2"
+                 visible="true">
+           </separator>
            <command
                  commandId="com.google.appengine.eclipse.wtp.commands.OpenLocalAdminConsoleCommand"
                  style="push">

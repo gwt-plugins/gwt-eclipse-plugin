@@ -13,7 +13,6 @@
 package com.google.appengine.eclipse.wtp.handlers;
 
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
-import com.google.appengine.eclipse.wtp.deploy.DeployJob;
 import com.google.appengine.eclipse.wtp.properties.ui.DeployEarPropertiesPage;
 import com.google.appengine.eclipse.wtp.properties.ui.DeployWebPropertiesPage;
 import com.google.appengine.eclipse.wtp.server.GaeServer;
@@ -25,7 +24,9 @@ import com.google.gdt.eclipse.login.GoogleLogin;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
@@ -39,31 +40,35 @@ import org.eclipse.wst.server.core.IServer;
 import java.io.OutputStream;
 
 /**
- * Handler for deploy to remote AppEngine server.
+ * Base class preparing for remote Google App Engine operation.
  */
-public final class DeployHandler extends AbstractSingleServerHandler {
+public abstract class RemoteOperationHandler extends AbstractSingleServerHandler {
 
-  @Override
-  protected Object execute(ExecutionEvent event, IServer server) throws ExecutionException {
-    doDeploy(server);
-    return null;
-  }
+  protected OutputStream newMessageStream;
+  protected String clientId;
+  protected String clientSecret;
+  protected String refreshToken;
+  protected GaeServer gaeServer;
 
   /**
-   * Performs deploy operation to AppEngine server.
+   * Create a job instance to be scheduled.
    */
-  private void doDeploy(IServer server) throws ExecutionException {
+  protected abstract Job createJob() throws CoreException;
+
+  /**
+   * Performs remote operation to AppEngine server.
+   */
+  protected void doExecute(IServer server) throws ExecutionException {
     // prompt for log on
     if (!GoogleLogin.getInstance().isLoggedIn()) {
       boolean signedIn = GoogleLogin.getInstance().logIn(
-          "Deploying to Google App Engine requires authentication.");
+          "Google App Engine requires authentication.");
       if (!signedIn) {
         // user canceled signing in
         return;
       }
     }
-    // get server
-    GaeServer gaeServer = GaeServer.getGaeServer(server);
+    gaeServer = GaeServer.getGaeServer(server);
     if (gaeServer == null) {
       return;
     }
@@ -73,8 +78,8 @@ public final class DeployHandler extends AbstractSingleServerHandler {
       IProject project = gaeServer.getProject();
       if (project == null) {
         // show error message
-        MessageDialog.openError(Display.getDefault().getActiveShell(),
-            "Error while deploying to AppEngine", "Invalid project.");
+        MessageDialog.openError(Display.getDefault().getActiveShell(), "App Engine error",
+            "Invalid project.");
         return;
       }
       if (appId == null || appId.trim().length() == 0) {
@@ -88,24 +93,27 @@ public final class DeployHandler extends AbstractSingleServerHandler {
         // check again, user tries to cheat. ;)
         appId = gaeServer.getAppId();
         if (appId == null || appId.trim().length() == 0) {
-          MessageDialog.openError(Display.getDefault().getActiveShell(),
-              "Error while deploying to AppEngine", "Please enter Application ID.");
+          MessageDialog.openError(Display.getDefault().getActiveShell(), "App Engine error",
+              "Please enter Application ID.");
           return;
         }
       }
       //
       CustomMessageConsole messageConsole = MessageConsoleUtilities.getMessageConsole(
-          gaeServer.getAppId() + " - Deploy to App Engine", null);
-      OutputStream newMessageStream = messageConsole.newMessageStream();
+          gaeServer.getAppId() + " - Google App Engine Operation", null);
+      newMessageStream = messageConsole.newMessageStream();
 
-      String oauth2Token = GoogleLogin.getInstance().fetchOAuth2Token();
-      DeployJob deployJob = new DeployJob(oauth2Token, gaeServer, newMessageStream);
+      clientId = GoogleLogin.getInstance().fetchOAuth2ClientId();
+      clientSecret = GoogleLogin.getInstance().fetchOAuth2ClientSecret();
+      refreshToken = GoogleLogin.getInstance().fetchOAuth2RefreshToken();
 
-      final TerminateJobAction terminateJobAction = new TerminateJobAction(deployJob);
+      Job job = createJob();
+
+      final TerminateJobAction terminateJobAction = new TerminateJobAction(job);
       messageConsole.setTerminateAction(terminateJobAction);
       messageConsole.activate();
 
-      deployJob.addJobChangeListener(new JobChangeAdapter() {
+      job.addJobChangeListener(new JobChangeAdapter() {
         @Override
         public void done(IJobChangeEvent event) {
           terminateJobAction.setEnabled(false);
@@ -113,12 +121,18 @@ public final class DeployHandler extends AbstractSingleServerHandler {
       });
 
       PlatformUI.getWorkbench().getProgressService().showInDialog(
-          Display.getDefault().getActiveShell(), deployJob);
-      deployJob.schedule();
+          Display.getDefault().getActiveShell(), job);
+      job.schedule();
     } catch (Throwable e) {
       handleException(e);
       return;
     }
+  }
+
+  @Override
+  protected Object execute(ExecutionEvent event, IServer server) throws ExecutionException {
+    doExecute(server);
+    return null;
   }
 
   /**
@@ -133,8 +147,9 @@ public final class DeployHandler extends AbstractSingleServerHandler {
    * Displays a message to the user.
    */
   private void showDeployError(String msg) {
-    MessageDialog.openError(Display.getDefault().getActiveShell(),
-        "Error while deploying to AppEngine", "An error occured while deploying to AppEngine"
-            + (msg == null ? "." : ": " + msg) + "\nSee the error log for more details");
+    MessageDialog.openError(Display.getDefault().getActiveShell(), "App Engine error",
+        "An error occured during App Engine operation" + (msg == null ? "." : ": " + msg)
+            + "\nSee the error log for more details");
   }
+
 }

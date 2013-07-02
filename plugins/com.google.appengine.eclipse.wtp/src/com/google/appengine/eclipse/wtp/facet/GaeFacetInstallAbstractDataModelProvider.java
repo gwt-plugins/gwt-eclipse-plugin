@@ -24,14 +24,29 @@ import java.util.Set;
 /**
  * A base class for facet install data model provider.
  */
-abstract class GaeFacetInstallAbstractDataModelProvider extends
-    FacetInstallDataModelProvider implements IGaeFacetConstants {
+abstract class GaeFacetInstallAbstractDataModelProvider extends FacetInstallDataModelProvider
+    implements IGaeFacetConstants {
+
+  @Override
+  public Object getDefaultProperty(String propertyName) {
+    if (propertyName.equals(GAE_PROPERTY_RETAIN_STAGING_DIR)) {
+      return false;
+    } else if (propertyName.equals(GAE_PROPERTY_DO_JAR_CLASSES)) {
+      return false;
+    } else if (propertyName.equals(GAE_PROPERTY_ENABLE_JAR_SPLITTING)) {
+      return true;
+    }
+    return super.getDefaultProperty(propertyName);
+  }
 
   @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
   public Set getPropertyNames() {
     Set propertyNames = super.getPropertyNames();
     propertyNames.add(GAE_PROPERTY_APP_ID);
+    propertyNames.add(GAE_PROPERTY_ENABLE_JAR_SPLITTING);
+    propertyNames.add(GAE_PROPERTY_DO_JAR_CLASSES);
+    propertyNames.add(GAE_PROPERTY_RETAIN_STAGING_DIR);
     return propertyNames;
   }
 

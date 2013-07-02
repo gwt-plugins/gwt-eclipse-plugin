@@ -13,8 +13,14 @@
 package com.google.appengine.eclipse.wtp.wizards;
 
 import com.google.appengine.eclipse.core.AppEngineCorePlugin;
+import com.google.appengine.eclipse.core.properties.GaeProjectProperties;
 import com.google.appengine.eclipse.core.resources.GaeImages;
+import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
+import com.google.appengine.eclipse.wtp.properties.ui.DeployOptionsComponent;
+import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.wst.common.frameworks.datamodel.AbstractDataModelProvider;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
@@ -26,8 +32,9 @@ import org.eclipse.wst.common.project.facet.ui.IWizardContext;
  * Base class for GAE facets wizard pages.
  */
 @SuppressWarnings("restriction")
-abstract class GaeFacetAbstractWizardPage extends DataModelWizardPage implements
-    IFacetWizardPage {
+abstract class GaeFacetAbstractWizardPage extends DataModelWizardPage implements IFacetWizardPage,
+    IGaeFacetConstants {
+  private DeployOptionsComponent deployOptionsComponent = new DeployOptionsComponent();
 
   public GaeFacetAbstractWizardPage(String wizardPageName) {
     super(DataModelFactory.createDataModel(new AbstractDataModelProvider() {
@@ -57,6 +64,33 @@ abstract class GaeFacetAbstractWizardPage extends DataModelWizardPage implements
   @Override
   public void transferStateToConfig() {
     // do nothing here
+  }
+
+  protected void addModificationListeners() {
+    synchHelper.synchCheckbox(deployOptionsComponent.getEnableJarSplittingButton(),
+        GAE_PROPERTY_ENABLE_JAR_SPLITTING, null);
+    synchHelper.synchCheckbox(deployOptionsComponent.getDoJarClassesButton(),
+        GAE_PROPERTY_DO_JAR_CLASSES, null);
+    synchHelper.synchCheckbox(deployOptionsComponent.getRetainDirectoryButton(),
+        GAE_PROPERTY_RETAIN_STAGING_DIR, null);
+  }
+
+  protected void createDeployOptionsComponent(Composite composite) {
+    deployOptionsComponent.createContents(composite);
+  }
+
+  @Override
+  protected void restoreDefaultSettings() {
+    super.restoreDefaultSettings();
+    IProject project = ProjectUtils.getProject(model);
+    if (project != null) {
+      model.setBooleanProperty(GAE_PROPERTY_DO_JAR_CLASSES,
+          GaeProjectProperties.getGaeDoJarClasses(project));
+      model.setBooleanProperty(GAE_PROPERTY_ENABLE_JAR_SPLITTING,
+          GaeProjectProperties.getGaeEnableJarSplitting(project));
+      model.setBooleanProperty(GAE_PROPERTY_RETAIN_STAGING_DIR,
+          GaeProjectProperties.getGaeRetainStagingDir(project));
+    }
   }
 
   @Override

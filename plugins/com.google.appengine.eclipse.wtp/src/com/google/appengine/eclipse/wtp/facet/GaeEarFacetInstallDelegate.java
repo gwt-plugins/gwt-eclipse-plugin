@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.facet;
 
+import com.google.appengine.eclipse.core.properties.GaeProjectProperties;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.facet.ops.AppEngineApplicationXmlCreateOperation;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
@@ -34,6 +35,7 @@ import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IDelegate;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
+import org.osgi.service.prefs.BackingStoreException;
 
 /**
  * Creates deployment descriptors (appengine-application.xml, application.xml) upon facet install.
@@ -44,8 +46,8 @@ public final class GaeEarFacetInstallDelegate implements IDelegate {
   @Override
   public void execute(IProject project, IProjectFacetVersion fv, Object config,
       IProgressMonitor monitor) throws CoreException {
+    IDataModel model = (IDataModel) config;
     try {
-      IDataModel model = (IDataModel) config;
       IStatus status = new AppEngineApplicationXmlCreateOperation(model).execute(monitor, null);
       if (status != null && !status.isOK()) {
         throw new CoreException(status);
@@ -54,6 +56,17 @@ public final class GaeEarFacetInstallDelegate implements IDelegate {
       ensureApplicationXml(ProjectUtils.getProject(model), monitor);
     } catch (ExecutionException e) {
       throw new CoreException(StatusUtilities.newErrorStatus(e, AppEnginePlugin.PLUGIN_ID));
+    }
+    // setup deployment options
+    try {
+      GaeProjectProperties.setGaeEnableJarSplitting(project,
+          model.getBooleanProperty(IGaeFacetConstants.GAE_PROPERTY_ENABLE_JAR_SPLITTING));
+      GaeProjectProperties.setGaeDoJarClasses(project,
+          model.getBooleanProperty(IGaeFacetConstants.GAE_PROPERTY_DO_JAR_CLASSES));
+      GaeProjectProperties.setGaeRetaingStagingDir(project,
+          model.getBooleanProperty(IGaeFacetConstants.GAE_PROPERTY_RETAIN_STAGING_DIR));
+    } catch (BackingStoreException e) {
+      AppEnginePlugin.logMessage("Cannot setup deployment option", e);
     }
   }
 

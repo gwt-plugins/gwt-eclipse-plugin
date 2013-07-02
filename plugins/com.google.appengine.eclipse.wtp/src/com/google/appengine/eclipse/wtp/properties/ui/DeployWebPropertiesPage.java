@@ -16,7 +16,6 @@ import com.google.appengine.eclipse.core.properties.ui.DeployComponent;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 import com.google.gdt.eclipse.core.StatusUtilities;
-import com.google.gdt.eclipse.core.ui.AbstractProjectPropertyPage;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -34,7 +33,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * GAE WTP Web project deployment property page.
  */
-public final class DeployWebPropertiesPage extends AbstractProjectPropertyPage {
+public final class DeployWebPropertiesPage extends DeployPropertiesPage {
   public static final String ID = AppEnginePlugin.PLUGIN_ID + ".web.deployProperties";
 
   private DeployComponent deployComponent = new DeployComponent();
@@ -46,6 +45,7 @@ public final class DeployWebPropertiesPage extends AbstractProjectPropertyPage {
     Dialog.applyDialogFont(parent);
     Composite composite = new Composite(parent, SWT.NONE);
     composite.setLayout(new GridLayout());
+
     deployComponent.createContents(composite);
     deployComponent.setModifyListener(new ModifyListener() {
       @Override
@@ -54,34 +54,24 @@ public final class DeployWebPropertiesPage extends AbstractProjectPropertyPage {
         deployComponent.setEnabled(true);
       }
     });
+    createDeploymentOptionsComponent(composite);
 
     initializeValues();
 
-    // disable app id if the project is part of EAR project.
+    // disable app id & deployment options if the project is part of EAR project.
     boolean standaloneProject = EarUtilities.isStandaloneProject(getProject());
     deployComponent.getAppIdTextControl().setEnabled(standaloneProject);
+    deployOptionsComponent.setEnabled(standaloneProject);
 
     return composite;
-  }
-
-  @Override
-  protected void saveProjectProperties() throws Exception {
-    // save App ID & Version into appengine-web.xml
-    IProject project = getProject();
-    String appId = deployComponent.getAppId();
-    if (!appId.equals(currentAppId)) {
-      ProjectUtils.setAppId(project, appId, true);
-    }
-    String version = deployComponent.getVersion();
-    if (!version.equals(currentVersion)) {
-      ProjectUtils.setAppVersion(project, version, true);
-    }
   }
 
   /**
    * Setup current values.
    */
-  private void initializeValues() {
+  @Override
+  protected void initializeValues() {
+    super.initializeValues();
     try {
       IProject project = getProject();
       currentAppId = ProjectUtils.getAppId(project);
@@ -91,6 +81,25 @@ public final class DeployWebPropertiesPage extends AbstractProjectPropertyPage {
     } catch (CoreException e) {
       AppEnginePlugin.logMessage(e);
     }
+  }
+
+  @Override
+  protected void saveProjectProperties() throws Exception {
+    // save App ID & Version into appengine-web.xml
+    // TODO: if this project is a part of EAR GAE project consider saving project properties into
+    // EAR project instead, since app id & deployment options are taken from EAR project and this
+    // project properties are ignored
+    // The problem is that this project can be part of more than one EAR projects.
+    IProject project = getProject();
+    String appId = deployComponent.getAppId();
+    if (!appId.equals(currentAppId)) {
+      ProjectUtils.setAppId(project, appId, true);
+    }
+    String version = deployComponent.getVersion();
+    if (!version.equals(currentVersion)) {
+      ProjectUtils.setAppVersion(project, version, true);
+    }
+    super.saveProjectProperties();
   }
 
   /**

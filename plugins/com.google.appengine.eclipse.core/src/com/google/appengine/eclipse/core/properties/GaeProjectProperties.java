@@ -63,6 +63,12 @@ public final class GaeProjectProperties {
 
   private static final String GAE_DATANUCLEUS_VERSION = "gaeDatanucleusVersion";
 
+  private static final String GAE_ENABLE_JAR_SPLITTING = "gaeEnableJarSplitting";
+
+  private static final String GAE_DO_JAR_CLASSES = "gaeDoJarClasses";
+
+  private static final String GAE_RETAIN_STAGING_DIR = "gaeRetainStagingDirectory";
+
   public static List<String> getFileNamesCopiedToWebInfLib(IProject project) {
     IEclipsePreferences prefs = getProjectProperties(project);
     String rawPropVal = prefs.get(FILES_COPIED_TO_WEB_INF_LIB, null);
@@ -95,12 +101,30 @@ public final class GaeProjectProperties {
     return prefs.get(GAE_DEPLOY_DIALOG_SETTINGS, "");
   }
 
+  public static boolean getGaeDoJarClasses(IProject project) {
+    IEclipsePreferences prefs = getProjectProperties(project);
+    // If the property is not present, default to false.
+    return prefs.getBoolean(GAE_DO_JAR_CLASSES, false);
+  }
+
+  public static boolean getGaeEnableJarSplitting(IProject project) {
+    IEclipsePreferences prefs = getProjectProperties(project);
+    // If the property is not present, default to true.
+    return prefs.getBoolean(GAE_ENABLE_JAR_SPLITTING, true);
+  }
+
   public static boolean getGaeHrdEnabled(IProject project) {
     IEclipsePreferences prefs = getProjectProperties(project);
     // If the property is not present, it means we're dealing with an
     // old/existing project - hence we default to false. New projects will
     // enable HRD upon creation.
     return prefs.getBoolean(GAE_HRD_ENABLED, false);
+  }
+
+  public static boolean getGaeRetainStagingDir(IProject project) {
+    IEclipsePreferences prefs = getProjectProperties(project);
+    // If the property is not present, default to false.
+    return prefs.getBoolean(GAE_RETAIN_STAGING_DIR, false);
   }
 
   public static List<IPath> getOrmEnhancementInclusionPatterns(IProject project) {
@@ -238,6 +262,20 @@ public final class GaeProjectProperties {
     prefs.flush();
   }
 
+  public static void setGaeDoJarClasses(IProject project, boolean enabled)
+      throws BackingStoreException {
+    IEclipsePreferences prefs = getProjectProperties(project);
+    prefs.putBoolean(GAE_DO_JAR_CLASSES, enabled);
+    prefs.flush();
+  }
+
+  public static void setGaeEnableJarSplitting(IProject project, boolean enabled)
+      throws BackingStoreException {
+    IEclipsePreferences prefs = getProjectProperties(project);
+    prefs.putBoolean(GAE_ENABLE_JAR_SPLITTING, enabled);
+    prefs.flush();
+  }
+
   public static void setGaeHrdEnabled(IProject project, boolean hrdEnabled)
       throws BackingStoreException {
     IEclipsePreferences prefs = getProjectProperties(project);
@@ -245,9 +283,16 @@ public final class GaeProjectProperties {
     prefs.flush();
   }
 
+  public static void setGaeRetaingStagingDir(IProject project, boolean enabled)
+      throws BackingStoreException {
+    IEclipsePreferences prefs = getProjectProperties(project);
+    prefs.putBoolean(GAE_RETAIN_STAGING_DIR, enabled);
+    prefs.flush();
+  }
+
   public static void setOrmEnhancementInclusionPatterns(IProject project, List<IPath> patterns)
       throws BackingStoreException {
-    assert (patterns != null);
+    assert patterns != null;
 
     IEclipsePreferences prefs = getProjectProperties(project);
     String rawPropVal = PropertiesUtilities.serializePaths(patterns);
@@ -257,7 +302,7 @@ public final class GaeProjectProperties {
 
   public static void setValidationExclusionPatterns(IProject project, List<IPath> patterns)
       throws BackingStoreException {
-    assert (patterns != null);
+    assert patterns != null;
 
     IEclipsePreferences prefs = getProjectProperties(project);
     String rawPropVal = PropertiesUtilities.serializePaths(patterns);
