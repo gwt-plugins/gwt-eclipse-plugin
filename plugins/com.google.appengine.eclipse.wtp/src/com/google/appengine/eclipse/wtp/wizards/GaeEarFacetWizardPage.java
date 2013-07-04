@@ -12,8 +12,15 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.wizards;
 
+import com.google.appengine.eclipse.core.preferences.GaePreferences;
+import com.google.appengine.eclipse.core.sdk.GaeSdk;
+import com.google.appengine.eclipse.core.sdk.GaeSdkCapability;
 import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
+import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
+import com.google.gdt.eclipse.core.sdk.SdkSet;
+import com.google.gdt.eclipse.core.sdk.SdkUtils;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -21,6 +28,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.wst.common.componentcore.datamodel.FacetInstallDataModelProvider;
+import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetProjectCreationDataModelProperties;
+import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
+import org.eclipse.wst.common.project.facet.core.runtime.IRuntime;
 import org.eclipse.wst.common.project.facet.ui.IFacetWizardPage;
 
 /**
@@ -38,6 +49,30 @@ public final class GaeEarFacetWizardPage extends GaeFacetAbstractWizardPage {
    */
   public GaeEarFacetWizardPage() {
     super(WIZARD_PAGE_NAME);
+  }
+
+  @Override
+  public boolean isPageComplete() {
+    // a bit of HACK here: the goal is to validate SDK version against EAR support.
+    IDataModel masterDataModel = getMasterDataModel();
+    IRuntime runtime = (IRuntime) masterDataModel.getProperty(IFacetProjectCreationDataModelProperties.FACET_RUNTIME);
+    if (runtime != null) {
+      IPath sdkLocation = ProjectUtils.getSdkPath(runtime);
+      if (sdkLocation != null) {
+        SdkSet<GaeSdk> sdks = GaePreferences.getSdkManager().getSdks();
+        GaeSdk sdk = SdkUtils.findSdkForInstallationPath(sdks, sdkLocation);
+        if (sdk != null) {
+          boolean earSupported = sdk.getCapabilities().contains(GaeSdkCapability.EAR);
+          if (!earSupported) {
+            setErrorStatus(9999, "This App Engine SDK doesn't support EAR projects, use "
+                + GaeSdkCapability.EAR.minVersion + " or later.");
+            setErrorMessage();
+          }
+          return earSupported;
+        }
+      }
+    }
+    return super.isPageComplete();
   }
 
   @Override
@@ -75,5 +110,10 @@ public final class GaeEarFacetWizardPage extends GaeFacetAbstractWizardPage {
   protected void restoreDefaultSettings() {
     super.restoreDefaultSettings();
     synchHelper.synchAllUIWithModel();
+  }
+
+  private IDataModel getMasterDataModel() {
+    IDataModel dataModel = getDataModel();
+    return (IDataModel) dataModel.getProperty(FacetInstallDataModelProvider.MASTER_PROJECT_DM);
   }
 }

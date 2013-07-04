@@ -12,8 +12,11 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.server;
 
+import com.google.appengine.eclipse.core.sdk.GaeSdk;
+import com.google.appengine.eclipse.core.sdk.GaeSdkCapability;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
+import com.google.appengine.eclipse.wtp.runtime.RuntimeUtils;
 import com.google.appengine.eclipse.wtp.utils.ModuleUtils;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 import com.google.common.collect.Lists;
@@ -31,6 +34,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jst.server.core.FacetUtil;
 import org.eclipse.jst.server.core.IEnterpriseApplication;
 import org.eclipse.jst.server.core.IWebModule;
+import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
 import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.IServerWorkingCopy;
@@ -409,7 +413,38 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
           AppEnginePlugin.PLUGIN_ID);
     }
 
-    return new Status(IStatus.OK, AppEnginePlugin.PLUGIN_ID, 0, "", null); //$NON-NLS-1$
+    IStatus earStatus = validateEarSupported(getGaeRuntime());
+    if (!earStatus.isOK()) {
+      return earStatus;
+    }
+    return StatusUtilities.newOkStatus("", AppEnginePlugin.PLUGIN_ID);
+  }
+
+  /**
+   * Check that this server has EAR supporting runtime set. If the server has no modules then return
+   * {@link Status#OK_STATUS}.
+   */
+  public IStatus validateEarSupported(GaeRuntime gaeRuntime) {
+    IStatus runtimeStatus = Status.OK_STATUS;
+    GaeSdk sdk = RuntimeUtils.getRuntimeSdkNoFallback(gaeRuntime);
+    if (sdk != null) {
+      try {
+        IProject project = getProject();
+        if (project == null) {
+          return runtimeStatus;
+        }
+        if (FacetedProjectFramework.hasProjectFacet(project, "jst.ear")) {
+          if (!sdk.getCapabilities().contains(GaeSdkCapability.EAR)) {
+            runtimeStatus = StatusUtilities.newErrorStatus(
+                "This App Engine SDK doesn't support EAR projects, use "
+                    + GaeSdkCapability.EAR.minVersion + " or later.", AppEnginePlugin.PLUGIN_ID);
+          }
+        }
+      } catch (CoreException e) {
+        runtimeStatus = StatusUtilities.newErrorStatus(e, AppEnginePlugin.PLUGIN_ID);
+      }
+    }
+    return runtimeStatus;
   }
 
   /**

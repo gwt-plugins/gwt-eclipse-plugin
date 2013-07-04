@@ -100,8 +100,8 @@ public final class ServerSection extends ServerEditorSection implements Property
 
   @Override
   public IStatus[] getSaveStatus() {
-    IStatus status = gaeServer.validate();
-    return new IStatus[] {status};
+    IStatus serverStatus = gaeServer.validate();
+    return new IStatus[] {serverStatus};
   }
 
   @Override
@@ -114,13 +114,20 @@ public final class ServerSection extends ServerEditorSection implements Property
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
     if ("runtime-id".equals(evt.getPropertyName())) {
-      // hide auto-reload delay controls as not applicable for SDKs < 1.8.1
       GaeRuntime gaeRuntime = GaeServer.getGaeServer(gaeServer.getServerWorkingCopy()).getGaeRuntime();
       if (gaeRuntime != null) {
+        // hide auto-reload delay controls as not applicable for SDKs < 1.8.1
         boolean isUsingAutoreload = SdkUtils.compareVersionStrings(gaeRuntime.getGaeSdkVersion(),
             RuntimeUtils.MIN_SDK_VERSION_USING_AUTORELOAD) >= 0;
         autoreloadTimeText.setVisible(isUsingAutoreload);
         autoreloadTimeLabel.setVisible(isUsingAutoreload);
+        // check for EAR
+        IStatus earSupported = gaeServer.validateEarSupported(gaeRuntime);
+        if (!earSupported.isOK()) {
+          setErrorMessage(earSupported.getMessage());
+        } else {
+          setErrorMessage("");
+        }
       }
     }
   }
