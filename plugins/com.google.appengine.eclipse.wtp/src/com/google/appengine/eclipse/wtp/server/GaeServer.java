@@ -215,7 +215,9 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
           IWebModule webModule = (IWebModule) module[0].loadAdapter(IWebModule.class, null);
           if (webModule != null) {
             IModule[] modules = webModule.getModules();
-            return modules;
+            if (modules != null) {
+              return modules;
+            }
           }
         }
       }
