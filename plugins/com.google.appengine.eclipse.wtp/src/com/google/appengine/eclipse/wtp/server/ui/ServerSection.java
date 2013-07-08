@@ -101,7 +101,9 @@ public final class ServerSection extends ServerEditorSection implements Property
   @Override
   public IStatus[] getSaveStatus() {
     IStatus serverStatus = gaeServer.validate();
-    return new IStatus[] {serverStatus};
+    GaeRuntime gaeRuntime = GaeServer.getGaeServer(gaeServer.getServerWorkingCopy()).getGaeRuntime();
+    IStatus earSupported = gaeServer.validateEarSupported(gaeRuntime);
+    return new IStatus[] {serverStatus, earSupported};
   }
 
   @Override

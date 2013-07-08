@@ -414,11 +414,6 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
       return StatusUtilities.newErrorStatus("Invalid autoreload delay time: " + autoreloadTime,
           AppEnginePlugin.PLUGIN_ID);
     }
-
-    IStatus earStatus = validateEarSupported(getGaeRuntime());
-    if (!earStatus.isOK()) {
-      return earStatus;
-    }
     return StatusUtilities.newOkStatus("", AppEnginePlugin.PLUGIN_ID);
   }
 
@@ -443,7 +438,7 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
           }
         }
       } catch (CoreException e) {
-        runtimeStatus = StatusUtilities.newErrorStatus(e, AppEnginePlugin.PLUGIN_ID);
+        // ignore exceptions here, as there could be no modules yet associated with this server.
       }
     }
     return runtimeStatus;
