@@ -208,13 +208,6 @@
          version="0.0.0.qualifier"
          unpack="false"/>
 
-   <plugin
-         id="com.google.gdt.eclipse.appengine.rpc"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
    <!-- this plugin is lableled .e37 but it will work in vesrions >= 3.7 -->
    <plugin
          id="com.google.gdt.eclipse.maven.e37"

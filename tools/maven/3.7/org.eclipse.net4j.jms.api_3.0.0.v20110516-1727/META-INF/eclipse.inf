@@ -1,3 +1,0 @@
-#Processed using Jarprocessor
-pack200.args = -E0
-pack200.conditioned = true

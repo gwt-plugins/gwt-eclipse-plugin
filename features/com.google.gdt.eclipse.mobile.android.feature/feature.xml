@@ -46,7 +46,6 @@
       <import plugin="org.eclipse.text"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="com.google.gdt.eclipse.appengine.rpc"/>
       <import plugin="com.google.gdt.eclipse.appengine.swarm_backend"/>
    </requires>
 
