@@ -7,11 +7,11 @@
       plugin="com.google.gdt.eclipse.suite">
 
    <description>
-      Support for the development of Google App Engine and Google Web Toolkit projects in Eclipse 4.2
+      Support for the development of Google Cloud Platform-based Projects in Eclipse 3.8/4.2
    </description>
 
    <copyright>
-      Copyright 2009 - 2012
+      Copyright 2009 - 2013
    </copyright>
 
    <license>
@@ -30,12 +30,12 @@
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.eclipse.wst.xml.core"/>
+      <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.wst.sse.core"/>
+      <import plugin="org.eclipse.wst.xml.core"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.jdt.core.manipulation"/>
       <import plugin="org.eclipse.jdt.debug.ui"/>
@@ -62,10 +62,13 @@
       <import plugin="org.eclipse.wst.common.modulecore"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
       <import plugin="org.eclipse.wst.server.core"/>
+      <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.mylyn.commons.ui"/>
+      <import plugin="org.eclipse.update.configurator"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.ui.workbench"/>
-      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.jst.server.core"/>
+      <import plugin="org.eclipse.jdt.debug"/>
       <import plugin="org.eclipse.core.runtime" version="3.8.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.p2.ui"/>
       <import plugin="org.eclipse.equinox.p2.ui.sdk"/>
@@ -76,17 +79,37 @@
       <import plugin="org.eclipse.jetty.servlet"/>
       <import plugin="org.eclipse.jetty.server"/>
       <import plugin="org.eclipse.jetty.util"/>
-      <import plugin="org.eclipse.jst.server.core"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.ui.views.properties.tabbed"/>
+      <!-- Commenting out, as the Maven functionality is optional and depends
+           on whether or not the user already has Maven installed. 
+      <import plugin="org.eclipse.m2e.core"/>
+      <import plugin="org.eclipse.m2e.maven.runtime"/>
+      -->
+      <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.equinox.p2.repository"/>
       <import plugin="org.eclipse.equinox.p2.engine"/>
+      <import plugin="org.eclipse.jst.common.project.facet.core"/>
+      <import plugin="org.eclipse.emf.ecore.xmi"/>
       <import plugin="org.eclipse.text"/>
+      <import plugin="org.eclipse.jst.common.frameworks"/>
+      <import plugin="org.eclipse.jst.j2ee"/>
+      <import plugin="org.eclipse.jst.j2ee.web"/>
+      <import plugin="org.eclipse.wst.server.ui"/>
+      <import plugin="org.eclipse.emf.edit.ui"/>
+      <import plugin="org.eclipse.wst.common.frameworks.ui"/>
+      <import plugin="org.eclipse.jem.util"/>
+      <import plugin="org.eclipse.emf.codegen"/>
+      <import plugin="org.eclipse.jpt.common.core"/>
+      <import plugin="org.eclipse.jpt.jpa.core"/>
+      <import plugin="org.eclipse.jpt.jpa.db"/>
+      <import plugin="org.eclipse.persistence.jpa.jpql"/>
+      <import plugin="org.eclipse.jpt.jpa.ui"/>
+      <import plugin="org.eclipse.jst.common.project.facet.ui"/>
+      <import plugin="org.eclipse.jpt.common.ui"/>
+      <import plugin="org.eclipse.jpt.common.utility"/>
+      <import plugin="org.eclipse.wst.common.project.facet.ui"/>
       <import feature="org.eclipse.platform" version="3.8" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.debug"/>
-      <import plugin="org.objectweb.asm"/>
-      <import plugin="org.eclipse.update.configurator"/>
-      <import plugin="org.eclipse.team.core"/>
    </requires>
 
    <plugin
@@ -193,7 +216,8 @@
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
-   <!-- this plugin is lableled .e36 but it will work in versions >= 3.6 -->
+
+   <!-- this plugin is labelled .e36 but it will work in versions >= 3.6 -->
    <plugin
          id="com.google.gdt.eclipse.gph.e36"
          download-size="0"
@@ -208,7 +232,7 @@
          version="0.0.0.qualifier"
          unpack="false"/>
 
-   <!-- this plugin is lableled .e37 but it will work in vesrions >= 3.7 -->
+   <!-- this plugin is labelled .e37 but it will work in versions >= 3.7 -->
    <plugin
          id="com.google.gdt.eclipse.maven.e37"
          download-size="0"
@@ -248,22 +272,36 @@
          id="com.google.gdt.eclipse.appengine.swarm"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.google.gdt.eclipse.appengine.swarm_backend"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.google.appengine.eclipse.wtp"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.apiclientlib"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <!-- this plugin is labelled .e38 but it will work in versions 3.8 + 4.2 -->
+   <plugin
+         id="com.google.gdt.eclipse.suite.ext.e38"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
          unpack="false"/>
 
 </feature>
-
