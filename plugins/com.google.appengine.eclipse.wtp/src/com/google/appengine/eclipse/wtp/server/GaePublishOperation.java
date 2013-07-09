@@ -3,6 +3,7 @@ package com.google.appengine.eclipse.wtp.server;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 import com.google.common.collect.Lists;
+import com.google.gdt.eclipse.core.StatusUtilities;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -10,7 +11,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.jst.j2ee.internal.J2EEConstants;
 import org.eclipse.jst.server.core.IJ2EEModule;
 import org.eclipse.jst.server.core.IWebModule;
 import org.eclipse.wst.server.core.IModule;
@@ -29,7 +29,6 @@ import java.util.Properties;
 /**
  * GAE publish helper.
  */
-@SuppressWarnings("restriction")
 public final class GaePublishOperation extends PublishOperation {
   /**
    * Throws new {@link CoreException} if status list is not empty.
@@ -67,29 +66,49 @@ public final class GaePublishOperation extends PublishOperation {
 
   @Override
   public void execute(IProgressMonitor monitor, IAdaptable info) throws CoreException {
+    // TODO: use more advanced key to store module publish locations? Because a dependent java
+    // project (added as child module and published as jar) cannot present in more than one parent
+    // module.
     List<IStatus> statusList = Lists.newArrayList();
+    IPath deployPath = server.getModuleDeployDirectory(module[0]);
     if (module.length == 1) {
       // root module
-      publishDir(module[0], statusList, monitor);
+      publishDir(deployPath, statusList, monitor);
     } else {
-      // child module, given as root-child pair
-      Properties moduleUrls = server.loadModulePublishLocations();
-      // try to determine the URI for the child module
-      IWebModule webModule = (IWebModule) module[0].loadAdapter(IWebModule.class, monitor);
-      String childURI = null;
-      if (webModule != null) {
-        childURI = webModule.getURI(module[1]);
-      }
-      // get child
-      IJ2EEModule childModule = (IJ2EEModule) module[1].loadAdapter(IJ2EEModule.class, monitor);
-      if (childModule != null && childModule.isBinary()) {
-        publishArchiveModule(childURI, moduleUrls, statusList, monitor);
-      } else {
-        if (ProjectUtils.isGaeProject(module[1].getProject())) {
-          // GAE WTP projects should be published as a directory
-          publishDir(childURI, moduleUrls, statusList, monitor);
+      for (int i = 0; i < module.length - 1; i++) {
+        IWebModule webModule = (IWebModule) module[i].loadAdapter(IWebModule.class, monitor);
+        if (webModule == null) {
+          statusList.add(StatusUtilities.newErrorStatus("Not a Web module: " + module[i].getName(),
+              AppEnginePlugin.PLUGIN_ID));
+          return;
+        }
+        String uri = webModule.getURI(module[i + 1]);
+        if (uri != null) {
+          deployPath = deployPath.append(uri);
         } else {
-          publishJar(childURI, moduleUrls, statusList, monitor);
+          // no uri is OK for removed modules
+          if (deltaKind != ServerBehaviourDelegate.REMOVED) {
+            statusList.add(StatusUtilities.newErrorStatus("Cannot get URI for module: "
+                + module[i + 1].getName(), AppEnginePlugin.PLUGIN_ID));
+            return;
+          }
+        }
+      }
+      // modules given as parent-child chain
+      // get last one, the prior modules should already be published
+      IModule childModule = module[module.length - 1];
+      Properties moduleUrls = server.loadModulePublishLocations();
+      // get as j2ee
+      IJ2EEModule childJ2EEModule = (IJ2EEModule) childModule.loadAdapter(IJ2EEModule.class,
+          monitor);
+      if (childJ2EEModule != null && childJ2EEModule.isBinary()) {
+        publishArchiveModule(deployPath, moduleUrls, statusList, monitor, childModule);
+      } else {
+        if (ProjectUtils.isGaeProject(childModule.getProject())) {
+          // GAE WTP projects should be published as a directory
+          publishDir(deployPath, moduleUrls, statusList, monitor, childModule);
+        } else {
+          publishJar(deployPath, moduleUrls, statusList, monitor, childModule);
         }
       }
       server.saveModulePublishLocations(moduleUrls);
@@ -111,29 +130,27 @@ public final class GaePublishOperation extends PublishOperation {
   /**
    * Publish as binary module.
    */
-  private void publishArchiveModule(String jarURI, Properties mapping, List<IStatus> statusList,
-      IProgressMonitor monitor) {
-    IPath path = server.getModuleDeployDirectory(module[0]);
+  private void publishArchiveModule(IPath path, Properties mapping, List<IStatus> statusList,
+      IProgressMonitor monitor, IModule childModule) {
     boolean isMoving = false;
     // check older publish
-    String oldURI = (String) mapping.get(module[1].getId());
+    String oldURI = (String) mapping.get(childModule.getId());
+    String jarURI = path.toOSString();
     if (oldURI != null && jarURI != null) {
       isMoving = !oldURI.equals(jarURI);
     }
-    // create uri if needed
-    if (jarURI == null) {
-      jarURI = J2EEConstants.WEB_INF_LIB + "/" + module[1].getName();
-    }
     // setup target
-    IPath jarPath = path.append(jarURI);
+    IPath jarPath = (IPath) path.clone();
     IPath deployPath = jarPath.removeLastSegments(1);
     // remove if requested or if previously published and are now serving without publishing
     if (isMoving || kind == IServer.PUBLISH_CLEAN || deltaKind == ServerBehaviourDelegate.REMOVED) {
-      File file = path.append(oldURI).toFile();
-      if (file.exists()) {
-        file.delete();
+      if (oldURI != null) {
+        File file = new File(oldURI);
+        if (file.exists()) {
+          file.delete();
+        }
       }
-      mapping.remove(module[1].getId());
+      mapping.remove(childModule.getId());
       if (deltaKind == ServerBehaviourDelegate.REMOVED) {
         return;
       }
@@ -154,15 +171,14 @@ public final class GaePublishOperation extends PublishOperation {
     IStatus[] publishStatus = helper.publishToPath(resources, jarPath, monitor);
     statusList.addAll(Arrays.asList(publishStatus));
     // store into mapping
-    mapping.put(module[1].getId(), jarURI);
+    mapping.put(childModule.getId(), jarURI);
   }
 
   /**
    * Publish module as directory.
    */
-  private void publishDir(IModule publishModule, List<IStatus> statusList, IProgressMonitor monitor)
+  private void publishDir(IPath path, List<IStatus> statusList, IProgressMonitor monitor)
       throws CoreException {
-    IPath path = server.getModuleDeployDirectory(publishModule);
     // delete if needed
     if (kind == IServer.PUBLISH_CLEAN || deltaKind == ServerBehaviourDelegate.REMOVED) {
       File file = path.toFile();
@@ -193,29 +209,27 @@ public final class GaePublishOperation extends PublishOperation {
   /**
    * Publish child module as directory if not binary.
    */
-  private void publishDir(String dirURI, Properties mapping, List<IStatus> statusList,
-      IProgressMonitor monitor) throws CoreException {
-    IPath path = server.getModuleDeployDirectory(module[0]);
+  private void publishDir(IPath path, Properties mapping, List<IStatus> statusList,
+      IProgressMonitor monitor, IModule childModule) throws CoreException {
     boolean isMoving = false;
     // check older publish
-    String oldURI = (String) mapping.get(module[1].getId());
+    String oldURI = (String) mapping.get(childModule.getId());
+    String dirURI = path.toOSString();
     if (oldURI != null && dirURI != null) {
       isMoving = !oldURI.equals(dirURI);
     }
-    // create uri if needed
-    if (dirURI == null) {
-      dirURI = J2EEConstants.WEB_INF_LIB + "/" + module[1].getName() + ".war";
-    }
     // setup target
-    IPath dirPath = path.append(dirURI);
+    IPath dirPath = (IPath) path.clone();
     // remove if needed
     if (isMoving || kind == IServer.PUBLISH_CLEAN || deltaKind == ServerBehaviourDelegate.REMOVED) {
-      File file = path.append(oldURI).toFile();
-      if (file.exists()) {
-        IStatus[] status = PublishHelper.deleteDirectory(file, monitor);
-        statusList.addAll(Arrays.asList(status));
+      if (oldURI != null) {
+        File file = new File(oldURI);
+        if (file.exists()) {
+          IStatus[] status = PublishHelper.deleteDirectory(file, monitor);
+          statusList.addAll(Arrays.asList(status));
+        }
       }
-      mapping.remove(module[1].getId());
+      mapping.remove(childModule.getId());
       if (deltaKind == ServerBehaviourDelegate.REMOVED) {
         return;
       }
@@ -246,35 +260,33 @@ public final class GaePublishOperation extends PublishOperation {
       }
     }
     // store into mapping
-    mapping.put(module[1].getId(), dirURI);
+    mapping.put(childModule.getId(), dirURI);
   }
 
   /**
    * Publish module by zipping it into JAR file.
    */
-  private void publishJar(String jarURI, Properties mapping, List<IStatus> statusList,
-      IProgressMonitor monitor) throws CoreException {
-    IPath path = server.getModuleDeployDirectory(module[0]);
+  private void publishJar(IPath path, Properties mapping, List<IStatus> statusList,
+      IProgressMonitor monitor, IModule childModule) throws CoreException {
     boolean isMoving = false;
     // check older publish
-    String oldURI = (String) mapping.get(module[1].getId());
+    String oldURI = (String) mapping.get(childModule.getId());
+    String jarURI = path.toOSString();
     if (oldURI != null && jarURI != null) {
       isMoving = !oldURI.equals(jarURI);
     }
-    // create uri if needed
-    if (jarURI == null) {
-      jarURI = J2EEConstants.WEB_INF_LIB + "/" + module[1].getName() + ".jar";
-    }
     // setup target
-    IPath jarPath = path.append(jarURI);
+    IPath jarPath = (IPath) path.clone();
     IPath deployDirectory = jarPath.removeLastSegments(1);
     // remove if needed
     if (isMoving || kind == IServer.PUBLISH_CLEAN || deltaKind == ServerBehaviourDelegate.REMOVED) {
-      File file = path.append(oldURI).toFile();
-      if (file.exists()) {
-        file.delete();
+      if (oldURI != null) {
+        File file = new File(oldURI);
+        if (file.exists()) {
+          file.delete();
+        }
       }
-      mapping.remove(module[1].getId());
+      mapping.remove(childModule.getId());
       if (deltaKind == ServerBehaviourDelegate.REMOVED) {
         return;
       }
@@ -295,6 +307,6 @@ public final class GaePublishOperation extends PublishOperation {
     IStatus[] status = helper.publishZip(resources, jarPath, monitor);
     statusList.addAll(Arrays.asList(status));
     // store into mapping
-    mapping.put(module[1].getId(), jarURI);
+    mapping.put(childModule.getId(), jarURI);
   }
 }

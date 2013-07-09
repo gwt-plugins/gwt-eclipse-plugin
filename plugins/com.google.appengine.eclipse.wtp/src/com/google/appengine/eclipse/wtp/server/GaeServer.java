@@ -201,9 +201,10 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
   @Override
   public IModule[] getChildModules(IModule[] module) {
     if (module[0] != null && module[0].getModuleType() != null) {
-      if (module.length == 1) {
-        if (ModuleUtils.isModuleType(module[0], ModuleUtils.MODULETYPE_JST_EAR)) {
-          IEnterpriseApplication enterpriseApplication = (IEnterpriseApplication) module[0].loadAdapter(
+      IModule thisModule = module[module.length - 1];
+      {
+        if (ModuleUtils.isModuleType(thisModule, ModuleUtils.MODULETYPE_JST_EAR)) {
+          IEnterpriseApplication enterpriseApplication = (IEnterpriseApplication) thisModule.loadAdapter(
               IEnterpriseApplication.class, null);
           if (enterpriseApplication != null) {
             IModule[] earModules = enterpriseApplication.getModules();
@@ -211,8 +212,8 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
               return earModules;
             }
           }
-        } else if (ModuleUtils.isModuleType(module[0], ModuleUtils.MODULETYPE_JST_WEB)) {
-          IWebModule webModule = (IWebModule) module[0].loadAdapter(IWebModule.class, null);
+        } else if (ModuleUtils.isModuleType(thisModule, ModuleUtils.MODULETYPE_JST_WEB)) {
+          IWebModule webModule = (IWebModule) thisModule.loadAdapter(IWebModule.class, null);
           if (webModule != null) {
             IModule[] modules = webModule.getModules();
             if (modules != null) {
