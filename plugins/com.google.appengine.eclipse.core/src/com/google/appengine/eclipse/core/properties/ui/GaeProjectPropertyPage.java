@@ -32,6 +32,7 @@ import com.google.appengine.eclipse.core.sdk.GaeSdkContainer;
 import com.google.gdt.eclipse.core.BuilderUtilities;
 import com.google.gdt.eclipse.core.ClasspathUtilities;
 import com.google.gdt.eclipse.core.ResourceUtils;
+import com.google.gdt.eclipse.core.SWTUtilities;
 import com.google.gdt.eclipse.core.StatusUtilities;
 import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.browser.BrowserUtilities;
@@ -83,6 +84,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.osgi.service.prefs.BackingStoreException;
 import org.w3c.dom.Attr;
@@ -146,6 +148,12 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
 
   private static final String APIS_CONSOLE_URL = "https://code.google.com/apis/console";
 
+  // TODO: read from .properties file
+  private static final String APPENGINE_APP_VERSIONS_URL = "http://appengine.google.com/deployment?&app_id=";
+
+  // TODO: read from .properties file
+  private static final String APPENGINE_CREATE_APP_URL = "http://appengine.google.com/";
+
   private static final String CONFIGURE_TEXT = "<a href=\"#\">Configure...</a>";
 
   private static final int INDENT_TAB = 35;
@@ -160,11 +168,17 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
 
   private String appId;
 
+  private Text appIdText;
+
   private boolean configuredMySql;
 
   private boolean configuredProdCloudSql;
 
   private boolean configuredTestCloudSql;
+
+  private Group deployGroup;
+
+  private Link existingVersionsLink;
 
   private Button googleCloudSqlRadio;
 
@@ -183,6 +197,8 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
   private String initialDatanucleusVersion;
 
   private String initialVersion;
+
+  private Link myApplicationsLink;
 
   private Link mySqlConfigureLink;
 
@@ -214,7 +230,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
 
   private String version;
 
-  private DeployComponent deployComponent = new DeployComponent();
+  private Text versionText;
 
   public GaeProjectPropertyPage() {
     noDefaultAndApplyButton();
@@ -344,9 +360,29 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
         fieldChanged();
       }
     });
-    deployComponent.setModifyListener(new ModifyListener() {
+    appIdText.addModifyListener(new ModifyListener() {
       public void modifyText(ModifyEvent e) {
         fieldChanged();
+      }
+    });
+    versionText.addModifyListener(new ModifyListener() {
+      public void modifyText(ModifyEvent e) {
+        fieldChanged();
+      }
+    });
+
+    myApplicationsLink.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        openBrowser(APPENGINE_CREATE_APP_URL);
+      }
+    });
+
+    existingVersionsLink.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        assert (appId != null);
+        openBrowser(APPENGINE_APP_VERSIONS_URL + appId);
       }
     });
     useGoogleCloudSqlLink.addListener(SWT.Selection, new Listener() {
@@ -569,7 +605,35 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
   }
 
   private void createDeployComponent(Composite parent) {
-    deployComponent.createContents(parent);
+    deployGroup = SWTFactory.createGroup(parent, "Deployment", 3, 1, GridData.FILL_HORIZONTAL);
+
+    // Application ID field
+    Label appIdLabel = new Label(deployGroup, SWT.NONE);
+    appIdLabel.setText("Application ID:");
+    appIdText = new Text(deployGroup, SWT.BORDER);
+    appIdText.setLayoutData(new GridData(180, SWT.DEFAULT));
+
+    // Link to applications
+    myApplicationsLink = new Link(deployGroup, SWT.NONE);
+    myApplicationsLink.setText("<a href=\"#\">My applications...</a>");
+    GridData createAppLinkGridData = new GridData(SWT.END, SWT.TOP, true, false);
+    myApplicationsLink.setLayoutData(createAppLinkGridData);
+
+    // Version field
+    Label versionLabel = new Label(deployGroup, SWT.NONE);
+    versionLabel.setText("Version:");
+    versionText = new Text(deployGroup, SWT.BORDER);
+    GridData versionTextGridData = new GridData(60, SWT.DEFAULT);
+    versionText.setLayoutData(versionTextGridData);
+
+    // Link to existing versions
+    existingVersionsLink = new Link(deployGroup, SWT.NONE);
+    GridData seeVersionsLinkGridData = new GridData(SWT.END, SWT.TOP, true, false);
+    existingVersionsLink.setLayoutData(seeVersionsLinkGridData);
+    existingVersionsLink.setText("<a href=\"#\">Existing versions...</a>");
+
+    // Set tab order to skip links
+    deployGroup.setTabList(new Control[] {appIdText, versionText});
   }
 
   private void createGoogleCloudSqlComponent(Composite parent) {
@@ -707,8 +771,8 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
 
   private void initializeControls() {
     useGaeCheckbox.setSelection(initialUseGae);
-    deployComponent.setAppIdText(initialAppId);
-    deployComponent.setVersionText(initialVersion);
+    appIdText.setText(initialAppId);
+    versionText.setText(initialVersion);
     useHrdCheckbox.setSelection(initialUseHrd);
     useDatanucleusCheckbox.setSelection(initialUseDatanucleus);
     datanucleusVersionCombo.setSelection(new StructuredSelection(
@@ -749,6 +813,10 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
       AppEngineCorePluginLog.logError(e);
     }
     return false;
+  }
+
+  private void openBrowser(String url) {
+    BrowserUtilities.launchBrowserAndHandleExceptions(url);
   }
 
   private Document parseXML(String path) {
@@ -868,7 +936,8 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     }
 
     sdkSelectionBlock.setEnabled(shouldBeEnabled);
-    deployComponent.setEnabled(shouldBeEnabled);
+    SWTUtilities.setEnabledRecursive(deployGroup, shouldBeEnabled);
+    existingVersionsLink.setEnabled(shouldBeEnabled && appId != null && appId.length() > 0);
 
     // Only enable HRD selection for supported SDKs.
     useHrdCheckbox.setEnabled(useGae && hrdSupport);
@@ -1038,7 +1107,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
       return StatusUtilities.OK_STATUS;
     }
 
-    String enteredAppId = deployComponent.getAppId();
+    String enteredAppId = appIdText.getText().trim();
     if (enteredAppId.length() > 0) {
       if (!appEngineWebXmlExists) {
         return StatusUtilities.newErrorStatus(
@@ -1134,7 +1203,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
       return StatusUtilities.OK_STATUS;
     }
 
-    String enteredVersion = deployComponent.getVersion();
+    String enteredVersion = versionText.getText().trim();
 
     if (!enteredVersion.matches("[a-zA-Z0-9-]*")) {
       return StatusUtilities.newErrorStatus(
