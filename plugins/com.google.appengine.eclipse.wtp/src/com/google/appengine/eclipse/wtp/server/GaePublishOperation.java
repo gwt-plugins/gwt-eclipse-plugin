@@ -66,9 +66,9 @@ public final class GaePublishOperation extends PublishOperation {
 
   @Override
   public void execute(IProgressMonitor monitor, IAdaptable info) throws CoreException {
-    // TODO: use more advanced key to store module publish locations? Because a dependent java
-    // project (added as child module and published as jar) cannot present in more than one parent
-    // module.
+    // TODO(amitin): use more advanced key to store module publish locations? Because a dependent
+    // java project (added as child module and published as jar) cannot present in more than one
+    // parent module.
     List<IStatus> statusList = Lists.newArrayList();
     IPath deployPath = server.getModuleDeployDirectory(module[0]);
     if (module.length == 1) {

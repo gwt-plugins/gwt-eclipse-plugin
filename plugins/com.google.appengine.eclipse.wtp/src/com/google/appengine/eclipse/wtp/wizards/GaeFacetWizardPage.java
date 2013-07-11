@@ -12,16 +12,14 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.wizards;
 
-import com.google.appengine.eclipse.core.properties.ui.DeployComponent;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
+import com.google.appengine.eclipse.wtp.properties.ui.DeployComponent;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -54,14 +52,8 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
     super.addModificationListeners();
     synchHelper.synchText(deployComponent.getAppIdTextControl(), GAE_PROPERTY_APP_ID, null);
     synchHelper.synchText(deployComponent.getVersionTextControl(), GAE_PROPERTY_APP_VERSION, null);
+    synchHelper.synchText(deployComponent.getModuleIdTextControl(), GAE_PROPERTY_MODULE_ID, null);
     synchHelper.synchText(packageText, GAE_PROPERTY_PACKAGE, null);
-    deployComponent.setModifyListener(new ModifyListener() {
-      @Override
-      public void modifyText(ModifyEvent e) {
-        // to make it check for app id
-        deployComponent.setEnabled(true);
-      }
-    });
     synchHelper.synchCheckbox(shouldCreateSampleButton, GAE_PROPERTY_CREATE_SAMPLE, null);
   }
 
@@ -82,6 +74,13 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
     }
     {
       deployComponent.createContents(composite);
+      try {
+        boolean earSupported = isEarSupported();
+        deployComponent.setEarSupported(earSupported);
+      } catch (CoreException e) {
+        setErrorStatus(9999, e.getStatus().getMessage());
+        setErrorMessage();
+      }
     }
     {
       createDeployOptionsComponent(composite);
@@ -100,7 +99,8 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
 
   @Override
   protected String[] getValidationPropertyNames() {
-    return new String[] {GAE_PROPERTY_APP_ID, GAE_PROPERTY_APP_VERSION, GAE_PROPERTY_PACKAGE};
+    return new String[] {
+        GAE_PROPERTY_APP_ID, GAE_PROPERTY_MODULE_ID, GAE_PROPERTY_APP_VERSION, GAE_PROPERTY_PACKAGE};
   }
 
   @Override
@@ -111,6 +111,7 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
       try {
         model.setStringProperty(GAE_PROPERTY_APP_ID, ProjectUtils.getAppId(project));
         model.setStringProperty(GAE_PROPERTY_APP_VERSION, ProjectUtils.getAppVersion(project));
+        model.setStringProperty(GAE_PROPERTY_MODULE_ID, ProjectUtils.getModuleId(project));
       } catch (CoreException e) {
         AppEnginePlugin.logMessage(e);
       }

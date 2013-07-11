@@ -53,7 +53,7 @@ public abstract class RemoteOperationJob extends WorkspaceJob {
   private static final String APPCFG_CLASS_NAME = "com.google.appengine.tools.admin.AppCfg";
   private static final String APPENGINE_TOOLS_JAR_NAME = "appengine-tools-api.jar";
   private static final IPath APPENGINE_TOOLS_JAR_PATH = new Path("lib/" + APPENGINE_TOOLS_JAR_NAME);
-  // TODO: move the next constant outta here
+  // TODO(amitin): move the next constant outta here
   private static final String COMMAND_UPDATE_BACKENDS = "update backends";
   private static final String ARG_OAUTH2 = "--oauth2";
   private static final String ARG_OAUTH2_REFRESH_TOKEN = "--oauth2_refresh_token=";

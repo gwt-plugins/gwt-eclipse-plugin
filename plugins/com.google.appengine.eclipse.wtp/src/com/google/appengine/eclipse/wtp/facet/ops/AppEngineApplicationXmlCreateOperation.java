@@ -87,7 +87,7 @@ public final class AppEngineApplicationXmlCreateOperation extends GaeFileCreateO
   @Override
   protected InputStream getResourceContentsAsStream() throws CoreException {
     try {
-      // TODO: move to template.
+      // TODO(amitin): move to template.
       String defaultDesc = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>\n<appengine-application xmlns=\"http://appengine.google.com/ns/1.0\">\n<application></application>\n</appengine-application>";
       return new ByteInputStream(defaultDesc.getBytes("UTF-8"), defaultDesc.length());
     } catch (UnsupportedEncodingException e) {

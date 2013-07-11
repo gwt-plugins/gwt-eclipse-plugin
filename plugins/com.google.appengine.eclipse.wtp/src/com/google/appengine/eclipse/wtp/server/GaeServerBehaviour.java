@@ -242,7 +242,7 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
     args.append(serverPorts[0].getPort());
     args.append(" ");
     // don't check for updates every run
-    // TODO: make optional?
+    // TODO(amitin): make optional?
     args.append(ARG_DISABLE_UPDATE_CHECK);
     args.append(" ");
     // app directory, must be last arg

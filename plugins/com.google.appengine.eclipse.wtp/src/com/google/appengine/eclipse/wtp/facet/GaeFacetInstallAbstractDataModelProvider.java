@@ -55,7 +55,7 @@ abstract class GaeFacetInstallAbstractDataModelProvider extends FacetInstallData
       String value = (String) getProperty(GAE_PROPERTY_APP_ID);
       if (value == null || value.trim().length() == 0) {
         return StatusUtilities.newWarningStatus(
-            "Please enter Application ID. You won't be able to deploy to Google without valid Application ID.",
+            "You won't be able to deploy to Google without valid Application ID.",
             AppEnginePlugin.PLUGIN_ID);
       }
     }

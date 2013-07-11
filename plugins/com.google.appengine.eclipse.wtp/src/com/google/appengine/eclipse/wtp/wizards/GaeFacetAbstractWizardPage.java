@@ -13,18 +13,30 @@
 package com.google.appengine.eclipse.wtp.wizards;
 
 import com.google.appengine.eclipse.core.AppEngineCorePlugin;
+import com.google.appengine.eclipse.core.preferences.GaePreferences;
 import com.google.appengine.eclipse.core.properties.GaeProjectProperties;
 import com.google.appengine.eclipse.core.resources.GaeImages;
+import com.google.appengine.eclipse.core.sdk.GaeSdk;
+import com.google.appengine.eclipse.core.sdk.GaeSdkCapability;
+import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
 import com.google.appengine.eclipse.wtp.properties.ui.DeployOptionsComponent;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
+import com.google.gdt.eclipse.core.StatusUtilities;
+import com.google.gdt.eclipse.core.sdk.SdkSet;
+import com.google.gdt.eclipse.core.sdk.SdkUtils;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.wst.common.componentcore.datamodel.FacetInstallDataModelProvider;
+import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetProjectCreationDataModelProperties;
 import org.eclipse.wst.common.frameworks.datamodel.AbstractDataModelProvider;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.frameworks.internal.datamodel.ui.DataModelWizardPage;
+import org.eclipse.wst.common.project.facet.core.runtime.IRuntime;
 import org.eclipse.wst.common.project.facet.ui.IFacetWizardPage;
 import org.eclipse.wst.common.project.facet.ui.IWizardContext;
 
@@ -77,6 +89,24 @@ abstract class GaeFacetAbstractWizardPage extends DataModelWizardPage implements
 
   protected void createDeployOptionsComponent(Composite composite) {
     deployOptionsComponent.createContents(composite);
+  }
+
+  protected final boolean isEarSupported() throws CoreException {
+    IDataModel dataModel = getDataModel();
+    IDataModel masterDataModel = (IDataModel) dataModel.getProperty(FacetInstallDataModelProvider.MASTER_PROJECT_DM);
+    IRuntime runtime = (IRuntime) masterDataModel.getProperty(IFacetProjectCreationDataModelProperties.FACET_RUNTIME);
+    if (runtime != null) {
+      IPath sdkLocation = ProjectUtils.getGaeSdkLocation(runtime);
+      if (sdkLocation != null) {
+        SdkSet<GaeSdk> sdks = GaePreferences.getSdkManager().getSdks();
+        GaeSdk sdk = SdkUtils.findSdkForInstallationPath(sdks, sdkLocation);
+        if (sdk != null) {
+          return sdk.getCapabilities().contains(GaeSdkCapability.EAR);
+        }
+      }
+    }
+    throw new CoreException(StatusUtilities.newErrorStatus(
+        "Invalid App Engine SDK or misconfigured runtime.", AppEnginePlugin.PLUGIN_ID));
   }
 
   @Override

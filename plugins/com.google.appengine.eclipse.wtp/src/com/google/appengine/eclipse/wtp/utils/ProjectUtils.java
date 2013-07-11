@@ -12,11 +12,15 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.utils;
 
-import com.google.appengine.eclipse.core.resources.GaeProject;
+import com.google.appengine.eclipse.core.preferences.GaePreferences;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
+import com.google.appengine.eclipse.core.sdk.GaeSdkCapability;
 import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
 import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
 import com.google.gdt.eclipse.core.DynamicWebProjectUtilities;
+import com.google.gdt.eclipse.core.XmlUtilities;
+import com.google.gdt.eclipse.core.sdk.SdkSet;
+import com.google.gdt.eclipse.core.sdk.SdkUtils;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -38,6 +42,9 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import org.eclipse.wst.common.project.facet.core.runtime.IRuntime;
 import org.eclipse.wst.common.project.facet.core.runtime.IRuntimeComponent;
 import org.eclipse.wst.common.project.facet.core.runtime.IRuntimeComponentType;
+import org.eclipse.wst.xml.core.internal.provisional.document.IDOMDocument;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -88,26 +95,28 @@ public final class ProjectUtils {
   }
 
   /**
-   * Reads and returns AppID associated with given project or <code>null</code> if not set.
+   * Reads and returns AppID associated with given project or empty string if not set or DD file is
+   * not found.
    */
   public static String getAppId(IProject project) throws CoreException {
     IFile ddFile = JavaEEProjectUtilities.isEARProject(project)
         ? getAppEngineApplicationXml(project) : getAppEngineWebXml(project);
     if (ddFile == null) {
-      return null;
+      return "";
     }
-    return GaeProject.getAppId(ddFile);
+    return getSingleElementValue(ddFile, "application");
   }
 
   /**
-   * Reads and returns App Version associated with given project or <code>null</code> if not set.
+   * Reads and returns App Version associated with given project or empty string if not set or DD
+   * file is not found.
    */
   public static String getAppVersion(IProject project) throws CoreException {
     IFile appEngineXmlFile = getAppEngineWebXml(project);
     if (appEngineXmlFile == null) {
-      return null;
+      return "";
     }
-    return GaeProject.getAppVersion(appEngineXmlFile);
+    return getSingleElementValue(appEngineXmlFile, "version");
   }
 
   /**
@@ -121,9 +130,35 @@ public final class ProjectUtils {
       if (primaryRuntime == null) {
         return null;
       }
-      return getSdkPath(primaryRuntime);
+      return getGaeSdkLocation(primaryRuntime);
     }
     return null;
+  }
+
+  /**
+   * Searches for {@link GaeSdk} location.
+   */
+  public static IPath getGaeSdkLocation(IRuntime primaryRuntime) {
+    for (IRuntimeComponent component : primaryRuntime.getRuntimeComponents()) {
+      IRuntimeComponentType type = component.getRuntimeComponentType();
+      if (GaeRuntime.GAE_RUNTIME_ID.equals(type.getId())) {
+        String location = component.getProperty("location");
+        return location == null ? null : new Path(location);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Reads and returns Module ID associated with given project or empty string if not set or DD file
+   * is not found.
+   */
+  public static String getModuleId(IProject project) throws CoreException {
+    IFile appEngineXmlFile = getAppEngineWebXml(project);
+    if (appEngineXmlFile == null) {
+      return "";
+    }
+    return getSingleElementValue(appEngineXmlFile, "module");
   }
 
   /**
@@ -138,17 +173,19 @@ public final class ProjectUtils {
   }
 
   /**
-   * Searches for {@link GaeSdk} location.
+   * Returns <code>true</code> if the project has the runtime which supports EAR, otherwise returns
+   * <code>false</code>. If GAE SDK is not found, returns <code>false</code>.
    */
-  public static IPath getSdkPath(IRuntime primaryRuntime) {
-    for (IRuntimeComponent component : primaryRuntime.getRuntimeComponents()) {
-      IRuntimeComponentType type = component.getRuntimeComponentType();
-      if (GaeRuntime.GAE_RUNTIME_ID.equals(type.getId())) {
-        String location = component.getProperty("location");
-        return location == null ? null : new Path(location);
+  public static boolean isEarSupported(IProject project) throws CoreException {
+    IPath sdkLocation = ProjectUtils.getGaeSdkLocation(project);
+    if (sdkLocation != null) {
+      SdkSet<GaeSdk> sdks = GaePreferences.getSdkManager().getSdks();
+      GaeSdk sdk = SdkUtils.findSdkForInstallationPath(sdks, sdkLocation);
+      if (sdk != null) {
+        return sdk.getCapabilities().contains(GaeSdkCapability.EAR);
       }
     }
-    return null;
+    return false;
   }
 
   /**
@@ -172,10 +209,66 @@ public final class ProjectUtils {
 
   /**
    * Sets given App ID into deployment descriptor file (appengine-web.xml or
-   * appengine-application.xml)
+   * appengine-application.xml).
    */
   public static void setAppId(IProject project, final String appId, boolean forceSave)
       throws IOException, CoreException {
+    setDeploymentDescriptorSingleValue(project, "application", appId, forceSave);
+  }
+
+  /**
+   * Sets given App Version into appengine-web.xml.
+   */
+  public static void setAppVersion(IProject project, final String appVersion, boolean forceSave)
+      throws IOException, CoreException {
+    IFile appEngineWebXml = getAppEngineWebXml(project);
+    if (appEngineWebXml == null) {
+      throw new FileNotFoundException("Could not find appengine-web.xml in project "
+          + project.getName());
+    }
+    setSingleElementValue(appEngineWebXml, "version", appVersion, forceSave);
+  }
+
+  /**
+   * Sets given Module ID into deployment appengine-web.xml.
+   */
+  public static void setModuleId(IProject project, final String moduleId, boolean forceSave)
+      throws IOException, CoreException {
+    IFile appEngineWebXml = getAppEngineWebXml(project);
+    if (appEngineWebXml == null) {
+      throw new FileNotFoundException("Could not find appengine-web.xml in project "
+          + project.getName());
+    }
+    setSingleElementValue(appEngineWebXml, "module", moduleId, forceSave);
+  }
+
+  /**
+   * Reads a value of tag which should be single document element.
+   */
+  private static String getSingleElementValue(IFile ddXml, final String tagName) {
+    final String[] textHolder = new String[] {""};
+    try {
+      new XmlUtilities.ReadOperation(ddXml) {
+        @Override
+        protected void read(IDOMDocument document) {
+          NodeList nodes = document.getDocumentElement().getElementsByTagName(tagName);
+          if (nodes.getLength() == 1) {
+            textHolder[0] = XmlUtilities.getElementText((Element) nodes.item(0));
+          }
+        }
+      }.run();
+      return textHolder[0];
+    } catch (Throwable e) {
+      // ignore errors
+      return "";
+    }
+  }
+
+  /**
+   * Searches for appropriate deployment descriptor and set a value for given tag.
+   */
+  private static void setDeploymentDescriptorSingleValue(IProject project, String tagName,
+      String tagValue, boolean forceSave) throws CoreException, FileNotFoundException, IOException {
     boolean isEar = JavaEEProjectUtilities.isEARProject(project);
     IFile ddFile = isEar ? getAppEngineApplicationXml(project) : getAppEngineWebXml(project);
     if (ddFile == null) {
@@ -183,20 +276,28 @@ public final class ProjectUtils {
           + (isEar ? "appengien-application.xml" : "appengine-web.xml") + " in project "
           + project.getName());
     }
-    GaeProject.setAppId(ddFile, appId, forceSave);
+    setSingleElementValue(ddFile, tagName, tagValue, forceSave);
   }
 
   /**
-   * Sets given App Version into appengine-web.xml
+   * Set a value for a tag which should be single document element. Attempts to create element if
+   * none found.
    */
-  public static void setAppVersion(IProject project, final String appId, boolean forceSave)
-      throws IOException, CoreException {
-    IFile appEngineWebXml = getAppEngineWebXml(project);
-    if (appEngineWebXml == null) {
-      throw new FileNotFoundException("Could not find appengine-web.xml in project "
-          + project.getName());
-    }
-    GaeProject.setAppVersion(appEngineWebXml, appId, forceSave);
+  private static void setSingleElementValue(IFile ddXml, final String tagName,
+      final String tagValue, boolean forceSave) throws IOException, CoreException {
+    new XmlUtilities.EditOperation(ddXml) {
+      @Override
+      protected void edit(IDOMDocument document) {
+        NodeList nodes = document.getDocumentElement().getElementsByTagName(tagName);
+        if (nodes.getLength() == 0) {
+          Element element = document.createElement(tagName);
+          document.getDocumentElement().appendChild(element);
+          XmlUtilities.setElementText(document, element, tagValue);
+        } else if (nodes.getLength() == 1) {
+          XmlUtilities.setElementText(document, (Element) nodes.item(0), tagValue);
+        }
+      }
+    }.run(forceSave);
   }
 
   /**

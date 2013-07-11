@@ -63,12 +63,23 @@ public final class AppEngineXmlCreateOperation extends GaeFileCreateOperation {
         throw new ExecutionException("Cannot set App Version.", e);
       }
     }
+    // setup module
+    String moduleId = dataModel.getStringProperty(IGaeFacetConstants.GAE_PROPERTY_MODULE_ID);
+    if (moduleId != null && moduleId.trim().length() > 0) {
+      try {
+        ProjectUtils.setModuleId(project, moduleId, true);
+      } catch (CoreException ce) {
+        return StatusUtilities.newErrorStatus(ce, AppEnginePlugin.PLUGIN_ID);
+      } catch (Throwable e) {
+        throw new ExecutionException("Cannot set Module ID.", e);
+      }
+    }
     return Status.OK_STATUS;
   }
 
   @Override
   protected InputStream getResourceContentsAsStream() throws CoreException {
-    // TODO: use GWT? Possibly get GWT boolean from dataModel (provided by GWT facet)?
+    // TODO(amitin): use GWT? Possibly get GWT boolean from dataModel (provided by GWT facet)?
     return GaeProjectResources.createAppEngineWebXmlSource(false);
   }
 }

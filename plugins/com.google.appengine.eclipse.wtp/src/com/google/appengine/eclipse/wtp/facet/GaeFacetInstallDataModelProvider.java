@@ -33,6 +33,8 @@ public final class GaeFacetInstallDataModelProvider extends
       return GAE_FACET_ID;
     } else if (propertyName.equals(GAE_PROPERTY_APP_ID)) {
       return "";
+    } else if (propertyName.equals(GAE_PROPERTY_MODULE_ID)) {
+      return "";
     } else if (propertyName.equals(GAE_PROPERTY_APP_VERSION)) {
       return "1";
     } else if (propertyName.equals(GAE_PROPERTY_CREATE_SAMPLE)) {
@@ -48,6 +50,7 @@ public final class GaeFacetInstallDataModelProvider extends
   public Set getPropertyNames() {
     Set propertyNames = super.getPropertyNames();
     propertyNames.add(GAE_PROPERTY_APP_VERSION);
+    propertyNames.add(GAE_PROPERTY_MODULE_ID);
     propertyNames.add(GAE_PROPERTY_CREATE_SAMPLE);
     propertyNames.add(GAE_PROPERTY_PACKAGE);
     return propertyNames;

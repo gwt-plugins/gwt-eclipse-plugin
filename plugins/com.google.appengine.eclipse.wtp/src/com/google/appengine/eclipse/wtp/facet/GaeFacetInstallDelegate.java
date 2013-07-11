@@ -139,7 +139,7 @@ public final class GaeFacetInstallDelegate implements IDelegate {
         }
       }
     } catch (ExecutionException e) {
-      // TODO: perform undo?
+      // TODO(amitin): perform undo?
       throw new CoreException(StatusUtilities.newErrorStatus(e, AppEnginePlugin.PLUGIN_ID));
     }
   }
@@ -184,7 +184,7 @@ public final class GaeFacetInstallDelegate implements IDelegate {
   private IPath getSdkLocation(IDataModel model) {
     IFacetedProjectWorkingCopy fpwc = (IFacetedProjectWorkingCopy) model.getProperty(IFacetDataModelProperties.FACETED_PROJECT_WORKING_COPY);
     IRuntime primaryRuntime = fpwc.getPrimaryRuntime();
-    return ProjectUtils.getSdkPath(primaryRuntime);
+    return ProjectUtils.getGaeSdkLocation(primaryRuntime);
   }
 
   /**

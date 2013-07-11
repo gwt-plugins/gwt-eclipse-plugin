@@ -12,7 +12,6 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.properties.ui;
 
-import com.google.appengine.eclipse.core.properties.ui.DeployComponent;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 import com.google.gdt.eclipse.core.StatusUtilities;
@@ -38,7 +37,11 @@ public final class DeployWebPropertiesPage extends DeployPropertiesPage {
 
   private DeployComponent deployComponent = new DeployComponent();
   private String currentAppId;
+  private String currentModuleId;
+
   private String currentVersion;
+
+  private boolean supportsEar;
 
   @Override
   protected Control createContents(Composite parent) {
@@ -51,17 +54,11 @@ public final class DeployWebPropertiesPage extends DeployPropertiesPage {
       @Override
       public void modifyText(ModifyEvent e) {
         validateInput();
-        deployComponent.setEnabled(true);
       }
     });
     createDeploymentOptionsComponent(composite);
 
     initializeValues();
-
-    // disable app id & deployment options if the project is part of EAR project.
-    boolean standaloneProject = EarUtilities.isStandaloneProject(getProject());
-    deployComponent.getAppIdTextControl().setEnabled(standaloneProject);
-    deployOptionsComponent.setEnabled(standaloneProject);
 
     return composite;
   }
@@ -75,9 +72,20 @@ public final class DeployWebPropertiesPage extends DeployPropertiesPage {
     try {
       IProject project = getProject();
       currentAppId = ProjectUtils.getAppId(project);
+      currentModuleId = ProjectUtils.getModuleId(project);
       currentVersion = ProjectUtils.getAppVersion(project);
       deployComponent.setAppIdText(currentAppId);
       deployComponent.setVersionText(currentVersion);
+      deployComponent.setModuleIdText(currentModuleId);
+      // EAR
+      supportsEar = ProjectUtils.isEarSupported(project);
+      deployComponent.setEarSupported(supportsEar);
+      if (supportsEar) {
+        // disable app id & deployment options if the project is part of EAR project.
+        boolean standaloneProject = EarUtilities.isStandaloneProject(getProject());
+        deployComponent.setUsingEar(!standaloneProject);
+        deployOptionsComponent.setEnabled(standaloneProject);
+      }
     } catch (CoreException e) {
       AppEnginePlugin.logMessage(e);
     }
@@ -85,10 +93,10 @@ public final class DeployWebPropertiesPage extends DeployPropertiesPage {
 
   @Override
   protected void saveProjectProperties() throws Exception {
-    // save App ID & Version into appengine-web.xml
-    // TODO: if this project is a part of EAR GAE project consider saving project properties into
-    // EAR project instead, since app id & deployment options are taken from EAR project and this
-    // project properties are ignored
+    // save App ID, Version & Module into appengine-web.xml
+    // TODO(amitin): if this project is a part of EAR GAE project consider saving project
+    // properties into EAR project instead, since app id & deployment options are taken from EAR
+    // project and this project properties are ignored
     // The problem is that this project can be part of more than one EAR projects.
     IProject project = getProject();
     String appId = deployComponent.getAppId();
@@ -98,6 +106,10 @@ public final class DeployWebPropertiesPage extends DeployPropertiesPage {
     String version = deployComponent.getVersion();
     if (!version.equals(currentVersion)) {
       ProjectUtils.setAppVersion(project, version, true);
+    }
+    String moduleId = deployComponent.getModuleId();
+    if (!moduleId.equals(currentModuleId) && supportsEar) {
+      ProjectUtils.setModuleId(project, moduleId, true);
     }
     super.saveProjectProperties();
   }
@@ -131,10 +143,29 @@ public final class DeployWebPropertiesPage extends DeployPropertiesPage {
     try {
       IStatus appIdStatus = validateAppId();
       IStatus versionStatus = validateVersion();
-      updateStatus(appIdStatus, versionStatus);
+      IStatus moduleIdStatus = validateModuleId();
+      updateStatus(appIdStatus, versionStatus, moduleIdStatus);
     } catch (CoreException e) {
       updateStatus(StatusUtilities.newErrorStatus(e, AppEnginePlugin.PLUGIN_ID));
     }
+  }
+
+  /**
+   * Do validate module ID.
+   */
+  private IStatus validateModuleId() throws CoreException {
+    if (!supportsEar) {
+      return StatusUtilities.OK_STATUS;
+    }
+    String enteredModuleId = deployComponent.getModuleId();
+    if (enteredModuleId.length() > 0) {
+      IFile appEngineWebXml = ProjectUtils.getAppEngineWebXml(getProject());
+      if (!appEngineWebXml.exists()) {
+        return StatusUtilities.newErrorStatus(
+            "Cannot set module ID (appengine-web.xml is missing)", AppEnginePlugin.PLUGIN_ID);
+      }
+    }
+    return StatusUtilities.OK_STATUS;
   }
 
   /**
