@@ -817,7 +817,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     return false;
   }
 
-  private void openBrowser(String url) {
+  private static void openBrowser(String url) {
     BrowserUtilities.launchBrowserAndHandleExceptions(url);
   }
 
