@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.wst.common.project.facet.core.listeners">
+      <listener
+            class="com.google.appengine.eclipse.webtools.facet.listeners.FacetInstallListener"
+            eventTypes="POST_INSTALL">
+      </listener>
+   </extension>
+   <extension
+         point="com.google.gdt.eclipse.core.updateQueryArgContributor">
+      <updateQueryArgContributor
+            class="com.google.appengine.eclipse.webtools.update.WebtoolsUpdateQueryArgContributor">
+      </updateQueryArgContributor>
+   </extension>
+
+</plugin>

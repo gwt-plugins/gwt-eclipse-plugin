@@ -5,11 +5,7 @@ Bundle-SymbolicName: com.google.gdt.eclipse.platform;singleton:=true
 Bundle-Version: 0.0.0.qualifier
 Bundle-Vendor: %providerName
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: com.google.gdt.eclipse.platform.e33;resolution:=optional;visibility:=reexport,
- com.google.gdt.eclipse.platform.e34;resolution:=optional;visibility:=reexport,
- com.google.gdt.eclipse.platform.e35;resolution:=optional;visibility:=reexport,
- com.google.gdt.eclipse.platform.e36;resolution:=optional;visibility:=reexport,
- com.google.gdt.eclipse.platform.e37;resolution:=optional;visibility:=reexport,
+Require-Bundle: com.google.gdt.eclipse.platform.e37;resolution:=optional;visibility:=reexport,
  com.google.gdt.eclipse.platform.e42;resolution:=optional;visibility:=reexport,
  org.eclipse.swt
 Export-Package: com.google.gdt.eclipse.platform.ui
