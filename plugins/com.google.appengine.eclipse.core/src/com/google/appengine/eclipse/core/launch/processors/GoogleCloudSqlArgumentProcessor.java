@@ -48,8 +48,10 @@ public class GoogleCloudSqlArgumentProcessor implements
       IJavaProject javaProject, List<String> programArgs, List<String> vmArgs) {
     removeSqlConfigurations(javaProject, vmArgs);
 
-    boolean usingGoogleCloudSql = GoogleCloudSqlProperties.getGoogleCloudSqlEnabled(javaProject.getProject());
-    boolean localDevMySqlEnabled = GoogleCloudSqlProperties.getLocalDevMySqlEnabled(javaProject.getProject());
+    boolean usingGoogleCloudSql =
+        GoogleCloudSqlProperties.getGoogleCloudSqlEnabled(javaProject.getProject());
+    boolean localDevMySqlEnabled =
+        GoogleCloudSqlProperties.getLocalDevMySqlEnabled(javaProject.getProject());
     if (usingGoogleCloudSql && GaeNature.isGaeProject(javaProject.getProject())) {
       if (localDevMySqlEnabled) {
         updateMySqlLaunchCongiguration(launchConfig, javaProject, programArgs,
@@ -66,13 +68,13 @@ public class GoogleCloudSqlArgumentProcessor implements
     return null;
   }
 
-  private void remove(List<String> vmArgs, String argument) {
+  private static void remove(List<String> vmArgs, String argument) {
     int argIndex = StringUtilities.indexOfThatStartsWith(vmArgs, argument, 0);
     LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(
         vmArgs, argIndex, true);
   }
 
-  private void removeSqlConfigurations(IJavaProject javaProject,
+  private static void removeSqlConfigurations(IJavaProject javaProject,
       List<String> vmArgs) {
     remove(vmArgs, ARG_RDBMS_SERVER);
     remove(vmArgs, ARG_RDBMS_EXTRA_PROPERTIES);
@@ -85,7 +87,7 @@ public class GoogleCloudSqlArgumentProcessor implements
     remove(vmArgs, ARG_RDBMS_PASSWORD);
   }
 
-  private void updateGoogleCloudSqlLaunchCongiguration(
+  private static void updateGoogleCloudSqlLaunchCongiguration(
       ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject,
       List<String> programArgs, List<String> vmArgs) {
     String password = GoogleCloudSqlProperties.getTestDatabasePassword(javaProject.getProject());
@@ -102,7 +104,7 @@ public class GoogleCloudSqlArgumentProcessor implements
     vmArgs.add(0, ARG_RDBMS_PASSWORD + "\"" + password + "\"");
   }
 
-  private void updateMySqlLaunchCongiguration(
+  private static void updateMySqlLaunchCongiguration(
       ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject,
       List<String> programArgs, List<String> vmArgs) {
 

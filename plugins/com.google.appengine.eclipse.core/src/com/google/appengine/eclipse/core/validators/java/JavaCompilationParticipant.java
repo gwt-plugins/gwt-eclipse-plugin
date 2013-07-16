@@ -83,7 +83,8 @@ public class JavaCompilationParticipant extends CompilationParticipant {
       return Collections.emptyList();
     }
 
-    List<IPath> validationExclusionPatterns = GaeProjectProperties.getValidationExclusionPatterns(cu.getJavaProject().getProject());
+    List<IPath> validationExclusionPatterns =
+        GaeProjectProperties.getValidationExclusionPatterns(cu.getJavaProject().getProject());
     char[][] exclusionPatterns = null;
     if (!validationExclusionPatterns.isEmpty()) {
       exclusionPatterns = new char[validationExclusionPatterns.size()][];
@@ -161,6 +162,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
     return GaeNature.isGaeProject(project.getProject());
   }
 
+  @SuppressWarnings("deprecation") // ReconcileContext.getAST3()
   @Override
   public void reconcile(ReconcileContext context) {
     ICompilationUnit cu = context.getWorkingCopy();
@@ -169,6 +171,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
       CompilationUnit ast = null;
 
       try {
+        // TODO(nhcohen): ReconcileContext.getAST3() is deprecated; use ReconcileContext.getAST4().
         ast = context.getAST3();
       } catch (JavaModelException e) {
         // Fall through to null check below
@@ -180,7 +183,8 @@ public class JavaCompilationParticipant extends CompilationParticipant {
 
       // Add existing Java problems to the list of all problems
       ArrayList<CategorizedProblem> finalProblemSet = new ArrayList<CategorizedProblem>();
-      CategorizedProblem[] currentProblems = context.getProblems(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER);
+      CategorizedProblem[] currentProblems =
+          context.getProblems(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER);
       if (currentProblems != null) {
         finalProblemSet.addAll(Arrays.asList(currentProblems));
       }
@@ -203,6 +207,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
     }
   }
 
+  @SuppressWarnings("deprecation") // AST.JLS3
   private void handleBuildStarting(BuildContext[] files,
       IProgressMonitor monitor) {
     for (BuildContext context : files) {
@@ -235,10 +240,12 @@ public class JavaCompilationParticipant extends CompilationParticipant {
            * the AST we get back for validation.
            */
           if (!cu.isConsistent()) {
+            // TODO(nhcohen): AST.JSL3 is deprecated; use AST.JSL4 instead.
             ast = cu.reconcile(AST.JLS3, true, null, null);
             assert (cu.isConsistent());
           } else {
             // Have JDT parse the compilation unit
+            // TODO(nhcohen): AST.JSL3 is deprecated; use AST.JSL4 instead.
             ASTParser parser = ASTParser.newParser(AST.JLS3);
 
             // TODO: Note I will resolve type bindings for now, but I might

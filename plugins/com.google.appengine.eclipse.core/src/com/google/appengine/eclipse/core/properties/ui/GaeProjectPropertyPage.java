@@ -139,10 +139,12 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     }
   }
 
-  public static final String APPENGINE_GOOGLE_CLOUD_SQL_URL = "https://code.google.com/apis/sql/docs/developers_guide_java.html";
+  public static final String APPENGINE_GOOGLE_CLOUD_SQL_URL =
+      "https://code.google.com/apis/sql/docs/developers_guide_java.html";
 
   // TODO: read from .properties file
-  public static final String APPENGINE_LOCAL_HRD_URL = "http://code.google.com/appengine/docs/java/datastore/hr/overview.html";
+  public static final String APPENGINE_LOCAL_HRD_URL =
+      "http://code.google.com/appengine/docs/java/datastore/hr/overview.html";
 
   public static final String ID = AppEngineCorePlugin.PLUGIN_ID + ".gaeProjectPropertyPage";
 
@@ -722,7 +724,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
         .getFirstElement();
   }
 
-  private String getJdoConfigValue(boolean v1) {
+  private static String getJdoConfigValue(boolean v1) {
     if (v1) {
       return "org.datanucleus.store.appengine.jdo.DatastoreJDOPersistenceManagerFactory";
     } else {
@@ -730,7 +732,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     }
   }
 
-  private String getPersitenceValue(boolean v1) {
+  private static String getPersitenceValue(boolean v1) {
     if (v1) {
       return "org.datanucleus.store.appengine.jpa.DatastorePersistenceProvider";
     } else {
@@ -805,7 +807,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
   }
 
   // TODO: This check should be extracted out to com.google.gdt.eclipse.core
-  private boolean isGWTProject(IProject project) {
+  private static boolean isGWTProject(IProject project) {
     try {
       return project.isAccessible()
           && project.hasNature("com.google.gwt.eclipse.core.GWTPlugin.gwtNature");
@@ -819,7 +821,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     BrowserUtilities.launchBrowserAndHandleExceptions(url);
   }
 
-  private Document parseXML(String path) {
+  private static Document parseXML(String path) {
     Document document = null;
     try {
       DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -1040,7 +1042,6 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
         AppEngineCorePluginLog.logError("jdoconfig.xml is invalid. left unaltered.");
         return;
       }
-      boolean singletonPMFForNameEncountered = false;
       boolean v1 = datanucleusVersion.isEmpty() || datanucleusVersion.compareTo("v1") == 0;
       for (int i = 0; i < nodes.getLength(); ++i) {
         Node node = nodes.item(i);
@@ -1220,7 +1221,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     return StatusUtilities.OK_STATUS;
   }
 
-  private void writeXML(Document document, String path) {
+  private static void writeXML(Document document, String path) {
     try {
       Transformer transformer = TransformerFactory.newInstance().newTransformer();
       transformer.setOutputProperty(OutputKeys.INDENT, "yes");

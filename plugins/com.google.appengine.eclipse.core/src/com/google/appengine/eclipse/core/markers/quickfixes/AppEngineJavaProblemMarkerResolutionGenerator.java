@@ -40,7 +40,8 @@ public class AppEngineJavaProblemMarkerResolutionGenerator extends
     List<IJavaCompletionProposal> proposals = new ArrayList<IJavaCompletionProposal>();
 
     for (IProblemLocation problem : locations) {
-      AppEngineProblemType problemType = AppEngineProblemType.getProblemType(problem.getProblemId());
+      AppEngineProblemType problemType =
+          AppEngineProblemType.getProblemType(problem.getProblemId());
       if (problemType == null) {
         continue;
       }
@@ -56,6 +57,8 @@ public class AppEngineJavaProblemMarkerResolutionGenerator extends
         case WRONG_JDBC_URL:
           IJavaProject javaProject = context.getCompilationUnit().getJavaProject();
           proposals.add(new UrlCorrectionProposal(javaProject, problem, 100));
+          break;
+        default:
           break;
       }
     }

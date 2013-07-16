@@ -99,9 +99,10 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
 
   private IJavaProject javaProject;
 
-  @SuppressWarnings("unchecked")
   @Override
-  protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
+  // Overrides an Eclipse API method with a raw parameter type
+  protected IProject[] build(
+      int kind, @SuppressWarnings("rawtypes") Map args, IProgressMonitor monitor)
       throws CoreException {
     IProject project = getProject();
     if (project == null || !project.isAccessible()) {
@@ -121,7 +122,8 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
       return null;
     }
 
-    List<IPath> inclusionPatternsList = GaeProjectProperties.getOrmEnhancementInclusionPatterns(javaProject.getProject());
+    List<IPath> inclusionPatternsList =
+        GaeProjectProperties.getOrmEnhancementInclusionPatterns(javaProject.getProject());
     if (inclusionPatternsList.isEmpty()) {
       return null;
     } else {
@@ -149,7 +151,7 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
     return null;
   }
 
-  private String computeEnhancementPathFromClassFile(IResource classFile) {
+  private static String computeEnhancementPathFromClassFile(IResource classFile) {
     return classFile.getLocation().toOSString();
   }
 

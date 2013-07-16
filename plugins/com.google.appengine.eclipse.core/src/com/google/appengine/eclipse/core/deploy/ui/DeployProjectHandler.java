@@ -129,7 +129,7 @@ public class DeployProjectHandler extends AbstractHandler {
     return null;
   }
 
-  private boolean shouldDeploy(GaeProject gaeProject) {
+  private static boolean shouldDeploy(GaeProject gaeProject) {
     IStatus status = gaeProject.getDeployableStatus();
     if (status.getSeverity() == IStatus.ERROR) {
       MessageDialog.openError(Display.getDefault().getActiveShell(),

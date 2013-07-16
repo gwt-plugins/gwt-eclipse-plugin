@@ -66,9 +66,10 @@ public class GaeProjectValidator extends AbstractProjectValidator {
   public static final String PROBLEM_MARKER_ID = AppEngineCorePlugin.PLUGIN_ID
       + ".problemMarker";
 
-  @SuppressWarnings("unchecked")
   @Override
-  protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
+  // Overrides an Eclipse API method with a raw parameter type
+  protected IProject[] build(
+      int kind, @SuppressWarnings("rawtypes") Map args, IProgressMonitor monitor)
       throws CoreException {
 
     // Clear existing markers.
@@ -177,8 +178,7 @@ public class GaeProjectValidator extends AbstractProjectValidator {
     return true;
   }
 
-  @SuppressWarnings("unchecked")
-  private boolean validateUsingJava16OrNewer(IJavaProject javaProject)
+  private static boolean validateUsingJava16OrNewer(IJavaProject javaProject)
       throws CoreException {
     IVMInstall3 vm = (IVMInstall3) JavaRuntime.getVMInstall(javaProject);
     if (vm == null) {
@@ -221,7 +221,7 @@ public class GaeProjectValidator extends AbstractProjectValidator {
     return true;
   }
 
-  private boolean validateUsingJDKifUsingJSPs(IFolder warFolder,
+  private static boolean validateUsingJDKifUsingJSPs(IFolder warFolder,
       IJavaProject javaProject) throws CoreException {
 
     boolean isProjectUsingJdk = ProcessUtilities.isUsingJDK(javaProject);

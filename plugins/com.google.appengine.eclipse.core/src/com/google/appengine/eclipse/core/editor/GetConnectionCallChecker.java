@@ -49,8 +49,6 @@ public class GetConnectionCallChecker {
       AppEngineCorePluginLog.logError(e, "Bad location exception while getting the cursor region");
       return null;
     }
-    
-    int stringStartPos = -1;
 
     int token = -1; 
     while (token != ITerminalSymbols.TokenNameEOF) {

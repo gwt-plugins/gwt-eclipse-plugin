@@ -40,6 +40,7 @@ import org.osgi.service.prefs.BackingStoreException;
 /**
  * Dialog box to configure the Google Cloud SQL Service for test or prod.
  */
+@SuppressWarnings("restriction") // org.eclipse.debug.internal.ui.SWTFactory
 public class GoogleCloudSqlConfigure extends StatusDialog {
 
   private static final int TEXT_WIDTH = 220;

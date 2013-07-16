@@ -45,7 +45,10 @@ public class CloudEndpointsBuilder extends IncrementalProjectBuilder {
   private boolean appEngineWebXmlChanged = false;
   private boolean classFileChanged = false;
 
-  protected IProject[] build(int kind, Map args, IProgressMonitor monitor) {
+  @Override
+  // Overrides an Eclipse API method with a raw parameter type
+  protected IProject[] build(
+      int kind, @SuppressWarnings("rawtypes") Map args, IProgressMonitor monitor) {
     IResourceDelta delta = null;
     appEngineWebXmlChanged = false;
     classFileChanged = false;
@@ -86,8 +89,9 @@ public class CloudEndpointsBuilder extends IncrementalProjectBuilder {
     if (!classFileChanged && !appEngineWebXmlChanged) {
       return null;
     }
-    ExtensionQuery<GaeProjectChangeExtension> extQuery = new ExtensionQuery<GaeProjectChangeExtension>(
-        AppEngineCorePlugin.PLUGIN_ID, "gaeProjectChange", "class");
+    ExtensionQuery<GaeProjectChangeExtension> extQuery =
+        new ExtensionQuery<GaeProjectChangeExtension>(
+            AppEngineCorePlugin.PLUGIN_ID, "gaeProjectChange", "class");
     List<ExtensionQuery.Data<GaeProjectChangeExtension>> contributors = extQuery.getData();
     for (ExtensionQuery.Data<GaeProjectChangeExtension> c : contributors) {
       GaeProjectChangeExtension data = c.getExtensionPointData();

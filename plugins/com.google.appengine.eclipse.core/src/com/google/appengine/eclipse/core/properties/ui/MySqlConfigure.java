@@ -50,6 +50,7 @@ import org.osgi.service.prefs.BackingStoreException;
 /**
  * Dialog box to configure MySQL instance for local development.
  */
+@SuppressWarnings("restriction") // org.eclipse.debug.internal.ui.SWTFactory
 public class MySqlConfigure extends StatusDialog {
 
   private static final String[] JDBC_FILE_FILTER_EXTENSIONS = new String[] {"*.jar"};

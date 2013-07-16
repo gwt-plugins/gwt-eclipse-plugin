@@ -63,9 +63,9 @@ public class FileFilterPatternsBlock {
     }
   }
 
-  private class PatternsListSelectionAdapter implements IListAdapter {
+  private class PatternsListSelectionAdapter implements IListAdapter<IPath> {
 
-    public void customButtonPressed(ListDialogField field, int index) {
+    public void customButtonPressed(ListDialogField<IPath> field, int index) {
       if (index == IDX_ADD) {
         addEntry(field);
       } else if (index == IDX_EDIT) {
@@ -75,11 +75,11 @@ public class FileFilterPatternsBlock {
       }
     }
 
-    public void doubleClicked(ListDialogField field) {
+    public void doubleClicked(ListDialogField<IPath> field) {
       editEntry(field);
     }
 
-    public void selectionChanged(ListDialogField field) {
+    public void selectionChanged(ListDialogField<IPath> field) {
       field.enableButton(IDX_EDIT, (field.getSelectedElements().size() == 1));
     }
   }
@@ -94,7 +94,7 @@ public class FileFilterPatternsBlock {
 
   private final boolean isExclusions;
 
-  private ListDialogField patternsField;
+  private ListDialogField<IPath> patternsField;
 
   private final IProject project;
 
@@ -110,12 +110,11 @@ public class FileFilterPatternsBlock {
     initializeControls(initialPatterns);
   }
 
-  @SuppressWarnings("unchecked")
   public List<IPath> getPatterns() {
     return patternsField.getElements();
   }
 
-  private void addEntry(ListDialogField field) {
+  private void addEntry(ListDialogField<IPath> field) {
     FileFilterPatternDialog dialog = new FileFilterPatternDialog(shell,
         project, isExclusions, null);
     if (dialog.open() == Window.OK) {
@@ -123,7 +122,7 @@ public class FileFilterPatternsBlock {
     }
   }
 
-  private void addMultipleEntries(ListDialogField field) {
+  private void addMultipleEntries(ListDialogField<IPath> field) {
     String title = (isExclusions ? "Exclusion" : "Inclusion") + " Selection";
     String message = "Choose files or folders to "
         + (isExclusions ? "exclude" : "include") + ":";
@@ -143,7 +142,7 @@ public class FileFilterPatternsBlock {
         "Add...", "Add Multiple...", "Edit...", null
         /* null give us a little extra space before "Remove" */, "Remove"};
 
-    patternsField = new ListDialogField(new PatternsListSelectionAdapter(),
+    patternsField = new ListDialogField<IPath>(new PatternsListSelectionAdapter(),
         addButtons, new PatternsListLabelProvider());
 
     patternsField.enableButton(IDX_EDIT, false);
@@ -159,7 +158,7 @@ public class FileFilterPatternsBlock {
     patternsField.getListControl(parent).setLayoutData(layoutData);
   }
 
-  private void editEntry(ListDialogField field) {
+  private void editEntry(ListDialogField<IPath> field) {
     IPath entry = (IPath) patternsField.getSelectedElements().get(0);
     FileFilterPatternDialog dialog = new FileFilterPatternDialog(shell,
         project, isExclusions, entry);

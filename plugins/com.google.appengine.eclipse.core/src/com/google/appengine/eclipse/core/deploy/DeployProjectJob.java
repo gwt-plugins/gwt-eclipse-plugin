@@ -115,6 +115,7 @@ public class DeployProjectJob extends WorkspaceJob {
     // just send the data to our dummy output stream that ignores all incoming
     // bytes (this eliminates the need for null checks every time we wrap the
     // log stream with a PrintWriter)
+    @SuppressWarnings("resource") // NullOutputStream.close() is a no-op.
     OutputStream logStream = (logFile != null ? createFileStream(logFile)
         : new NullOutputStream());
 
@@ -143,7 +144,8 @@ public class DeployProjectJob extends WorkspaceJob {
           consoleOutputStream,
           logStream,
           ProcessUtilities.computeJavaExecutableFullyQualifiedPath(gaeProject.getJavaProject()),
-          ProcessUtilities.computeJavaCompilerExecutableFullyQualifiedPath(gaeProject.getJavaProject()));
+          ProcessUtilities.computeJavaCompilerExecutableFullyQualifiedPath(
+              gaeProject.getJavaProject()));
 
       status = bridge.deploy(monitor, options);
       if (status.getSeverity() == IStatus.CANCEL || monitor.isCanceled()) {

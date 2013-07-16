@@ -39,6 +39,7 @@ import java.util.List;
 /**
  * Computer for auto completing a JDBC URL string based on the Google Cloud SQL preferences.
  */
+@SuppressWarnings("restriction") // JavaCompletionProposal
 public class SqlJdbcUrlCompletionComputer implements IJavaCompletionProposalComputer {
 
   private static final List<ICompletionProposal> NO_PROPOSALS = Collections.emptyList();

@@ -20,13 +20,13 @@ import com.google.appengine.eclipse.core.AppEngineCorePluginLog;
 
 import org.eclipse.jdt.internal.ui.text.java.JavaCompletionProposal;
 import org.eclipse.jdt.ui.text.java.ContentAssistInvocationContext;
-import org.eclipse.jdt.ui.text.java.JavaContentAssistInvocationContext;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
 /**
  * Completes a string in the editor based on the current cursor position.
  */
+@SuppressWarnings("restriction") // JavaCompletionProposal
 public class StringCompletionProposer {
 
   ContentAssistInvocationContext context;
@@ -83,8 +83,6 @@ public class StringCompletionProposer {
    * Gets the string need to be completed by looking at already typed string 
    */
   public String getPrefixToComplete(String proposal, int completionTriggerInt) {
-    JavaContentAssistInvocationContext assistContext = (JavaContentAssistInvocationContext) context;
-    
     // Find the length of the string before invocation point relevant to us.
     int strBeforeOffsetLength = proposal.length();
     

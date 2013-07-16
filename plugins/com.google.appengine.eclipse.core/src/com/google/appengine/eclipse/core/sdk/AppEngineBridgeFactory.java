@@ -65,7 +65,8 @@ public class AppEngineBridgeFactory {
     }
   }
 
-  private static final Map<IPath, BridgeCacheEntry> pathToBridgeCacheEntryMap = new HashMap<IPath, BridgeCacheEntry>();
+  private static final Map<IPath, BridgeCacheEntry> pathToBridgeCacheEntryMap =
+      new HashMap<IPath, BridgeCacheEntry>();
 
   public static synchronized AppEngineBridge getAppEngineBridge(
       IPath sdkLocation) throws CoreException {
@@ -173,13 +174,17 @@ public class AppEngineBridgeFactory {
        * SDK which simply looks in its surrounding directories. See CL/20212038
        */
       if (doSetSdkRoot) {
-        Class<?> sdkInfoClass = bridgeClassLoader.loadClass("com.google.appengine.tools.info.SdkInfo");
+        Class<?> sdkInfoClass =
+            bridgeClassLoader.loadClass("com.google.appengine.tools.info.SdkInfo");
         Method setSdkRoot = sdkInfoClass.getMethod("setSdkRoot", File.class);
         Object sdkInfo = sdkInfoClass.newInstance();
         setSdkRoot.invoke(sdkInfo, sdkLocation.toFile());
       }
 
-      Class<?> clazz = bridgeClassLoader.loadClass("com.google.appengine.eclipse.core.proxy.AppEngineBridgeImpl");
+      Class<?> clazz =
+          bridgeClassLoader.loadClass(
+              "com.google.appengine.eclipse.core.proxy.AppEngineBridgeImpl");
+      bridgeClassLoader.close();
       AppEngineBridge bridge = (AppEngineBridge) clazz.newInstance();
       return bridge;
     } catch (Throwable e) {

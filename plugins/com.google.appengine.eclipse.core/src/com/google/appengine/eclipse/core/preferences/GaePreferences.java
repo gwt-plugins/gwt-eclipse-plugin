@@ -31,6 +31,7 @@ import com.google.gdt.eclipse.core.sdk.SdkSet;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -52,7 +53,8 @@ public final class GaePreferences {
     sdkManager.addSdkUpdateListener(new SdkManager.SdkUpdateListener<GaeSdk>() {
 
       public void onSdkUpdate(SdkUpdateEvent<GaeSdk> sdkUpdateEvent) throws CoreException {
-        IJavaProject[] projects = JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
+        IJavaProject[] projects =
+            JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
 
         SdkManager<GaeSdk>.SdkUpdateEventProcessor sdkUpdateEventProcessor = GaePreferences.
             sdkManager.new SdkUpdateEventProcessor(
@@ -95,6 +97,9 @@ public final class GaePreferences {
     return getSdks().getDefault();
   }
 
+  @SuppressWarnings("deprecation")
+  // TODO(nhcohen): Replace the use of the deprecated method Plugin.getPluginPreferences,
+  // as described in the javadoc for that method.
   public static String getDeployEmailAddress() {
     return AppEngineCorePlugin.getDefault().getPluginPreferences().getString(
         GaePreferenceConstants.DEPLOY_EMAIL_ADDRESS);
@@ -115,6 +120,9 @@ public final class GaePreferences {
     getSdks().setDefault(sdk);
   }
 
+  @SuppressWarnings("deprecation")
+  // TODO(nhcohen): Replace the use of the deprecated method Plugin.getPluginPreferences,
+  // as described in the javadoc for that method.
   public static void setDeployEmailAddress(String address) {
     assert (address != null);
     AppEngineCorePlugin.getDefault().getPluginPreferences().setValue(
@@ -134,7 +142,7 @@ public final class GaePreferences {
   }
 
   private static IEclipsePreferences getEclipsePreferences() {
-    InstanceScope scope = new InstanceScope();
+    IScopeContext scope = InstanceScope.INSTANCE;
     IEclipsePreferences workspacePrefs = scope.getNode(AppEngineCorePlugin.PLUGIN_ID);
     return workspacePrefs;
   }

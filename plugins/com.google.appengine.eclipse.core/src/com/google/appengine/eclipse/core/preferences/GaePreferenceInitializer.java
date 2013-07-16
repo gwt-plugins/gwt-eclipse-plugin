@@ -22,12 +22,15 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 /**
  * Sets the default preferences values.
  */
+@SuppressWarnings("deprecation") // org.eclipse.core.runtime.Preferences
 public class GaePreferenceInitializer extends AbstractPreferenceInitializer {
 
   public GaePreferenceInitializer() {
   }
 
   @Override
+  // TODO(nhcohen): Replace the use of the deprecated class Preferences with the use of
+  // IEclipsePreferences, as described in the javadoc for org.eclipse.core.runtime.Preferences.
   public void initializeDefaultPreferences() {
     Preferences prefs = AppEngineCorePlugin.getDefault().getPluginPreferences();
     prefs.setDefault(GaePreferenceConstants.DEPLOY_EMAIL_ADDRESS, "");
