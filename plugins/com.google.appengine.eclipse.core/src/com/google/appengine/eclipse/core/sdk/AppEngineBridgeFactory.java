@@ -184,7 +184,8 @@ public class AppEngineBridgeFactory {
       Class<?> clazz =
           bridgeClassLoader.loadClass(
               "com.google.appengine.eclipse.core.proxy.AppEngineBridgeImpl");
-      bridgeClassLoader.close();
+      // TODO(nhcohen): Uncomment the following line after Pulse advances to JDK7:
+      // bridgeClassLoader.close();
       AppEngineBridge bridge = (AppEngineBridge) clazz.newInstance();
       return bridge;
     } catch (Throwable e) {
