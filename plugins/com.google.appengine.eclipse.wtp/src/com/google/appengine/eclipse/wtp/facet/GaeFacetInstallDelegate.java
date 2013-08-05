@@ -30,7 +30,9 @@ import com.google.gdt.eclipse.core.StatusUtilities;
 import com.google.gdt.eclipse.core.StringUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkSet;
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
-import com.google.gdt.eclipse.managedapis.ui.ApiImportProjectHandler;
+import com.google.gdt.eclipse.managedapis.ManagedApiPlugin;
+import com.google.gdt.eclipse.managedapis.ui.ApiImportWizard;
+import com.google.gdt.eclipse.managedapis.ui.JavaProjectCheckDialog;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
@@ -39,6 +41,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jst.j2ee.project.JavaEEProjectUtilities;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetDataModelProperties;
@@ -154,12 +157,26 @@ public final class GaeFacetInstallDelegate implements IDelegate {
         @Override
         public void run() {
           try {
-            ApiImportProjectHandler.openImportWizard(project);
+            openManagedApisImportWizard(project);
           } catch (CoreException e) {
             AppEnginePlugin.logMessage(e);
           }
         }
       });
+    }
+  }
+
+  /**
+   * Opens Import Managed API Wizard.
+   */
+  protected void openManagedApisImportWizard(IProject project) throws CoreException {
+    if (JavaProjectCheckDialog.canAddGoogleApi(project)) {
+      ApiImportWizard wizard = new ApiImportWizard();
+      wizard.setProject(project);
+      wizard.setResources(ManagedApiPlugin.getDefault().getResources());
+      WizardDialog dialog = new WizardDialog(Display.getDefault().getActiveShell(), wizard);
+      dialog.setMinimumPageSize(wizard.getPreferredPageSize());
+      dialog.open();
     }
   }
 
