@@ -21,6 +21,8 @@ public interface IGaeFacetConstants {
   static final String GAE_PROPERTY_APP_VERSION = GAE_FACET_ID + ".property.app.version";
   static final String GAE_PROPERTY_MODULE_ID = GAE_FACET_ID + ".property.module.id";
   static final String GAE_PROPERTY_CREATE_SAMPLE = GAE_FACET_ID + ".property.createSample";
+  static final String GAE_PROPERTY_OPEN_IMPORT_API_WIZARD = GAE_FACET_ID
+      + ".property.openImportApiWizard";
   static final String GAE_PROPERTY_PACKAGE = GAE_FACET_ID + ".property.package";
   static final String GAE_PROPERTY_ENABLE_JAR_SPLITTING = ".property.enableJarSplitting";
   static final String GAE_PROPERTY_DO_JAR_CLASSES = ".property.jarClasses";

@@ -28,7 +28,11 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jst.common.project.facet.core.ClasspathHelper;
+import org.eclipse.jst.j2ee.classpathdep.ClasspathDependencyUtil;
 import org.eclipse.jst.j2ee.internal.J2EEConstants;
 import org.eclipse.jst.j2ee.project.JavaEEProjectUtilities;
 import org.eclipse.wst.common.componentcore.ComponentCore;
@@ -38,6 +42,7 @@ import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
+import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import org.eclipse.wst.common.project.facet.core.runtime.IRuntime;
 import org.eclipse.wst.common.project.facet.core.runtime.IRuntimeComponent;
@@ -48,12 +53,28 @@ import org.w3c.dom.NodeList;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
 
 /**
  * Utility methods to work with {@link IProject} representing GAE WTP project.
  */
 @SuppressWarnings("restriction")
 public final class ProjectUtils {
+  /**
+   * Creates and adds into the project a new classpath container which is modified to be deployment
+   * dependency.
+   */
+  public static void addWebAppDependencyContainer(IProject project, IProjectFacetVersion fv,
+      IPath containerPath) throws CoreException {
+    IClasspathEntry containerEntry = JavaCore.newContainerEntry(containerPath);
+    IVirtualComponent virtualComponent = ComponentCore.createComponent(project);
+    IPath runtimePath = ClasspathDependencyUtil.getDefaultRuntimePath(virtualComponent,
+        containerEntry);
+    IClasspathEntry newEntry = ClasspathDependencyUtil.modifyDependencyPath(containerEntry,
+        runtimePath);
+    ClasspathHelper.addClasspathEntries(project, fv, Collections.singletonList(newEntry));
+  }
+
   /**
    * @return IFile representing "appengine-application.xml" file or <code>null</code> if file cannot
    *         be found.

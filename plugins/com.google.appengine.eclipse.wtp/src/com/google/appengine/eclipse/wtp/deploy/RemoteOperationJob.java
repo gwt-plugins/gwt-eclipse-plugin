@@ -104,10 +104,10 @@ public abstract class RemoteOperationJob extends WorkspaceJob {
 
   @Override
   public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-    monitor.beginTask("Deploying " + appName, IProgressMonitor.UNKNOWN);
     IStatus status = Status.OK_STATUS;
     try {
       preExecute(monitor);
+      monitor.beginTask("Deploying " + appName, IProgressMonitor.UNKNOWN);
       execute(monitor);
       postExecute(monitor);
     } finally {

@@ -12,14 +12,16 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.jpa.libprov;
 
-import com.google.common.collect.Lists;
+import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jst.common.project.facet.core.ClasspathHelper;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jst.common.project.facet.core.libprov.ILibraryProvider;
 import org.eclipse.jst.common.project.facet.core.libprov.LibraryProviderOperation;
 import org.eclipse.jst.common.project.facet.core.libprov.LibraryProviderOperationConfig;
@@ -29,12 +31,21 @@ import org.eclipse.jst.common.project.facet.core.libprov.LibraryProviderOperatio
  */
 public final class GaeLibraryProviderInstallOperation extends LibraryProviderOperation {
   @Override
-  public void execute(LibraryProviderOperationConfig config, IProgressMonitor monitor)
+  public void execute(final LibraryProviderOperationConfig config, IProgressMonitor monitor)
       throws CoreException {
-    // add datanucleus container
-    IProject project = config.getFacetedProject().getProject();
-    IClasspathEntry containerEntry = JavaCore.newContainerEntry(DatanucleusClasspathContainer.CONTAINER_PATH);
-    ClasspathHelper.addClasspathEntries(project, config.getProjectFacetVersion(),
-        Lists.newArrayList(containerEntry));
+    // add datanucleus container (using workspace root job since the project is not fully
+    // initialized yet).
+    final IProject project = config.getFacetedProject().getProject();
+    WorkspaceJob job = new WorkspaceJob("Setting up Datanucleus classpath container") {
+      @Override
+      public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+        ProjectUtils.addWebAppDependencyContainer(project, config.getProjectFacetVersion(),
+            DatanucleusClasspathContainer.CONTAINER_PATH);
+        return Status.OK_STATUS;
+      }
+    };
+    job.setPriority(Job.SHORT);
+    job.setRule(ResourcesPlugin.getWorkspace().getRoot());
+    job.schedule();
   }
 }

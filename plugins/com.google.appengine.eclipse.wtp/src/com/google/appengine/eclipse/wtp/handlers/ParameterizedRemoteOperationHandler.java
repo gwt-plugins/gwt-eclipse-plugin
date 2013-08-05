@@ -34,7 +34,7 @@ public final class ParameterizedRemoteOperationHandler extends RemoteOperationHa
   private static final String DEPLOY_PACKAGE = "com.google.appengine.eclipse.wtp.deploy.";
   private static final String PARAM_JOB_CLASS = "com.google.appengine.eclipse.wtp.params.jobClass";
 
-  private String jobClassName;
+  protected String jobClassName;
 
   @Override
   protected Job createJob() throws CoreException {

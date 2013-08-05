@@ -22,8 +22,8 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
 /**
  * This {@link LibraryProviderOperation} is for uninstalling library provider.
- *
- * TODO: this seems to be never called, though the UNINSTALL operation exists in plugin.xml
+ * 
+ * Called for example, for primary runtime changing.
  */
 public final class GaeLibraryProviderUninstallOperation extends LibraryProviderOperation {
   @Override

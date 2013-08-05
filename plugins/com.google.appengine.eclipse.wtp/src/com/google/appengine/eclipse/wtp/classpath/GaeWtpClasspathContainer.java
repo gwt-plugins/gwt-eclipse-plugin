@@ -10,12 +10,10 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
-package com.google.appengine.eclipse.wtp.jpa.libprov;
-
-import com.google.appengine.eclipse.core.sdk.AppEngineBridge;
+package com.google.appengine.eclipse.wtp.classpath;import com.google.appengine.eclipse.core.sdk.AppEngineBridge;
 import com.google.appengine.eclipse.core.sdk.AppEngineBridgeFactory;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
-import com.google.appengine.eclipse.wtp.jpa.AppEngineJpaPlugin;
+import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 
 import org.eclipse.core.runtime.IPath;
@@ -28,17 +26,17 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Classpath container for Datanucleus libs.
+ * A container to store GAE libs which should be published into Web App lib folder.
  */
-public final class DatanucleusClasspathContainer implements IClasspathContainer {
-  public static final String CONTAINER_ID = AppEngineJpaPlugin.PLUGIN_ID + ".DATANUCLEUS_CONTAINER";
+public final class GaeWtpClasspathContainer implements IClasspathContainer {
+  public static final String CONTAINER_ID = AppEnginePlugin.PLUGIN_ID + ".GAE_WTP_CONTAINER";
   public static final IPath CONTAINER_PATH = new Path(CONTAINER_ID);
 
   private IClasspathEntry[] entries;
   private IPath containerPath;
   private IJavaProject project;
 
-  public DatanucleusClasspathContainer(IPath containerPath, IJavaProject project) {
+  public GaeWtpClasspathContainer(IPath containerPath, IJavaProject project) {
     this.containerPath = containerPath;
     this.project = project;
   }
@@ -50,18 +48,18 @@ public final class DatanucleusClasspathContainer implements IClasspathContainer 
       try {
         IPath sdkPath = ProjectUtils.getGaeSdkLocation(project.getProject());
         if (sdkPath == null) {
-          AppEngineJpaPlugin.logMessage("JPA install: no runtime.");
+          AppEnginePlugin.logMessage("No SDK found.");
           return entries;
         }
         AppEngineBridge appEngineBridge = AppEngineBridgeFactory.getAppEngineBridge(sdkPath);
         if (appEngineBridge == null) {
-          AppEngineJpaPlugin.logMessage("JPA install: no GAE SDK found.");
+          AppEnginePlugin.logMessage("Cannot create App Engine Bridge.");
           return entries;
         }
-        List<File> userLibFiles = appEngineBridge.getUserLibFiles("datanucleus", "v2");
+        List<File> userLibFiles = appEngineBridge.getLatestUserLibFiles(false);
         entries = GaeSdk.getClasspathEntries(userLibFiles, sdkPath);
       } catch (Throwable e) {
-        AppEngineJpaPlugin.logMessage(e);
+        AppEnginePlugin.logMessage(e);
         return entries;
       }
     }
@@ -70,7 +68,7 @@ public final class DatanucleusClasspathContainer implements IClasspathContainer 
 
   @Override
   public String getDescription() {
-    return "Datanucleus Libraries";
+    return "Google App Engine Web App Libraries";
   }
 
   @Override

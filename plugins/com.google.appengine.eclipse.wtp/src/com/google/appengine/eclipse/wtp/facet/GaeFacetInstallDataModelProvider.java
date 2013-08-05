@@ -39,6 +39,8 @@ public final class GaeFacetInstallDataModelProvider extends
       return "1";
     } else if (propertyName.equals(GAE_PROPERTY_CREATE_SAMPLE)) {
       return true;
+    } else if (propertyName.equals(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD)) {
+      return false;
     } else if (propertyName.equals(GAE_PROPERTY_PACKAGE)) {
       return DEFAULT_PACKAGE_NAME;
     }
@@ -53,6 +55,7 @@ public final class GaeFacetInstallDataModelProvider extends
     propertyNames.add(GAE_PROPERTY_MODULE_ID);
     propertyNames.add(GAE_PROPERTY_CREATE_SAMPLE);
     propertyNames.add(GAE_PROPERTY_PACKAGE);
+    propertyNames.add(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD);
     return propertyNames;
   }
 

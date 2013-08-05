@@ -38,6 +38,7 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
   private static final String WIZARD_PAGE_NAME = IGaeFacetConstants.GAE_FACET_ID + ".install.page";
   private DeployComponent deployComponent = new DeployComponent();
   private Button shouldCreateSampleButton;
+  private Button openImportApiWizardButton;
   private Text packageText;
 
   /**
@@ -55,6 +56,7 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
     synchHelper.synchText(deployComponent.getModuleIdTextControl(), GAE_PROPERTY_MODULE_ID, null);
     synchHelper.synchText(packageText, GAE_PROPERTY_PACKAGE, null);
     synchHelper.synchCheckbox(shouldCreateSampleButton, GAE_PROPERTY_CREATE_SAMPLE, null);
+    synchHelper.synchCheckbox(openImportApiWizardButton, GAE_PROPERTY_OPEN_IMPORT_API_WIZARD, null);
   }
 
   @Override
@@ -93,6 +95,14 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
       shouldCreateSampleButton = new Button(sampleGroup, SWT.CHECK | SWT.LEFT);
       shouldCreateSampleButton.setText("Generate project sample code");
     }
+    {
+      Group googleApiGroup = new Group(composite, SWT.NONE);
+      googleApiGroup.setText("Google APIs");
+      googleApiGroup.setLayout(new GridLayout());
+      googleApiGroup.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
+      openImportApiWizardButton = new Button(googleApiGroup, SWT.CHECK | SWT.LEFT);
+      openImportApiWizardButton.setText("Open Google API Import Wizard upon project creation");
+    }
     addModificationListeners();
     return composite;
   }
@@ -118,6 +128,8 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
     }
     model.setBooleanProperty(GAE_PROPERTY_CREATE_SAMPLE,
         (Boolean) model.getDefaultProperty(GAE_PROPERTY_CREATE_SAMPLE));
+    model.setBooleanProperty(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD,
+        (Boolean) model.getDefaultProperty(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD));
     synchHelper.synchAllUIWithModel();
   }
 }

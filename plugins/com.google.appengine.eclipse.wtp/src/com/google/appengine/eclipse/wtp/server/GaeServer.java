@@ -462,7 +462,7 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
   }
 
   private IModule[] doGetParentModules(IModule module) {
-    IModule[] earModules = ServerUtil.getModules(ModuleUtils.MODULETYPE_JST_EAR); //$NON-NLS-1$
+    IModule[] earModules = ServerUtil.getModules(ModuleUtils.MODULETYPE_JST_EAR);
     ArrayList<IModule> list = new ArrayList<IModule>();
     for (IModule earModule : earModules) {
       IEnterpriseApplication earApp = (IEnterpriseApplication) earModule.loadAdapter(

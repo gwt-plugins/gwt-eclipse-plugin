@@ -26,7 +26,7 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Provides the Classpath containers to be added into project classpaths.
+ * Provides the Runtime Classpath containers to be added into project classpaths.
  */
 public final class GaeRuntimeTargetHandler extends RuntimeClasspathProviderDelegate {
 
@@ -44,12 +44,13 @@ public final class GaeRuntimeTargetHandler extends RuntimeClasspathProviderDeleg
       // no luck
       return new IClasspathEntry[0];
     }
-    AppEngineBridge appEngineBridge;
     try {
-      appEngineBridge = gaeSdk.getAppEngineBridge();
-      // exclude datanucleus, it will be added by JPA facet (if installed)
-      List<File> buildclasspathFiles = appEngineBridge.getBuildclasspathFiles(false);
-      return GaeSdk.getClasspathEntries(buildclasspathFiles, gaeSdk.getInstallationPath());
+      synchronized (gaeSdk) {
+        AppEngineBridge appEngineBridge = gaeSdk.getAppEngineBridge();
+        // exclude datanucleus, it will be added by JPA facet (if installed)
+        List<File> buildclasspathFiles = appEngineBridge.getBuildclasspathFiles(false);
+        return GaeSdk.getClasspathEntries(buildclasspathFiles, gaeSdk.getInstallationPath());
+      }
     } catch (Throwable e) {
       AppEnginePlugin.logMessage(e);
       return new IClasspathEntry[0];

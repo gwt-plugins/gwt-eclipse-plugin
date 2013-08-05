@@ -18,6 +18,7 @@ import com.google.appengine.eclipse.core.resources.GaeProjectResources;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.building.ProjectChangeNotifier;
+import com.google.appengine.eclipse.wtp.classpath.GaeWtpClasspathContainer;
 import com.google.appengine.eclipse.wtp.facet.ops.AppEngineXmlCreateOperation;
 import com.google.appengine.eclipse.wtp.facet.ops.GaeFileCreateOperation;
 import com.google.appengine.eclipse.wtp.facet.ops.SampleServletCreateOperation;
@@ -29,6 +30,7 @@ import com.google.gdt.eclipse.core.StatusUtilities;
 import com.google.gdt.eclipse.core.StringUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkSet;
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
+import com.google.gdt.eclipse.managedapis.ui.ApiImportProjectHandler;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
@@ -38,6 +40,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jst.j2ee.project.JavaEEProjectUtilities;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetDataModelProperties;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModelOperation;
@@ -59,7 +62,7 @@ import java.util.List;
 public final class GaeFacetInstallDelegate implements IDelegate {
 
   @Override
-  public void execute(IProject project, IProjectFacetVersion fv, Object config,
+  public void execute(final IProject project, IProjectFacetVersion fv, Object config,
       IProgressMonitor monitor) throws CoreException {
     IDataModel model = (IDataModel) config;
     List<IDataModelOperation> operations = Lists.newArrayList();
@@ -67,6 +70,9 @@ public final class GaeFacetInstallDelegate implements IDelegate {
     GaeSdk sdk = getSdk(sdkLocation);
     // do create project contents
     if (JavaEEProjectUtilities.isDynamicWebProject(project)) {
+      // add a special container to be dependency of the Web App (WEB-INF/lib)
+      ProjectUtils.addWebAppDependencyContainer(project, fv,
+          GaeWtpClasspathContainer.CONTAINER_PATH);
       // add custom builders
       if (sdk != null) {
         // since 1.8.1 Development server scans and reloads application automatically
@@ -141,6 +147,19 @@ public final class GaeFacetInstallDelegate implements IDelegate {
     } catch (ExecutionException e) {
       // TODO(amitin): perform undo?
       throw new CoreException(StatusUtilities.newErrorStatus(e, AppEnginePlugin.PLUGIN_ID));
+    }
+    // open Import API Wizard if selected
+    if (model.getBooleanProperty(IGaeFacetConstants.GAE_PROPERTY_OPEN_IMPORT_API_WIZARD)) {
+      Display.getDefault().asyncExec(new Runnable() {
+        @Override
+        public void run() {
+          try {
+            ApiImportProjectHandler.openImportWizard(project);
+          } catch (CoreException e) {
+            AppEnginePlugin.logMessage(e);
+          }
+        }
+      });
     }
   }
 

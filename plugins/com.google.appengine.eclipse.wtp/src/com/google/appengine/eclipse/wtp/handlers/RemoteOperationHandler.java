@@ -68,6 +68,11 @@ public abstract class RemoteOperationHandler extends AbstractSingleServerHandler
         return;
       }
     }
+    // check for dirty editors and prompt to save
+    if (!PlatformUI.getWorkbench().saveAllEditors(true)) {
+      return;
+    }
+    // get server
     gaeServer = GaeServer.getGaeServer(server);
     if (gaeServer == null) {
       return;
@@ -151,5 +156,4 @@ public abstract class RemoteOperationHandler extends AbstractSingleServerHandler
         "An error occured during App Engine operation" + (msg == null ? "." : ": " + msg)
             + "\nSee the error log for more details");
   }
-
 }
