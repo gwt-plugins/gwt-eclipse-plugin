@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.osgi.service.prefs.BackingStoreException;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -62,29 +63,62 @@ public interface IWebAppProjectCreator {
   void addNature(String natureId);
 
   /**
-   * Creates the project per the current configuration. Note that the caller
-   * must have a workspace lock in order to successfully execute this method.
+   * Creates the project per the current configuration. Note that the caller must have a workspace
+   * lock in order to successfully execute this method.
    * 
    * @throws BackingStoreException
+   * @throws IOException
    */
   void create(IProgressMonitor monitor) throws CoreException,
       MalformedURLException, SdkException, ClassNotFoundException,
       UnsupportedEncodingException, FileNotFoundException,
-      BackingStoreException;
+      BackingStoreException, IOException;
 
+  /**
+   * Set the appId field.
+   * 
+   * @param appId
+   */
+  void setAppId(String appId);
+
+  /**
+   * Set the isAppsMarketplaceSupported field. If true, support for the Apps Market Place plugin
+   * will be added on project creation.
+   * 
+   * @param isAppsMarketplaceSupported
+   */
   void setAppsMarketplaceSupported(boolean isAppsMarketplaceSupported);
 
+  /**
+   * Set the isGenerateEmptyProject field.
+   * 
+   * @param generateEmptyProject
+   */
   void setGenerateEmptyProject(boolean generateEmptyProject);
+
+  /**
+   * Set the isUseGaeSdkFromDefault field. isUseGaeSdkFromDefault links to the default Google App
+   * Engine SDK for the workspace.
+   * 
+   * @param gaeSdkIsEclipseDefault
+   */
+  void setIsGaeSdkFromEclipseDefault(boolean gaeSdkIsEclipseDefault);
+
+  /**
+   * Sets the isNewAppId flag which is true when a user is creating a new web application with a new
+   * App Id and false when the web application is created using an existing App Id.
+   * 
+   * @param isNewAppId
+   */
+  void setIsNewAppId(boolean isNewAppId);
 
   void setLocationURI(URI locationURI);
 
   void setPackageName(String packageName);
-
+  
   void setProjectName(String projectName);
 
   void setTemplates(String... templates);
 
   void setTemplateSources(String... sources);
-  
-  void setIsGaeSdkFromEclipseDefault(boolean gaeSdkIsEclipseDefault);
 }

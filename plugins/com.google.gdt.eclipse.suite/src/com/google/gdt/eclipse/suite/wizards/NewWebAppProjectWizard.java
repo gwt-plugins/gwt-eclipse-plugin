@@ -61,6 +61,10 @@ public class NewWebAppProjectWizard extends NewElementWizard
 
   private String projectName;
 
+  private String appId;
+
+  private boolean isNewAppId;
+
   private boolean useGae;
 
   private boolean useGWT;
@@ -111,6 +115,8 @@ public class NewWebAppProjectWizard extends NewElementWizard
     isAppsMarketplaceSupported = newProjectWizardPage
       .isAppsMarketplaceSupported();
     isGenerateEmptyProject = newProjectWizardPage.isGenerateEmptyProject();
+    appId = newProjectWizardPage.getAppId();
+    isNewAppId = newProjectWizardPage.usingNewAppId();
 
     /**
      * HACK: We need to make sure that the DebugUITools plugin (and the
@@ -139,6 +145,8 @@ public class NewWebAppProjectWizard extends NewElementWizard
     try {
       IWebAppProjectCreator wapc = ProjectUtilities.createWebAppProjectCreator();
 
+      wapc.setAppId(appId);
+      wapc.setIsNewAppId(isNewAppId);
       wapc.setProjectName(projectName);
       wapc.setPackageName(packageName);
       wapc.setLocationURI(locationURI);

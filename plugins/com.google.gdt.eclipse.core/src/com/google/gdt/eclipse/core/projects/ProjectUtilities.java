@@ -30,6 +30,7 @@ import org.eclipse.jdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 import org.osgi.service.prefs.BackingStoreException;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 
@@ -47,19 +48,19 @@ public final class ProjectUtilities {
   /**
    * Creates a populated project via the {@link IWebAppProjectCreator}.
    * 
+   * @throws FileNotFoundException
+   * @throws UnsupportedEncodingException
+   * @throws MalformedURLException
    * @throws BackingStoreException
    * @throws ClassNotFoundException
    * @throws SdkException
    * @throws CoreException
-   * @throws FileNotFoundException
-   * @throws UnsupportedEncodingException
-   * @throws MalformedURLException
+   * @throws IOException
    */
   public static IProject createPopulatedProject(String projectName,
-      IWebAppProjectCreator.Participant... creationParticipants)
-      throws MalformedURLException, UnsupportedEncodingException,
-      FileNotFoundException, CoreException, SdkException,
-      ClassNotFoundException, BackingStoreException {
+      IWebAppProjectCreator.Participant... creationParticipants) throws MalformedURLException,
+      ClassNotFoundException, UnsupportedEncodingException, FileNotFoundException, CoreException,
+      SdkException, BackingStoreException, IOException {
 
     IWebAppProjectCreator projectCreator = ProjectUtilities.createWebAppProjectCreator();
     projectCreator.setProjectName(projectName);
@@ -153,6 +154,13 @@ public final class ProjectUtilities {
     return project;
   }
   
+  /**
+   * This should not be called by typical clients.
+   */
+  public static synchronized IWebAppProjectCreator.Factory getWebAppProjectCreatorFactory() {
+    return webAppProjectCreatorFactory;
+  }
+
   public static void importProject(String projectName, IPath directory)
       throws CoreException {
     IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
@@ -172,6 +180,7 @@ public final class ProjectUtilities {
     JobsUtilities.waitForIdle();
   }
 
+  
   /*
    * TODO: Figure out a way to achieve this without hardcoding the plugin IDs
    */
@@ -182,14 +191,6 @@ public final class ProjectUtilities {
     return NatureUtils.hasNature(project, "com.google.gwt.eclipse.core.gwtNature")
         || NatureUtils.hasNature(project,
             "com.google.appengine.eclipse.core.gaeNature");
-  }
-
-  
-  /**
-   * This should not be called by typical clients.
-   */
-  public static synchronized IWebAppProjectCreator.Factory getWebAppProjectCreatorFactory() {
-    return webAppProjectCreatorFactory;
   }
   
   /**

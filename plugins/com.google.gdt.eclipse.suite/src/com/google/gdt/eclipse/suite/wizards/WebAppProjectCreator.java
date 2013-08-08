@@ -17,11 +17,13 @@ package com.google.gdt.eclipse.suite.wizards;
 import com.google.appengine.eclipse.core.nature.GaeNature;
 import com.google.appengine.eclipse.core.preferences.GaePreferences;
 import com.google.appengine.eclipse.core.properties.GaeProjectProperties;
+import com.google.appengine.eclipse.core.resources.GaeProject;
 import com.google.appengine.eclipse.core.resources.GaeProjectResources;
 import com.google.appengine.eclipse.core.sdk.AppEngineUpdateWebInfFolderCommand;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.appengine.eclipse.core.sdk.GaeSdkCapability;
 import com.google.appengine.eclipse.core.sdk.GaeSdkContainer;
+import com.google.gdt.eclipse.appengine.api.AppengineApiWrapper;
 import com.google.gdt.eclipse.appsmarketplace.resources.AppsMarketplaceProject;
 import com.google.gdt.eclipse.appsmarketplace.resources.AppsMarketplaceProjectResources;
 import com.google.gdt.eclipse.appsmarketplace.sdk.AppsMarketplaceSdk;
@@ -83,6 +85,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
@@ -239,6 +242,10 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
 
   private String projectName;
 
+  private String appId;
+  
+  private boolean isNewAppId;
+
   private String[] templates = new String[] {"sample"};
 
   private boolean isAppsMarketplaceSupported;
@@ -281,20 +288,30 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
   }
 
   /**
-   * Creates the project per the current configuration. Note that the caller
-   * must have a workspace lock in order to successfully execute this method.
-   *
+   * Creates the project per the current configuration. Note that the caller must have a workspace
+   * lock in order to successfully execute this method.
+   * 
    * @throws BackingStoreException
+   * @throws IOException
    */
-  public void create(IProgressMonitor monitor) throws CoreException,
-      MalformedURLException, SdkException, ClassNotFoundException,
-      UnsupportedEncodingException, FileNotFoundException,
-      BackingStoreException {
+  public void create(IProgressMonitor monitor) throws CoreException, SdkException,
+      ClassNotFoundException, BackingStoreException, IOException {
 
     boolean useGwt = natureIds.contains(GWTNature.NATURE_ID);
     boolean useGae = natureIds.contains(GaeNature.NATURE_ID);
 
     if (useGae) {
+      // Attempt to create a new App Engine application
+      // If App ID is invalid/not available, an IOException is thrown
+      if (isNewAppId) {
+        AppengineApiWrapper appengineDataProvider = new AppengineApiWrapper();
+
+        // TODO(nbashirbello): Use a monitor on this call. If the network hangs, create the general
+        // project anyway, but then provide an error after the project has been created indicating
+        // that the app could not be created (and providing the user with instructions on how to
+        // create it manually).
+        appengineDataProvider.insertNewApplication(appId, true);
+      }
       createGaeProject(useGwt);
     }
 
@@ -427,6 +444,11 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     // Created a faceted project. This is long-running and hence run in a
     // separate job.
     jobSetupFacets(project);
+    
+    // Add the App Engine App ID to the project and create a new App Engine/Cloud project
+    if (useGae) {
+      saveAppIdToAppEngineWebXml(project);
+    }
   }
 
   public List<IPath> getContainerPaths() {
@@ -475,6 +497,10 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     return result;
   }
 
+  public void setAppId(String appId) {
+    this.appId = appId;
+  }
+
   public void setAppsMarketplaceSupported(boolean isAppsMarketplaceSupported) {
     this.isAppsMarketplaceSupported = isAppsMarketplaceSupported;
   }
@@ -491,9 +517,14 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     this.isUseGaeSdkFromDefault = gaeSdkIsEclipseDefault;
   }
 
+  public void setIsNewAppId(boolean isNewAppId) {
+    this.isNewAppId = isNewAppId;
+  }
+
   public void setLocationURI(URI locationURI) {
     this.locationURI = locationURI;
   }
+
 
   public void setNatureIds(List<String> natureIds) {
     this.natureIds = natureIds;
@@ -870,6 +901,17 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
       }
     };
     setupFacetsJob.schedule();
+  }
+
+  private void saveAppIdToAppEngineWebXml(IProject project) throws IOException, CoreException {
+    if (appId == null || appId.isEmpty()) {
+      return;
+    }
+
+    GaeProject gaeProject = GaeProject.create(project);
+    if (gaeProject != null) {
+      gaeProject.setAppId(appId, true);
+    }
   }
 
   private void setGaeDefaults(IJavaProject javaProject) throws BackingStoreException {

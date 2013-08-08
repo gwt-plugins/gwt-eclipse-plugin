@@ -19,10 +19,9 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
 /**
- * TODO: add javadoc
+ * Opens the Create New Web Application wizard.
  */
 public class NewWebAppToolbarHandler extends AbstractHandler {
-
   public Object execute(ExecutionEvent event) throws ExecutionException {
     new OpenNewWebApplicationWizardToolbarAction().run();
     return null;

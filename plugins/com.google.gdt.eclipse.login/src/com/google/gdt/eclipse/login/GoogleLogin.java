@@ -283,6 +283,13 @@ public class GoogleLogin {
     return accessToken;
   }
 
+  public Credential getCredential() {
+    if (access == null) {
+      access = makeCredential();
+    }
+    return access;
+  }
+
   /**
    * @return the user's email address, or the empty string if the user is logged
    *         out, or null if the user's email couldn't be retrieved
@@ -420,6 +427,16 @@ public class GoogleLogin {
     return logOut(showPrompt, true);
   }
 
+  public Credential makeCredential() {
+    Credential cred = new GoogleCredential.Builder()
+      .setJsonFactory(jsonFactory)
+      .setTransport(transport)
+      .setClientSecrets(clientId, clientSecret).build();
+    cred.setAccessToken(accessToken);
+    cred.setRefreshToken(refreshToken);
+    return cred;
+  }
+
   /**
    * When the login trim is instantiated by the UI, it calls this method so that
    * when logIn() is called by something other than the login trim itself, the
@@ -429,6 +446,55 @@ public class GoogleLogin {
    */
   public void setLoginTrimContribution(LoginTrimContribution trim) {
     this.trim = trim;
+  }
+
+  public void stop() {
+    if (GoogleLoginPrefs.getLogoutOnExitPref()) {
+      logOut(false);
+    }
+  }
+
+  /**
+   * Updates eclipse when an internal login is done.
+   * 
+   * @param login Whether the user is logged in or not
+   */
+  public void updateInternalLogin(boolean login) {
+    if (login) {
+      loadLogin();
+    }
+    notifyLoginStatusChange(login);
+    notifyTrim();
+  }
+
+  protected void loadLogin() {
+
+    Credentials prefs = GoogleLoginPrefs.loadCredentials();
+
+    // the stored email can be null in the case where the external browser
+    // was launched, because we can't extract the email from the external
+    // browser
+    if (prefs.refreshToken == null || prefs.storedScopes == null) {
+      GoogleLoginPrefs.clearStoredCredentials();
+      return;
+    }
+
+    accessToken = prefs.accessToken;
+    refreshToken = prefs.refreshToken;
+    accessTokenExpiryTime = prefs.accessTokenExpiryTime;
+    this.email = prefs.storedEmail;
+
+    isLoggedIn = true;
+
+    if (!getOAuthScopes().equals(prefs.storedScopes)) {
+      GoogleLoginPlugin.logWarning(
+          "OAuth scope set for stored credentials no longer valid, logging out.");
+      GoogleLoginPlugin.logWarning(
+          getOAuthScopes() + " vs. " + prefs.storedScopes);
+      logOut(false);
+    }
+
+    access = makeCredential();
   }
 
   private boolean checkLoggedIn(String msg) {
@@ -513,9 +579,8 @@ public class GoogleLogin {
   }
 
   /**
-   * Opens an external browser for the user to login, opens a dialog telling the
-   * user to login using that browser, and paste the verification code in a
-   * dialog box that pops up.
+   * Opens an external browser for the user to login, opens a dialog telling the user to login using
+   * that browser, and paste the verification code in a dialog box that pops up.
    */
   private String openExternalBrowserForLogin(String authorizeUrl) {
 
@@ -549,7 +614,7 @@ public class GoogleLogin {
     md.close();
     return verificationCode;
   }
-
+  
   private String queryEmail() {
     String url = GET_EMAIL_URL;
 
@@ -588,59 +653,6 @@ public class GoogleLogin {
       Credentials creds = new Credentials(accessToken, refreshToken, email,
           getOAuthScopes(), accessTokenExpiryTime);
       GoogleLoginPrefs.saveCredentials(creds);
-    }
-  }
-
-  protected void loadLogin() {
-
-    Credentials prefs = GoogleLoginPrefs.loadCredentials();
-
-    // the stored email can be null in the case where the external browser
-    // was launched, because we can't extract the email from the external
-    // browser
-    if (prefs.refreshToken == null || prefs.storedScopes == null) {
-      GoogleLoginPrefs.clearStoredCredentials();
-      return;
-    }
-
-    accessToken = prefs.accessToken;
-    refreshToken = prefs.refreshToken;
-    accessTokenExpiryTime = prefs.accessTokenExpiryTime;
-    this.email = prefs.storedEmail;
-
-    isLoggedIn = true;
-
-    if (!getOAuthScopes().equals(prefs.storedScopes)) {
-      GoogleLoginPlugin.logWarning(
-          "OAuth scope set for stored credentials no longer valid, logging out.");
-      GoogleLoginPlugin.logWarning(
-          getOAuthScopes() + " vs. " + prefs.storedScopes);
-      logOut(false);
-    }
-
-    access = makeCredential();
-  }
-
-  public Credential getCredential() {
-    if (access == null) {
-      access = makeCredential();
-    }
-    return access;
-  }
-  
-  public Credential makeCredential() {
-    Credential cred = new GoogleCredential.Builder()
-      .setJsonFactory(jsonFactory)
-      .setTransport(transport)
-      .setClientSecrets(clientId, clientSecret).build();
-    cred.setAccessToken(accessToken);
-    cred.setRefreshToken(refreshToken);
-    return cred;
-  }
-
-  public void stop() {
-    if (GoogleLoginPrefs.getLogoutOnExitPref()) {
-      logOut(false);
     }
   }
 }

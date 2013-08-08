@@ -89,12 +89,14 @@ public abstract class AbstractOpenWizardAction extends Action {
     if (!doCreateProjectFirstOnEmptyWorkspace(localShell)) {
       return;
     }
+
     try {
       INewWizard wizard = createWizard();
       wizard.init(PlatformUI.getWorkbench(), getSelection());
 
       WizardDialog dialog = new WizardDialog(localShell, wizard);
-      IPixelConverter converter = PixelConverterFactory.createPixelConverter(JFaceResources.getDialogFont());
+      IPixelConverter converter =
+          PixelConverterFactory.createPixelConverter(JFaceResources.getDialogFont());
       dialog.setMinimumPageSize(converter.convertWidthInCharsToPixels(70),
           converter.convertHeightInCharsToPixels(20));
       dialog.create();
