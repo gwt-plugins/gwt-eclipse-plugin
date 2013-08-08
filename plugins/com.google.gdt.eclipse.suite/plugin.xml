@@ -225,6 +225,7 @@
          <menu
                id="com.google.gdt.eclipse.suite.popupMenu.project"
                label="%gpe.menu.label"
+               icon="icons/gdt_16x16.png"
                path="additions">
             <groupMarker
                   name="actionsContent">
