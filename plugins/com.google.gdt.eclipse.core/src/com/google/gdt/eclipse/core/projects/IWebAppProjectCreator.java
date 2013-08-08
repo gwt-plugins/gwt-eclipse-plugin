@@ -104,14 +104,6 @@ public interface IWebAppProjectCreator {
    */
   void setIsGaeSdkFromEclipseDefault(boolean gaeSdkIsEclipseDefault);
 
-  /**
-   * Sets the isNewAppId flag which is true when a user is creating a new web application with a new
-   * App Id and false when the web application is created using an existing App Id.
-   * 
-   * @param isNewAppId
-   */
-  void setIsNewAppId(boolean isNewAppId);
-
   void setLocationURI(URI locationURI);
 
   void setPackageName(String packageName);

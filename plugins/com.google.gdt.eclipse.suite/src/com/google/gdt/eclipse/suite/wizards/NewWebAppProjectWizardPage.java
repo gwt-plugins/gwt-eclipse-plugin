@@ -17,15 +17,12 @@ import com.google.appengine.eclipse.core.preferences.ui.GaePreferencePage;
 import com.google.appengine.eclipse.core.properties.ui.GaeProjectPropertyPage;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.appengine.eclipse.core.sdk.GaeSdkContainer;
-import com.google.gdt.eclipse.appengine.api.AppengineApiWrapper;
 import com.google.gdt.eclipse.core.browser.BrowserUtilities;
 import com.google.gdt.eclipse.core.sdk.Sdk;
 import com.google.gdt.eclipse.core.sdk.SdkClasspathContainer;
 import com.google.gdt.eclipse.core.ui.SdkSelectionBlock;
 import com.google.gdt.eclipse.core.ui.SdkSelectionBlock.SdkSelection;
-import com.google.gdt.eclipse.login.GoogleLogin;
 import com.google.gdt.eclipse.platform.ui.PixelConverterFactory;
-import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
@@ -41,7 +38,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -54,7 +50,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
@@ -66,7 +61,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -173,21 +167,13 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
   private Button appsMarketplaceCheckbox;
 
-  private AppengineApiWrapper appengineDataProvider;
-
   private Button noAppIdButton;
 
-  private Button existingAppIdButton;
+  private Button useAppIdButton;
 
-  private Button newAppIdButton;
+  private Text useAppIdText;
 
-  private Combo existingAppIdCombo;
-
-  private Button updateAppIdButton;
-
-  private Text newAppIdText;
-
-  private boolean initAppList = false;
+  private Button browseAppIdButton;
 
   public NewWebAppProjectWizardPage() {
     super("createProject");
@@ -262,12 +248,10 @@ public class NewWebAppProjectWizardPage extends WizardPage {
    * Returns the App ID.
    */
   public String getAppId() {
-    if (newAppIdButton.getSelection()) {
-      return newAppIdText.getText().trim();
-    } else if (existingAppIdButton.getSelection()) {
-      return existingAppIdCombo.getText().trim();
-    } else {
+    if (noAppIdButton.getSelection()) {
       return "";
+    } else {
+      return useAppIdText.getText().trim();
     }
   }
 
@@ -333,10 +317,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
   public boolean isGenerateEmptyProject() {
     return !generateSampleCodeCheckbox.getSelection();
-  }
-
-  public boolean usingNewAppId() {
-    return newAppIdButton.getSelection();
   }
 
   IPath getGaeSdkContainerPath() {
@@ -506,101 +486,43 @@ public class NewWebAppProjectWizardPage extends WizardPage {
       }
     });
 
-    existingAppIdButton = new Button(identifiersGroup, SWT.RADIO);
-    existingAppIdButton.setText("Use existing App Id");
-    existingAppIdButton.setSelection(false);
+    useAppIdButton = new Button(identifiersGroup, SWT.RADIO);
+    useAppIdButton.setText("Use App Id");
+    useAppIdButton.setSelection(false);
     final GridData gd5 = new GridData();
     gd5.horizontalSpan = 1;
-    existingAppIdButton.setLayoutData(gd5);
-    existingAppIdButton.addSelectionListener(new SelectionAdapter() {
+    useAppIdButton.setLayoutData(gd5);
+    useAppIdButton.addSelectionListener(new SelectionAdapter() {
       @Override
       public void widgetSelected(SelectionEvent e) {
-        if (existingAppIdButton.getSelection()) {
+        if (useAppIdButton.getSelection()) {
           updateControls();
         }
       }
     });
 
-    existingAppIdCombo = new Combo(identifiersGroup, SWT.READ_ONLY);
-    final GridData gd6 = new GridData();
-    gd6.horizontalAlignment = GridData.FILL;
-    gd6.horizontalSpan = 1;
-    existingAppIdCombo.setLayoutData(gd6);
-    existingAppIdCombo.addModifyListener(new ModifyListener() {
-      public void modifyText(ModifyEvent e) {
-
-      }
-    });
-
-    updateAppIdButton = new Button(identifiersGroup, SWT.BUTTON1);
-    updateAppIdButton.setText("Refesh");
-    updateAppIdButton.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-        initializeIdentifierGroup();
-      }
-    });
-
-    newAppIdButton = new Button(identifiersGroup, SWT.RADIO);
-    newAppIdButton.setText("Manually enter new App Id");
-    final GridData gd4 = new GridData();
-    gd4.horizontalSpan = 1;
-    newAppIdButton.setLayoutData(gd4);
-    newAppIdButton.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-        if (newAppIdButton.getSelection()) {
-          updateControls();
-        }
-      }
-    });
-
-    newAppIdText = new Text(identifiersGroup, SWT.BORDER);
+    useAppIdText = new Text(identifiersGroup, SWT.BORDER);
     final GridData gd61 = new GridData();
     gd61.horizontalAlignment = GridData.FILL;
     gd61.grabExcessHorizontalSpace = true;
-    gd61.horizontalSpan = 2;
-    newAppIdText.setLayoutData(gd61);
-    newAppIdText.addModifyListener(new ModifyListener() {
+    gd61.horizontalSpan = 1;
+    useAppIdText.setLayoutData(gd61);
+    useAppIdText.setEditable(false);
+    useAppIdText.addModifyListener(new ModifyListener() {
       public void modifyText(ModifyEvent e) {
         validatePageAndSetCompletionStatus();
       }
     });
 
-    Link createAppIdLink = new Link(identifiersGroup, SWT.NONE);
-    final GridData appIdLinkLayout = new GridData();
-    appIdLinkLayout.horizontalAlignment = GridData.FILL;
-    appIdLinkLayout.grabExcessHorizontalSpace = true;
-    appIdLinkLayout.horizontalSpan = 2;
-    appIdLinkLayout.horizontalIndent = 25;
-    createAppIdLink.setLayoutData(appIdLinkLayout);
-    createAppIdLink.setText("<a href=\"" + AppengineApiWrapper.APPENGINE_CREATE_APP
-        + "\">Create new app id</a>");
-    createAppIdLink.setToolTipText(AppengineApiWrapper.APPENGINE_CREATE_APP);
-    createAppIdLink.addListener(SWT.Selection, new Listener() {
-      public void handleEvent(Event ev) {
-        BrowserUtilities.launchBrowserAndHandleExceptions(ev.text);
-      }
-    });
-
-    Link loginLink = new Link(identifiersGroup, SWT.NONE);
-    final GridData loginLinkLayout = new GridData();
-    loginLinkLayout.horizontalAlignment = GridData.FILL;
-    loginLinkLayout.grabExcessHorizontalSpace = true;
-    loginLinkLayout.horizontalSpan = 3;
-    loginLink.setLayoutData(loginLinkLayout);
-    loginLink.setText("You need to be logged in to link an  App Id to your new project. Click "
-        + "<a href=\"\">here</a>" + " to log in.");
-    loginLink.setToolTipText(AppengineApiWrapper.APPENGINE_CREATE_APP);
-    loginLink.addListener(SWT.Selection, new Listener() {
-      public void handleEvent(Event ev) {
-        if (GoogleLogin.getInstance().isLoggedIn()) {
-          MessageDialog.openInformation(getShell(), "New Web Application Project",
-              "You are logged in.");
-          return;
+    browseAppIdButton = new Button(identifiersGroup, SWT.BUTTON1);
+    browseAppIdButton.setText("Browse...");
+    browseAppIdButton.addSelectionListener(new SelectionAdapter() {
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        SelectAppIdDialog dlg = new SelectAppIdDialog(getShell());
+        if (dlg.open() == Window.OK) {
+          useAppIdText.setText(dlg.getSelectedAppId());
         }
-        GoogleLogin.getInstance().logIn();
-        updateIdentifiersBox();
       }
     });
 
@@ -613,8 +535,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     gd7.grabExcessHorizontalSpace = true;
     gd7.horizontalSpan = 3;
     label.setLayoutData(gd7);
-
-    initAppList = initializeIdentifierGroup();
   }
 
   private void createLocationGroup(Composite container) {
@@ -717,49 +637,13 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
   private void enableIdentifierGroup(boolean enable) {
     noAppIdButton.setEnabled(enable);
-    existingAppIdButton.setEnabled(enable);
-    existingAppIdCombo.setEnabled(enable);
-    newAppIdButton.setEnabled(enable);
-    newAppIdText.setEnabled(enable);
-    updateAppIdButton.setEnabled(enable);
-
-    // Disable the "Use existing App Id" if user has no App Ids
-    if (existingAppIdCombo.getItemCount() == 0) {
-      existingAppIdButton.setEnabled(false);
-      existingAppIdCombo.setEnabled(false);
-    }
+    useAppIdButton.setEnabled(enable);
+    useAppIdText.setEnabled(enable);
+    browseAppIdButton.setEnabled(enable);
   }
 
   private String getOutputDirectory() {
     return outDirText.getText().trim();
-  }
-
-  private boolean initializeIdentifierGroup() {
-    if (!GoogleLogin.getInstance().isLoggedIn()) {
-      enableIdentifierGroup(false);
-      return false;
-    }
-
-    appengineDataProvider = new AppengineApiWrapper();
-    String[] appList = null;
-    try {
-      appList = appengineDataProvider.getApplications(false);
-    } catch (IOException e) {
-      GdtPlugin.getLogger().logError(e, "Error listing App Engine applications");
-    }
-
-    initAppList = true;
-    if (appList == null) {
-      return false;
-    }
-
-    existingAppIdCombo.setItems(appList);
-
-    if (existingAppIdCombo.getSelectionIndex() < 0) {
-      existingAppIdCombo.select(0);
-    }
-
-    return true;
   }
 
   private void updateControls() {
@@ -791,29 +675,12 @@ public class NewWebAppProjectWizardPage extends WizardPage {
   }
 
   private void updateIdentifiersBox() {
-    if (!GoogleLogin.getInstance().isLoggedIn()) {
-      enableIdentifierGroup(false);
-      return;
-    }
-
-    if (!initAppList) {
-      initAppList = initializeIdentifierGroup();
-    }
-
     if (useGaeCheckbox.getSelection()) {
       enableIdentifierGroup(true);
-
       if (noAppIdButton.getSelection()) {
-        newAppIdText.setEnabled(false);
-        existingAppIdCombo.setEnabled(false);
-        updateAppIdButton.setEnabled(false);
-      } else if (existingAppIdButton.getSelection()) {
-        newAppIdText.setEnabled(false);
-      } else if (newAppIdButton.getSelection()) {
-        existingAppIdCombo.setEnabled(false);
-        updateAppIdButton.setEnabled(false);
+        useAppIdText.setEnabled(false);
+        browseAppIdButton.setEnabled(false);
       }
-
     } else {
       enableIdentifierGroup(false);
     }
@@ -950,15 +817,9 @@ public class NewWebAppProjectWizardPage extends WizardPage {
         return;
       }
 
-      // Check that an App Id is provided if the user selected "Use existing App Id" or
-      // "Manually enter new App Id"
-      if (existingAppIdButton.getSelection()) {
-        if (existingAppIdCombo.getSelectionIndex() < 0) {
-          setMessage("Enter an App Id");
-          return;
-        }
-      } else if (newAppIdButton.getSelection()) {
-        if (newAppIdText.getText().trim().isEmpty()) {
+      // Check that an App Id is provided if the user selected "Use App Id" or
+      if (useAppIdButton.getSelection()) {
+        if (useAppIdText.getText().isEmpty()) {
           setMessage("Enter an App Id");
           return;
         }

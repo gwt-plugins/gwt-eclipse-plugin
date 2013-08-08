@@ -23,7 +23,6 @@ import com.google.appengine.eclipse.core.sdk.AppEngineUpdateWebInfFolderCommand;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.appengine.eclipse.core.sdk.GaeSdkCapability;
 import com.google.appengine.eclipse.core.sdk.GaeSdkContainer;
-import com.google.gdt.eclipse.appengine.api.AppengineApiWrapper;
 import com.google.gdt.eclipse.appsmarketplace.resources.AppsMarketplaceProject;
 import com.google.gdt.eclipse.appsmarketplace.resources.AppsMarketplaceProjectResources;
 import com.google.gdt.eclipse.appsmarketplace.sdk.AppsMarketplaceSdk;
@@ -243,8 +242,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
   private String projectName;
 
   private String appId;
-  
-  private boolean isNewAppId;
 
   private String[] templates = new String[] {"sample"};
 
@@ -301,17 +298,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     boolean useGae = natureIds.contains(GaeNature.NATURE_ID);
 
     if (useGae) {
-      // Attempt to create a new App Engine application
-      // If App ID is invalid/not available, an IOException is thrown
-      if (isNewAppId) {
-        AppengineApiWrapper appengineDataProvider = new AppengineApiWrapper();
-
-        // TODO(nbashirbello): Use a monitor on this call. If the network hangs, create the general
-        // project anyway, but then provide an error after the project has been created indicating
-        // that the app could not be created (and providing the user with instructions on how to
-        // create it manually).
-        appengineDataProvider.insertNewApplication(appId, true);
-      }
       createGaeProject(useGwt);
     }
 
@@ -515,10 +501,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
 
   public void setIsGaeSdkFromEclipseDefault(boolean gaeSdkIsEclipseDefault) {
     this.isUseGaeSdkFromDefault = gaeSdkIsEclipseDefault;
-  }
-
-  public void setIsNewAppId(boolean isNewAppId) {
-    this.isNewAppId = isNewAppId;
   }
 
   public void setLocationURI(URI locationURI) {
