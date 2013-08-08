@@ -61,6 +61,8 @@ public class DeployProjectJob extends WorkspaceJob {
 
   private static final String LOG_FILE_PREFIX = "appengine-deploy";
 
+  private static final String CLOUD_CONSOLE_URL = "http://cloud.google.com/console";
+
   private static OutputStream createFileStream(File file) {
     OutputStream stream = null;
     try {
@@ -187,20 +189,8 @@ public class DeployProjectJob extends WorkspaceJob {
 
     if (status.getSeverity() == IStatus.ERROR) {
       Throwable ex = status.getException();
-      String message = status.getMessage();
-
-      if (ex instanceof ConnectException) {
-        message = "Could not connect to the App Engine server";
-      }
-
-      if (ex instanceof UnknownHostException) {
-        message = "Invalid host name: " + status.getMessage();
-      }
-
-      message += "\n\nSee the deployment console for more details";
-
-      status = new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID,
-          message, ex);
+      String message = customizedMessage(status.getMessage(), ex);
+      status = new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID, message, ex);
     } else if (status.isOK()) {
       AppEngineCorePluginLog.logInfo(gaeProject.getProject().getName()
           + " successfully deployed to Google App Engine");
@@ -211,5 +201,18 @@ public class DeployProjectJob extends WorkspaceJob {
     }
 
     return status;
+  }
+
+  private String customizedMessage(String statusMessage, Throwable ex) {
+    if (statusMessage.contains("This application does not exist")) {
+      return "The App Id you selected, " + gaeProject.getAppId() + ", does not exist. Go to "
+          + CLOUD_CONSOLE_URL + " to view existing App Ids or create a new App Id.\n";
+    } else {
+      String prefix =
+          ex instanceof ConnectException ? "Could not connect to the App Engine server"
+              : ex instanceof UnknownHostException ? "Invalid host name: " + statusMessage
+                  : statusMessage;
+      return prefix + "\n\nSee the deployment console for more details";
+    }
   }
 }
