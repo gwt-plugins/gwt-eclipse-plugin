@@ -190,6 +190,10 @@ public class UpdateManagedApisOperation extends AbstractOperation {
       List<IClasspathEntry> rawClasspathList = new ArrayList<IClasspathEntry>();
       rawClasspathList.addAll(Arrays.asList(initialRawClasspath));
 
+      if (stateAfterApply.size() > 0) {
+          managedApiProject.addManagedApiProjectState();
+      }
+
       for (ManagedApi apiToRemove : toRemove) {
         String extraPathInfo = apiToRemove.getRootDirectory().getName();
         IClasspathEntry entry = JavaCore.newContainerEntry(ManagedApiPlugin.API_CONTAINER_PATH.append(extraPathInfo));
