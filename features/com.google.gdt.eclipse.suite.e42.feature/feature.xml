@@ -132,7 +132,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.appengine.ap"
+         id="com.google.gdt.eclipse.appengine.api"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
