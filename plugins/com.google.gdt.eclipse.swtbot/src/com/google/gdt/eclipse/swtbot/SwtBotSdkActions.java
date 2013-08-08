@@ -65,8 +65,7 @@ public final class SwtBotSdkActions {
     SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot,
         bot.button("Add..."));
 
-    bot.textWithLabel("Installation directory:").setText(
-        System.getenv(sdkDirEnvVariableName));
+    bot.textWithLabel("Installation directory:").setText(System.getenv(sdkDirEnvVariableName));
     bot.textWithLabel("Display name:").setText(sdkDisplayName);
 
     // Close add SDK dialog

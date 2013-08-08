@@ -38,6 +38,8 @@ import java.util.Arrays;
 
 /**
  * Tests the {@link GWTRuntime} class.
+ * 
+ * These tests assume you have the GWT source code checked out. Some tests could fail otherwise.
  */
 public class GWTRuntimeTest extends TestCase {
   private static void assertEquals(IClasspathEntry[] expected, IClasspathEntry[] actual) {
