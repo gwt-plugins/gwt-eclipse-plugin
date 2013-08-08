@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="com.google.gdt.eclipse.appengine.swarm.endpointscallback" name="EndpointsCallback" schema="schema/com.google.gdt.eclipse.appengine.swarm.endpointscallback.exsd"/>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+         <objectContribution
+            adaptable="true"
+            id="com.google.gdt.eclipse.appengine.swarm.wizards.GenerateSwarmApi"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               class="com.google.gdt.eclipse.appengine.swarm.wizards.GenerateSwarmApiAction"
+               icon="icons/ae-deploy_16x16.png"
+               enablesFor="?"
+               id="com.google.gdt.eclipse.appengine.swarm.wizards.GenerateSwarmApiAction"
+               label="Generate Cloud Endpoint Client Library"
+               menubarPath="com.google.gdt.eclipse.suite.popupMenu.project/actionsContent">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+         <objectContribution
+            adaptable="true"
+            id="com.google.gdt.eclipse.appengine.swarm.wizards.GenerateSwarmApiClass"
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="*.java">
+         <action
+               class="com.google.gdt.eclipse.appengine.swarm.wizards.GenerateSwarmApiClassAction"
+               enablesFor="?"
+               id="com.google.gdt.eclipse.appengine.swarm.wizards.GenerateSwarmApiClassAction"
+               label="Generate Cloud Endpoint Class"
+               menubarPath="com.google.gdt.eclipse.suite.popupMenu.file/content">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         point="com.google.appengine.eclipse.core.gaeProjectChange">
+      <gaeProjectChangeExtension
+      class="com.google.gdt.eclipse.appengine.swarm.wizards.HandleGaeProjectChange">
+      </gaeProjectChangeExtension>
+   </extension>
+   <extension
+         point="org.eclipse.ltk.core.refactoring.renameParticipants">
+      <renameParticipant
+            class="com.google.gdt.eclipse.appengine.swarm.util.ConnectedProjectHandler"
+            id="com.google.gdt.eclipse.appengine.swarm.util.ConnectedProjectHandler"
+            name="Rename connected projects for cloud endpoints">
+         <enablement>
+            <with
+                  variable="element">
+               <instanceof
+                     value="org.eclipse.core.resources.IProject">
+               </instanceof>
+            </with>
+            <with
+                  variable="affectedNatures">
+               <iterate
+                     operator="or">
+                  <equals
+                        value="org.eclipse.jdt.core.javanature">
+                  </equals>
+               </iterate>
+            </with>
+         </enablement>
+      </renameParticipant>
+   </extension>
+</plugin>

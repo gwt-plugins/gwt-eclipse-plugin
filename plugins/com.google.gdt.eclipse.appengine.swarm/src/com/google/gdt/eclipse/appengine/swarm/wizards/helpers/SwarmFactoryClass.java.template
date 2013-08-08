@@ -1,0 +1,16 @@
+package @PackageName@;
+
+import @PackageName2@;
+import @PackageName3@;
+
+public final class @SwarmType2@ {
+  private static final @SwarmType@ManagerFactory @Instance@ =
+      @FactoryCreate@("transactions-optional");
+
+  private @SwarmType2@() {
+  }
+
+  public static @SwarmType@ManagerFactory get() {
+    return @Instance@;
+  }
+}
