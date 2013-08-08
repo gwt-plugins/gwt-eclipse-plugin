@@ -107,11 +107,8 @@
       <import plugin="org.eclipse.wst.common.project.facet.ui"/>
       <import plugin="org.eclipse.core.runtime" version="3.9.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.platform" version="4.3" match="greaterOrEqual"/>
-      <!-- Commenting out, as the Maven functionality is optional and depends
-           on whether or not the user already has Maven installed. 
-        <import plugin="org.eclipse.m2e.core"/>
-        <import plugin="org.eclipse.m2e.maven.runtime"/>
-      -->
+      <import plugin="org.eclipse.m2e.core"/>
+      <import plugin="org.eclipse.m2e.maven.runtime"/>
    </requires>
 
    <plugin

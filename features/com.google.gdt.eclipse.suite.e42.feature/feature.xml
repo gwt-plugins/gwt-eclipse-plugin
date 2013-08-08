@@ -105,11 +105,8 @@
       <import plugin="org.eclipse.wst.server.ui"/>
       <import plugin="org.eclipse.wst.common.project.facet.ui"/>
       <import feature="org.eclipse.platform" version="3.8" match="greaterOrEqual"/>
-      <!-- Commenting out, as the Maven functionality is optional and depends
-           on whether or not the user already has Maven installed. 
       <import plugin="org.eclipse.m2e.core"/>
       <import plugin="org.eclipse.m2e.maven.runtime"/>
-      -->
       <import plugin="org.eclipse.jst.jee"/>
    </requires>
 
