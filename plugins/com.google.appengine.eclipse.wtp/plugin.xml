@@ -254,7 +254,6 @@
       </builder>
    </extension>
     
-    
    <extension point="org.eclipse.core.expressions.propertyTesters">
      <propertyTester
           class="com.google.appengine.eclipse.wtp.handlers.ServerPropertyTester"
