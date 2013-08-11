@@ -15,11 +15,6 @@ package com.google.appengine.eclipse.wtp.jpa;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.BundleContext;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.HashSet;
 
 /**
  * Google App Engine WTP plug-in life-cycle.
@@ -28,7 +23,6 @@ public final class AppEngineJpaPlugin extends AbstractUIPlugin {
 
   public static final String PLUGIN_ID = "com.google.appengine.eclipse.wtp";
   private static AppEngineJpaPlugin INSTANCE;
-  private static HashSet<String[]> commandsToExecuteAtExit = new HashSet<String[]>();
 
   public static IStatus createErrorStatus(String mess, Exception e) {
     return new Status(IStatus.ERROR, PLUGIN_ID, -1, mess, e);
@@ -56,22 +50,4 @@ public final class AppEngineJpaPlugin extends AbstractUIPlugin {
     INSTANCE = this;
   }
 
-  @Override
-  public void stop(BundleContext v) throws Exception {
-    for (String[] command : commandsToExecuteAtExit) {
-      try {
-        logMessage(">>> " + command[0], null);
-        BufferedReader input = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(
-            command).getInputStream()));
-        String line = null;
-        while ((line = input.readLine()) != null) {
-          logMessage(">>> " + line, null);
-        }
-        input.close();
-      } catch (Throwable ex) {
-        logMessage("Error executing process:\n" + ex);
-      }
-    }
-    super.stop(v);
-  }
 }
