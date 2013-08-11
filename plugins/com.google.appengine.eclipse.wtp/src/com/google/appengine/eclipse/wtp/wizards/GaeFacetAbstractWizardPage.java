@@ -30,12 +30,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.wst.common.componentcore.datamodel.FacetInstallDataModelProvider;
-import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetProjectCreationDataModelProperties;
+import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetDataModelProperties;
 import org.eclipse.wst.common.frameworks.datamodel.AbstractDataModelProvider;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.frameworks.internal.datamodel.ui.DataModelWizardPage;
+import org.eclipse.wst.common.project.facet.core.IFacetedProjectWorkingCopy;
 import org.eclipse.wst.common.project.facet.core.runtime.IRuntime;
 import org.eclipse.wst.common.project.facet.ui.IFacetWizardPage;
 import org.eclipse.wst.common.project.facet.ui.IWizardContext;
@@ -93,18 +93,18 @@ abstract class GaeFacetAbstractWizardPage extends DataModelWizardPage implements
 
   protected final boolean isEarSupported() throws CoreException {
     IDataModel dataModel = getDataModel();
-    IDataModel masterDataModel = (IDataModel) dataModel.getProperty(FacetInstallDataModelProvider.MASTER_PROJECT_DM);
-    IRuntime runtime = (IRuntime) masterDataModel.getProperty(IFacetProjectCreationDataModelProperties.FACET_RUNTIME);
-    if (runtime != null) {
-      IPath sdkLocation = ProjectUtils.getGaeSdkLocation(runtime);
-      if (sdkLocation != null) {
-        SdkSet<GaeSdk> sdks = GaePreferences.getSdkManager().getSdks();
-        GaeSdk sdk = SdkUtils.findSdkForInstallationPath(sdks, sdkLocation);
-        if (sdk != null) {
-          return sdk.getCapabilities().contains(GaeSdkCapability.EAR);
+    IFacetedProjectWorkingCopy facetedProject = (IFacetedProjectWorkingCopy) dataModel.getProperty(IFacetDataModelProperties.FACETED_PROJECT_WORKING_COPY);
+    IRuntime runtime = facetedProject.getPrimaryRuntime();
+      if (runtime != null) {
+        IPath sdkLocation = ProjectUtils.getGaeSdkLocation(runtime);
+        if (sdkLocation != null) {
+          SdkSet<GaeSdk> sdks = GaePreferences.getSdkManager().getSdks();
+          GaeSdk sdk = SdkUtils.findSdkForInstallationPath(sdks, sdkLocation);
+          if (sdk != null) {
+            return sdk.getCapabilities().contains(GaeSdkCapability.EAR);
+          }
         }
       }
-    }
     throw new CoreException(StatusUtilities.newErrorStatus(
         "Invalid App Engine SDK or misconfigured runtime.", AppEnginePlugin.PLUGIN_ID));
   }
