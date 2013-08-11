@@ -264,6 +264,7 @@
           type="org.eclipse.wst.server.core.IServer">
      </propertyTester>
    </extension>
+   
    <extension point="org.eclipse.core.expressions.definitions">
        <definition id="com.google.appengine.eclipse.wtp.isGaeSelected">
            <and>

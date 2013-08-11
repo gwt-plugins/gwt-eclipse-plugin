@@ -52,7 +52,7 @@ public final class GaeRuntimeConfigurator implements IStartup {
       IServerType serverType = ServerCore.findServerType(GAE_SERVER_TYPE_ID);
       IRuntime[] runtimes = ServerCore.getRuntimes();
       for (IRuntime runtime : runtimes) {
-        if (runtime != null && runtime.getRuntimeType().equals(serverType.getRuntimeType())) {
+        if (runtime != null && serverType.getRuntimeType().equals(runtime.getRuntimeType())) {
           return runtime;
         }
       }
