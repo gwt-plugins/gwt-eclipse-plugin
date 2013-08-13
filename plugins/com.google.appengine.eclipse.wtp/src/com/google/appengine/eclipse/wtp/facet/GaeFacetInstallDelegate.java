@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.facet;
 
+import com.google.appengine.eclipse.core.nature.GaeNature;
 import com.google.appengine.eclipse.core.preferences.GaePreferences;
 import com.google.appengine.eclipse.core.properties.GaeProjectProperties;
 import com.google.appengine.eclipse.core.resources.GaeProjectResources;
@@ -71,6 +72,9 @@ public final class GaeFacetInstallDelegate implements IDelegate {
     List<IDataModelOperation> operations = Lists.newArrayList();
     IPath sdkLocation = getSdkLocation(model);
     GaeSdk sdk = getSdk(sdkLocation);
+    // if user attempts to install App Engine facet to existing old-style GPE project, then make
+    // that project 'no using GAE'.
+    GaeNature.removeNatureFromProject(project);
     // do create project contents
     if (JavaEEProjectUtilities.isDynamicWebProject(project)) {
       // add a special container to be dependency of the Web App (WEB-INF/lib)
