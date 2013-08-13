@@ -32,6 +32,14 @@
            <command
                  commandId="com.google.appengine.eclipse.wtp.commands.GenerateBackendProjectCommand"
                  style="push">
+              <visibleWhen checkEnabled="false">
+                <with variable="selection">
+                    <count value="1"/>
+                    <iterate>
+                        <adapt type="org.eclipse.core.resources.IProject"/>
+                    </iterate>
+                </with>
+              </visibleWhen>
            </command>
         </menuContribution>
     </extension>
