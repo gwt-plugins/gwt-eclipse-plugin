@@ -94,7 +94,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     sendNotificationIntent(
         context,
         "Registration with Google Cloud Messaging...FAILED!\n\n"
-            + "A Google Cloud Messaging registration error occured (errorid: "
+            + "A Google Cloud Messaging registration error occurred (errorid: "
             + errorId
             + "). "
             + "Do you have your project number ("
