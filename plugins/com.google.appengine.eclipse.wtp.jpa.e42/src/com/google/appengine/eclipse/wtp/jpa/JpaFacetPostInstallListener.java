@@ -46,7 +46,7 @@ public final class JpaFacetPostInstallListener extends JpaFacetAbstractPostInsta
           } else {
             // create a persistence unit if there isn't one
             unit = persistence.addPersistenceUnit();
-            unit.setName(jpaProject.getName());
+            unit.setName("transactions-optional");
           }
           // initial setup for properties
           if (unit.getProvider() == null) {

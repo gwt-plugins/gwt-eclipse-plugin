@@ -27,6 +27,20 @@ import java.util.Set;
 public final class GaeFacetInstallDataModelProvider extends
     GaeFacetInstallAbstractDataModelProvider implements IGaeFacetConstants {
 
+  private boolean hasEnabledSample;
+
+  public GaeFacetInstallDataModelProvider() {
+    this(true);
+  }
+
+  /**
+   * In some cases we have to disable generating App Engine facet sample.
+   */
+  public GaeFacetInstallDataModelProvider(boolean hasEnabledSample) {
+    super();
+    this.hasEnabledSample = hasEnabledSample;
+  }
+
   @Override
   public Object getDefaultProperty(String propertyName) {
     if (propertyName.equals(FACET_ID)) {
@@ -38,7 +52,7 @@ public final class GaeFacetInstallDataModelProvider extends
     } else if (propertyName.equals(GAE_PROPERTY_APP_VERSION)) {
       return "1";
     } else if (propertyName.equals(GAE_PROPERTY_CREATE_SAMPLE)) {
-      return true;
+      return hasEnabledSample;
     } else if (propertyName.equals(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD)) {
       return false;
     } else if (propertyName.equals(GAE_PROPERTY_PACKAGE)) {
@@ -57,6 +71,14 @@ public final class GaeFacetInstallDataModelProvider extends
     propertyNames.add(GAE_PROPERTY_PACKAGE);
     propertyNames.add(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD);
     return propertyNames;
+  }
+
+  @Override
+  public boolean isPropertyEnabled(String propertyName) {
+    if (GAE_PROPERTY_CREATE_SAMPLE.equals(propertyName)) {
+      return hasEnabledSample;
+    }
+    return super.isPropertyEnabled(propertyName);
   }
 
   @Override

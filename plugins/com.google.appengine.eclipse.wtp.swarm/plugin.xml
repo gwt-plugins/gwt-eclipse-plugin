@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<plugin>
+   <extension point="org.eclipse.ui.commands">
+       <command
+             categoryId="com.google.appengine.eclipse.wtp.commands.category"
+             description="%menu.generatebackendprojectdesc"
+             id="com.google.appengine.eclipse.wtp.commands.GenerateBackendProjectCommand"
+             name="%menu.generatebackendproject"/>
+    </extension>
+    <extension point="org.eclipse.ui.handlers">
+        <handler class="com.google.appengine.eclipse.wtp.handlers.GenerateBackendProjectHandler"
+                 commandId="com.google.appengine.eclipse.wtp.commands.GenerateBackendProjectCommand">
+            <enabledWhen>
+                <with variable="selection">
+                    <count value="1"/>
+                    <iterate>
+                        <adapt type="org.eclipse.jdt.core.IJavaElement">
+                            <test property="org.eclipse.jdt.core.hasTypeOnClasspath" value="android.Manifest"/>
+                            <test property="org.eclipse.jdt.core.hasTypeOnClasspath" value="android.app.Activity"/>
+                        </adapt>
+                    </iterate>
+                </with>
+            </enabledWhen>
+        </handler>
+    </extension>
+    <extension point="org.eclipse.ui.menus">
+        <menuContribution
+              allPopups="false"
+              locationURI="popup:com.google.appengine.wtp.actions.projectExplorer.subMenu">
+           <command
+                 commandId="com.google.appengine.eclipse.wtp.commands.GenerateBackendProjectCommand"
+                 style="push">
+           </command>
+        </menuContribution>
+    </extension>
+</plugin>

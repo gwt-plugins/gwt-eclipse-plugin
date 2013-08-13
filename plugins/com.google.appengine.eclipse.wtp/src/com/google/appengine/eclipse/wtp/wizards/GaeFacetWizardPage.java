@@ -126,10 +126,14 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
         AppEnginePlugin.logMessage(e);
       }
     }
-    model.setBooleanProperty(GAE_PROPERTY_CREATE_SAMPLE,
-        (Boolean) model.getDefaultProperty(GAE_PROPERTY_CREATE_SAMPLE));
-    model.setBooleanProperty(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD,
-        (Boolean) model.getDefaultProperty(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD));
+    if (model.getProperty(GAE_PROPERTY_CREATE_SAMPLE) == null) {
+      model.setBooleanProperty(GAE_PROPERTY_CREATE_SAMPLE,
+          (Boolean) model.getDefaultProperty(GAE_PROPERTY_CREATE_SAMPLE));
+    }
+    if (model.getProperty(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD) == null) {
+      model.setBooleanProperty(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD,
+          (Boolean) model.getDefaultProperty(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD));
+    }
     synchHelper.synchAllUIWithModel();
   }
 }

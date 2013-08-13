@@ -34,7 +34,7 @@ public final class JpaFacetUninstallListener implements IFacetedProjectListener 
         BuilderUtilities.removeBuilderFromProject(actionEvent.getProject().getProject(),
             AppEngineJpaPlugin.PLUGIN_ID + ".enhancerbuilder");
       } catch (CoreException e) {
-        // TODO: actually don't need to log this.
+        // TODO(amitin): actually don't need to log this?
         AppEngineJpaPlugin.logMessage(e);
       }
     }

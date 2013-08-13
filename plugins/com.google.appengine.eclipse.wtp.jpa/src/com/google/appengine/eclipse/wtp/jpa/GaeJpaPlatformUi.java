@@ -45,6 +45,6 @@ public class GaeJpaPlatformUi extends AbstractJpaPlatformUi {
   @Override
   public void generateDDL(JpaProject project, IStructuredSelection selection) {
     this.displayMessage("Generate Tables from Entities",
-        "Generate Tables from Entities is not supported by the Generic Platform");
+        "Generate Tables from Entities currently is not supported by the App Engine Platform");
   }
 }
