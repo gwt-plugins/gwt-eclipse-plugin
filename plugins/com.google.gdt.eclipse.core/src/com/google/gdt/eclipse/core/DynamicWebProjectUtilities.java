@@ -46,6 +46,14 @@ public class DynamicWebProjectUtilities {
   }
 
   /**
+   * Returns <code>true</code> if the given project is a App Engine Dynamic Web Project.
+   */
+  public static boolean isAppengineDynamicWebProject(IProject project) throws CoreException {
+    return isDynamicWebProject(project)
+        && FacetedProjectFramework.hasProjectFacet(project, "com.google.appengine.facet", null);
+  }
+
+  /**
    * Returns <code>true</code> if the given project is a Dynamic Web Project.
    */
   public static boolean isDynamicWebProject(IProject project)

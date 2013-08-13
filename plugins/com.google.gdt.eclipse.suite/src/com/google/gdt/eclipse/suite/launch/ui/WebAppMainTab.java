@@ -16,6 +16,7 @@ package com.google.gdt.eclipse.suite.launch.ui;
 
 import com.google.appengine.eclipse.core.nature.GaeNature;
 import com.google.gdt.eclipse.core.CorePluginLog;
+import com.google.gdt.eclipse.core.DynamicWebProjectUtilities;
 import com.google.gdt.eclipse.core.launch.UpdateLaunchConfigurationDialogBatcher;
 import com.google.gdt.eclipse.core.natures.NatureUtils;
 import com.google.gdt.eclipse.suite.GdtPlugin;
@@ -175,6 +176,15 @@ public class WebAppMainTab extends JavaMainTab implements
         setErrorMessage(MessageFormat.format(LauncherMessages.JavaMainTab_21,
             projectName));
         return false;
+      }
+
+      try {
+        if (DynamicWebProjectUtilities.isAppengineDynamicWebProject(project)) {
+          setErrorMessage("Use \"Run on Server...\" launch shortcut to launch GAE WTP project");
+          return false;
+        }
+      } catch (CoreException e) {
+        GdtPlugin.getLogger().logError(e);
       }
 
       boolean isGwtOrGaeProject;
