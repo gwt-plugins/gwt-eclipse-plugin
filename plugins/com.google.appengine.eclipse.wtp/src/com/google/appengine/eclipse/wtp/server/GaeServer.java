@@ -62,9 +62,12 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
   public static final String PROPERTY_DEPLOY_DIR = "deploy-directory";
   public static final String PROPERTY_SERVERPORT = "server-port-number";
   public static final String PROPERTY_AUTORELOAD_TIME = "server-autoreload-time";
+  public static final String PROPERTY_HRD_UNAPPLIED_JOB_PCT = "server-hrd-unapplied-job-pct";
+  public static final String PROPERTY_USER_VM_ARGS = "server-user-vm-args";
   public static final String DEFAULT_DEPLOYDIR = "wtpwebapps";
   public static final String DEFAULT_SERVER_PORT = "8888";
   public static final String DEFAULT_AUTORELOAD_TIME = "5";
+  public static final String DEFAULT_HRD_UNAPPLIED_JOB_PCT = "50";
 
   /**
    * @return a {@link GaeServer} instance which associated with gives {@link IServer} instance.
@@ -195,7 +198,11 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
    * @return the autoreload timeout as it set in properties.
    */
   public String getAutoReloadTime() {
-    return getServerInstanceProperties().get(PROPERTY_AUTORELOAD_TIME);
+    String value = getServerInstanceProperties().get(PROPERTY_AUTORELOAD_TIME);
+    if (value == null) {
+      return DEFAULT_AUTORELOAD_TIME;
+    }
+    return value;
   }
 
   @Override
@@ -234,6 +241,17 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
       return null;
     }
     return (GaeRuntime) getServer().getRuntime().loadAdapter(GaeRuntime.class, null);
+  }
+
+  /**
+   * @return the amount of eventual consistency you want your application to see.
+   */
+  public String getHrdUnappliedJobPercentage() {
+    String value = getServerInstanceProperties().get(PROPERTY_HRD_UNAPPLIED_JOB_PCT);
+    if (value == null) {
+      return DEFAULT_HRD_UNAPPLIED_JOB_PCT;
+    }
+    return value;
   }
 
   /**
@@ -332,6 +350,17 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
     }
   }
 
+  /**
+   * @return user-defined VM arguments.
+   */
+  public String getUserVMArgs() {
+    String value = getServerInstanceProperties().get(PROPERTY_USER_VM_ARGS);
+    if (value == null) {
+      return "";
+    }
+    return value;
+  }
+
   @Override
   @SuppressWarnings("unchecked")
   public void modifyModules(IModule[] add, IModule[] remove, IProgressMonitor monitor)
@@ -365,8 +394,6 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
 
   /**
    * Remove a property change listener from this server.
-   *
-   * @param listener java.beans.PropertyChangeListener
    */
   public void removePropertyChangeListener(PropertyChangeListener listener) {
     if (propChangeListeners != null) {
@@ -378,6 +405,8 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
   public void setDefaults(IProgressMonitor monitor) {
     setServerPort(DEFAULT_SERVER_PORT);
     setAutoreloadTime(DEFAULT_AUTORELOAD_TIME);
+    setHrdUnappliedJobPercentage(DEFAULT_HRD_UNAPPLIED_JOB_PCT);
+    setUserVMArgs("");
   }
 
   public void setServerInstanceProperties(Map<String, String> properties) {
@@ -414,6 +443,21 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
     } catch (Throwable e) {
       return StatusUtilities.newErrorStatus("Invalid autoreload delay time: " + autoreloadTime,
           AppEnginePlugin.PLUGIN_ID);
+    }
+    String hrdUnappliedPct = getHrdUnappliedJobPercentage();
+    if (hrdUnappliedPct == null || hrdUnappliedPct.trim().length() == 0) {
+      return StatusUtilities.newErrorStatus("Unapplied job percentage value cannot be empty",
+          AppEnginePlugin.PLUGIN_ID);
+    }
+    try {
+      int value = Integer.parseInt(hrdUnappliedPct);
+      if (value < 0 || value > 100) {
+        return StatusUtilities.newErrorStatus(
+            "The unapplied job percentage must be between 0 and 100", AppEnginePlugin.PLUGIN_ID);
+      }
+    } catch (Throwable e) {
+      return StatusUtilities.newErrorStatus("Invalid unapplied job percentage value: "
+          + hrdUnappliedPct, AppEnginePlugin.PLUGIN_ID);
     }
     return StatusUtilities.newOkStatus("", AppEnginePlugin.PLUGIN_ID);
   }
@@ -488,7 +532,11 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
    * @return the main server port as it set in properties.
    */
   private String getServerPort() {
-    return getServerInstanceProperties().get(PROPERTY_SERVERPORT);
+    String value = getServerInstanceProperties().get(PROPERTY_SERVERPORT);
+    if (value == null) {
+      return DEFAULT_SERVER_PORT;
+    }
+    return value;
   }
 
   /**
@@ -499,9 +547,23 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
   }
 
   /**
+   * Set the amount of eventual consistency you want your application to see. 0 - disable HRD.
+   */
+  private void setHrdUnappliedJobPercentage(String value) {
+    getServerInstanceProperties().put(PROPERTY_HRD_UNAPPLIED_JOB_PCT, value);
+  }
+
+  /**
    * Set the server port property value.
    */
   private void setServerPort(String portString) {
     getServerInstanceProperties().put(PROPERTY_SERVERPORT, portString);
+  }
+
+  /**
+   * Set the user-defined VM args, separated by space.
+   */
+  private void setUserVMArgs(String args) {
+    getServerInstanceProperties().put(PROPERTY_USER_VM_ARGS, args);
   }
 }

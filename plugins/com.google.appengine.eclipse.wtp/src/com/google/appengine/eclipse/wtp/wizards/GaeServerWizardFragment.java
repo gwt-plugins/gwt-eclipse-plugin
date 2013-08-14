@@ -46,9 +46,11 @@ public final class GaeServerWizardFragment extends WizardFragment {
   private Text serverPortText;
   private Text autoreloadText;
   private Label autoreloadLabel;
+  private Text hrdUnappliedPctText;
 
   private String serverPort = GaeServer.DEFAULT_SERVER_PORT;
   private String autoreloadTime = GaeServer.DEFAULT_AUTORELOAD_TIME;
+  private String hrdUnappliedJobPercentage = GaeServer.DEFAULT_HRD_UNAPPLIED_JOB_PCT;
   boolean isValid = false;
 
   @Override
@@ -74,6 +76,13 @@ public final class GaeServerWizardFragment extends WizardFragment {
       autoreloadText = new Text(container, SWT.SHADOW_IN | SWT.BORDER);
       autoreloadText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
       autoreloadText.setText(autoreloadTime);
+    }
+    {
+      Label hrdUnappliedPctLabel = new Label(container, SWT.NONE);
+      hrdUnappliedPctLabel.setText("HRD: unapplied job percentage (0 - disable HRD)");
+      hrdUnappliedPctText = new Text(container, SWT.SHADOW_IN | SWT.BORDER);
+      hrdUnappliedPctText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+      hrdUnappliedPctText.setText(hrdUnappliedJobPercentage);
     }
     // add listeners
     addListeners();
@@ -115,6 +124,7 @@ public final class GaeServerWizardFragment extends WizardFragment {
     // restore defaults as wizard fragment is being re-used
     serverPort = GaeServer.DEFAULT_SERVER_PORT;
     autoreloadTime = GaeServer.DEFAULT_AUTORELOAD_TIME;
+    hrdUnappliedJobPercentage = GaeServer.DEFAULT_HRD_UNAPPLIED_JOB_PCT;
     super.performCancel(monitor);
   }
 
@@ -124,10 +134,12 @@ public final class GaeServerWizardFragment extends WizardFragment {
       public void modifyText(ModifyEvent e) {
         updateFields();
         isValid = validate();
+        wizard.update();
       }
     };
     serverPortText.addModifyListener(defaultListener);
     autoreloadText.addModifyListener(defaultListener);
+    hrdUnappliedPctText.addModifyListener(defaultListener);
   }
 
   /**
@@ -137,6 +149,7 @@ public final class GaeServerWizardFragment extends WizardFragment {
     Map<String, String> propertyMap = Maps.newHashMap();
     propertyMap.put(GaeServer.PROPERTY_SERVERPORT, serverPort);
     propertyMap.put(GaeServer.PROPERTY_AUTORELOAD_TIME, autoreloadTime);
+    propertyMap.put(GaeServer.PROPERTY_HRD_UNAPPLIED_JOB_PCT, hrdUnappliedJobPercentage);
     return propertyMap;
   }
 
@@ -153,6 +166,7 @@ public final class GaeServerWizardFragment extends WizardFragment {
   private void updateFields() {
     serverPort = serverPortText.getText().trim();
     autoreloadTime = autoreloadText.getText().trim();
+    hrdUnappliedJobPercentage = hrdUnappliedPctText.getText().trim();
   }
 
   /**
@@ -168,10 +182,8 @@ public final class GaeServerWizardFragment extends WizardFragment {
 
     if (status == null || status.isOK()) {
       wizard.setMessage(null, IMessageProvider.NONE);
-      wizard.update();
     } else {
       wizard.setMessage(status.getMessage(), IMessageProvider.ERROR);
-      wizard.update();
       return false;
     }
     return true;

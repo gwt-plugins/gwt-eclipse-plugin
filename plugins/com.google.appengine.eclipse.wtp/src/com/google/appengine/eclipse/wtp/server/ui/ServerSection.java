@@ -48,6 +48,8 @@ public final class ServerSection extends ServerEditorSection implements Property
   private Text serverPortNumberText;
   private Text autoreloadTimeText;
   private Label autoreloadTimeLabel;
+  private Text hrdUnapliedJobPctText;
+  private Text vmArgumentsText;
 
   @Override
   public void createSection(Composite parent) {
@@ -60,7 +62,7 @@ public final class ServerSection extends ServerEditorSection implements Property
         | ExpandableComposite.FOCUS_TITLE);
 
     section.setText("Application Server");
-    section.setDescription("Edit runtime properties for the Google App Engine");
+    section.setDescription("Edit runtime properties for the Google App Engine Development Server");
     section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 
     Composite comp = toolkit.createComposite(section);
@@ -87,6 +89,18 @@ public final class ServerSection extends ServerEditorSection implements Property
       autoreloadTimeText = toolkit.createText(comp, String.valueOf(gaeServer.getAutoReloadTime()),
           SWT.BORDER);
       txtGDF.applyTo(autoreloadTimeText);
+    }
+    {
+      createLabel(comp, "HRD: unapplied job percentage (0 - disable HRD)", toolkit);
+      hrdUnapliedJobPctText = toolkit.createText(comp,
+          String.valueOf(gaeServer.getHrdUnappliedJobPercentage()), SWT.BORDER);
+      txtGDF.applyTo(hrdUnapliedJobPctText);
+    }
+    {
+      Label vmLabel = createLabel(comp, "Additional VM arguments", toolkit);
+      GridDataFactory.fillDefaults().span(3, 1).applyTo(vmLabel);
+      vmArgumentsText = toolkit.createText(comp, gaeServer.getUserVMArgs(), SWT.BORDER);
+      GridDataFactory.fillDefaults().grab(true, false).span(3, 1).applyTo(vmArgumentsText);
     }
     // add listeners
     addListeners();
@@ -147,6 +161,20 @@ public final class ServerSection extends ServerEditorSection implements Property
       public void modifyText(ModifyEvent e) {
         execute(new GaeCommands(server, autoreloadTimeText.getText().trim(),
             GaeServer.PROPERTY_AUTORELOAD_TIME));
+      }
+    });
+    hrdUnapliedJobPctText.addModifyListener(new ModifyListener() {
+      @Override
+      public void modifyText(ModifyEvent e) {
+        execute(new GaeCommands(server, hrdUnapliedJobPctText.getText().trim(),
+            GaeServer.PROPERTY_HRD_UNAPPLIED_JOB_PCT));
+      }
+    });
+    vmArgumentsText.addModifyListener(new ModifyListener() {
+      @Override
+      public void modifyText(ModifyEvent e) {
+        execute(new GaeCommands(server, vmArgumentsText.getText().trim(),
+            GaeServer.PROPERTY_USER_VM_ARGS));
       }
     });
   }

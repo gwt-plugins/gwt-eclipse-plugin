@@ -17,6 +17,7 @@ import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
 import com.google.appengine.eclipse.wtp.runtime.RuntimeUtils;
 import com.google.appengine.eclipse.wtp.utils.IOUtils;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
 
@@ -57,6 +58,7 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
   private static final String ARG_PORT = "--port=";
   private static final String ARG_DISABLE_UPDATE_CHECK = "--disable_update_check";
   private static final String ARG_ENABLE_AUTO_RELOAD = "-Dappengine.fullscan.seconds=";
+  private static final String ARG_UNAPPLIED_JOB_PCT = "-Ddatastore.default_high_rep_job_policy_unapplied_job_pct=";
   private static final String GAE_DEV_SERVER_MAIN = "com.google.appengine.tools.development.DevAppServerMain";
 
   private IDebugEventSetListener processListener;
@@ -238,8 +240,7 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
     GaeServer gaeServer = GaeServer.getGaeServer(getServer());
     // port (will be checked for availability later)
     args.append(ARG_PORT);
-    ServerPort[] serverPorts = gaeServer.getServerPorts();
-    args.append(serverPorts[0].getPort());
+    args.append(gaeServer.getMainPort().getPort());
     args.append(" ");
     // don't check for updates every run
     // TODO(amitin): make optional?
@@ -282,7 +283,7 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
     // ping server to check for startup
     try {
       String url = "http://" + getServer().getHost();
-      int port = gaeServer.getServerPorts()[0].getPort();
+      int port = gaeServer.getMainPort().getPort();
       if (port != 80) {
         url += ":" + port;
       }
@@ -345,15 +346,35 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
    */
   private List<String> getRuntimeVMArguments() {
     GaeRuntime gaeRuntime = getGaeRuntime();
+    GaeServer gaeServer = getGaeServer();
     List<String> vmArguments = RuntimeUtils.getDefaultRuntimeVMArguments(gaeRuntime);
     if (gaeRuntime != null
         && SdkUtils.compareVersionStrings(gaeRuntime.getGaeSdkVersion(),
             RuntimeUtils.MIN_SDK_VERSION_USING_AUTORELOAD) >= 0) {
-      // add autoreload
       StringBuilder args = new StringBuilder();
+      // add autoreload
       args.append(ARG_ENABLE_AUTO_RELOAD);
-      args.append(getGaeServer().getAutoReloadTime());
+      args.append(gaeServer.getAutoReloadTime());
       vmArguments.add(args.toString());
+    }
+    {
+      // add unapplied job percentage
+      StringBuilder args = new StringBuilder();
+      String percentage = gaeServer.getHrdUnappliedJobPercentage();
+      int pctValue = Integer.parseInt(percentage);
+      if (pctValue > 0) {
+        args.append(ARG_UNAPPLIED_JOB_PCT);
+        args.append(percentage);
+        vmArguments.add(args.toString());
+      }
+    }
+    {
+      // append user-defined VM arguments
+      String argsString = gaeServer.getUserVMArgs();
+      Iterable<String> args = Splitter.on(" ").trimResults().omitEmptyStrings().split(argsString);
+      for (String arg : args) {
+        vmArguments.add(arg);
+      }
     }
     return vmArguments;
   }
