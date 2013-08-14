@@ -73,7 +73,7 @@ public final class GaeFacetInstallDelegate implements IDelegate {
     IPath sdkLocation = getSdkLocation(model);
     GaeSdk sdk = getSdk(sdkLocation);
     // if user attempts to install App Engine facet to existing old-style GPE project, then make
-    // that project 'no using GAE'.
+    // that project 'not using GAE'.
     GaeNature.removeNatureFromProject(project);
     // do create project contents
     if (JavaEEProjectUtilities.isDynamicWebProject(project)) {
