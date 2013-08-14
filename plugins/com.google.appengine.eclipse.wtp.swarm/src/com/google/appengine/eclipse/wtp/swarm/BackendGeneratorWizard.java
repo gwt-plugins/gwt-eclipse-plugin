@@ -19,6 +19,7 @@ import com.google.common.collect.Sets;
 import com.google.gdt.eclipse.appengine.swarm.util.XmlUtil;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetDataModelProperties;
 import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetProjectCreationDataModelProperties;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
@@ -45,7 +46,8 @@ public final class BackendGeneratorWizard extends DataModelWizard {
 
   public BackendGeneratorWizard() {
     setWindowTitle("Generate Backend for Android");
-    // TODO(amitin): setDefaultPageImageDescriptor();
+    setDefaultPageImageDescriptor(ImageDescriptor.createFromURL(AppEngineSwarmPlugin.getInstance().getBundle().getEntry(
+        "/icons/app_engine_droid_64.png")));
     setNeedsProgressMonitor(true);
   }
 
