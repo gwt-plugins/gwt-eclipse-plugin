@@ -16,6 +16,7 @@ import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.properties.ui.DeployEarPropertiesPage;
 import com.google.appengine.eclipse.wtp.properties.ui.DeployWebPropertiesPage;
 import com.google.appengine.eclipse.wtp.server.GaeServer;
+import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 import com.google.gdt.eclipse.core.console.CustomMessageConsole;
 import com.google.gdt.eclipse.core.console.MessageConsoleUtilities;
 import com.google.gdt.eclipse.core.console.TerminateJobAction;
@@ -79,7 +80,7 @@ public abstract class RemoteOperationHandler extends AbstractSingleServerHandler
     }
     try {
       // check for appid
-      String appId = gaeServer.getAppId();
+      String appId = gaeServer.getAppId().trim();
       IProject project = gaeServer.getProject();
       if (project == null) {
         // show error message
@@ -87,9 +88,10 @@ public abstract class RemoteOperationHandler extends AbstractSingleServerHandler
             "Invalid project.");
         return;
       }
-      if (appId == null || appId.trim().length() == 0) {
-        String pageId = JavaEEProjectUtilities.isEARProject(project) ? DeployEarPropertiesPage.ID
-            : DeployWebPropertiesPage.ID;
+      boolean isEarProject = JavaEEProjectUtilities.isEARProject(project);
+      String appVersion = ProjectUtils.getAppVersion(project).trim();
+      if (appId.length() == 0 || (!isEarProject && (appVersion.length() == 0))) {
+        String pageId = isEarProject ? DeployEarPropertiesPage.ID : DeployWebPropertiesPage.ID;
         PreferenceDialog page = PreferencesUtil.createPropertyDialogOn(
             Display.getDefault().getActiveShell(), project, pageId, new String[] {pageId}, null);
         if (Window.OK != page.open()) {

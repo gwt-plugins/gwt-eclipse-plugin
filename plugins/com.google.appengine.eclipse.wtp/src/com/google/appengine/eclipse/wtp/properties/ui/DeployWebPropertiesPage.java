@@ -173,6 +173,10 @@ public final class DeployWebPropertiesPage extends DeployPropertiesPage {
    */
   private IStatus validateVersion() throws CoreException {
     String enteredVersion = deployComponent.getVersion();
+    if (enteredVersion.length() == 0) {
+      return StatusUtilities.newErrorStatus("Please enter version number.",
+          AppEnginePlugin.PLUGIN_ID);
+    }
     if (!enteredVersion.matches("[a-zA-Z0-9-]*")) {
       return StatusUtilities.newErrorStatus(
           "Invalid version number. Only letters, digits and hyphen allowed.",
