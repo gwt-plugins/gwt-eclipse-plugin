@@ -72,7 +72,7 @@
           point="org.eclipse.jdt.core.classpathContainerInitializer">
        <classpathContainerInitializer
              class="com.google.appengine.eclipse.wtp.jpa.libprov.DatanucleusClasspathContainerInitializer"
-             id="com.google.appengine.eclipse.wtp.DATANUCLEUS_CONTAINER">
+             id="com.google.appengine.eclipse.wtp.jpa.DATANUCLEUS_CONTAINER">
        </classpathContainerInitializer>
     </extension>
     <extension

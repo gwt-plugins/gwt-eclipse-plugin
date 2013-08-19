@@ -21,7 +21,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  */
 public final class AppEngineJpaPlugin extends AbstractUIPlugin {
 
-  public static final String PLUGIN_ID = "com.google.appengine.eclipse.wtp";
+  public static final String PLUGIN_ID = "com.google.appengine.eclipse.wtp.jpa";
   private static AppEngineJpaPlugin INSTANCE;
 
   public static IStatus createErrorStatus(String mess, Exception e) {
