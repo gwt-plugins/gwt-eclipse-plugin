@@ -12,8 +12,14 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.managedapis;
 
+import com.google.appengine.eclipse.wtp.AppEnginePlugin;
+import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
 import com.google.gdt.eclipse.managedapis.ManagedApiProject;
 import com.google.gdt.eclipse.managedapis.extensiontypes.IManagedApiProjectInitializationCallback;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
 
 /**
  * Adds an observer to get notified about changes made to project with managed APIs.
@@ -21,7 +27,16 @@ import com.google.gdt.eclipse.managedapis.extensiontypes.IManagedApiProjectIniti
 public final class ProjectInitializationCallback implements
     IManagedApiProjectInitializationCallback {
   @Override
-  public void onInitialization(ManagedApiProject project) {
-    project.registerManagedApiProjectObserver(new ManagedApiProjectObserverImpl(project));
+  public void onInitialization(ManagedApiProject apiProject) {
+    IProject project = apiProject.getProject();
+    try {
+      boolean isFaceted = FacetedProjectFramework.isFacetedProject(project);
+      if (isFaceted
+          && FacetedProjectFramework.hasProjectFacet(project, IGaeFacetConstants.GAE_FACET_ID)) {
+        apiProject.registerManagedApiProjectObserver(new ManagedApiProjectObserverImpl(apiProject));
+      }
+    } catch (CoreException e) {
+      AppEnginePlugin.logMessage(e);
+    }
   }
 }
