@@ -272,13 +272,6 @@ public class ManagedApiEntry implements Searchable {
   }
 
   /**
-   * Returns the version of the installed API
-   */
-  public String getVersion() {
-    return installed.getVersion();
-  }
-
-  /**
    * Determine whether an uninstalled listing exists for this entry.
    */
   public boolean hasDirectoryEntry() {

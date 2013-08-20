@@ -72,10 +72,13 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Job that composes several sub-actions to install managed apis in the current project. The job
- * takes a ManagedApiEntry and a project and when executed, downloads the targeted entries, extracts
- * them, creates a classpath container as necessary and refreshes the project to make the changes
- * visible.
+ * Job that installs managed apis in the current project.
+ * 
+ * If the current project is a Maven project, the pom.xml is updated based on the API information.
+ * 
+ * When it is a non-Maven project, the job composes several sub-actions to install managed apis.
+ * When executed, the job downloads the targeted entries, extracts them, creates a classpath
+ * container as necessary and refreshes the project to make the changes visible.
  */
 public class ManagedApiInstallJob extends Job {
 
@@ -148,8 +151,6 @@ public class ManagedApiInstallJob extends Job {
 
   private List<IStatus> subtaskStati;
 
-  private List<ApiRevision> apiRevisionList;
-
   private Collection<ManagedApiEntry> entries;
 
   private IProject project;
@@ -179,21 +180,118 @@ public class ManagedApiInstallJob extends Job {
    */
   @Override
   public IStatus run(IProgressMonitor monitor) {
+    if (project == null) {
+      return new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
+          "Not able to install APIs in null project");
+    }
+
+    if ((entries == null) || (entries.size() == 0)) {
+      return new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
+          "No APIs were selected to add to project.");
+    }
+
+    IStatus jobStatus = Status.OK_STATUS;
+    try {
+      jobStatus =
+          hasMavenNature(project) ? addApiToMavenProject(monitor)
+              : addApiToNonMavenProject(monitor);
+    } catch (CoreException e) {
+      jobStatus =
+          new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
+              "Error determining if project has the maven nature.", e);
+    }
+
+    final IStatus jobStatusPtr = jobStatus;
+    if (!jobStatus.isOK()) {
+      Display.getDefault().asyncExec(new Runnable() {
+        public void run() {
+          ManagedApiPlugin.getDefault().getLog().log(jobStatusPtr);
+          MessageDialog.openError(SWTUtilities.getShell(), "Google Plugin for Eclipse",
+              "There was a problem downloading the API bundles. "
+                  + "See the Error Log for more details.");
+        }
+      });
+    }
+    return Status.OK_STATUS;
+  }
+
+  /**
+   * Adds the selected APIs to a maven project by updating the pom.xml file.
+   */
+  private IStatus addApiToMavenProject(IProgressMonitor monitor) {
     IStatus jobStatus = Status.OK_STATUS;
 
+    try {
+      IFile pomIfile = project.getFile("pom.xml");
+      if (!pomIfile.exists()) {
+        return new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
+            pomIfile.getFullPath().toString() + " does not exist.");
+      }
+
+      // Initialize MavenProject
+      IMavenProjectFacade mavenProjectFacade =
+          MavenPlugin.getMavenProjectRegistry().getProject(project);
+      MavenProject mavenProject = mavenProjectFacade.getMavenProject(new NullProgressMonitor());
+      List<Dependency> allDependencies = mavenProject.getModel().getDependencies();
+  
+      if (subtaskStati == null) {
+        subtaskStati = new ArrayList<IStatus>();
+      }
+
+      // Update pom.xml with new dependencies
+      for (ManagedApiEntry entry : entries) {
+        if (entry == null) {
+          continue;
+        }
+
+        IStatus entryStatus = updateMavenDependencyList(mavenProject, entry, allDependencies);
+        if (!entryStatus.isOK()) {
+          if (entryStatus.matches(Status.CANCEL)) {
+            return entryStatus;
+          } else {
+            subtaskStati.add(entryStatus);
+            continue;
+          }
+        }
+      }
+
+      DefaultModelWriter modelWriter = new DefaultModelWriter();
+      modelWriter.write(pomIfile.getRawLocation().toFile(), null, mavenProject.getModel());
+
+      // Refresh pom file
+      pomIfile.refreshLocal(IResource.DEPTH_ZERO, monitor);
+
+    } catch (OperationCanceledException e) {
+      jobStatus =
+          new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
+          "Refreshing pom.xml was cancelled. Please refresh manually right-clicking the file and"
+              + "selecting Refresh.", e);
+    } catch (IOException e) {
+      jobStatus =
+          new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
+              "Error updating pom.xml file with new APIs", e);
+    } catch (CoreException e) {
+      jobStatus =
+          new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
+          "Error updating pom.xml file with new APIs", e);
+    }
+
+    return jobStatus;
+  }
+
+  /**
+   * Add the selected APIs to a non-maven project, by downloading the API and adding it to the
+   * project's classpath.
+   */
+  private IStatus addApiToNonMavenProject(IProgressMonitor monitor) {
+    IStatus jobStatus = Status.OK_STATUS;
+    
     // Calculate total ticks
     int totalTicks =
         TICKS_CREATE_ROOT_FOLDER + (entries.size() * TICKS_PER_API) + TICKS_REGISTER_APIS;
     SubMonitor submon = SubMonitor.convert(monitor, "Install Google APIs", totalTicks);
 
     List<IFolder> unregisteredApiFolders = new ArrayList<IFolder>();
-
-    if (project == null) {
-      return new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
-          "Not able to install APIs in null project");
-    }
-
-    apiRevisionList = new ArrayList<ApiRevision>();
 
     try {
       ManagedApiProject managedApiProject =
@@ -209,35 +307,29 @@ public class ManagedApiInstallJob extends Job {
         if (entryCount > 0) {
           subtaskStati = new ArrayList<IStatus>(entryCount);
 
-          boolean isMavenProject = hasMavenNature(project);
-
           // Download and set up all the API files
           for (ManagedApiEntry entry : entries) {
             monitor.setTaskName(MessageFormat.format(messageFmt, entry.getDisplayName()));
             IStatus entryStatus =
-                setUpApiFiles(entry, managedApiRoot, unregisteredApiFolders, isMavenProject, submon);
-            if (entryStatus == Status.CANCEL_STATUS) {
+                setUpApiFiles(entry, managedApiRoot, unregisteredApiFolders, submon);
+            if (entryStatus.matches(Status.CANCEL)) {
               break;
             }
           }
 
           // Install the APIs
-          if (jobStatus != Status.CANCEL_STATUS) {
-            if (isMavenProject) {
-              updateMavenDependecyList();
-            } else {
-              try {
-                managedApiProject.install(
-                    unregisteredApiFolders.toArray(new IFolder[unregisteredApiFolders.size()]),
-                    submon.newChild(TICKS_REGISTER_APIS), getName());
-              } catch (ExecutionException e) {
-                subtaskStati.add(new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
-                    "Failure while installing managed APIs", e));
-              }
+          if (!jobStatus.matches(Status.CANCEL)) {
+            try {
+              managedApiProject.install(
+                  unregisteredApiFolders.toArray(new IFolder[unregisteredApiFolders.size()]),
+                  submon.newChild(TICKS_REGISTER_APIS), getName());
+            } catch (ExecutionException e) {
+              subtaskStati.add(new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
+                  "Failure while installing managed APIs", e));
             }
           }
 
-          if (jobStatus != Status.CANCEL_STATUS && !subtaskStati.isEmpty()) {
+          if (!jobStatus.matches(Status.CANCEL) && !subtaskStati.isEmpty()) {
             jobStatus =
                 new MultiStatus(ManagedApiPlugin.PLUGIN_ID, IStatus.WARNING,
                     subtaskStati.toArray(new IStatus[subtaskStati.size()]),
@@ -252,19 +344,7 @@ public class ManagedApiInstallJob extends Job {
     } catch (CoreException e) {
       jobStatus = new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID, "Unexpected failure", e);
     }
-
-    final IStatus jobStatusPtr = jobStatus;
-    if (!jobStatus.isOK()) {
-      Display.getDefault().asyncExec(new Runnable() {
-        public void run() {
-          ManagedApiPlugin.getDefault().getLog().log(jobStatusPtr);
-          MessageDialog.openError(SWTUtilities.getShell(), "Google Plugin for Eclipse",
-              "There was a problem downloading the API bundles. "
-                  + "See the Error Log for more details.");
-        }
-      });
-    }
-    return Status.OK_STATUS;
+    return jobStatus;
   }
 
   /**
@@ -407,9 +487,7 @@ public class ManagedApiInstallJob extends Job {
   }
 
   private IStatus setUpApiFiles(ManagedApiEntry entry, IFolder managedApiRoot,
-      List<IFolder> unregisteredApiFolders, boolean isMavenProject, SubMonitor submon)
-      throws CoreException {
-    IStatus jobStatus = Status.OK_STATUS;;
+      List<IFolder> unregisteredApiFolders, SubMonitor submon) throws CoreException {
     IStatus entryStatus;
     if (subtaskStati == null) {
       subtaskStati = new ArrayList<IStatus>();
@@ -419,9 +497,9 @@ public class ManagedApiInstallJob extends Job {
       // Download ZIP file
       final File tmpFile = getDestinationFile();
       entryStatus = downloadApi(entry, tmpFile, submon);
-      if (entryStatus == Status.CANCEL_STATUS) {
+      if (entryStatus.matches(Status.CANCEL)) {
         return entryStatus;
-      } else if (entryStatus != Status.OK_STATUS) {
+      } else if (!entryStatus.isOK()) {
         subtaskStati.add(entryStatus);
         return Status.OK_STATUS;
       }
@@ -436,9 +514,9 @@ public class ManagedApiInstallJob extends Job {
       // Extract ZIP file
       UnzipToIFilesRunnable unzipRunner = new UnzipToIFilesRunnable(tmpFile, targetFolder);
       entryStatus = unzipRunner.run(submon.newChild(TICKS_EXTRACT_ZIP));
-      if (entryStatus == Status.CANCEL_STATUS) {
+      if (entryStatus.matches(Status.CANCEL)) {
         return entryStatus;
-      } else if (entryStatus != Status.OK_STATUS) {
+      } else if (!entryStatus.isOK()) {
         subtaskStati.add(entryStatus);
         return Status.OK_STATUS;
       }
@@ -458,24 +536,19 @@ public class ManagedApiInstallJob extends Job {
             ManagedApiJsonClasses.GSON_CODEC.fromJson(localDescriptorContent,
                 ApiRevision.class);
 
-        if (isMavenProject) {
-          apiRevisionList.add(localRevision);
-        } else {
-          if (localRevision.getRevision() != null && localRevision.getLanguage_version() != null) {
-            directoryName +=
-                "r" + localRevision.getRevision() + "lv" + localRevision.getLanguage_version();
-            IFolder targetFolder2 = managedApiRoot.getFolder(directoryName);
-             ResourceUtils.deleteFileRecursively(
-                new File(targetFolder2.getRawLocation().toString()));
-            targetFolder2.refreshLocal(IResource.DEPTH_INFINITE, submon.newChild(0));
-            targetFolder.copy(targetFolder2.getFullPath(), true, new NullProgressMonitor());
-            ResourceUtils.deleteFileRecursively(new File(targetFolder.getRawLocation().toString()));
-            targetFolder = targetFolder2;
-            entryStatus = removeUnwantedDependecies(targetFolder, localDescriptorContent,
-              localDescriptorFile);
-            if (entryStatus == Status.OK_STATUS) {
-              subtaskStati.add(entryStatus);
-            }
+        if (localRevision.getRevision() != null && localRevision.getLanguage_version() != null) {
+          directoryName +=
+              "r" + localRevision.getRevision() + "lv" + localRevision.getLanguage_version();
+          IFolder targetFolder2 = managedApiRoot.getFolder(directoryName);
+          ResourceUtils.deleteFileRecursively(new File(targetFolder2.getRawLocation().toString()));
+          targetFolder2.refreshLocal(IResource.DEPTH_INFINITE, submon.newChild(0));
+          targetFolder.copy(targetFolder2.getFullPath(), true, new NullProgressMonitor());
+          ResourceUtils.deleteFileRecursively(new File(targetFolder.getRawLocation().toString()));
+          targetFolder = targetFolder2;
+          entryStatus =
+              removeUnwantedDependecies(targetFolder, localDescriptorContent, localDescriptorFile);
+          if (entryStatus.isOK()) {
+            subtaskStati.add(entryStatus);
           }
         }
       }
@@ -496,84 +569,39 @@ public class ManagedApiInstallJob extends Job {
               "Exception caught during API download", e);
       subtaskStati.add(entryStatus);
     }
-    return jobStatus;
+    return Status.OK_STATUS;
   }
-
+  
   /**
    * Updates the list of dependencies of the maven project with the newly added Managed APIs.
    */
-  private void updateMavenDependecyList() {
+  private IStatus updateMavenDependencyList(MavenProject mavenProject, ManagedApiEntry entry,
+      List<Dependency> allDependencies) {
     try {
-      if (!hasMavenNature(project)) {
-        return;
+
+      ManagedApiMavenInfo mavenInfo =
+          getManagedApiMavenInfo(entry.getName(), entry.getDirectoryEntryVersion());
+
+      // Check if API of same or different version already exists
+      String artifactId = mavenInfo.getMaven().getArtifactId();
+      Dependency matchingDependency = findApiMatchingName(allDependencies, artifactId);
+      if (matchingDependency != null) {
+        mavenProject.getModel().removeDependency(matchingDependency);
       }
 
-      if (apiRevisionList == null || apiRevisionList.isEmpty()) {
-        subtaskStati.add(new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
-            "No APIs available to install", null));
-        return;
-      }
-  
-      if (subtaskStati == null) {
-        subtaskStati = new ArrayList<IStatus>();
-      }
+      Dependency dependency = new Dependency();
+      dependency.setVersion(mavenInfo.getMaven().getVersion());
+      dependency.setGroupId(MAVEN_DEP_GROUP_ID);
+      dependency.setArtifactId(artifactId);
+      mavenProject.getModel().addDependency(dependency);
 
-      IFile pomIfile = project.getFile("pom.xml");
-      if (!pomIfile.exists()) {
-        subtaskStati.add(new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
-            pomIfile.getFullPath().toString() + " does not exist.", null));
-        return;
-      }
-  
-      // Initialize MavenProject
-      IMavenProjectFacade mavenProjectFacade =
-          MavenPlugin.getMavenProjectRegistry().getProject(project);
-      MavenProject mavenProject = mavenProjectFacade.getMavenProject(new NullProgressMonitor());
-      List<Dependency> allDependencies = mavenProject.getModel().getDependencies();
-  
-      // Update pom.xml with new dependencies
-      for (ApiRevision apiRevision : apiRevisionList) {
-        if (apiRevision == null) {
-          continue;
-        }
-  
-        ManagedApiMavenInfo mavenInfo =
-            getManagedApiMavenInfo(apiRevision.getName(), apiRevision.getVersion());
-  
-        // Check if API of same or different version already exists
-        String artifactId = mavenInfo.getMaven().getArtifactId();
-        Dependency macthingDependency = findApiMatchingName(allDependencies, artifactId);
-        if (macthingDependency != null) {
-          mavenProject.getModel().removeDependency(macthingDependency);
-        }
-  
-        Dependency dependency = new Dependency();
-        dependency.setVersion(mavenInfo.getMaven().getVersion());
-        dependency.setGroupId(MAVEN_DEP_GROUP_ID);
-        dependency.setArtifactId(artifactId);
-        mavenProject.getModel().addDependency(dependency);
-      }
-  
-      DefaultModelWriter modelWriter = new DefaultModelWriter();
-      modelWriter.write(pomIfile.getRawLocation().toFile(), null, mavenProject.getModel());
 
-      // Refresh Eclipse project
-      pomIfile.refreshLocal(IResource.DEPTH_ZERO, null);
-
-    } catch (OperationCanceledException e) {
-      subtaskStati.add(new Status(
-          IStatus.ERROR,
-          ManagedApiPlugin.PLUGIN_ID,
-          "Refreshing pom.xml was cancelled. Please refresh manually right-clicking the file and"
-              + "selecting Refresh.",
-          e));
-    } catch (CoreException e) {
-      subtaskStati.add(new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
-          "Error updating pom.xml file with new APIs", e));
     } catch (IOException e) {
-      subtaskStati.add(new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
-          "Error updating pom.xml file with new APIs", e));
+      return new Status(IStatus.ERROR, ManagedApiPlugin.PLUGIN_ID,
+          "Error occured while attempting to retrieve maven information for " + entry.getName()
+              + " API.", e);
     }
     
+    return Status.OK_STATUS;
   }
 }
