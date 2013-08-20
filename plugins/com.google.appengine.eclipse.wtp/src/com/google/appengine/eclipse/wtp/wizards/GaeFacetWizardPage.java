@@ -27,6 +27,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetDataModelProperties;
+import org.eclipse.wst.common.project.facet.core.IFacetedProjectWorkingCopy;
+import org.eclipse.wst.common.project.facet.core.events.IFacetedProjectEvent;
+import org.eclipse.wst.common.project.facet.core.events.IFacetedProjectListener;
 import org.eclipse.wst.common.project.facet.ui.IFacetWizardPage;
 
 /**
@@ -40,12 +44,35 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
   private Button shouldCreateSampleButton;
   private Button openImportApiWizardButton;
   private Text packageText;
+  private IFacetedProjectListener runtimeChangedListener;
+  private IFacetedProjectWorkingCopy fpwc;
 
   /**
    * Default ctor
    */
   public GaeFacetWizardPage() {
     super(WIZARD_PAGE_NAME);
+    runtimeChangedListener = new IFacetedProjectListener() {
+      @Override
+      public void handleEvent(IFacetedProjectEvent event) {
+        updateDeployComponent();
+      }
+    };
+  }
+
+  @Override
+  public void dispose() {
+    if (fpwc != null) {
+      fpwc.removeListener(runtimeChangedListener);
+    }
+    super.dispose();
+  }
+
+  @Override
+  public void setConfig(Object config) {
+    super.setConfig(config);
+    fpwc = (IFacetedProjectWorkingCopy) getDataModel().getProperty(
+        IFacetDataModelProperties.FACETED_PROJECT_WORKING_COPY);
   }
 
   @Override
@@ -57,6 +84,7 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
     synchHelper.synchText(packageText, GAE_PROPERTY_PACKAGE, null);
     synchHelper.synchCheckbox(shouldCreateSampleButton, GAE_PROPERTY_CREATE_SAMPLE, null);
     synchHelper.synchCheckbox(openImportApiWizardButton, GAE_PROPERTY_OPEN_IMPORT_API_WIZARD, null);
+    fpwc.addListener(runtimeChangedListener, IFacetedProjectEvent.Type.PRIMARY_RUNTIME_CHANGED);
   }
 
   @Override
@@ -76,13 +104,7 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
     }
     {
       deployComponent.createContents(composite);
-      try {
-        boolean earSupported = isEarSupported();
-        deployComponent.setEarSupported(earSupported);
-      } catch (CoreException e) {
-        setErrorStatus(9999, e.getStatus().getMessage());
-        setErrorMessage();
-      }
+      updateDeployComponent();
     }
     {
       createDeployOptionsComponent(composite);
@@ -120,20 +142,37 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
     if (project != null) {
       try {
         model.setStringProperty(GAE_PROPERTY_APP_ID, ProjectUtils.getAppId(project));
-        model.setStringProperty(GAE_PROPERTY_APP_VERSION, ProjectUtils.getAppVersion(project));
+        String appVersion = ProjectUtils.getAppVersion(project);
+        if (appVersion.trim().length() == 0) {
+          appVersion = (String) model.getDefaultProperty(GAE_PROPERTY_APP_VERSION);
+        }
+        model.setStringProperty(GAE_PROPERTY_APP_VERSION, appVersion);
         model.setStringProperty(GAE_PROPERTY_MODULE_ID, ProjectUtils.getModuleId(project));
       } catch (CoreException e) {
         AppEnginePlugin.logMessage(e);
       }
     }
-    if (model.getProperty(GAE_PROPERTY_CREATE_SAMPLE) == null) {
+    if (!model.isPropertySet(GAE_PROPERTY_CREATE_SAMPLE)) {
       model.setBooleanProperty(GAE_PROPERTY_CREATE_SAMPLE,
           (Boolean) model.getDefaultProperty(GAE_PROPERTY_CREATE_SAMPLE));
     }
-    if (model.getProperty(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD) == null) {
+    if (!model.isPropertySet(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD)) {
       model.setBooleanProperty(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD,
           (Boolean) model.getDefaultProperty(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD));
     }
     synchHelper.synchAllUIWithModel();
+  }
+
+  /**
+   * Detects EAR is supported and update deployment component.
+   */
+  private void updateDeployComponent() {
+    try {
+      boolean earSupported = isEarSupported();
+      deployComponent.setEarSupported(earSupported);
+    } catch (CoreException e) {
+      setErrorStatus(9999, e.getStatus().getMessage());
+      setErrorMessage();
+    }
   }
 }

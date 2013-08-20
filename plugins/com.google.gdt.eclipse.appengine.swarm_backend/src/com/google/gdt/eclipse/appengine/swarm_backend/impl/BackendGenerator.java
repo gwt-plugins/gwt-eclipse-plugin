@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright 2012 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -40,12 +40,14 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
@@ -75,6 +77,47 @@ public class BackendGenerator {
 
   private static final String GAE_PROJECT_NAME_SUFFIX = "-AppEngine";
 
+  /**
+   * Generates Web API for the java bean DeviceInfo.
+   */
+  public static boolean generateWebApi(IJavaProject appEngineJavaProject, IPath gaeSdkPath, String appId, SubMonitor monitor)
+      throws JavaModelException {
+
+    SwarmServiceCreator serviceCreator = new SwarmServiceCreator();
+    serviceCreator.setProject(appEngineJavaProject.getProject());
+    serviceCreator.setAppId(appId);
+    serviceCreator.setGaeSdkPath(gaeSdkPath);
+
+    List<IType> entityList = new ArrayList<IType>();
+    for (IPackageFragment pkgFragment : appEngineJavaProject.getPackageFragments()) {
+      if (pkgFragment.getKind() != IPackageFragmentRoot.K_SOURCE) {
+        continue;
+      }
+      for (ICompilationUnit cu : pkgFragment.getCompilationUnits()) {
+        SwarmAnnotationUtils.collectSwarmTypes(entityList, cu);
+      }
+    }
+
+    /*
+     * TODO(appu): WARNING this is a hack to get MessageData not to create it's
+     * own endpoint automatically. Why you ask, because MessageEndpoint does a
+     * lot of custom stuff that isn't part of standard endpoint generation.
+     */
+    Iterator<IType> it = entityList.iterator();
+    while (it.hasNext()) {
+      IType entity = it.next();
+      if (GCMSupport.APP_ENGINE_ENTITIES_TO_SKIP_ENDPOINT_GENERATION.contains(entity.getElementName())) {
+        it.remove();
+        break;
+      }
+    }
+    serviceCreator.setEntities(entityList);
+
+    // Using parent monitor; not spawning a new submonitor in this method, since
+    // there's nothing we really want to report here
+    return serviceCreator.create(true, monitor);
+  }
+
   public static String getAndroidBackendProjectName(String androidProjectName) {
     return androidProjectName.concat(GAE_PROJECT_NAME_SUFFIX);
   }
@@ -82,23 +125,12 @@ public class BackendGenerator {
   public static String getAndroidBackendProjectPackage(String androidPackage) {
     return androidPackage + GCM_PACKAGE_SUFFIX;
   }
-
   private final IProject androidProject;
   private final boolean isNewlyCreatedAndroidProject;
   private String apiKey = null;
   private String projectNumber = null;
-  private final SdkSelection<GaeSdk> sdkSelection;
 
-  /**
-   * Create a new instance of the BackendGenerator.
-   * 
-   * @param androidProject The Android project for which to create a backend.
-   */
-  public BackendGenerator(IProject androidProject, SdkSelection<GaeSdk> sdkSelection) {
-    this.androidProject = androidProject;
-    this.isNewlyCreatedAndroidProject = false;
-    this.sdkSelection = sdkSelection;
-  }
+  private final SdkSelection<GaeSdk> sdkSelection;
 
   public BackendGenerator(IProject androidProject, boolean isNewlyCreatedAndroidProject,
       SdkSelection<GaeSdk> sdkSelection) {
@@ -110,7 +142,7 @@ public class BackendGenerator {
   /**
    * Constructor that allows injecting a projectNumber and ApiKey into the
    * generated code
-   * 
+   *
    * @param androidProject
    * @param isNewlyCreatedAndroidProject
    * @param projectNumber
@@ -124,21 +156,14 @@ public class BackendGenerator {
   }
 
   /**
-   * Generate an App Engine Backend project for the given Android project.
-   * Sample code will be generated based on whether
-   * {@link #isGenerateCloudMessaging()} and/or
-   * {@link #isGenerateSampleEndpoint()()} is set.
-   * 
-   * This method assumes that the caller is holding a lock on the workspace, and
-   * is running in the context of some container that provides progress
-   * monitoring.
-   * 
-   * @throws CoreException
-   * @throws InterruptedException
+   * Create a new instance of the BackendGenerator.
+   *
+   * @param androidProject The Android project for which to create a backend.
    */
-  public void generateBackendProject(IProgressMonitor monitor) throws ParserConfigurationException,
-      SAXException, IOException {
-    createProject(getAndroidBackendProjectName(androidProject.getName()), monitor);
+  public BackendGenerator(IProject androidProject, SdkSelection<GaeSdk> sdkSelection) {
+    this.androidProject = androidProject;
+    isNewlyCreatedAndroidProject = false;
+    this.sdkSelection = sdkSelection;
   }
 
   /**
@@ -146,13 +171,13 @@ public class BackendGenerator {
    * Sample code will be generated based on whether
    * {@link #isGenerateCloudMessaging()} and/or
    * {@link #isGenerateSampleEndpoint()()} is set.
-   * 
+   *
    * This method invokes the operation in a Workspace Job that locks the entire
    * workspace. User feedback and options for cancellation are provided.
-   * 
+   *
    * TODO(rdayal): Add assertions to make sure that at least one of
    * isGenerateCloudMessaging/isGenerateSampleEndpoint is set.
-   * 
+   *
    * @throws CoreException
    * @throws InterruptedException
    */
@@ -192,6 +217,24 @@ public class BackendGenerator {
     job.setRule(ResourcesPlugin.getWorkspace().getRoot());
     job.setUser(true);
     job.schedule();
+  }
+
+  /**
+   * Generate an App Engine Backend project for the given Android project.
+   * Sample code will be generated based on whether
+   * {@link #isGenerateCloudMessaging()} and/or
+   * {@link #isGenerateSampleEndpoint()()} is set.
+   *
+   * This method assumes that the caller is holding a lock on the workspace, and
+   * is running in the context of some container that provides progress
+   * monitoring.
+   *
+   * @throws CoreException
+   * @throws InterruptedException
+   */
+  public void generateBackendProject(IProgressMonitor monitor) throws ParserConfigurationException,
+      SAXException, IOException {
+    createProject(getAndroidBackendProjectName(androidProject.getName()), monitor);
   }
 
   private boolean createProject(String backendProjectName, IProgressMonitor monitor)
@@ -249,7 +292,8 @@ public class BackendGenerator {
           projectNumber, apiKey);
 
       // Add GCM templates for App Engine
-      gcmSupport.addAppEngineSupport(submonitor.newChild(10), androidProjectPackageName);
+      String appEnginePackageName = BackendGenerator.getAndroidBackendProjectPackage(androidProjectPackageName);
+      gcmSupport.addAppEngineSupport(submonitor.newChild(10), appEnginePackageName);
 
       if (submonitor.isCanceled()) {
         throw new OperationCanceledException();
@@ -264,7 +308,7 @@ public class BackendGenerator {
 
       /*
        * Now, generate the Swarm API and client libraries. This will copy the
-       * endpoint library source over to the Android project, and add new 
+       * endpoint library source over to the Android project, and add new
        * sourcepaths to the project.
        */
       generateWebApi(gaeProject, submonitor.newChild(40));
@@ -273,7 +317,7 @@ public class BackendGenerator {
         throw new OperationCanceledException();
       }
 
-      // Perform a build so that we build the endpoint source. 
+      // Perform a build so that we build the endpoint source.
       androidProject.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, submonitor.newChild(30));
 
       gcmSupport.addAndroidSupport(androidProjectPackageName, submonitor.newChild(30));
@@ -336,38 +380,8 @@ public class BackendGenerator {
    */
   private boolean generateWebApi(GaeProject gaeProject, SubMonitor monitor)
       throws JavaModelException {
-
-    SwarmServiceCreator serviceCreator = new SwarmServiceCreator();
-    serviceCreator.setProject(gaeProject.getProject());
-    serviceCreator.setAppId(gaeProject.getAppId());
-
-    List<IType> entityList = new ArrayList<IType>();
-    for (IPackageFragment pkgFragment : gaeProject.getJavaProject().getPackageFragments()) {
-      if (pkgFragment.getKind() != IPackageFragmentRoot.K_SOURCE) {
-        continue;
-      }
-      for (ICompilationUnit cu : pkgFragment.getCompilationUnits()) {
-        SwarmAnnotationUtils.collectSwarmTypes(entityList, cu);
-      }
-    }
-
-    /*
-     * TODO(appu): WARNING this is a hack to get MessageData not to create it's
-     * own endpoint automatically. Why you ask, because MessageEndpoint does a
-     * lot of custom stuff that isn't part of standard endpoint generation.
-     */
-    Iterator<IType> it = entityList.iterator();
-    while (it.hasNext()) {
-      IType entity = it.next();
-      if (GCMSupport.APP_ENGINE_ENTITIES_TO_SKIP_ENDPOINT_GENERATION.contains(entity.getElementName())) {
-        it.remove();
-        break;
-      }
-    }
-    serviceCreator.setEntities(entityList);
-
-    // Using parent monitor; not spawning a new submonitor in this method, since
-    // there's nothing we really want to report here
-    return serviceCreator.create(true, monitor);
+    IPath gaeInstallationPath = gaeProject.getSdk().getInstallationPath();
+    return generateWebApi(gaeProject.getJavaProject(), gaeInstallationPath, gaeProject.getAppId(),
+        monitor);
   }
 }

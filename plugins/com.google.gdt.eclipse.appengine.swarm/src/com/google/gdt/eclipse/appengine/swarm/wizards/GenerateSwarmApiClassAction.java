@@ -95,8 +95,10 @@ public class GenerateSwarmApiClassAction extends Action implements IActionDelega
           return;
         }
       }
-      serviceCreator.setAppId(GaeProject.create(project).getAppId());
+      GaeProject gaeProject = GaeProject.create(project);
+      serviceCreator.setAppId(gaeProject.getAppId());
       serviceCreator.setProject(project);
+      serviceCreator.setGaeSdkPath(gaeProject.getSdk().getInstallationPath());
       serviceCreator.create(false, new NullProgressMonitor());
 
       ExtensionQuery<IEndpointsActionCallback> extensionQuery = new ExtensionQuery<IEndpointsActionCallback>(

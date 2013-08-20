@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright 2012 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -20,11 +20,14 @@ import com.google.gdt.eclipse.appengine.swarm.wizards.helpers.SwarmServiceCreato
 import com.google.gdt.eclipse.appengine.swarm.wizards.helpers.SwarmServiceCreator.EndpointPackageInfo;
 import com.google.gdt.eclipse.appengine.swarm_backend.AppEngineSwarmBackendPlugin;
 import com.google.gdt.eclipse.appengine.swarm_backend.resources.GenerationUtils;
+import com.google.gdt.eclipse.core.DynamicWebProjectUtilities;
+import com.google.gdt.eclipse.core.properties.WebAppProjectProperties;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubMonitor;
@@ -54,16 +57,12 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
  * project.
  */
 public class GCMSupport {
-  private static final String WAR = "war/";
   private static final String GCM_SERVER_JAR = "gcm-server.jar";
 
-  // TODO(rdayal): This shouldn't be hard-coded; we should look at the proper
-  // web content root
-  private static final String WEB_INF_LIB = "war/WEB-INF/lib/";
   private static final String GCM_JAR = "gcm.jar";
 
   // TODO(rdayal): Is this directory always the the libs directory for Android,
-  // or is it changable?
+  // or is it changeable?
   private static final String LIBS_DIR = "libs/";
   private static final String JSON_SIMPLE_LIB = "json_simple-1.1.jar";
 
@@ -84,20 +83,30 @@ public class GCMSupport {
   private IProject appEngineProject;
   private IJavaProject androidJavaProject;
   private IJavaProject appEngineJavaProject;
+  private IPath webInfLibPath;
+  private IPath webContentPath;
 
   public GCMSupport(IProject androidProject, IProject appEngineProject, String projectNumber,
-      String apiKey) {
+      String apiKey) throws CoreException {
     this.androidProject = androidProject;
     this.appEngineProject = appEngineProject;
-    this.androidJavaProject = JavaCore.create(androidProject);
-    this.appEngineJavaProject = JavaCore.create(appEngineProject);
+    androidJavaProject = JavaCore.create(androidProject);
+    appEngineJavaProject = JavaCore.create(appEngineProject);
     this.apiKey = (apiKey == null) ? "" : apiKey;
     this.projectNumber = (projectNumber == null) ? "" : projectNumber;
+    if (DynamicWebProjectUtilities.isDynamicWebProject(appEngineProject)) {
+      // defaults to 'WebContent'
+      webContentPath = DynamicWebProjectUtilities.getWebContentFolder(appEngineProject);
+    } else {
+      // defaults to 'war'
+      webContentPath = WebAppProjectProperties.getWarSrcDir(appEngineProject);
+    }
+    webInfLibPath = webContentPath.append("WEB-INF").append("lib");
   }
 
   /**
    * Adds GCM support to the Android half of the connected projects.
-   * 
+   *
    * Note that the Android project will need to be refreshed after this call, as
    * some of the resources are created outside of the Eclipse workspace.
    */
@@ -134,10 +143,10 @@ public class GCMSupport {
 
   /**
    * Adds GCM support to the App Engine half of the connected projects.
-   * 
+   *
    * Note that the App Engine project will have to be refreshed after this call.
    */
-  public void addAppEngineSupport(SubMonitor monitor, String androidPackageName)
+  public void addAppEngineSupport(SubMonitor monitor, String appEnginePackageName)
       throws IOException, CoreException {
 
     monitor.subTask("Adding GCM Libraries and Sample Code to App Engine project");
@@ -149,10 +158,34 @@ public class GCMSupport {
       throw new OperationCanceledException();
     }
 
-    String appEnginePackageName = BackendGenerator.getAndroidBackendProjectPackage(androidPackageName);
     EndpointPackageInfo endpointPackageInfo = SwarmServiceCreator.getEndpointPackageInfo(appEnginePackageName);
 
     addAppEngineTemplates(appEnginePackageName, endpointPackageInfo);
+  }
+
+  void createWebContentFile(String fileName) throws IOException {
+    InputStream inputstream = GenerationUtils.getResource(fileName);
+    File file = new File(
+        appEngineProject.getLocation().append(webContentPath).append(fileName).toOSString());
+    GenerationUtils.createFile(file, inputstream);
+  }
+
+  void createWebContentFile(String fileName, String subdirName) throws IOException {
+    InputStream inputstream = GenerationUtils.getResource(fileName);
+    File subdir = new File(appEngineProject.getLocation().append(webContentPath).append(
+        subdirName).toOSString());
+    subdir.mkdirs();
+    File file = new File(subdir, fileName);
+    GenerationUtils.createFile(file, inputstream);
+  }
+
+  /**
+   * Copy gcm.jar to Android project.
+   */
+  private void addAndroidGCMJar(IJavaProject androidJavaProject) throws IOException {
+    InputStream gcmJar = GenerationUtils.getResource(GCM_JAR);
+    File gcmLibFile = new File(androidProject.getLocation().append(LIBS_DIR + GCM_JAR).toOSString());
+    GenerationUtils.createFile(gcmLibFile, gcmJar);
   }
 
   /**
@@ -222,35 +255,28 @@ public class GCMSupport {
 
   }
 
-  private String getImportPathForClass(String className, String apiName) {
+  /**
+   * Copy gcm-server.jar to App Engine project's WEB-INF/lib and add to its classpath.
+   */
+  private void addAppEngineGCMJar(IJavaProject appEngineJavaProject) throws IOException,
+      JavaModelException {
+    InputStream gcmServerJar = GenerationUtils.getResource(GCM_SERVER_JAR);
+    File gcmServerLibFile = new File(appEngineProject.getLocation().append(webInfLibPath).append(
+        GCM_SERVER_JAR).toOSString());
+    GenerationUtils.createFile(gcmServerLibFile, gcmServerJar);
+    IClasspathEntry[] appEngineEntries = appEngineJavaProject.getRawClasspath();
+    List<IClasspathEntry> appEngineEntriesList = new ArrayList<IClasspathEntry>(
+        Arrays.asList(appEngineEntries));
+    String gcsServerFileName = webInfLibPath.append(GCM_SERVER_JAR).toOSString();
+    appEngineEntriesList.add(JavaCore.newLibraryEntry(
+        appEngineProject.getFile(gcsServerFileName).getFullPath(), null, null));
+    appEngineJavaProject.setRawClasspath(appEngineEntriesList.toArray(new IClasspathEntry[0]), null);
 
-    // default if we have no idea what it is
-    final String defaultImportPath = apiName + '.' + className; 
-
-    try {
-      for (IPackageFragmentRoot packageFramentRoot : androidJavaProject.getPackageFragmentRoots()) {
-
-        if (packageFramentRoot.getPath() != null
-            && packageFramentRoot.getPath().toPortableString().contains(apiName)) {
-
-          for (IJavaElement child : packageFramentRoot.getChildren()) {
-            if (child.getElementType() != IJavaElement.PACKAGE_FRAGMENT) {
-              continue;
-            }
-
-            IPackageFragment curFragment = (IPackageFragment) child;
-            ICompilationUnit cu = curFragment.getCompilationUnit(className + ".java");
-            if (cu.exists()) {
-              return curFragment.getElementName() + '.' + className;
-            }
-          }
-        }
-      }
-    } catch (JavaModelException e) {
-      AppEngineSwarmBackendPlugin.log(e);
-    }
-
-    return defaultImportPath;
+    // Needed on the runtime classpath; it's a dependency of gcm-server.jar
+    InputStream jsonSimpleLibJar = GenerationUtils.getResource(JSON_SIMPLE_LIB);
+    File jsonSimpleLibJarFile = new File(
+        appEngineProject.getLocation().append(webInfLibPath).append(JSON_SIMPLE_LIB).toOSString());
+    GenerationUtils.createFile(jsonSimpleLibJarFile, jsonSimpleLibJar);
   }
 
   /**
@@ -277,62 +303,46 @@ public class GCMSupport {
     }
 
     // Create index.html
-    createFileInWar("index.html");
+    createWebContentFile("index.html");
 
     // Add jQuery
-    createFileInWar("jquery-1.9.0.min.js", "js");
+    createWebContentFile("jquery-1.9.0.min.js", "js");
 
     // Add bootstrap files
-    createFileInWar("bootstrap.min.css", "css");
-    createFileInWar("bootstrap.min.js", "js");
-    createFileInWar("glyphicons-halflings-white.png", "img");
-    createFileInWar("glyphicons-halflings.png", "img");
+    createWebContentFile("bootstrap.min.css", "css");
+    createWebContentFile("bootstrap.min.js", "js");
+    createWebContentFile("glyphicons-halflings-white.png", "img");
+    createWebContentFile("glyphicons-halflings.png", "img");
   }
 
-  void createFileInWar(String fileName) throws IOException {
-    InputStream inputstream = GenerationUtils.getResource(fileName);
-    File file = new File(appEngineProject.getLocation().append(WAR + fileName).toOSString());
-    GenerationUtils.createFile(file, inputstream);
-  }
+  private String getImportPathForClass(String className, String apiName) {
 
-  void createFileInWar(String fileName, String subdirName) throws IOException {
-    InputStream inputstream = GenerationUtils.getResource(fileName);
-    File subdir = new File(appEngineProject.getLocation().append(WAR + subdirName).toOSString());
-    subdir.mkdirs();
-    File file = new File(subdir, fileName);
-    GenerationUtils.createFile(file, inputstream);
-  }
+    // default if we have no idea what it is
+    final String defaultImportPath = apiName + '.' + className;
 
-  /**
-   * Copy gcm.jar to Android project.
-   */
-  private void addAndroidGCMJar(IJavaProject androidJavaProject) throws IOException {
-    InputStream gcmJar = GenerationUtils.getResource(GCM_JAR);
-    File gcmLibFile = new File(androidProject.getLocation().append(LIBS_DIR + GCM_JAR).toOSString());
-    GenerationUtils.createFile(gcmLibFile, gcmJar);
-  }
+    try {
+      for (IPackageFragmentRoot packageFramentRoot : androidJavaProject.getPackageFragmentRoots()) {
 
-  /**
-   * Copy gcm-server.jar to App Engine project's war/WEB-INF/lib and add to its
-   * classpath.
-   */
-  private void addAppEngineGCMJar(IJavaProject appEngineJavaProject) throws IOException,
-      JavaModelException {
-    InputStream gcmServerJar = GenerationUtils.getResource(GCM_SERVER_JAR);
-    File gcmServerLibFile = new File(appEngineProject.getLocation().append(
-        WEB_INF_LIB + GCM_SERVER_JAR).toOSString());
-    GenerationUtils.createFile(gcmServerLibFile, gcmServerJar);
-    IClasspathEntry[] appEngineEntries = appEngineJavaProject.getRawClasspath();
-    List<IClasspathEntry> appEngineEntriesList = new ArrayList<IClasspathEntry>(
-        Arrays.asList(appEngineEntries));
-    appEngineEntriesList.add(JavaCore.newLibraryEntry(
-        appEngineProject.getFile(WEB_INF_LIB + GCM_SERVER_JAR).getFullPath(), null, null));
-    appEngineJavaProject.setRawClasspath(appEngineEntriesList.toArray(new IClasspathEntry[0]), null);
+        if (packageFramentRoot.getPath() != null
+            && packageFramentRoot.getPath().toPortableString().contains(apiName)) {
 
-    // Needed on the runtime classpath; it's a dependency of gcm-server.jar
-    InputStream jsonSimpleLibJar = GenerationUtils.getResource(JSON_SIMPLE_LIB);
-    File jsonSimpleLibJarFile = new File(appEngineProject.getLocation().append(
-        WEB_INF_LIB + JSON_SIMPLE_LIB).toOSString());
-    GenerationUtils.createFile(jsonSimpleLibJarFile, jsonSimpleLibJar);
+          for (IJavaElement child : packageFramentRoot.getChildren()) {
+            if (child.getElementType() != IJavaElement.PACKAGE_FRAGMENT) {
+              continue;
+            }
+
+            IPackageFragment curFragment = (IPackageFragment) child;
+            ICompilationUnit cu = curFragment.getCompilationUnit(className + ".java");
+            if (cu.exists()) {
+              return curFragment.getElementName() + '.' + className;
+            }
+          }
+        }
+      }
+    } catch (JavaModelException e) {
+      AppEngineSwarmBackendPlugin.log(e);
+    }
+
+    return defaultImportPath;
   }
 }

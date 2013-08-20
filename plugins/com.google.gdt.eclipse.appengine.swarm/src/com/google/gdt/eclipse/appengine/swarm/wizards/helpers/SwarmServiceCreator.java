@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.appengine.swarm.wizards.helpers;
 
-import com.google.appengine.eclipse.core.resources.GaeProject;
 import com.google.gdt.eclipse.appengine.swarm.AppEngineSwarmPlugin;
 import com.google.gdt.eclipse.appengine.swarm.util.ConnectedProjectHandler;
 import com.google.gdt.eclipse.appengine.swarm.util.SwarmAnnotationUtils;
@@ -361,6 +360,8 @@ public class SwarmServiceCreator {
   private ClassLoader loader;
 
   private String idGetterName;
+
+  private IPath gaeInstallationPath;
 
   public SwarmServiceCreator() {
   }
@@ -725,8 +726,6 @@ public class SwarmServiceCreator {
       File classPathEntry = new File(jarLocation.replace("/", File.separator));
       classpathUrlList.add(classPathEntry.toURI().toURL());
     }
-    GaeProject gaeProject = GaeProject.create(project);
-    IPath gaeInstallationPath = gaeProject.getSdk().getInstallationPath();
     //Todo(appu): expose via sdkinfo class
     classpathUrlList.add(gaeInstallationPath.append(
         "lib/opt/tools/appengine-local-endpoints/v1/appengine-local-endpoints.jar").toFile().toURI().toURL());
@@ -751,10 +750,14 @@ public class SwarmServiceCreator {
     entityList = (List<IType>) entityTypes;
   }
 
+  public void setGaeSdkPath(IPath gaeInstallationPath) {
+    this.gaeInstallationPath = gaeInstallationPath;
+  }
+
   public void setProject(IProject project) {
     this.project = project;
   }
-
+  
   private void updateProguardInfo() throws CoreException, IOException {
     if (androidProject == null) {
       return;

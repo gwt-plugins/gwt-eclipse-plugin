@@ -183,10 +183,17 @@ public final class ProjectUtils {
   }
 
   /**
-   * @return IProject instance associated with model.
+   * @return faceted {@link IProject} instance associated with model.
    */
   public static IProject getProject(IDataModel model) {
-    String projectName = model.getStringProperty(IFacetDataModelProperties.FACET_PROJECT_NAME);
+    return getProject(model, IFacetDataModelProperties.FACET_PROJECT_NAME);
+  }
+
+  /**
+   * @return {@link IProject} instance associated with model using special property.
+   */
+  public static IProject getProject(IDataModel model, String propertyName) {
+    String projectName = model.getStringProperty(propertyName);
     if (projectName != null && projectName.length() > 0) {
       return ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
     }

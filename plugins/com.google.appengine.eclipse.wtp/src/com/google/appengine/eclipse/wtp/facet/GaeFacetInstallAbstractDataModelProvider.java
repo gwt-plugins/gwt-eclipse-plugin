@@ -29,11 +29,11 @@ abstract class GaeFacetInstallAbstractDataModelProvider extends FacetInstallData
 
   @Override
   public Object getDefaultProperty(String propertyName) {
-    if (propertyName.equals(GAE_PROPERTY_RETAIN_STAGING_DIR)) {
+    if (GAE_PROPERTY_RETAIN_STAGING_DIR.equals(propertyName)) {
       return false;
-    } else if (propertyName.equals(GAE_PROPERTY_DO_JAR_CLASSES)) {
+    } else if (GAE_PROPERTY_DO_JAR_CLASSES.equals(propertyName)) {
       return false;
-    } else if (propertyName.equals(GAE_PROPERTY_ENABLE_JAR_SPLITTING)) {
+    } else if (GAE_PROPERTY_ENABLE_JAR_SPLITTING.equals(propertyName)) {
       return true;
     }
     return super.getDefaultProperty(propertyName);

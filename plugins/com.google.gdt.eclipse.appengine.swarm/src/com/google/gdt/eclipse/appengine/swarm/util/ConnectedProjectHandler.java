@@ -62,7 +62,6 @@ public class ConnectedProjectHandler extends RenameParticipant {
 
   private static String getConnectedProjectName(IProject project) {
     IScopeContext projectScope = new ProjectScope(project);
-    IProject connectedProject = null;
     IEclipsePreferences prefs = projectScope.getNode(
         AppEngineSwarmPlugin.PLUGIN_ID);
     return prefs.get(CONNECTED_PROJECT, null);

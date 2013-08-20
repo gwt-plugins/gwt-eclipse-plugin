@@ -43,19 +43,19 @@ public final class GaeFacetInstallDataModelProvider extends
 
   @Override
   public Object getDefaultProperty(String propertyName) {
-    if (propertyName.equals(FACET_ID)) {
+    if (FACET_ID.equals(propertyName)) {
       return GAE_FACET_ID;
-    } else if (propertyName.equals(GAE_PROPERTY_APP_ID)) {
+    } else if (GAE_PROPERTY_APP_ID.equals(propertyName)) {
       return "";
-    } else if (propertyName.equals(GAE_PROPERTY_MODULE_ID)) {
+    } else if (GAE_PROPERTY_MODULE_ID.equals(propertyName)) {
       return "";
-    } else if (propertyName.equals(GAE_PROPERTY_APP_VERSION)) {
+    } else if (GAE_PROPERTY_APP_VERSION.equals(propertyName)) {
       return "1";
-    } else if (propertyName.equals(GAE_PROPERTY_CREATE_SAMPLE)) {
+    } else if (GAE_PROPERTY_CREATE_SAMPLE.equals(propertyName)) {
       return hasEnabledSample;
-    } else if (propertyName.equals(GAE_PROPERTY_OPEN_IMPORT_API_WIZARD)) {
+    } else if (GAE_PROPERTY_OPEN_IMPORT_API_WIZARD.equals(propertyName)) {
       return false;
-    } else if (propertyName.equals(GAE_PROPERTY_PACKAGE)) {
+    } else if (GAE_PROPERTY_PACKAGE.equals(propertyName)) {
       return DEFAULT_PACKAGE_NAME;
     }
     return super.getDefaultProperty(propertyName);

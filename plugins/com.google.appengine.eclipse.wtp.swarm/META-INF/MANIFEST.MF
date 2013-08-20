@@ -20,11 +20,13 @@ Require-Bundle: com.google.appengine.eclipse.wtp,
  org.eclipse.jst.common.project.facet.core,
  org.eclipse.jst.common.project.facet.ui,
  org.eclipse.jst.j2ee,
+ org.eclipse.ltk.core.refactoring,
  org.eclipse.wst.server.ui,
  org.eclipse.wst.common.frameworks.ui,
  org.eclipse.wst.common.project.facet.core,
  org.eclipse.wst.common.project.facet.ui,
- org.eclipse.jpt.jpa.core
+ org.eclipse.jpt.jpa.core,
+ org.eclipse.jpt.jpa.ui
  
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

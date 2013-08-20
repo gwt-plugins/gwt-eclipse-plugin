@@ -42,9 +42,7 @@ public class HandleGaeProjectChange implements GaeProjectChangeExtension {
    * if libraries have been generated in this project's directory?
    */
   public void gaeAppIdChanged(IProject appEngineProject) {
-    final SwarmServiceCreator serviceCreator = new SwarmServiceCreator();
-    serviceCreator.setAppId(GaeProject.create(appEngineProject).getAppId());
-    serviceCreator.setProject(appEngineProject);
+    SwarmServiceCreator serviceCreator = createSwarmServiceCreator(appEngineProject);
     serviceCreator.create(true, new NullProgressMonitor());
   }
 
@@ -56,9 +54,7 @@ public class HandleGaeProjectChange implements GaeProjectChangeExtension {
    * connected, but the user has generated libaries locally?
    */
   public void gaeProjectRebuilt(IProject appEngineProject, boolean appEngineWebXmlChanged) {
-    final SwarmServiceCreator serviceCreator = new SwarmServiceCreator();
-    serviceCreator.setAppId(GaeProject.create(appEngineProject).getAppId());
-    serviceCreator.setProject(appEngineProject);
+    SwarmServiceCreator serviceCreator = createSwarmServiceCreator(appEngineProject);
 
     if (appEngineWebXmlChanged) {
       /*
@@ -73,5 +69,17 @@ public class HandleGaeProjectChange implements GaeProjectChangeExtension {
 
     // Otherwise, just update the services, but don't regenerate the libraries
     serviceCreator.create(false, new NullProgressMonitor());
+  }
+
+  /**
+   * @return configured {@link SwarmServiceCreator} instance.
+   */
+  private SwarmServiceCreator createSwarmServiceCreator(IProject appEngineProject) {
+    SwarmServiceCreator serviceCreator = new SwarmServiceCreator();
+    GaeProject gaeProject = GaeProject.create(appEngineProject);
+    serviceCreator.setAppId(gaeProject.getAppId());
+    serviceCreator.setProject(appEngineProject);
+    serviceCreator.setGaeSdkPath(gaeProject.getSdk().getInstallationPath());
+    return serviceCreator;
   }
 }

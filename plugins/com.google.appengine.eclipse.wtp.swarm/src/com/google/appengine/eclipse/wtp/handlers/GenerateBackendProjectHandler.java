@@ -15,6 +15,8 @@ package com.google.appengine.eclipse.wtp.handlers;
 
 import com.google.appengine.eclipse.wtp.swarm.BackendGeneratorWizard;
 import com.google.gdt.eclipse.appengine.swarm_backend.impl.BackendGenerator;
+import com.google.gdt.eclipse.platform.shared.ui.IPixelConverter;
+import com.google.gdt.eclipse.platform.ui.PixelConverterFactory;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -22,6 +24,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
@@ -57,6 +60,10 @@ public final class GenerateBackendProjectHandler extends AbstractHandler {
     BackendGeneratorWizard wizard = new BackendGeneratorWizard();
     wizard.init(androidProject, backendProjectName);
     WizardDialog dialog = new WizardDialog(Display.getDefault().getActiveShell(), wizard);
+    IPixelConverter converter = PixelConverterFactory.createPixelConverter(JFaceResources.getDialogFont());
+    dialog.setMinimumPageSize(converter.convertWidthInCharsToPixels(70),
+        converter.convertHeightInCharsToPixels(33));
+    dialog.create();
     dialog.open();
     return null;
   }

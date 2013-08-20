@@ -76,7 +76,8 @@ public class GenerateSwarmApiAction extends Action implements IActionDelegate {
       final SwarmServiceCreator serviceCreator = new SwarmServiceCreator();
       serviceCreator.setEntities(entityList);
       serviceCreator.setAppId(getProjectAppId());
-
+      GaeProject gaeProject = GaeProject.create(project);
+      serviceCreator.setGaeSdkPath(gaeProject.getSdk().getInstallationPath());
       new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()).run(
           false, false, new IRunnableWithProgress() {
 

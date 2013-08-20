@@ -59,31 +59,32 @@ public final class BackendGeneratorWizardPage extends DataModelWizardPage {
     GridData containerGridData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
     container.setLayoutData(containerGridData);
     GridLayout gridLayout = new GridLayout();
-    gridLayout.numColumns = 1;
-    gridLayout.marginHeight = 8;
     gridLayout.marginWidth = 8;
-    gridLayout.makeColumnsEqualWidth = false;
     container.setLayout(gridLayout);
+
+    Composite textComposite = new Composite(container, SWT.NONE);
+    textComposite.setLayout(new GridLayout());
+    textComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
     GridData textGridData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
     textGridData.widthHint = convertWidthInCharsToPixels(80);
-    Label cloudMessagingText = new Label(container, SWT.WRAP);
-    cloudMessagingText.setLayoutData(textGridData);
+    Label cloudMessagingText = new Label(textComposite, SWT.WRAP);
     cloudMessagingText.setText(SAMPLE_CODE_DESCRIPTION);
+    cloudMessagingText.setLayoutData(textGridData);
 
     createBackendConfigSection(container);
     createAppEngineSdkSection(container);
 
-    setControl(container);
     Dialog.applyDialogFont(container);
 
     synchHelper.synchAllUIWithModel();
+
     return container;
   }
 
   @Override
   protected String[] getValidationPropertyNames() {
-    return new String[] {BackendGeneratorDataModelProvider.GAE_BACKEND_SELECTED_RUNTIME};
+    return new String[] {BackendGeneratorDataModelProvider.SELECTED_RUNTIME};
   }
 
   @Override
@@ -103,7 +104,7 @@ public final class BackendGeneratorWizardPage extends DataModelWizardPage {
       Combo serverTargetCombo = new Combo(sdkGroup, SWT.READ_ONLY);
       serverTargetCombo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
       synchHelper.synchCombo(serverTargetCombo,
-          BackendGeneratorDataModelProvider.GAE_BACKEND_SELECTED_RUNTIME, null);
+          BackendGeneratorDataModelProvider.SELECTED_RUNTIME, null);
       if (serverTargetCombo.getSelectionIndex() == -1
           && serverTargetCombo.getVisibleItemCount() != 0) {
         serverTargetCombo.select(0);
@@ -140,7 +141,7 @@ public final class BackendGeneratorWizardPage extends DataModelWizardPage {
     configGroup.setLayout(new GridLayout(1, false));
     configGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-    GridData textGridData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+    GridData textGridData = new GridData(SWT.FILL, SWT.FILL, true, true);
     textGridData.widthHint = convertWidthInCharsToPixels(80);
     Label configText = new Label(configGroup, SWT.WRAP);
     configText.setLayoutData(textGridData);

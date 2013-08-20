@@ -193,7 +193,7 @@ public class SwarmApiCreator {
       String apiConfigName = apiConfigKey.substring(0,
           apiConfigKey.indexOf(SwarmServiceCreator.API_FILE_EXTENSION));
       apiConfigFile = SwarmServiceCreator.createConfigFile(project,
-          WebAppUtilities.getWebInfSrc(project).getFile(apiConfigKey).getProjectRelativePath().toString(),
+          WebAppUtilities.getWebInfFolder(project).getFile(apiConfigKey).getProjectRelativePath().toString(),
           new NullProgressMonitor());
       ResourceUtils.writeToFile(apiConfigFile, apiConfig);
       if (!generateLibs) {
@@ -265,7 +265,7 @@ public class SwarmApiCreator {
     String discoveryFileName = fileNamePrefix + (format.equals(REST) ? REST_SUFFIX : RPC_SUFFIX)
         + SwarmServiceCreator.DISCOVERY_FILE_EXTENSION;
     File discoveryFile = SwarmServiceCreator.createConfigFile(project, 
-        WebAppUtilities.getWebInfSrc(project).getFile(discoveryFileName)
+        WebAppUtilities.getWebInfFolder(project).getFile(discoveryFileName)
             .getProjectRelativePath().toString(),
         new NullProgressMonitor());
     ResourceUtils.writeToFile(discoveryFile, discoveryDoc);

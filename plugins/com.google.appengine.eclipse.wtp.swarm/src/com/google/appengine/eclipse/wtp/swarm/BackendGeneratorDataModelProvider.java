@@ -41,15 +41,17 @@ import java.util.TreeSet;
  * A {@link IDataModelProvider} for backend project generation.
  */
 final class BackendGeneratorDataModelProvider extends AbstractDataModelProvider {
-  static final String GAE_BACKEND_SELECTED_RUNTIME = IGaeFacetConstants.GAE_FACET_ID
+  static final String SELECTED_RUNTIME = IGaeFacetConstants.GAE_FACET_ID
       + ".property.backend.selectedRuntime";
   static final String GAE_FACET_INSTALL_DM = IGaeFacetConstants.GAE_FACET_ID
       + ".property.backend.gaeFacetInstallDataModel";
   static final String SCM_PROJECT_NUMBER = IGaeFacetConstants.GAE_FACET_ID
       + ".property.backend.scmProjectNumber";
   static final String SCM_API_KEY = IGaeFacetConstants.GAE_FACET_ID + ".property.backend.scmApiKey";
-  static final String ANDROID_PROJECT = IGaeFacetConstants.GAE_FACET_ID
-      + ".property.backend.androidProject";
+  static final String ANDROID_PROJECT_NAME = IGaeFacetConstants.GAE_FACET_ID
+      + ".property.backend.androidProjectName";
+  static final String ANDROID_PACKAGE_NAME = IGaeFacetConstants.GAE_FACET_ID
+      + ".property.backend.androidPackageName";
 
   private DataModelPropertyDescriptor[] runtimeDescriptors;
 
@@ -62,18 +64,20 @@ final class BackendGeneratorDataModelProvider extends AbstractDataModelProvider 
   @SuppressWarnings({"rawtypes", "unchecked"})
   public Set getPropertyNames() {
     Set propertyNames = super.getPropertyNames();
+    propertyNames.add(IFacetDataModelProperties.FACET_PROJECT_NAME);
     propertyNames.add(IFacetDataModelProperties.FACETED_PROJECT_WORKING_COPY);
-    propertyNames.add(GAE_BACKEND_SELECTED_RUNTIME);
+    propertyNames.add(SELECTED_RUNTIME);
     propertyNames.add(GAE_FACET_INSTALL_DM);
     propertyNames.add(SCM_PROJECT_NUMBER);
     propertyNames.add(SCM_API_KEY);
-    propertyNames.add(ANDROID_PROJECT);
+    propertyNames.add(ANDROID_PROJECT_NAME);
+    propertyNames.add(ANDROID_PACKAGE_NAME);
     return propertyNames;
   }
 
   @Override
   public DataModelPropertyDescriptor[] getValidPropertyDescriptors(String propertyName) {
-    if (GAE_BACKEND_SELECTED_RUNTIME.equals(propertyName)) {
+    if (SELECTED_RUNTIME.equals(propertyName)) {
       if (runtimeDescriptors != null) {
         // return cached
         return runtimeDescriptors;
@@ -84,7 +88,7 @@ final class BackendGeneratorDataModelProvider extends AbstractDataModelProvider 
       Set<IRuntime> gaeRuntimes = new TreeSet<IRuntime>(new Comparator<IRuntime>() {
         @Override
         public int compare(IRuntime o1, IRuntime o2) {
-          return getSdkVersion(o1).compareTo(getSdkVersion(o2));
+          return getSdkVersion(o2).compareTo(getSdkVersion(o1));
         }
       });
       // collect runtimes
@@ -108,7 +112,7 @@ final class BackendGeneratorDataModelProvider extends AbstractDataModelProvider 
 
   @Override
   public IStatus validate(String propertyName) {
-    if (GAE_BACKEND_SELECTED_RUNTIME.equals(propertyName)) {
+    if (SELECTED_RUNTIME.equals(propertyName)) {
       DataModelPropertyDescriptor[] descriptors = getValidPropertyDescriptors(propertyName);
       if (descriptors.length == 0) {
         return StatusUtilities.newErrorStatus("No valid Google App Engine Runtime found.",

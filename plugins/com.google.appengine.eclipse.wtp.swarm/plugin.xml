@@ -12,7 +12,7 @@
     <extension point="org.eclipse.ui.handlers">
         <handler class="com.google.appengine.eclipse.wtp.handlers.GenerateBackendProjectHandler"
                  commandId="com.google.appengine.eclipse.wtp.commands.GenerateBackendProjectCommand">
-            <enabledWhen>
+           <enabledWhen>
                 <with variable="selection">
                     <count value="1"/>
                     <iterate>

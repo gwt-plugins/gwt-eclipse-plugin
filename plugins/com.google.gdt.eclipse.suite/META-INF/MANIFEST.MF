@@ -26,8 +26,7 @@ Require-Bundle: com.google.appengine.eclipse.core;visibility:=reexport,
  org.eclipse.ui.forms,
  org.eclipse.ui.ide,
  org.eclipse.wst.server.core,
- org.eclipse.wst.common.project.facet.core,
- com.google.gdt.eclipse.appengine.api
+ org.eclipse.wst.common.project.facet.core
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: com.google.gdt.eclipse.suite,
