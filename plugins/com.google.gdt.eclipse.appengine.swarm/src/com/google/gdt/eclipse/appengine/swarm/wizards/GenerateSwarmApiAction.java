@@ -100,7 +100,6 @@ public class GenerateSwarmApiAction extends Action implements IActionDelegate {
     if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
       project = AdapterUtilities.getAdapter(((IStructuredSelection) selection).iterator().next(),
           IProject.class);
-      IJavaProject javaProject = JavaCore.create(project);
       entityList = new ArrayList<IType>();
       try {
         for (IPackageFragment pkgFragment : JavaCore.create(project).getPackageFragments()) {
