@@ -8,6 +8,16 @@
              description="%menu.generatebackendprojectdesc"
              id="com.google.appengine.eclipse.wtp.commands.GenerateBackendProjectCommand"
              name="%menu.generatebackendproject"/>
+       <command
+             categoryId="com.google.appengine.eclipse.wtp.commands.category"
+             description="%menu.generateswarmapidesc"
+             id="com.google.appengine.eclipse.wtp.commands.GenerateSwarmApiCommand"
+             name="%menu.generateswarmapi"/>
+       <command
+             categoryId="com.google.appengine.eclipse.wtp.commands.category"
+             description="%menu.generateswarmapiclassdesc"
+             id="com.google.appengine.eclipse.wtp.commands.GenerateSwarmApiClassCommand"
+             name="%menu.generateswarmapiclass"/>
     </extension>
     <extension point="org.eclipse.ui.handlers">
         <handler class="com.google.appengine.eclipse.wtp.handlers.GenerateBackendProjectHandler"
@@ -19,6 +29,31 @@
                         <adapt type="org.eclipse.jdt.core.IJavaElement">
                             <test property="org.eclipse.jdt.core.hasTypeOnClasspath" value="android.Manifest"/>
                             <test property="org.eclipse.jdt.core.hasTypeOnClasspath" value="android.app.Activity"/>
+                        </adapt>
+                    </iterate>
+                </with>
+            </enabledWhen>
+        </handler>
+        <handler class="com.google.appengine.eclipse.wtp.handlers.GenerateSwarmApiHandler"
+                 commandId="com.google.appengine.eclipse.wtp.commands.GenerateSwarmApiCommand">
+           <enabledWhen>
+                <with variable="selection">
+                    <count value="1"/>
+                    <iterate>
+                        <reference definitionId="com.google.appengine.eclipse.wtp.isGaeWebProject"/>
+                    </iterate>
+                </with>
+            </enabledWhen>
+        </handler>
+        <handler class="com.google.appengine.eclipse.wtp.handlers.GenerateSwarmApiClassHandler"
+                 commandId="com.google.appengine.eclipse.wtp.commands.GenerateSwarmApiClassCommand">
+           <enabledWhen>
+                <with variable="selection">
+                    <count value="1"/>
+                    <iterate>
+                        <adapt type="org.eclipse.jdt.core.ICompilationUnit">
+                           <test forcePluginActivation="true" 
+                                    property="com.google.appengine.eclipse.wtp.swarm.hasTypes"/>
                         </adapt>
                     </iterate>
                 </with>
@@ -41,6 +76,40 @@
                 </with>
               </visibleWhen>
            </command>
+           <command
+                 commandId="com.google.appengine.eclipse.wtp.commands.GenerateSwarmApiCommand"
+                 style="push">
+              <visibleWhen checkEnabled="false">
+                <with variable="selection">
+                    <count value="1"/>
+                    <iterate>
+                        <adapt type="org.eclipse.core.resources.IProject"/>
+                    </iterate>
+                </with>
+              </visibleWhen>
+           </command>
+           <command
+                 commandId="com.google.appengine.eclipse.wtp.commands.GenerateSwarmApiClassCommand"
+                 style="push">
+              <visibleWhen checkEnabled="false">
+                <with variable="selection">
+                    <count value="1"/>
+                    <iterate>
+                        <adapt type="org.eclipse.jdt.core.ICompilationUnit"/>
+                    </iterate>
+                </with>
+              </visibleWhen>
+           </command>
         </menuContribution>
     </extension>
+    <extension point="org.eclipse.core.expressions.propertyTesters">
+        <propertyTester
+              class="com.google.appengine.eclipse.wtp.handlers.SwarmClassPropertyTester"
+              id="com.google.appengine.eclipse.wtp.SwarmClassTester"
+              namespace="com.google.appengine.eclipse.wtp.swarm"
+              properties="hasTypes"
+              type="org.eclipse.jdt.core.ICompilationUnit">
+        </propertyTester>
+    </extension>
+    
 </plugin>
