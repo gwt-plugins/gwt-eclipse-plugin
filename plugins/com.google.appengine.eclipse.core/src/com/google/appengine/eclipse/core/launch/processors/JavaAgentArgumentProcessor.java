@@ -88,11 +88,15 @@ public class JavaAgentArgumentProcessor implements
     if (!GaeNature.isGaeProject(project)) {
       return;
     }
-    
-    String computedJavaAgent = computeExpectedJavaAgentVMArgument(project);
 
     int javaAgentIndex = StringUtilities.indexOfThatStartsWith(vmArgs, ARG_JAVAAGENT_PREFIX, 0);
-    if (computedJavaAgent != null && !vmArgs.get(javaAgentIndex).equals(computedJavaAgent)) {
+    String computedJavaAgent = computeExpectedJavaAgentVMArgument(project);
+    if (computedJavaAgent == null) {
+      LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(
+          rawVmArgs, javaAgentIndex, false);
+    } else if (javaAgentIndex == -1) {
+      rawVmArgs.add(0, computedJavaAgent);
+    } else if (!vmArgs.get(javaAgentIndex).equals(computedJavaAgent)) {
       int insertionIndex =
           LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(
               rawVmArgs, javaAgentIndex, false);
