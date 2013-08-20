@@ -21,9 +21,12 @@ import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 import com.google.gwt.eclipse.core.util.Util;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jdt.core.IJavaProject;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Version;
 
 import java.util.List;
 
@@ -34,6 +37,8 @@ public class XStartOnFirstThreadArgumentProcessor implements
     ILaunchConfigurationProcessor {
 
   private static final String ARG_XSTART_ON_FIRST_THREAD = "-XstartOnFirstThread";
+  private static final String ATTR_XSTART_ON_FIRST_THREAD =
+      "org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD";
 
   /**
    * Returns <code>true</code> if -XstartOnFirstThread needs to be added as a VM
@@ -85,6 +90,57 @@ public class XStartOnFirstThreadArgumentProcessor implements
   public void update(ILaunchConfigurationWorkingCopy launchConfig,
       IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
       throws CoreException {
+    
+    // As of Eclipse Kepler(4.3), the use of -XStartOnFirstThread is a built-in launch config
+    // attribute so it is not necessary to make it an explicit argument. This prevents issues when
+    // sharing a launch config file across multiple OS platforms.
+    Bundle bundle = Platform.getBundle("org.eclipse.platform");
+    if (bundle != null) {
+      Version bundleVersion = bundle.getVersion();
+      if (bundleVersion.getMajor() == 4 && bundleVersion.getMinor() == 3) {
+        updateEclipse43(launchConfig, javaProject, programArgs, vmArgs);
+      } else {
+        updateNonEclipse43(launchConfig, javaProject, programArgs, vmArgs);
+      }
+    }
+  }
+
+  public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject,
+      List<String> programArgs, List<String> vmArgs) throws CoreException {
+    return null;
+  }
+
+  private void updateEclipse43(ILaunchConfigurationWorkingCopy launchConfig,
+      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
+      throws CoreException {
+
+    boolean startOnFirstThread = launchConfig.getAttribute(ATTR_XSTART_ON_FIRST_THREAD, false);
+
+    if (needsStartOnFirstThreadHack(javaProject,
+        GWTLaunchConfiguration.launchWithTransitionalOophm(launchConfig),
+        launchConfig)) {
+      /*
+       * If we're on a mac, we need the -XstartOnFirstThread attribute set to true in order to work
+       * around a UI threading issue with the Mac platform.
+       * 
+       * However, if we are using OOPHM, then we can't use -XstartOnFirstThread because this
+       * interferes with the swing UI.
+       * 
+       * We need to do this whether we're running GWT by itself, GWT + GAE, or GAE by itself.
+       */
+      if (!startOnFirstThread) {
+        launchConfig.setAttribute(ATTR_XSTART_ON_FIRST_THREAD, true);
+        launchConfig.doSave();
+      }
+    } else if (startOnFirstThread) {
+      launchConfig.removeAttribute(ATTR_XSTART_ON_FIRST_THREAD);
+      launchConfig.doSave();
+    }
+  }
+
+  private void updateNonEclipse43(ILaunchConfigurationWorkingCopy launchConfig,
+      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
+      throws CoreException {
 
     int argIndex = vmArgs.indexOf(ARG_XSTART_ON_FIRST_THREAD);
 
@@ -108,11 +164,4 @@ public class XStartOnFirstThreadArgumentProcessor implements
       vmArgs.remove(argIndex);
     }
   }
-
-  public String validate(ILaunchConfiguration launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
-      throws CoreException {
-    return null;
-  }
-
 }
