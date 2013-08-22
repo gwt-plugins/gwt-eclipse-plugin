@@ -37,7 +37,6 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="com.google.appengine.eclipse.core"/>
       <import plugin="com.google.gwt.eclipse.core"/>
-      <import plugin="com.google.gdt.eclipse.appengine.api"/>
       <import plugin="com.google.gdt.eclipse.suite"/>
       <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.eclipse.jdt.launching"/>
