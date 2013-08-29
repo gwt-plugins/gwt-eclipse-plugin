@@ -24,6 +24,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -52,12 +53,6 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
    */
   public GaeFacetWizardPage() {
     super(WIZARD_PAGE_NAME);
-    runtimeChangedListener = new IFacetedProjectListener() {
-      @Override
-      public void handleEvent(IFacetedProjectEvent event) {
-        updateDeployComponent();
-      }
-    };
   }
 
   @Override
@@ -84,7 +79,20 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
     synchHelper.synchText(packageText, GAE_PROPERTY_PACKAGE, null);
     synchHelper.synchCheckbox(shouldCreateSampleButton, GAE_PROPERTY_CREATE_SAMPLE, null);
     synchHelper.synchCheckbox(openImportApiWizardButton, GAE_PROPERTY_OPEN_IMPORT_API_WIZARD, null);
-    fpwc.addListener(runtimeChangedListener, IFacetedProjectEvent.Type.PRIMARY_RUNTIME_CHANGED);
+    if (runtimeChangedListener == null) {
+      runtimeChangedListener = new IFacetedProjectListener() {
+        @Override
+        public void handleEvent(IFacetedProjectEvent event) {
+          Display.getDefault().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+              updateDeployComponent();
+            }
+          });
+        }
+      };
+      fpwc.addListener(runtimeChangedListener, IFacetedProjectEvent.Type.PRIMARY_RUNTIME_CHANGED);
+    }
   }
 
   @Override
@@ -168,8 +176,10 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
    */
   private void updateDeployComponent() {
     try {
-      boolean earSupported = isEarSupported();
-      deployComponent.setEarSupported(earSupported);
+      if (deployComponent != null && !getControl().isDisposed()) {
+        boolean earSupported = isEarSupported();
+        deployComponent.setEarSupported(earSupported);
+      }
     } catch (CoreException e) {
       setErrorStatus(9999, e.getStatus().getMessage());
       setErrorMessage();
