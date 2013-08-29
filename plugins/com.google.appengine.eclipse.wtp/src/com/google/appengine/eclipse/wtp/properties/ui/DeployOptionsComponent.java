@@ -65,7 +65,7 @@ public class DeployOptionsComponent {
     }
     {
       doJarClassesButton = new Button(optionsGroup, SWT.CHECK);
-      doJarClassesButton.setText("Put classes in WEB-INF into jar");
+      doJarClassesButton.setText("Package WEB-INF/classes as a jar");
       doJarClassesButton.addSelectionListener(defaultListener);
     }
     {

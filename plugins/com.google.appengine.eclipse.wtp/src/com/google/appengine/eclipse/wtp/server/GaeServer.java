@@ -468,13 +468,13 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
    */
   public IStatus validateEarSupported(GaeRuntime gaeRuntime) {
     IStatus runtimeStatus = Status.OK_STATUS;
-    GaeSdk sdk = RuntimeUtils.getRuntimeSdkNoFallback(gaeRuntime);
-    if (sdk != null) {
-      try {
-        IProject project = getProject();
-        if (project == null) {
-          return runtimeStatus;
-        }
+    try {
+      IProject project = getProject();
+      if (project == null) {
+        return runtimeStatus;
+      }
+      GaeSdk sdk = RuntimeUtils.getRuntimeSdkNoFallback(gaeRuntime);
+      if (sdk != null) {
         if (FacetedProjectFramework.hasProjectFacet(project, "jst.ear")) {
           if (!sdk.getCapabilities().contains(GaeSdkCapability.EAR)) {
             runtimeStatus = StatusUtilities.newErrorStatus(
@@ -482,9 +482,9 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
                     + GaeSdkCapability.EAR.minVersion + " or later.", AppEnginePlugin.PLUGIN_ID);
           }
         }
-      } catch (CoreException e) {
-        // ignore exceptions here, as there could be no modules yet associated with this server.
       }
+    } catch (CoreException e) {
+      // ignore exceptions here, as there could be no modules yet associated with this server.
     }
     return runtimeStatus;
   }

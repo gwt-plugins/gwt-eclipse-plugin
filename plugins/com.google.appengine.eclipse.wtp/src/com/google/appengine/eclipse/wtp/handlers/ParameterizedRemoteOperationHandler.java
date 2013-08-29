@@ -13,6 +13,8 @@
 package com.google.appengine.eclipse.wtp.handlers;
 
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
+import com.google.appengine.eclipse.wtp.deploy.DeployJob;
+import com.google.appengine.eclipse.wtp.deploy.RollbackJob;
 import com.google.appengine.eclipse.wtp.server.GaeServer;
 import com.google.gdt.eclipse.core.StatusUtilities;
 import com.google.gdt.eclipse.core.StringUtilities;
@@ -29,6 +31,8 @@ import java.lang.reflect.Constructor;
 /**
  * Handler for remote operations which are able to dynamically create jobs depending on parameters
  * in plugin.xml
+ *
+ * For example, see {@link DeployJob}, {@link RollbackJob}.
  */
 public final class ParameterizedRemoteOperationHandler extends RemoteOperationHandler {
   private static final String DEPLOY_PACKAGE = "com.google.appengine.eclipse.wtp.deploy.";

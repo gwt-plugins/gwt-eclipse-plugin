@@ -15,6 +15,7 @@ package com.google.appengine.eclipse.wtp.utils;
 import com.google.appengine.eclipse.core.preferences.GaePreferences;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.appengine.eclipse.core.sdk.GaeSdkCapability;
+import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
 import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
 import com.google.gdt.eclipse.core.DynamicWebProjectUtilities;
@@ -60,6 +61,15 @@ import java.util.Collections;
  */
 @SuppressWarnings("restriction")
 public final class ProjectUtils {
+
+  // constants
+  private static final String PROP_LOCATION = "location";
+  private static final String TAG_MODULE = "module";
+  private static final String TAG_VERSION = "version";
+  private static final String TAG_APPLICATION = "application";
+  private static final String APPENGINE_WEB_XML = "appengine-web.xml";
+  private static final String APPENGINE_APPLICATION_XML = "appengine-application.xml";
+
   /**
    * Creates and adds into the project a new classpath container which is modified to be deployment
    * dependency.
@@ -90,7 +100,7 @@ public final class ProjectUtils {
         IPath earContentFolder = path.removeFirstSegments(project.getFullPath().segmentCount());
         if (earContentFolder != null) {
           IFile file = project.getFile(earContentFolder.append(J2EEConstants.META_INF).append(
-              "appengine-application.xml"));
+              APPENGINE_APPLICATION_XML));
           return file.exists() ? file : null;
         }
       }
@@ -109,7 +119,7 @@ public final class ProjectUtils {
     IPath webContentFolder = DynamicWebProjectUtilities.getWebContentFolder(project);
     if (webContentFolder != null) {
       IFile file = project.getFile(webContentFolder.append(J2EEConstants.WEB_INF).append(
-          "appengine-web.xml"));
+          APPENGINE_WEB_XML));
       return file.exists() ? file : null;
     }
     return null;
@@ -125,7 +135,7 @@ public final class ProjectUtils {
     if (ddFile == null) {
       return "";
     }
-    return getSingleElementValue(ddFile, "application");
+    return getSingleElementValue(ddFile, TAG_APPLICATION);
   }
 
   /**
@@ -137,7 +147,7 @@ public final class ProjectUtils {
     if (appEngineXmlFile == null) {
       return "";
     }
-    return getSingleElementValue(appEngineXmlFile, "version");
+    return getSingleElementValue(appEngineXmlFile, TAG_VERSION);
   }
 
   /**
@@ -163,7 +173,7 @@ public final class ProjectUtils {
     for (IRuntimeComponent component : primaryRuntime.getRuntimeComponents()) {
       IRuntimeComponentType type = component.getRuntimeComponentType();
       if (GaeRuntime.GAE_RUNTIME_ID.equals(type.getId())) {
-        String location = component.getProperty("location");
+        String location = component.getProperty(PROP_LOCATION);
         return location == null ? null : new Path(location);
       }
     }
@@ -179,7 +189,7 @@ public final class ProjectUtils {
     if (appEngineXmlFile == null) {
       return "";
     }
-    return getSingleElementValue(appEngineXmlFile, "module");
+    return getSingleElementValue(appEngineXmlFile, TAG_MODULE);
   }
 
   /**
@@ -241,7 +251,7 @@ public final class ProjectUtils {
    */
   public static void setAppId(IProject project, final String appId, boolean forceSave)
       throws IOException, CoreException {
-    setDeploymentDescriptorSingleValue(project, "application", appId, forceSave);
+    setDeploymentDescriptorSingleValue(project, TAG_APPLICATION, appId, forceSave);
   }
 
   /**
@@ -254,7 +264,7 @@ public final class ProjectUtils {
       throw new FileNotFoundException("Could not find appengine-web.xml in project "
           + project.getName());
     }
-    setSingleElementValue(appEngineWebXml, "version", appVersion, forceSave);
+    setSingleElementValue(appEngineWebXml, TAG_VERSION, appVersion, forceSave);
   }
 
   /**
@@ -267,7 +277,7 @@ public final class ProjectUtils {
       throw new FileNotFoundException("Could not find appengine-web.xml in project "
           + project.getName());
     }
-    setSingleElementValue(appEngineWebXml, "module", moduleId, forceSave);
+    setSingleElementValue(appEngineWebXml, TAG_MODULE, moduleId, forceSave);
   }
 
   /**
@@ -285,11 +295,10 @@ public final class ProjectUtils {
           }
         }
       }.run();
-      return textHolder[0];
     } catch (Throwable e) {
-      // ignore errors
-      return "";
+      AppEnginePlugin.logMessage(e);
     }
+    return textHolder[0];
   }
 
   /**
@@ -301,7 +310,7 @@ public final class ProjectUtils {
     IFile ddFile = isEar ? getAppEngineApplicationXml(project) : getAppEngineWebXml(project);
     if (ddFile == null) {
       throw new FileNotFoundException("Could not find "
-          + (isEar ? "appengien-application.xml" : "appengine-web.xml") + " in project "
+          + (isEar ? APPENGINE_APPLICATION_XML : APPENGINE_WEB_XML) + " in project "
           + project.getName());
     }
     setSingleElementValue(ddFile, tagName, tagValue, forceSave);
