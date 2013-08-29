@@ -176,7 +176,7 @@ public final class GaeFacetWizardPage extends GaeFacetAbstractWizardPage {
    */
   private void updateDeployComponent() {
     try {
-      if (deployComponent != null && !getControl().isDisposed()) {
+      if (deployComponent != null) {
         boolean earSupported = isEarSupported();
         deployComponent.setEarSupported(earSupported);
       }
