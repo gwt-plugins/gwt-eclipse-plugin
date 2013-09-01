@@ -112,4 +112,28 @@
         </propertyTester>
     </extension>
     
+    <extension
+         id="gaeCloudEndpointsBuilder"
+         name="Google App Engine Cloud Endpoints Builder for WTP"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run class="com.google.appengine.eclipse.wtp.swarm.CloudEndpointsBuilder"/>
+      </builder>
+    </extension>
+    <extension
+           point="org.eclipse.core.resources.markers"
+           id="cloudEndpointsProblemMarker"
+           name="Cloud Endpoints Generation Problem">
+        <persistent value="true"/>
+        <super type="org.eclipse.core.resources.problemmarker"/>
+    </extension>
+   
+    <extension
+          point="org.eclipse.wst.common.project.facet.core.listeners">
+       <listener
+             class="com.google.appengine.eclipse.wtp.swarm.EndpointsFacetedProjectListener"
+             eventTypes="post_install,pre_uninstall">
+       </listener>
+    </extension>
+    
 </plugin>

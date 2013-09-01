@@ -30,7 +30,6 @@ import com.google.gdt.eclipse.core.BuilderUtilities;
 import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import com.google.gdt.eclipse.core.projects.IWebAppProjectCreator;
 import com.google.gdt.eclipse.core.projects.ProjectUtilities;
-import com.google.gdt.eclipse.core.sdk.Sdk.SdkException;
 import com.google.gdt.eclipse.core.sdk.SdkClasspathContainer;
 import com.google.gdt.eclipse.core.ui.SdkSelectionBlock.SdkSelection;
 
@@ -51,21 +50,14 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
-import org.osgi.service.prefs.BackingStoreException;
 import org.xml.sax.SAXException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 
 /**
  * Generates an App Engine backend project for a given Android project. The name
@@ -80,8 +72,8 @@ public class BackendGenerator {
   /**
    * Generates Web API for the java bean DeviceInfo.
    */
-  public static boolean generateWebApi(IJavaProject appEngineJavaProject, IPath gaeSdkPath, String appId, SubMonitor monitor)
-      throws JavaModelException {
+  public static void generateWebApi(IJavaProject appEngineJavaProject, IPath gaeSdkPath,
+      String appId, SubMonitor monitor) throws Exception {
 
     SwarmServiceCreator serviceCreator = new SwarmServiceCreator();
     serviceCreator.setProject(appEngineJavaProject.getProject());
@@ -115,7 +107,7 @@ public class BackendGenerator {
 
     // Using parent monitor; not spawning a new submonitor in this method, since
     // there's nothing we really want to report here
-    return serviceCreator.create(true, monitor);
+    serviceCreator.create(true, monitor);
   }
 
   public static String getAndroidBackendProjectName(String androidProjectName) {
@@ -346,27 +338,7 @@ public class BackendGenerator {
         }
       }
 
-    } catch (MalformedURLException e) {
-      AppEngineSwarmBackendPlugin.log(e);
-    } catch (UnsupportedEncodingException e) {
-      AppEngineSwarmBackendPlugin.log(e);
-    } catch (FileNotFoundException e) {
-      AppEngineSwarmBackendPlugin.log(e);
-    } catch (CoreException e) {
-      AppEngineSwarmBackendPlugin.log(e);
-    } catch (SdkException e) {
-      AppEngineSwarmBackendPlugin.log(e);
-    } catch (ClassNotFoundException e) {
-      AppEngineSwarmBackendPlugin.log(e);
-    } catch (BackingStoreException e) {
-      AppEngineSwarmBackendPlugin.log(e);
-    } catch (IOException e) {
-      AppEngineSwarmBackendPlugin.log(e);
-    } catch (TransformerFactoryConfigurationError e) {
-      AppEngineSwarmBackendPlugin.log(e);
-    } catch (TransformerException e) {
-      AppEngineSwarmBackendPlugin.log(e);
-    } catch (InterruptedException e) {
+    } catch (Exception e) {
       AppEngineSwarmBackendPlugin.log(e);
     } finally {
       monitor.done();
@@ -378,10 +350,8 @@ public class BackendGenerator {
   /**
    * Generates Web API for the java bean DeviceInfo.
    */
-  private boolean generateWebApi(GaeProject gaeProject, SubMonitor monitor)
-      throws JavaModelException {
+  private void generateWebApi(GaeProject gaeProject, SubMonitor monitor) throws Exception {
     IPath gaeInstallationPath = gaeProject.getSdk().getInstallationPath();
-    return generateWebApi(gaeProject.getJavaProject(), gaeInstallationPath, gaeProject.getAppId(),
-        monitor);
+    generateWebApi(gaeProject.getJavaProject(), gaeInstallationPath, gaeProject.getAppId(), monitor);
   }
 }

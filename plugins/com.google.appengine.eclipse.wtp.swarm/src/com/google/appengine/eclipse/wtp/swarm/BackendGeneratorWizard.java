@@ -21,7 +21,6 @@ import com.google.gdt.eclipse.appengine.swarm_backend.impl.BackendGenerator;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetDataModelProperties;
 import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetProjectCreationDataModelProperties;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelEvent;
@@ -48,19 +47,12 @@ public final class BackendGeneratorWizard extends DataModelWizard {
   private IFacetedProjectWorkingCopy facetedProject;
   private String androidProjectPackageName;
   private GaeFacetWizardPage gaeFacetPage;
-  private Composite pageContainer;
 
   public BackendGeneratorWizard() {
     setWindowTitle("Generate Backend Wizard");
     setDefaultPageImageDescriptor(ImageDescriptor.createFromURL(AppEngineSwarmPlugin.getInstance().getBundle().getEntry(
         "/icons/app_engine_droid_64.png")));
     setNeedsProgressMonitor(true);
-  }
-
-  @Override
-  public void createPageControls(final Composite container) {
-    super.createPageControls(container);
-    pageContainer = container;
   }
 
   public void init(IProject androidProject, String newProjectName) {

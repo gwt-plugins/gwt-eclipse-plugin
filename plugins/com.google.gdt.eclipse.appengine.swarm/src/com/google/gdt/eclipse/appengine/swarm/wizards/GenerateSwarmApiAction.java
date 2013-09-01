@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright 2012 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -19,7 +19,6 @@ import com.google.appengine.eclipse.core.resources.GaeProject;
 import com.google.appengine.eclipse.core.sdk.GaeSdkCapability;
 import com.google.gdt.eclipse.appengine.swarm.AppEngineSwarmPlugin;
 import com.google.gdt.eclipse.appengine.swarm.util.SwarmAnnotationUtils;
-import com.google.gdt.eclipse.appengine.swarm.util.SwarmType;
 import com.google.gdt.eclipse.appengine.swarm.wizards.helpers.SwarmServiceCreator;
 import com.google.gdt.eclipse.core.AdapterUtilities;
 
@@ -27,7 +26,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
@@ -80,16 +78,17 @@ public class GenerateSwarmApiAction extends Action implements IActionDelegate {
       serviceCreator.setGaeSdkPath(gaeProject.getSdk().getInstallationPath());
       new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()).run(
           false, false, new IRunnableWithProgress() {
-
-            public void run(IProgressMonitor monitor) {
-              if (!serviceCreator.create(true, monitor)) {
-                MessageDialog.openInformation(Display.getDefault().getActiveShell(),
-                    "Error in Generating API",
-                    "Generating Cloud Endpoint has encountered errors and is not complete.");
+            public void run(IProgressMonitor monitor) throws InvocationTargetException {
+              try {
+                serviceCreator.create(true, monitor);
+              } catch (Exception e) {
+                throw new InvocationTargetException(e);
               }
             }
           });
     } catch (InvocationTargetException e) {
+      MessageDialog.openInformation(Display.getDefault().getActiveShell(),
+          "Error in Generating API", e.getCause().getMessage());
       AppEngineSwarmPlugin.getLogger().logError(e);
     } catch (InterruptedException e) {
       AppEngineSwarmPlugin.getLogger().logError(e);
@@ -107,7 +106,7 @@ public class GenerateSwarmApiAction extends Action implements IActionDelegate {
             continue;
           }
           for (ICompilationUnit cu : pkgFragment.getCompilationUnits()) {
-            SwarmAnnotationUtils.collectTypes(entityList, cu, SwarmType.API);
+            SwarmAnnotationUtils.collectApiTypes(entityList, cu);
             if (!entityList.isEmpty()) {
               break;
             }

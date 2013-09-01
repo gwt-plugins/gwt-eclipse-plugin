@@ -150,8 +150,7 @@ public final class BackendGeneratorDataModelOperation extends AbstractDataModelO
   private void configureJpaFacet(IDataModel jpaDataModel) {
     Object runtime = jpaDataModel.getProperty(JpaFacetDataModelProperties.RUNTIME);
     if (runtime == null) {
-      runtime = getDataModel().getProperty(
-          BackendGeneratorDataModelProvider.SELECTED_RUNTIME);
+      runtime = getDataModel().getProperty(BackendGeneratorDataModelProvider.SELECTED_RUNTIME);
       jpaDataModel.setProperty(JpaFacetDataModelProperties.RUNTIME, runtime);
     }
     // install libprov
@@ -163,67 +162,76 @@ public final class BackendGeneratorDataModelOperation extends AbstractDataModelO
   /**
    * Does creating connected projects resources and configuring them.
    */
-  private void doGenerateContents(IProgressMonitor monitor) throws CoreException, Exception {
+  private void doGenerateContents(IProgressMonitor monitor) throws Exception {
     SubMonitor submonitor = SubMonitor.convert(monitor, "Generating App Engine Backend Contents",
         100);
     // prepare
     IDataModel dataModel = getDataModel();
     IProject appEngineProject = ProjectUtils.getProject(dataModel);
-    IRuntime runtime = (IRuntime) dataModel.getProperty(BackendGeneratorDataModelProvider.SELECTED_RUNTIME);
-    String projectNumber = dataModel.getStringProperty(BackendGeneratorDataModelProvider.SCM_PROJECT_NUMBER);
-    String apiKey = dataModel.getStringProperty(BackendGeneratorDataModelProvider.SCM_API_KEY);
-    IProject androidProject = ProjectUtils.getProject(dataModel,
-        BackendGeneratorDataModelProvider.ANDROID_PROJECT_NAME);
-    String androidProjectPackageName = dataModel.getStringProperty(BackendGeneratorDataModelProvider.ANDROID_PACKAGE_NAME);
-    IDataModel gaeConfiguredDataModel = (IDataModel) dataModel.getProperty(BackendGeneratorDataModelProvider.GAE_FACET_INSTALL_DM);
-    String appEnginePackageName = gaeConfiguredDataModel.getStringProperty(IGaeFacetConstants.GAE_PROPERTY_PACKAGE);
-    // bind projects together
-    ConnectedProjectHandler.setConnectedProject(appEngineProject, androidProject);
-    ConnectedProjectHandler.setConnectedProject(androidProject, appEngineProject);
-    // prepare generators
-    GCMSupport gcmSupport = new GCMSupport(androidProject, appEngineProject, projectNumber, apiKey);
-    // add GCM templates for App Engine
-    IJavaProject appEngineJavaProject = JavaCore.create(appEngineProject);
-    ensureAppEnginePackage(appEngineJavaProject, appEnginePackageName);
-    gcmSupport.addAppEngineSupport(submonitor.newChild(10), appEnginePackageName);
-    if (submonitor.isCanceled()) {
-      throw new OperationCanceledException();
+    try {
+      // disable builder
+      appEngineProject.setSessionProperty(CloudEndpointsUtils.PROP_DISABLE_ENDPOINTS_BUILDER, "true");
+
+      IRuntime runtime = (IRuntime) dataModel.getProperty(BackendGeneratorDataModelProvider.SELECTED_RUNTIME);
+      String projectNumber = dataModel.getStringProperty(BackendGeneratorDataModelProvider.SCM_PROJECT_NUMBER);
+      String apiKey = dataModel.getStringProperty(BackendGeneratorDataModelProvider.SCM_API_KEY);
+      IProject androidProject = ProjectUtils.getProject(dataModel,
+          BackendGeneratorDataModelProvider.ANDROID_PROJECT_NAME);
+      String androidProjectPackageName = dataModel.getStringProperty(BackendGeneratorDataModelProvider.ANDROID_PACKAGE_NAME);
+      IDataModel gaeConfiguredDataModel = (IDataModel) dataModel.getProperty(BackendGeneratorDataModelProvider.GAE_FACET_INSTALL_DM);
+      String appEnginePackageName = gaeConfiguredDataModel.getStringProperty(IGaeFacetConstants.GAE_PROPERTY_PACKAGE);
+      // bind projects together
+      ConnectedProjectHandler.setConnectedProject(appEngineProject, androidProject);
+      ConnectedProjectHandler.setConnectedProject(androidProject, appEngineProject);
+      // prepare generators
+      GCMSupport gcmSupport = new GCMSupport(androidProject, appEngineProject, projectNumber,
+          apiKey);
+      // add GCM templates for App Engine
+      IJavaProject appEngineJavaProject = JavaCore.create(appEngineProject);
+      ensureAppEnginePackage(appEngineJavaProject, appEnginePackageName);
+      gcmSupport.addAppEngineSupport(submonitor.newChild(10), appEnginePackageName);
+      if (submonitor.isCanceled()) {
+        throw new OperationCanceledException();
+      }
+      // we have to refresh the project after adding the GCM templates
+      appEngineProject.refreshLocal(IResource.DEPTH_INFINITE, submonitor.newChild(1));
+      if (submonitor.isCanceled()) {
+        throw new OperationCanceledException();
+      }
+      /*
+       * Now, generate the Swarm API and client libraries. This will copy the endpoint library
+       * source over to the Android project, and add new sourcepaths to the project.
+       */
+      String appId = ProjectUtils.getAppId(appEngineProject);
+      IPath gaeSdkPath = ProjectUtils.getGaeSdkLocation(runtime);
+      if (gaeSdkPath == null) {
+        throw new CoreException(StatusUtilities.newErrorStatus(
+            "No Google App Engine SDK found for runtime: " + runtime.getName(),
+            AppEngineSwarmPlugin.PLUGIN_ID));
+      }
+      try {
+        BackendGenerator.generateWebApi(appEngineJavaProject, gaeSdkPath, appId,
+            submonitor.newChild(40));
+      } catch (Exception e) {
+        throw new CoreException(StatusUtilities.newErrorStatus(e, AppEngineSwarmPlugin.PLUGIN_ID));
+      }
+      if (submonitor.isCanceled()) {
+        throw new OperationCanceledException();
+      }
+      // perform a build so that we build the endpoint source.
+      androidProject.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, submonitor.newChild(30));
+      // android turn
+      gcmSupport.addAndroidSupport(androidProjectPackageName, submonitor.newChild(30));
+      if (submonitor.isCanceled()) {
+        throw new OperationCanceledException();
+      }
+      // do refresh
+      androidProject.refreshLocal(IResource.DEPTH_INFINITE, submonitor.newChild(1));
+      // TODO(amitin): notify callbacks?
+    } finally {
+      // enable builder
+      appEngineProject.setSessionProperty(CloudEndpointsUtils.PROP_DISABLE_ENDPOINTS_BUILDER, null);
     }
-    // we have to refresh the project after adding the GCM templates
-    appEngineProject.refreshLocal(IResource.DEPTH_INFINITE, submonitor.newChild(1));
-    if (submonitor.isCanceled()) {
-      throw new OperationCanceledException();
-    }
-    /*
-     * Now, generate the Swarm API and client libraries. This will copy the endpoint library source
-     * over to the Android project, and add new sourcepaths to the project.
-     */
-    String appId = ProjectUtils.getAppId(appEngineProject);
-    IPath gaeSdkPath = ProjectUtils.getGaeSdkLocation(runtime);
-    if (gaeSdkPath == null) {
-      throw new CoreException(StatusUtilities.newErrorStatus(
-          "No Google App Engine SDK found for runtime: " + runtime.getName(),
-          AppEngineSwarmPlugin.PLUGIN_ID));
-    }
-    boolean isGenerated = BackendGenerator.generateWebApi(appEngineJavaProject, gaeSdkPath, appId,
-        submonitor.newChild(40));
-    if (!isGenerated) {
-      throw new CoreException(StatusUtilities.newErrorStatus("Error generating Web API.",
-          AppEngineSwarmPlugin.PLUGIN_ID));
-    }
-    if (submonitor.isCanceled()) {
-      throw new OperationCanceledException();
-    }
-    // perform a build so that we build the endpoint source.
-    androidProject.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, submonitor.newChild(30));
-    // android turn
-    gcmSupport.addAndroidSupport(androidProjectPackageName, submonitor.newChild(30));
-    if (submonitor.isCanceled()) {
-      throw new OperationCanceledException();
-    }
-    // do refresh
-    androidProject.refreshLocal(IResource.DEPTH_INFINITE, submonitor.newChild(1));
-    // TODO(amitin): notify callbacks?
   }
 
   /**

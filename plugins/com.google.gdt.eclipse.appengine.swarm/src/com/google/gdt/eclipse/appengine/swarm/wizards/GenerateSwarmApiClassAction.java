@@ -107,7 +107,9 @@ public class GenerateSwarmApiClassAction extends Action implements IActionDelega
       for (ExtensionQuery.Data<IEndpointsActionCallback> extensionData : extensionQuery.getData()) {
         extensionData.getExtensionPointData().onGenerateEndpointClass(project);
       }
-    } catch (JavaModelException e) {
+    } catch (Exception e) {
+      MessageDialog.openInformation(Display.getDefault().getActiveShell(),
+          "Error in Generating Entity class", e.getMessage());
       AppEngineSwarmPlugin.getLogger().logError(e);
     }
   }

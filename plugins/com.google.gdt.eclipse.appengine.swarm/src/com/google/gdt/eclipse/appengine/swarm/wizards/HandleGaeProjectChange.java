@@ -17,6 +17,7 @@ package com.google.gdt.eclipse.appengine.swarm.wizards;
 
 import com.google.appengine.eclipse.core.properties.ui.GaeProjectChangeExtension;
 import com.google.appengine.eclipse.core.resources.GaeProject;
+import com.google.gdt.eclipse.appengine.swarm.AppEngineSwarmPlugin;
 import com.google.gdt.eclipse.appengine.swarm.util.ConnectedProjectHandler;
 import com.google.gdt.eclipse.appengine.swarm.wizards.helpers.SwarmServiceCreator;
 
@@ -43,7 +44,11 @@ public class HandleGaeProjectChange implements GaeProjectChangeExtension {
    */
   public void gaeAppIdChanged(IProject appEngineProject) {
     SwarmServiceCreator serviceCreator = createSwarmServiceCreator(appEngineProject);
-    serviceCreator.create(true, new NullProgressMonitor());
+    try {
+      serviceCreator.create(true, new NullProgressMonitor());
+    } catch (Exception e) {
+      AppEngineSwarmPlugin.log(e);
+    }
   }
 
   /**
@@ -55,20 +60,23 @@ public class HandleGaeProjectChange implements GaeProjectChangeExtension {
    */
   public void gaeProjectRebuilt(IProject appEngineProject, boolean appEngineWebXmlChanged) {
     SwarmServiceCreator serviceCreator = createSwarmServiceCreator(appEngineProject);
-
-    if (appEngineWebXmlChanged) {
-      /*
-       * This project is associated with another project that is consuming its
-       * generated client libraries, so let's re-generate them.
-       */
-      if (ConnectedProjectHandler.getConnectedProject(appEngineProject) != null) {
-        serviceCreator.create(true, new NullProgressMonitor());
-        return;
+    try {
+      if (appEngineWebXmlChanged) {
+        /*
+         * This project is associated with another project that is consuming its generated client
+         * libraries, so let's re-generate them.
+         */
+        if (ConnectedProjectHandler.getConnectedProject(appEngineProject) != null) {
+          serviceCreator.create(true, new NullProgressMonitor());
+          return;
+        }
       }
-    }
 
-    // Otherwise, just update the services, but don't regenerate the libraries
-    serviceCreator.create(false, new NullProgressMonitor());
+      // Otherwise, just update the services, but don't regenerate the libraries
+      serviceCreator.create(false, new NullProgressMonitor());
+    } catch (Exception e) {
+      AppEngineSwarmPlugin.log(e);
+    }
   }
 
   /**

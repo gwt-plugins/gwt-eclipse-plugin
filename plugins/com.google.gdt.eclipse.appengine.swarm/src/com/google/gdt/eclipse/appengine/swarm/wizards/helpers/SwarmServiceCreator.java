@@ -57,7 +57,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.text.edits.MalformedTreeException;
-import org.xml.sax.SAXException;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -71,11 +70,6 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 
 /**
  * The main class responsible for generating Swarm service classes and
@@ -386,9 +380,9 @@ public class SwarmServiceCreator {
     return false;
   }
 
-  public boolean create(boolean generateLibs, IProgressMonitor progressMonitor) {
+  public void create(boolean generateLibs, IProgressMonitor progressMonitor)
+      throws SwarmGenerationException, Exception {
 
-    boolean taskComplete = false;
     try {
       XmlUtil xmlUtil = new XmlUtil();
 
@@ -422,7 +416,7 @@ public class SwarmServiceCreator {
           continue;
         }
         for (ICompilationUnit cu : pkgFragment.getCompilationUnits()) {
-          SwarmAnnotationUtils.collectTypes(entityList, cu, SwarmType.API);
+          SwarmAnnotationUtils.collectApiTypes(entityList, cu);
         }
       }
       final int entityListSize = entityList.size();
@@ -432,7 +426,8 @@ public class SwarmServiceCreator {
       }
       if (entityListSize == 0) {
         xmlUtil.updateWebXml(new ArrayList<String>(), project);
-        return true;
+        project.refreshLocal(IResource.DEPTH_INFINITE, progressMonitor);
+        return;
       }
 
       SubMonitor monitor = SubMonitor.convert(progressMonitor, "Generating Cloud Endpoint Library",
@@ -510,51 +505,11 @@ public class SwarmServiceCreator {
       }
 
       project.refreshLocal(IResource.DEPTH_INFINITE, monitor.newChild(1));
-      taskComplete = true;
-    } catch (JavaModelException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (CoreException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (MalformedTreeException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (MalformedURLException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (ClassNotFoundException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (FileNotFoundException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (ParserConfigurationException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (SAXException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (IOException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (TransformerConfigurationException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (TransformerFactoryConfigurationError e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (TransformerException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (BadLocationException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (IllegalArgumentException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (SecurityException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (InvocationTargetException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (IllegalAccessException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (NoSuchMethodException e) {
-      AppEngineSwarmPlugin.log(e);
-    } catch (InstantiationException e) {
-      AppEngineSwarmPlugin.log(e);
     } finally {
       if (progressMonitor != null) {
         progressMonitor.done();
       }
     }
-    return taskComplete;
   }
 
   private File createEmptySwarmLib(SubMonitor monitor) throws CoreException {

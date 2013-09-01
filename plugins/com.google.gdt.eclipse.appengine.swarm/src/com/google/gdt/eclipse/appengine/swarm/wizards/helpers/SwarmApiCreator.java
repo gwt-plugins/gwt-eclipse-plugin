@@ -1,15 +1,13 @@
 /*******************************************************************************
  * Copyright 2012 Google Inc. All Rights Reserved.
- * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ *
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
 package com.google.gdt.eclipse.appengine.swarm.wizards.helpers;
@@ -40,8 +38,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The class responsible for generating Api library given service class. Acts as
- * interface between library involved in generation and GPE.
+ * The class responsible for generating Api library given service class. Acts as interface between
+ * library involved in generation and GPE.
  */
 public class SwarmApiCreator {
 
@@ -74,8 +72,7 @@ public class SwarmApiCreator {
   @SuppressWarnings("unchecked")
   public void createClientLibFromApiConfig(IProject project, String apiConfig, File outputFolder,
       SubMonitor monitor, ApiPlatformType platformType, String serviceClassName, ClassLoader loader)
-      throws IOException, IllegalArgumentException, InvocationTargetException, CoreException,
-      ClassNotFoundException, SecurityException, IllegalAccessException, NoSuchMethodException {
+      throws Exception {
     generateAndWriteDiscovery(project, apiConfig, serviceClassName, RPC, loader);
     String discoveryDocRest = generateAndWriteDiscovery(project, apiConfig, serviceClassName, REST,
         loader);
@@ -101,7 +98,12 @@ public class SwarmApiCreator {
     Method clientLibGeneratorMethod = clientLibGenerator.getMethod("generateClientLib",
         String.class, languageEnum, String.class, File.class);
 
-    clientLibGeneratorMethod.invoke(clientLibGeneratorInstance, methodArgs.toArray());
+    try {
+      clientLibGeneratorMethod.invoke(clientLibGeneratorInstance, methodArgs.toArray());
+    } catch (InvocationTargetException e) {
+      throw new SwarmGenerationException(e);
+    }
+
     monitor.worked(20);
 
     if (monitor.isCanceled()) {
@@ -156,15 +158,14 @@ public class SwarmApiCreator {
   }
 
   /**
-   * Generates API config file contents given service class and application id.
-   * Then uses it for generating discovery doc and finally client library zip,
-   * which is unzipped and copied to outputFolder.
+   * Generates API config file contents given service class and application id. Then uses it for
+   * generating discovery doc and finally client library zip, which is unzipped and copied to
+   * outputFolder.
    */
+  @SuppressWarnings("unchecked")
   public void createSwarmApi(ArrayList<Class<?>> serviceClassList, IProject project,
       File outputFolder, ApiPlatformType platformType, boolean generateLibs, ClassLoader loader,
-      SubMonitor monitor) throws IOException, IllegalArgumentException, SecurityException,
-      IllegalAccessException, InvocationTargetException, NoSuchMethodException,
-      ClassNotFoundException, CoreException, InstantiationException {
+      SubMonitor monitor) throws Exception {
 
     monitor.subTask("Generating API Configuration File");
     Class<?> serviceContext = loader.loadClass("com.google.api.server.spi.ServiceContext");
@@ -182,17 +183,22 @@ public class SwarmApiCreator {
     Method generateConfigMethod = annotationApiConfigGenerator.getMethod("generateConfig",
         serviceContext, serviceClassList.toArray(new Class<?>[0]).getClass());
 
-    @SuppressWarnings("unchecked")
-    Map<String, String> apiString = (Map<String, String>) generateConfigMethod.invoke(
-        annotationApiConfigGenerator.newInstance(), new Object[] {
-            serviceContextInstance, serviceClassList.toArray(new Class<?>[0])});
+    Map<String, String> apiString;
+    try {
+      apiString = (Map<String, String>) generateConfigMethod.invoke(
+          annotationApiConfigGenerator.newInstance(), new Object[] {
+              serviceContextInstance, serviceClassList.toArray(new Class<?>[0])});
+    } catch (InvocationTargetException e) {
+      throw new SwarmGenerationException(e);
+    }
 
     File apiConfigFile = null;
     for (String apiConfigKey : apiString.keySet()) {
       String apiConfig = apiString.get(apiConfigKey);
       String apiConfigName = apiConfigKey.substring(0,
           apiConfigKey.indexOf(SwarmServiceCreator.API_FILE_EXTENSION));
-      apiConfigFile = SwarmServiceCreator.createConfigFile(project,
+      apiConfigFile = SwarmServiceCreator.createConfigFile(
+          project,
           WebAppUtilities.getWebInfFolder(project).getFile(apiConfigKey).getProjectRelativePath().toString(),
           new NullProgressMonitor());
       ResourceUtils.writeToFile(apiConfigFile, apiConfig);
@@ -250,23 +256,27 @@ public class SwarmApiCreator {
     return false;
   }
 
+  @SuppressWarnings("unchecked")
   private String generateAndWriteDiscovery(IProject project, String apiConfig,
-      String fileNamePrefix, String format, ClassLoader loader) throws IOException, CoreException,
-      IllegalArgumentException, SecurityException, IllegalAccessException,
-      InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
-    @SuppressWarnings({"unchecked", "rawtypes"})
+      String fileNamePrefix, String format, ClassLoader loader) throws Exception {
+    @SuppressWarnings({"rawtypes"})
     Class<Enum> formatEnum = (Class<Enum>) loader.loadClass("com.google.api.server.spi.tools.DiscoveryDocGenerator$Format");
     Class<?> discoveryDocGenerator = loader.loadClass("com.google.api.server.spi.tools.CloudDiscoveryDocGenerator");
-    @SuppressWarnings("unchecked")
-    String discoveryDoc = (String) discoveryDocGenerator.getMethod("generateDiscoveryDoc",
-        String.class, formatEnum).invoke(
-        discoveryDocGenerator.getMethod("using", String.class).invoke(null, DISCOVERY_API_ROOT),
-        apiConfig, Enum.valueOf(formatEnum, format));
+    Method usingMethod = discoveryDocGenerator.getMethod("using", String.class);
+    Method generateDiscoveryDocMethod = discoveryDocGenerator.getMethod("generateDiscoveryDoc",
+        String.class, formatEnum);
+    String discoveryDoc = "";
+    try {
+      discoveryDoc = (String) generateDiscoveryDocMethod.invoke(
+          usingMethod.invoke(null, DISCOVERY_API_ROOT), apiConfig, Enum.valueOf(formatEnum, format));
+    } catch (InvocationTargetException e) {
+      throw new SwarmGenerationException(e);
+    }
     String discoveryFileName = fileNamePrefix + (format.equals(REST) ? REST_SUFFIX : RPC_SUFFIX)
         + SwarmServiceCreator.DISCOVERY_FILE_EXTENSION;
-    File discoveryFile = SwarmServiceCreator.createConfigFile(project, 
-        WebAppUtilities.getWebInfFolder(project).getFile(discoveryFileName)
-            .getProjectRelativePath().toString(),
+    File discoveryFile = SwarmServiceCreator.createConfigFile(
+        project,
+        WebAppUtilities.getWebInfFolder(project).getFile(discoveryFileName).getProjectRelativePath().toString(),
         new NullProgressMonitor());
     ResourceUtils.writeToFile(discoveryFile, discoveryDoc);
     return discoveryDoc;

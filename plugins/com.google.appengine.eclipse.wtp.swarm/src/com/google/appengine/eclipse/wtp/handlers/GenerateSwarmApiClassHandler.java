@@ -14,15 +14,16 @@ package com.google.appengine.eclipse.wtp.handlers;
 
 import com.google.appengine.eclipse.core.sdk.GaeSdkCapability;
 import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
+import com.google.appengine.eclipse.wtp.swarm.CloudEndpointsUtils;
 import com.google.common.collect.Lists;
 import com.google.gdt.eclipse.appengine.swarm.util.SwarmAnnotationUtils;
 import com.google.gdt.eclipse.appengine.swarm.wizards.helpers.SwarmServiceCreator;
 import com.google.gdt.eclipse.core.DynamicWebProjectUtilities;
 
+import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IType;
@@ -37,7 +38,7 @@ import java.util.List;
 /**
  * Swarm Generation for class handler. Triggers the service class and API generation.
  */
-public final class GenerateSwarmApiClassHandler extends AbstractSwarmApiHandler {
+public final class GenerateSwarmApiClassHandler extends AbstractHandler {
 
   @Override
   public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -55,7 +56,7 @@ public final class GenerateSwarmApiClassHandler extends AbstractSwarmApiHandler 
             "Not an App Engine dynamic web project or has no JPA facet installed.");
         return null;
       }
-      if (!isEndpointsSupported(project)) {
+      if (!CloudEndpointsUtils.isEndpointsSupported(project)) {
         MessageDialog.openInformation(Display.getDefault().getActiveShell(),
             "Error in Generating API", "App Engine SDK should have minimum version of "
                 + GaeSdkCapability.CLOUD_ENDPOINTS.minVersion + ".");
@@ -63,7 +64,8 @@ public final class GenerateSwarmApiClassHandler extends AbstractSwarmApiHandler 
       }
       List<IType> entityList = Lists.newArrayList();
       SwarmAnnotationUtils.collectSwarmTypes(entityList, cu);
-      SwarmServiceCreator serviceCreator = createServiceCreator(project, entityList);
+      SwarmServiceCreator serviceCreator = CloudEndpointsUtils.createServiceCreator(project,
+          entityList);
       IType entity = entityList.get(0);
       if (serviceCreator.serviceExists(entity.getElementName()
           + SwarmServiceCreator.SERVICE_CLASS_SUFFIX, entity.getPackageFragment())) {
@@ -76,12 +78,8 @@ public final class GenerateSwarmApiClassHandler extends AbstractSwarmApiHandler 
         }
       }
       serviceCreator.create(false, new NullProgressMonitor());
-    } catch (CoreException e) {
-      throw new ExecutionException("Error generating API for class", e);
     } catch (Exception e) {
-      MessageDialog.openInformation(Display.getDefault().getActiveShell(),
-          "Error in Generating API", e.getMessage());
-      return null;
+      throw new ExecutionException("Error in Generating Entity class", e);
     }
     return null;
   }

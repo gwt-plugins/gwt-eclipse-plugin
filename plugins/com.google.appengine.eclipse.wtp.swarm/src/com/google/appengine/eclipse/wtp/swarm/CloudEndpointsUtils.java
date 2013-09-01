@@ -10,36 +10,38 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
-package com.google.appengine.eclipse.wtp.handlers;
+package com.google.appengine.eclipse.wtp.swarm;
 
 import com.google.appengine.eclipse.core.preferences.GaePreferences;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.appengine.eclipse.core.sdk.GaeSdkCapability;
-import com.google.appengine.eclipse.wtp.swarm.AppEngineSwarmPlugin;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 import com.google.gdt.eclipse.appengine.swarm.wizards.helpers.SwarmServiceCreator;
 import com.google.gdt.eclipse.core.StatusUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkSet;
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
 
-import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jdt.core.IType;
 
 import java.util.List;
 
 /**
- * Base class for Swarm API Handlers.
+ * Utility methods related to Cloud Endpoints.
  */
-public abstract class AbstractSwarmApiHandler extends AbstractHandler {
-
+public final class CloudEndpointsUtils {
+  public static final QualifiedName PROP_DISABLE_ENDPOINTS_BUILDER = new QualifiedName(
+      AppEngineSwarmPlugin.PLUGIN_ID, "endpointsBuilderDisabled");
+  public static final String MARKER_ID = AppEngineSwarmPlugin.PLUGIN_ID
+      + ".cloudEndpointsProblemMarker";
   /**
    * Instantiates and configures an {@link SwarmServiceCreator} instance. Project must be app engine
    * dynamic web project.
    */
-  protected SwarmServiceCreator createServiceCreator(IProject project, List<IType> entityList)
+  public static SwarmServiceCreator createServiceCreator(IProject project, List<IType> entityList)
       throws CoreException {
     String appId = ProjectUtils.getAppId(project);
     IPath gaeSdkPath = ProjectUtils.getGaeSdkLocation(project);
@@ -59,7 +61,7 @@ public abstract class AbstractSwarmApiHandler extends AbstractHandler {
    * Returns <code>true</code> if the project has the runtime which supports EAR, otherwise returns
    * <code>false</code>. If GAE SDK is not found, throws exception.
    */
-  protected final boolean isEndpointsSupported(IProject project) throws Exception {
+  public static boolean isEndpointsSupported(IProject project) throws CoreException {
     IPath sdkLocation = ProjectUtils.getGaeSdkLocation(project);
     if (sdkLocation != null) {
       SdkSet<GaeSdk> sdks = GaePreferences.getSdkManager().getSdks();
@@ -68,7 +70,14 @@ public abstract class AbstractSwarmApiHandler extends AbstractHandler {
         return GaeSdkCapability.CLOUD_ENDPOINTS.check(sdk);
       }
     }
-    throw new Exception("Cannot find Google App Engine SDK.");
+    throw new CoreException(StatusUtilities.newErrorStatus(
+        "No Google App Engine SDK found for project: " + project.getName(),
+        AppEngineSwarmPlugin.PLUGIN_ID));
   }
 
+  /**
+   * Not instantiable.
+   */
+  private CloudEndpointsUtils() {
+  }
 }
