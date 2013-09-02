@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright 2013 Google Inc. All Rights Reserved.
- *
+ * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -13,6 +13,7 @@
 package com.google.appengine.eclipse.wtp.swarm;
 
 import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
+import com.google.appengine.eclipse.wtp.jpa.SynchronizeClassesRunner;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 import com.google.appengine.eclipse.wtp.wizards.GaeFacetWizardPage;
 import com.google.gdt.eclipse.appengine.swarm.util.ConnectedProjectHandler;
@@ -31,15 +32,13 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jpt.jpa.core.internal.facet.JpaFacetDataModelProperties;
-import org.eclipse.jpt.jpa.ui.internal.actions.SynchronizeClassesAction;
 import org.eclipse.jst.common.project.facet.core.libprov.ILibraryProvider;
 import org.eclipse.jst.common.project.facet.core.libprov.LibraryInstallDelegate;
 import org.eclipse.jst.common.project.facet.core.libprov.LibraryProviderFramework;
@@ -267,10 +266,8 @@ public final class BackendGeneratorDataModelOperation extends AbstractDataModelO
     Display.getDefault().asyncExec(new Runnable() {
       @Override
       public void run() {
-        SynchronizeClassesAction action = new SynchronizeClassesAction();
-        ISelection selection = new StructuredSelection(persistenceXml);
-        action.selectionChanged(null, selection);
-        action.run(null);
+        SynchronizeClassesRunner runner = new SynchronizeClassesRunner();
+        runner.syncClasses(persistenceXml, new NullProgressMonitor());
       }
     });
   }
