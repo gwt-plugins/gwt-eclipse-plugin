@@ -7,6 +7,8 @@ Bundle-Localization: plugin
 Bundle-Activator: com.google.appengine.eclipse.wtp.swarm.AppEngineSwarmPlugin
 Bundle-Vendor: %providerName
 Require-Bundle: com.google.appengine.eclipse.wtp,
+ com.google.appengine.eclipse.wtp.jpa.e43;resolution:=optional,
+ com.google.appengine.eclipse.wtp.jpa.e42;resolution:=optional,
  com.google.gdt.eclipse.appengine.swarm,
  com.google.gdt.eclipse.appengine.swarm_backend,
  com.google.gdt.eclipse.login,
@@ -26,9 +28,7 @@ Require-Bundle: com.google.appengine.eclipse.wtp,
  org.eclipse.wst.common.project.facet.core,
  org.eclipse.wst.common.project.facet.ui,
  org.eclipse.jpt.jpa.core,
- org.eclipse.jpt.jpa.ui,
- com.google.appengine.eclipse.wtp.jpa.e43;resolution:=optional,
- com.google.appengine.eclipse.wtp.jpa.e42;resolution:=optional
+ org.eclipse.jpt.jpa.ui
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 

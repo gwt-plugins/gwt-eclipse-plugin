@@ -1,4 +1,4 @@
-<project name="com.google.appengine.eclipse.wtp.jpa" default="build" basedir=".">
+<project name="com.google.appengine.eclipse.wtp.swarm" default="build" basedir=".">
 
     <!-- Project-specific properties -->
     <property name="plugin_name" value="com.google.appengine.eclipse.wtp.swarm" />
