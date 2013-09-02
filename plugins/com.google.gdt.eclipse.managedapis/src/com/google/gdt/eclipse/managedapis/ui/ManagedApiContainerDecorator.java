@@ -51,10 +51,6 @@ public class ManagedApiContainerDecorator extends BaseManagedApiDecorator
    * Conditionally decorate the element by replacing the element's icon
    */
   public void decorate(Object element, IDecoration decoration) {
-    // Enables use of REPLACE as a valid image decoration
-    ((DecorationContext) decoration.getDecorationContext()).putProperty(
-        IDecoration.ENABLE_REPLACE, true);
-
     try {
       if (ManagedApiContainer.isManagedApiContainer(element)) {
         applyApiSpecificContainerIcon(element, decoration);
@@ -78,6 +74,9 @@ public class ManagedApiContainerDecorator extends BaseManagedApiDecorator
 
   private void applyApiSpecificContainerIcon(Object element,
       IDecoration decoration) throws MalformedURLException {
+    // Enables use of REPLACE as a valid image decoration
+    ((DecorationContext) decoration.getDecorationContext()).putProperty(IDecoration.ENABLE_REPLACE,
+        true);
     ImageDescriptor replacementIcon = null;
 
     ManagedApi managedApi = ManagedApiContainer.getManagedApiForClassPathContainer((ClassPathContainer) element);

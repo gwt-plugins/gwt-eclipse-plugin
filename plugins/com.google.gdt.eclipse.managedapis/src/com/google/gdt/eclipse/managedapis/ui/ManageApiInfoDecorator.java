@@ -53,10 +53,6 @@ public class ManageApiInfoDecorator extends BaseManagedApiDecorator
   }
 
   public void decorate(Object element, IDecoration decoration) {
-    // Enables use of REPLACE as a valid image decoration
-    ((DecorationContext) decoration.getDecorationContext()).putProperty(
-        IDecoration.ENABLE_REPLACE, true);
-
     try {
       if (ManagedApiContainer.isManagedApiContainer(element)) {
         ClassPathContainer container = (ClassPathContainer) element;
@@ -91,6 +87,10 @@ public class ManageApiInfoDecorator extends BaseManagedApiDecorator
 
   private void applyUpdateAvailableDecoration(IDecoration decoration)
       throws MalformedURLException {
+    // Enables use of REPLACE as a valid image decoration
+    ((DecorationContext) decoration.getDecorationContext()).putProperty(IDecoration.ENABLE_REPLACE,
+        true);
+
     decoration.addSuffix(" [Update available]");
     ImageDescriptor overlay = resources
       .getUpdateAvailableOverlay16ImageDescriptor();
