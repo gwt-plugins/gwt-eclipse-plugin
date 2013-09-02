@@ -54,6 +54,7 @@ public class SelectAppIdDialog extends TitleAreaDialog {
   private ListViewer appIdViewer;
   private String selectedAppId;
   private Button createButton;
+  private Link loginLink;
 
   /**
    * Constructor
@@ -148,20 +149,20 @@ public class SelectAppIdDialog extends TitleAreaDialog {
       }
     });
     
-    Link loginLink = new Link(parent, SWT.NONE);
+    loginLink = new Link(parent, SWT.NONE);
     final GridData loginLinkLayout = new GridData();
     loginLinkLayout.horizontalAlignment = GridData.BEGINNING;
     loginLinkLayout.grabExcessHorizontalSpace = true;
     loginLinkLayout.horizontalSpan = 3;
     loginLinkLayout.horizontalIndent = 5;
     loginLink.setLayoutData(loginLinkLayout);
-    loginLink.setText("Click " + "<a href=\"\">here</a>" + " to log in.");
     loginLink.setToolTipText(AppengineApiWrapper.APPENGINE_CREATE_APP);
     loginLink.addListener(SWT.Selection, new Listener() {
       public void handleEvent(Event ev) {
         userLogInRequest();
       }
     });
+    updateLoginMessage();
 
     updateUserAccessControls();
     return parent;
@@ -203,6 +204,17 @@ public class SelectAppIdDialog extends TitleAreaDialog {
     }
   }
 
+  private void updateLoginMessage() {
+    loginLink.redraw();
+    if (GoogleLogin.getInstance().isLoggedIn()) {
+      loginLink.setText("You are currently  logged in as " + GoogleLogin.getInstance().getEmail()
+          + ". Click " + "<a href=\"\">here</a>" + " to change that.");
+    } else {
+      loginLink.setText("Click " + "<a href=\"\">here</a>" + " to log in.");
+    }
+    loginLink.setSize(loginLink.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+  }
+
   private void updateUserAccessControls() {
     if (GoogleLogin.getInstance().isLoggedIn()) {
       createButton.setEnabled(true);
@@ -221,8 +233,7 @@ public class SelectAppIdDialog extends TitleAreaDialog {
 
   private void userLogInRequest() {
     if (GoogleLogin.getInstance().isLoggedIn()) {
-      MessageDialog.openInformation(getShell(), "Select App Id", "You are logged in.");
-      return;
+      GoogleLogin.getInstance().logOut(false);
     }
 
     if (GoogleLogin.getInstance().logIn()) {
@@ -231,7 +242,11 @@ public class SelectAppIdDialog extends TitleAreaDialog {
       if (element != null) {
         appIdViewer.setSelection(new StructuredSelection(element), true);
       }
-      updateUserAccessControls();
+    } else {
+      appIdViewer.setInput(null);
     }
+
+    updateLoginMessage();
+    updateUserAccessControls();
   }
 }

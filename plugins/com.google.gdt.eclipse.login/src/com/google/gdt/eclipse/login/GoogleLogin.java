@@ -551,6 +551,7 @@ public class GoogleLogin {
       GoogleLoginPrefs.clearStoredCredentials();
 
       notifyLoginStatusChange(false);
+      notifyTrim();
       return true;
     }
     return false;
