@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.jpa;
 
+import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
 import com.google.appengine.eclipse.wtp.jpa.libprov.IGaeLibraryProvider;
 import com.google.gdt.eclipse.core.BuilderUtilities;
@@ -109,7 +110,7 @@ public abstract class JpaFacetAbstractPostInstallListener implements IFacetedPro
             try {
               // setup enhancer builder
               BuilderUtilities.addBuilderToProject(installEvent.getProject().getProject(),
-                  AppEngineJpaPlugin.PLUGIN_ID + ".enhancerbuilder");
+                  AppEnginePlugin.PLUGIN_ID + ".enhancerbuilder");
             } catch (CoreException e) {
               AppEngineJpaPlugin.logMessage(e);
             }
