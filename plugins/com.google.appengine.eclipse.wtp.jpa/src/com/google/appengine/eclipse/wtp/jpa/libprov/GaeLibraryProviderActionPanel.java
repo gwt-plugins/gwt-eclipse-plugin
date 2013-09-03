@@ -30,21 +30,23 @@ public final class GaeLibraryProviderActionPanel extends LibraryProviderOperatio
 
   @Override
   public Control createControl(Composite parent) {
+    Label label = new Label(parent, SWT.NONE);
     LibraryProviderOperationConfig operationConfig = getOperationConfig();
     IRuntime primaryRuntime = operationConfig.getFacetedProject().getPrimaryRuntime();
-    String labelText = "Using " + primaryRuntime.getName();
-    for (IRuntimeComponent component : primaryRuntime.getRuntimeComponents()) {
-      IRuntimeComponentType type = component.getRuntimeComponentType();
-      if ("com.google.appengine.runtime.id".equals(type.getId())) {
-        String location = component.getProperty("location");
-        if (location != null && location.trim().length() > 0) {
-          labelText += " at " + location;
+    if (primaryRuntime != null) {
+      String labelText = "Using " + primaryRuntime.getName();
+      for (IRuntimeComponent component : primaryRuntime.getRuntimeComponents()) {
+        IRuntimeComponentType type = component.getRuntimeComponentType();
+        if ("com.google.appengine.runtime.id".equals(type.getId())) {
+          String location = component.getProperty("location");
+          if (location != null && location.trim().length() > 0) {
+            labelText += " at " + location;
+          }
+          break;
         }
-        break;
       }
+      label.setText(labelText);
     }
-    Label label = new Label(parent, SWT.NONE);
-    label.setText(labelText);
     return label;
   }
 }
