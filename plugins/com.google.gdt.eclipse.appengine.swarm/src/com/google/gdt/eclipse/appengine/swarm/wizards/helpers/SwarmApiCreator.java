@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright 2012 Google Inc. All Rights Reserved.
- *
+ * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -69,6 +69,26 @@ public class SwarmApiCreator {
     }
   }
 
+  /**
+   * Generates the discovery documents and client libraries based on an .api configuration file.
+   * 
+   * TODO (rdayal): Tighten up the exception types thrown by this method
+   * <p/>
+   * TODO (rdayal): Deal with Maven projects properly by exposing the layout parameter.
+   * 
+   * @param project the App Engine project
+   * @param apiConfig a string with the .api file contents
+   * @param outputFolder the folder where the client libraries should be generated into
+   * @param monitor a progress monitor. Must not be null.
+   * @param platformType the platform for which the client libraries are being generated (Android,
+   *          App Engine, generic)
+   * @param serviceClassName the name for the service class for which the libraries are being
+   *          generated (affects the output name for the client libraries)
+   * @param loader a ClassLoader containing all of the classes in the project, along with the
+   *          specific libaries needed to invoke the client library generator (as it lives in the
+   *          App Engine SDK).
+   * @throws Exception
+   */
   @SuppressWarnings("unchecked")
   public void createClientLibFromApiConfig(IProject project, String apiConfig, File outputFolder,
       SubMonitor monitor, ApiPlatformType platformType, String serviceClassName, ClassLoader loader)
@@ -93,10 +113,24 @@ public class SwarmApiCreator {
     methodArgs.add(discoveryDocRest);
     methodArgs.add(Enum.valueOf(languageEnum, JAVA));
     methodArgs.add(ManagedApiPlugin.API_CLIENT_LANG_VERSION);
-    methodArgs.add(tempFile);
 
-    Method clientLibGeneratorMethod = clientLibGenerator.getMethod("generateClientLib",
-        String.class, languageEnum, String.class, File.class);
+    Method clientLibGeneratorMethod = null;
+
+    try {
+      // App Engine 1.7.7 - App Engine 1.8.3
+      clientLibGeneratorMethod = clientLibGenerator.getMethod("generateClientLib", String.class,
+          languageEnum, String.class, File.class);
+    } catch (NoSuchMethodException nme) {
+      /*
+       * App Engine 1.8.4+. The last String parameter represents the build layout. Accepted types
+       * are maven, and default (null).
+       */
+      clientLibGeneratorMethod = clientLibGenerator.getMethod("generateClientLib", String.class,
+          languageEnum, String.class, String.class, File.class);
+      methodArgs.add(null);
+    }
+
+    methodArgs.add(tempFile);
 
     try {
       clientLibGeneratorMethod.invoke(clientLibGeneratorInstance, methodArgs.toArray());
