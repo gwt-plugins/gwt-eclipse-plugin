@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jpt.jpa.ui.internal.actions.SynchronizeClassesAction;
 
 /**
  * Invokes the JPA class synchronization action on the Eclipse 4.2 platform.
