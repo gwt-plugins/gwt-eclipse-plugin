@@ -27,7 +27,8 @@ Require-Bundle: com.google.appengine.eclipse.wtp,
  org.eclipse.wst.common.project.facet.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: com.google.appengine.eclipse.wtp.jpa
+Export-Package: com.google.appengine.eclipse.wtp.jpa,
+ com.google.appengine.eclipse.wtp.jpa.libprov
 
 
 

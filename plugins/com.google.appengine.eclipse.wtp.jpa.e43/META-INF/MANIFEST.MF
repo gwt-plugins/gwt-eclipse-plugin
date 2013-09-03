@@ -15,6 +15,8 @@ Require-Bundle: com.google.appengine.eclipse.wtp,
  org.eclipse.jpt.common.utility,
  org.eclipse.jpt.jpa.core,
  org.eclipse.jpt.jpa.ui,
+ org.eclipse.jst.common.project.facet.core,
+ org.eclipse.jst.common.project.facet.ui,
  org.eclipse.persistence.jpa.jpql,
  org.eclipse.wst.common.project.facet.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
