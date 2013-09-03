@@ -45,21 +45,19 @@ public class ApiPlatformType {
   private static final String ANDROID_4_CLASSPATH_CONTAINER = "Android 4";
 
   /**
-   * Given an android project, determine the specific version of the Android
-   * platform that the project is using (based on its classpath container).
+   * Given an android project, determine the specific version of the Android platform that the
+   * project is using (based on its classpath container).
    * 
-   * Returns <code>null</code> if <code>androidProject</code> is
-   * <code>null</code>. Also returns null if the project does not have a Android
-   * Classpath Container.
+   * Returns <code>null</code> if <code>androidProject</code> is <code>null</code> or it is not
+   * open. Also returns <code>null</code> if the project does not have a Android Classpath
+   * Container.
    * 
-   * Returns {@link #ANDROID_2} if the classpath container corresponds to
-   * "Android 2".
+   * Returns {@link #ANDROID_2} if the classpath container corresponds to "Android 2".
    * 
-   * Returns {@link #ANDROID_3} if the classpath container corresponds to
-   * "Android 3" or "Android 4".
+   * Returns {@link #ANDROID_3} if the classpath container corresponds to "Android 3" or
+   * "Android 4".
    * 
-   * Returns {@link #ANDROID} if the classpath container has some other version
-   * of Android.
+   * Returns {@link #ANDROID} if the classpath container has some other version of Android.
    * 
    * @param androidProject
    * @return
@@ -67,7 +65,7 @@ public class ApiPlatformType {
    */
   public static ApiPlatformType getAndroidPlatformType(IProject androidProject)
       throws JavaModelException {
-    if (androidProject == null) {
+    if (androidProject == null || !androidProject.isOpen()) {
       return null;
     }
     IJavaProject androidJavaProject = JavaCore.create(androidProject);
@@ -79,6 +77,10 @@ public class ApiPlatformType {
       }
       IClasspathContainer c = JavaCore.getClasspathContainer(e.getPath(),
           androidJavaProject);
+      if (c == null) {
+        // cp container could be null
+        continue;
+      }
       if (c.getDescription().contains(ANDROID_2_CLASSPATH_CONTAINER)) {
         return ApiPlatformType.ANDROID_2;
       } else if (c.getDescription().contains(ANDROID_3_CLASSPATH_CONTAINER)
