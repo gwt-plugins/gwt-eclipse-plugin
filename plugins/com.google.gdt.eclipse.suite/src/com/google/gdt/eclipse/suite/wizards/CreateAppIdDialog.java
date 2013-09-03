@@ -44,6 +44,7 @@ public class CreateAppIdDialog extends TitleAreaDialog {
 
   private Text newAppIdText;
   private Button createBtn;
+  private String newAppIdCopy = "";
   private static final String ENTER_APP_ID_MESSAGE = "Enter the app id you would like to create";
   private static final String CREATE_APP_ID_MESSAGE = "Create a new app id";
 
@@ -55,10 +56,10 @@ public class CreateAppIdDialog extends TitleAreaDialog {
   }
 
   /**
-   * Returns the text in the newAppIdText text box.
+   * Returns the last text entered in the newAppIdText text box.
    */
   public String getAppId() {
-    return newAppIdText.getText();
+    return newAppIdCopy;
   }
 
   @Override
@@ -108,6 +109,7 @@ public class CreateAppIdDialog extends TitleAreaDialog {
     newAppIdText.setLayoutData(gd1);
     newAppIdText.addModifyListener(new ModifyListener() {
       public void modifyText(ModifyEvent e) {
+        newAppIdCopy = newAppIdText.getText();
         updateControls();
       }
     });
