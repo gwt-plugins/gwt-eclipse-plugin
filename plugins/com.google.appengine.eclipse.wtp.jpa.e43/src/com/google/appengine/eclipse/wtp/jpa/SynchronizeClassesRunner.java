@@ -14,10 +14,11 @@ package com.google.appengine.eclipse.wtp.jpa;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
  * Invokes the JPA class synchronization (with persistence.xml) action on the Eclipse 4.3 platform.
@@ -30,13 +31,14 @@ public class SynchronizeClassesRunner implements ISynchronizeClassesRunner {
   @Override
   public void syncClasses(IFile persistenceXml, IProgressMonitor monitor) {
     try {
-      Class<?> clazz = Class.forName("org.eclipse.jpt.jpa.ui.internal.handlers.SynchronizeClassesHandler$SyncWorkspaceRunnable");
+      Class<?> clazz = Class.forName("org.eclipse.jpt.jpa.ui.internal.handlers.SynchronizeClassesHandler$SyncRunnable");
       Constructor<?> ctor = clazz.getDeclaredConstructor(IFile.class);
       ctor.setAccessible(true);
-      Object instance = ctor.newInstance(persistenceXml);
-      Method m = clazz.getDeclaredMethod("run", IProgressMonitor.class);
-      m.setAccessible(true);
-      m.invoke(instance, monitor);
+      Object instance = ctor.newInstance(persistenceXml);     
+      
+      // copied from SynchronizeClassesHandler.execute(...)
+      // true ==> fork; true ==> cancellable 
+      new ProgressMonitorDialog(null).run(true, true, (IRunnableWithProgress) instance);
     } catch (ClassNotFoundException e) {
       AppEngineJpaPlugin.logMessage("Failed to synchronize classes with " + persistenceXml.getFullPath() + ".", e);
     } catch (NoSuchMethodException e) {
@@ -51,6 +53,10 @@ public class SynchronizeClassesRunner implements ISynchronizeClassesRunner {
       AppEngineJpaPlugin.logMessage("Failed to synchronize classes with " + persistenceXml.getFullPath() + ".", e);
     } catch (InvocationTargetException e) {
       AppEngineJpaPlugin.logMessage("Failed to synchronize classes with " + persistenceXml.getFullPath() + ".", e);
+    } catch (InterruptedException e) {
+      // copied from SynchronizeClassesHandler.execute(...)
+      AppEngineJpaPlugin.logMessage("Failed to synchronize classes with " + persistenceXml.getFullPath() + ".", e);
+      Thread.currentThread().interrupt();
     }
   }
 
