@@ -243,7 +243,7 @@ public final class CloudEndpointsBuilder extends IncrementalProjectBuilder {
    * @return <code>true</code> if the given resource is java file resource.
    */
   private boolean isJavaFileResource(IResource resource) {
-    return resource != null && resource.getType() == IResource.FILE
+    return resource != null && resource.getType() == IResource.FILE && resource.exists()
         && resource.getName().endsWith(".java");
   }
 
