@@ -83,4 +83,10 @@
             eventTypes="POST_INSTALL">
       </listener>
    </extension>
+    <extension
+          point="org.eclipse.ui.startup">
+       <startup
+             class="com.google.appengine.eclipse.wtp.jpa.JpaWorkarounds">
+       </startup>
+    </extension>
 </plugin>

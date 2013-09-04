@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright 2013 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -22,11 +22,11 @@ import com.google.gdt.eclipse.appengine.swarm_backend.impl.GCMSupport;
 import com.google.gdt.eclipse.core.StatusUtilities;
 
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -38,11 +38,14 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jpt.common.utility.model.event.CollectionAddEvent;
+import org.eclipse.jpt.common.utility.model.listener.CollectionChangeAdapter;
+import org.eclipse.jpt.jpa.core.JpaProject;
+import org.eclipse.jpt.jpa.core.JpaProjectManager;
 import org.eclipse.jpt.jpa.core.internal.facet.JpaFacetDataModelProperties;
 import org.eclipse.jst.common.project.facet.core.libprov.ILibraryProvider;
 import org.eclipse.jst.common.project.facet.core.libprov.LibraryInstallDelegate;
 import org.eclipse.jst.common.project.facet.core.libprov.LibraryProviderFramework;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetDataModelProperties;
 import org.eclipse.wst.common.frameworks.datamodel.AbstractDataModelOperation;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
@@ -119,7 +122,7 @@ public final class BackendGeneratorDataModelOperation extends AbstractDataModelO
       // create contents for both projects
       doGenerateContents(monitor);
       // sync classes with persistence.xml
-      syncClasses();
+      synchronizeClasses();
       return Status.OK_STATUS;
     } catch (CoreException e) {
       return e.getStatus();
@@ -169,7 +172,8 @@ public final class BackendGeneratorDataModelOperation extends AbstractDataModelO
     IProject appEngineProject = ProjectUtils.getProject(dataModel);
     try {
       // disable builder
-      appEngineProject.setSessionProperty(CloudEndpointsUtils.PROP_DISABLE_ENDPOINTS_BUILDER, "true");
+      appEngineProject.setSessionProperty(CloudEndpointsUtils.PROP_DISABLE_ENDPOINTS_BUILDER,
+          "true");
 
       IRuntime runtime = (IRuntime) dataModel.getProperty(BackendGeneratorDataModelProvider.SELECTED_RUNTIME);
       String projectNumber = dataModel.getStringProperty(BackendGeneratorDataModelProvider.SCM_PROJECT_NUMBER);
@@ -247,28 +251,29 @@ public final class BackendGeneratorDataModelOperation extends AbstractDataModelO
   }
 
   /**
-   * @return 'persistence.xml' resource.
-   */
-  private IFile getPersistenceXml(IProject project) {
-    // using JPA/JPT is more proper way to get persistence.xml resource file, but unfortunately
-    // Eclipse people constantly change JPA/JPT interfaces, so use simple resource get.
-    return project.getFile("src/META-INF/persistence.xml");
-  }
-
-  /**
    * Adds generated classes into 'persistence.xml'.
    */
-  private void syncClasses() {
-    final IFile persistenceXml = getPersistenceXml(ProjectUtils.getProject(getDataModel()));
-    if (!persistenceXml.exists()) {
-      return;
-    }
-    Display.getDefault().asyncExec(new Runnable() {
-      @Override
-      public void run() {
-        SynchronizeClassesRunner runner = new SynchronizeClassesRunner();
-        runner.syncClasses(persistenceXml, new NullProgressMonitor());
-      }
-    });
+  private void synchronizeClasses() {
+    final IProject project = ProjectUtils.getProject(getDataModel());
+    final JpaProjectManager manager = (JpaProjectManager) ResourcesPlugin.getWorkspace().getAdapter(
+        JpaProjectManager.class);
+    // since JpaProject model is not available yet, add a listener which will later do classes sync
+    manager.addCollectionChangeListener(JpaProjectManager.JPA_PROJECTS_COLLECTION,
+        new CollectionChangeAdapter() {
+          @Override
+          public void itemsAdded(CollectionAddEvent event) {
+            for (Object item : event.getItems()) {
+              if (item instanceof JpaProject) {
+                JpaProject jpaProject = (JpaProject) item;
+                if (jpaProject.getProject().equals(project)) {
+                  SynchronizeClassesRunner runner = new SynchronizeClassesRunner();
+                  runner.synchronizeClasses(jpaProject, new NullProgressMonitor());
+                }
+              }
+            }
+            // done, remove this listener
+            manager.removeCollectionChangeListener(JpaProjectManager.JPA_PROJECTS_COLLECTION, this);
+          }
+        });
   }
 }
