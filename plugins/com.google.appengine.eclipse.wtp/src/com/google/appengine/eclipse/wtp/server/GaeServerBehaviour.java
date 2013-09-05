@@ -380,16 +380,4 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
     }
     return args;
   }
-
-  /**
-   * Merge a single classpath entry into the classpath list.
-   */
-  private void mergeClasspath(List<IRuntimeClasspathEntry> cp, IRuntimeClasspathEntry entry) {
-    for (IRuntimeClasspathEntry entry2 : cp) {
-      if (entry2.getPath().equals(entry.getPath())) {
-        return;
-      }
-    }
-    cp.add(entry);
-  }
 }
