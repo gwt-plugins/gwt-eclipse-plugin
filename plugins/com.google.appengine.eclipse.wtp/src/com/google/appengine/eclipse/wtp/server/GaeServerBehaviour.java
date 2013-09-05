@@ -18,7 +18,6 @@ import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
 import com.google.appengine.eclipse.wtp.runtime.RuntimeUtils;
 import com.google.appengine.eclipse.wtp.utils.IOUtils;
 import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
 
 import org.eclipse.core.runtime.CoreException;
@@ -32,8 +31,6 @@ import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.IVMInstall;
@@ -48,6 +45,7 @@ import org.eclipse.wst.server.core.util.SocketUtil;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -155,29 +153,14 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
     workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
         mergeArgs(configVMArgs));
     // classpath
-    IRuntimeClasspathEntry[] currentClasspath = JavaRuntime.computeUnresolvedRuntimeClasspath(workingCopy);
     GaeSdk sdk = RuntimeUtils.getRuntimeSdk(runtime);
     if (sdk == null) {
       throw new CoreException(new Status(IStatus.ERROR, AppEnginePlugin.PLUGIN_ID,
           "AppEngine SDK is missing or invalid."));
     }
-    List<IRuntimeClasspathEntry> cpList = Lists.newArrayList(currentClasspath);
-    IClasspathEntry[] gaeClasspathEntries = sdk.getClasspathEntries();
-    for (IClasspathEntry gaeEntry : gaeClasspathEntries) {
-      if (gaeEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY
-          && gaeEntry.getContentKind() == IPackageFragmentRoot.K_BINARY) {
-        // add binaries only
-        mergeClasspath(cpList, JavaRuntime.newArchiveRuntimeClasspathEntry(gaeEntry.getPath()));
-      }
-    }
-    List<String> list = Lists.newArrayList();
-    for (IRuntimeClasspathEntry entry : cpList) {
-      try {
-        list.add(entry.getMemento());
-      } catch (Throwable e) {
-        AppEnginePlugin.logMessage("Could not resolve classpath entry: " + entry, e);
-      }
-    }
+    IPath toolApiJarPath = sdk.getInstallationPath().append(GaeSdk.APPENGINE_TOOLS_API_JAR_PATH);
+    IRuntimeClasspathEntry toolApiEntry = JavaRuntime.newArchiveRuntimeClasspathEntry(toolApiJarPath);
+    List<String> list = Collections.singletonList(toolApiEntry.getMemento());
     workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH, list);
     workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_DEFAULT_CLASSPATH, false);
     // working directory
