@@ -37,4 +37,9 @@
            <factory class="com.google.appengine.eclipse.wtp.jpa.GaeJpaPresetFactory"/>
        </dynamic-preset>
     </extension>
+    <extension
+         point="com.google.appengine.eclipse.core.enhancerJobExtension">
+      <datanucleusVersionProvider
+            class="com.google.appengine.eclipse.wtp.jpa.libprov.DatanucleusVersionProvider"/>
+    </extension>
 </plugin>

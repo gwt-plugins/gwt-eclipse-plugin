@@ -2,7 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
   <extension-point id="com.google.appengine.eclipse.core.gaeSdk" name="gaeSdk" schema="schema/com.google.appengine.eclipse.core.gaeSdk.exsd"/>
-  <extension-point id="com.google.appengine.eclipse.core.enhancerJobCpFinder" name="enhancerJobCpFinder" schema="schema/com.google.appengine.eclipse.core.enhancerJobCpFinder.exsd"/>
+  <extension-point id="com.google.appengine.eclipse.core.enhancerJobExtension" name="enhancerJobExtension" schema="schema/com.google.appengine.eclipse.core.enhancerJobExtension.exsd"/>
   <extension-point id="com.google.appengine.eclipse.core.gaeSdkSelectionEnablementFinder" name="gaeSdkSelectionEnablementFinder" schema="schema/com.google.appengine.eclipse.core.gaeSdkSelectionEnablementFinder.exsd"/>
   <extension-point id="com.google.appengine.eclipse.core.gaeSqlToolsExtension" name="gaeSqlToolsExtension" schema="schema/com.google.appengine.eclipse.core.gaeSqlToolsExtension.exsd"/>
   <extension-point id="com.google.appengine.eclipse.core.appengineWebXml" name="appengineWebXml" schema="schema/com.google.appengine.eclipse.core.appengineWebXml.exsd"/>
@@ -246,5 +246,10 @@
             categoryId="org.eclipse.jdt.ui.defaultProposalCategory"
             class="com.google.appengine.eclipse.core.editor.SqlJdbcUrlCompletionComputer">
       </javaCompletionProposalComputer>
+   </extension>
+   <extension
+         point="com.google.appengine.eclipse.core.enhancerJobExtension">
+      <datanucleusVersionProvider
+            class="com.google.appengine.eclipse.core.projects.DatanucleusVersionProvider"/>
    </extension>
 </plugin>

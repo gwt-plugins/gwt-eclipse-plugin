@@ -87,9 +87,9 @@ public class ExtensionQuery<T> {
     T getData(IConfigurationElement configurationElement, String attrName);
   }
 
-  private final String pluginId;
-  private final String extensionPointName;
-  private final String attributeName;
+  protected final String pluginId;
+  protected final String extensionPointName;
+  protected final String attributeName;
 
   /**
    * Create a new instance.

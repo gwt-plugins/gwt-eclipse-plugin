@@ -15,7 +15,6 @@
 package com.google.appengine.eclipse.core.orm.enhancement;
 
 import com.google.appengine.eclipse.core.AppEngineCorePluginLog;
-import com.google.appengine.eclipse.core.nature.GaeNature;
 import com.google.appengine.eclipse.core.properties.GaeProjectProperties;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.gdt.eclipse.core.JavaUtilities;
@@ -55,6 +54,10 @@ import java.util.Set;
 @SuppressWarnings("restriction")
 public class AutoEnhancer extends IncrementalProjectBuilder {
 
+  private static String computeEnhancementPathFromClassFile(IResource classFile) {
+    return classFile.getLocation().toOSString();
+  }
+
   /**
    * Determine the path of the Java source file that produced the given class
    * file path, assuming the class file was generated in the given output
@@ -68,7 +71,7 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
     if (enclosingTypeSeparatorPos != -1) {
       name = name.substring(0, enclosingTypeSeparatorPos);
     } else {
-      assert (name.indexOf('.') > 0);
+      assert name.indexOf('.') > 0;
       name = name.substring(0, name.indexOf('.'));
     }
     name = name + ".java";
@@ -109,8 +112,6 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
       return null;
     }
 
-    assert (GaeNature.isGaeProject(project));
-
     javaProject = JavaCore.create(project);
     if (!javaProject.exists()) {
       return null;
@@ -149,10 +150,6 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
     }
 
     return null;
-  }
-
-  private static String computeEnhancementPathFromClassFile(IResource classFile) {
-    return classFile.getLocation().toOSString();
   }
 
   private Set<String> computeEnhancementPathsForFullBuild()

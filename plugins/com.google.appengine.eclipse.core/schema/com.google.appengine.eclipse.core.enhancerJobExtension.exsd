@@ -3,7 +3,7 @@
 <schema targetNamespace="com.google.appengine.eclipse.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="com.google.appengine.eclipse.core" id="com.google.appengine.eclipse.core.enhancerJobCpFinder" name="enhancerJobCpFinder"/>
+         <meta.schema plugin="com.google.appengine.eclipse.core" id="com.google.appengine.eclipse.core.enhancerJobExtension" name="enhancerJobExtension"/>
       </appInfo>
       <documentation>
          This is an internal-only extension point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
@@ -18,7 +18,8 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="enhancerJobCpFinder"/>
+            <element ref="enhancerJobCpFinder" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="datanucleusVersionProvider" minOccurs="0" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -56,6 +57,21 @@
                </documentation>
                <appInfo>
                   <meta.attribute kind="java" basedOn=":com.google.appengine.eclipse.core.orm.enhancement.EnhancerJob$IEnhancerJobCpFinder"/>
+               </appInfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="datanucleusVersionProvider">
+      <complexType>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":com.google.appengine.eclipse.core.orm.enhancement.EnhancerJob$IEnhancerJobDatanucleusVersionProvider"/>
                </appInfo>
             </annotation>
          </attribute>

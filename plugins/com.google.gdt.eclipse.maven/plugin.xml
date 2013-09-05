@@ -22,7 +22,7 @@
       </moduleClasspathProvider>
    </extension>
    <extension
-         point="com.google.appengine.eclipse.core.enhancerJobCpFinder">
+         point="com.google.appengine.eclipse.core.enhancerJobExtension">
       <enhancerJobCpFinder
             class="com.google.gdt.eclipse.maven.enhancement.MavenEnhancerClasspathBuilder"></enhancerJobCpFinder>
    </extension>
