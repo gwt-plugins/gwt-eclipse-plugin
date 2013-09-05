@@ -18,11 +18,16 @@ import com.google.gdt.eclipse.core.console.MessageConsoleUtilities;
 import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import com.google.gdt.eclipse.core.extensions.ExtensionQueryWithElement;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.ui.console.MessageConsole;
@@ -137,6 +142,8 @@ public class EnhancerJob extends WorkspaceJob {
       ProcessUtilities.launchProcessAndActivateOnError(commands, projectLocation.toFile(),
           messageConsole);
 
+      refreshEnhancedResources(monitor);
+
     } catch (IOException e) {
       throw new CoreException(new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID,
           e.getLocalizedMessage(), e));
@@ -147,4 +154,17 @@ public class EnhancerJob extends WorkspaceJob {
     return Status.OK_STATUS;
   }
 
+  /**
+   * After enhancement is done we have to refresh possibly changed resources. This won't trigger
+   * another build.
+   */
+  private void refreshEnhancedResources(IProgressMonitor monitor) throws CoreException {
+    IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    for (String pathString : pathsToEnhance) {
+      IFile file = root.getFileForLocation(new Path(pathString));
+      if (file != null && !file.isSynchronized(IResource.DEPTH_INFINITE)) {
+        file.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+      }
+    }
+  }
 }
