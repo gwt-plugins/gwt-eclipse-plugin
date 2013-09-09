@@ -99,6 +99,9 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
           if (serverState == IServer.STATE_UNKNOWN) {
             // unknown state, do resource check
             portInUse = !isPortAvailable(port);
+            if (portInUse) {
+              break;
+            }
           }
           if (serverState != IServer.STATE_STOPPED) {
             // server is started, starting or stopping
@@ -109,6 +112,9 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
       } else {
         // some other server type, perform resource check
         portInUse = !isPortAvailable(port);
+        if (portInUse) {
+          break;
+        }
       }
     }
     if (portInUse) {
