@@ -31,7 +31,7 @@ public final class GaeLaunchConfigurationTabGroup extends AbstractLaunchConfigur
   @Override
   public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
     ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-        new ServerLaunchConfigurationTab(new String[] {"com.google.appengine.server.id"}),
+        new ServerLaunchConfigurationTab(new String[] {GaeServer.SERVER_TYPE_ID}),
         new JavaArgumentsTab(), new JavaClasspathTab(), new SourceLookupTab(),
         new EnvironmentTab(), new JavaJRETab(), new CommonTab()};
     setTabs(tabs);

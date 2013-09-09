@@ -15,6 +15,7 @@ package com.google.appengine.eclipse.wtp.runtime;
 import com.google.appengine.eclipse.core.preferences.GaePreferences;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
+import com.google.appengine.eclipse.wtp.server.GaeServer;
 import com.google.gdt.eclipse.suite.preferences.GdtPreferences;
 
 import org.eclipse.core.runtime.CoreException;
@@ -33,8 +34,6 @@ import org.eclipse.wst.server.core.internal.IStartup;
  */
 @SuppressWarnings("restriction")
 public final class GaeRuntimeConfigurator implements IStartup {
-  private static final String GAE_SERVER_TYPE_ID = "com.google.appengine.server.id";
-
   @Override
   public void startup() {
     // HACK: access GdtPreferences forces it container plug-in to start
@@ -49,7 +48,7 @@ public final class GaeRuntimeConfigurator implements IStartup {
    */
   private IRuntime createRuntime(GaeSdk sdk) {
     try {
-      IServerType serverType = ServerCore.findServerType(GAE_SERVER_TYPE_ID);
+      IServerType serverType = ServerCore.findServerType(GaeServer.SERVER_TYPE_ID);
       IRuntime[] runtimes = ServerCore.getRuntimes();
       for (IRuntime runtime : runtimes) {
         if (runtime != null && serverType.getRuntimeType().equals(runtime.getRuntimeType())) {

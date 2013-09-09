@@ -55,7 +55,9 @@ import java.util.Map;
  * a {@link ServerDelegate} for Google App Engine.
  */
 public final class GaeServer extends ServerDelegate implements IURLProvider {
-  private static final String ATTR_GENERIC_SERVER_MODULES = "gae-server-modules-list";
+  public static final String SERVER_TYPE_ID = "com.google.appengine.server.id";
+
+  private static final String ATTR_GAE_SERVER_MODULES = "gae-server-modules-list";
   /**
    * Property which specifies the directory where web applications are published.
    */
@@ -115,6 +117,10 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
     if (add != null) {
       IModule[] currentModules = getServer().getModules();
       if (currentModules.length > 0 && remove == null) {
+        // adding the same module is legal
+        if (add.length == 1 && add[0].equals(currentModules[0])) {
+          return Status.OK_STATUS;
+        }
         return new Status(
             IStatus.ERROR,
             AppEnginePlugin.PLUGIN_ID,
@@ -365,7 +371,7 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
   @SuppressWarnings("unchecked")
   public void modifyModules(IModule[] add, IModule[] remove, IProgressMonitor monitor)
       throws CoreException {
-    List<String> modules = this.getAttribute(ATTR_GENERIC_SERVER_MODULES, (List<String>) null);
+    List<String> modules = this.getAttribute(ATTR_GAE_SERVER_MODULES, (List<String>) null);
 
     if (add != null && add.length > 0) {
       if (add.length > 1) {
@@ -385,11 +391,14 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
       for (int i = 0; i < remove.length; i++) {
         modules.remove(remove[i].getId());
       }
+      // schedule server stop as GAE server cannot run without modules.
+      if (modules.isEmpty()) {
+        getServer().stop(true);
+      }
     }
     if (modules != null) {
-      setAttribute(ATTR_GENERIC_SERVER_MODULES, modules);
+      setAttribute(ATTR_GAE_SERVER_MODULES, modules);
     }
-
   }
 
   /**
@@ -401,14 +410,6 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
     }
   }
 
-  @Override
-  public void setDefaults(IProgressMonitor monitor) {
-    setServerPort(DEFAULT_SERVER_PORT);
-    setAutoreloadTime(DEFAULT_AUTORELOAD_TIME);
-    setHrdUnappliedJobPercentage(DEFAULT_HRD_UNAPPLIED_JOB_PCT);
-    setUserVMArgs("");
-  }
-
   public void setServerInstanceProperties(Map<String, String> properties) {
     setAttribute(GaeRuntime.SERVER_INSTANCE_PROPERTIES, properties);
   }
@@ -417,6 +418,9 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
    * Checks if the properties set for this server is valid.
    */
   public IStatus validate() {
+    // validate port
+    // don't validate that the port is in use because user may want to share port between servers
+    // and run only one server at the time.
     String serverPort = getServerPort();
     if (serverPort == null || serverPort.trim().length() == 0) {
       return StatusUtilities.newErrorStatus("Server port value cannot be empty",
@@ -433,6 +437,7 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
       return StatusUtilities.newErrorStatus("TCP port value is out of range: " + serverPort,
           AppEnginePlugin.PLUGIN_ID);
     }
+    // validate autoreload time
     String autoreloadTime = getAutoReloadTime();
     if (autoreloadTime == null || autoreloadTime.trim().length() == 0) {
       return StatusUtilities.newErrorStatus("Auto-reload delay value cannot be empty",
@@ -444,6 +449,7 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
       return StatusUtilities.newErrorStatus("Invalid autoreload delay time: " + autoreloadTime,
           AppEnginePlugin.PLUGIN_ID);
     }
+    // validate HRD unapplied job percentage
     String hrdUnappliedPct = getHrdUnappliedJobPercentage();
     if (hrdUnappliedPct == null || hrdUnappliedPct.trim().length() == 0) {
       return StatusUtilities.newErrorStatus("Unapplied job percentage value cannot be empty",
@@ -537,33 +543,5 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
       return DEFAULT_SERVER_PORT;
     }
     return value;
-  }
-
-  /**
-   * Set the time after which server will reload app upon resource change. 0 means never reload.
-   */
-  private void setAutoreloadTime(String seconds) {
-    getServerInstanceProperties().put(PROPERTY_AUTORELOAD_TIME, seconds);
-  }
-
-  /**
-   * Set the amount of eventual consistency you want your application to see. 0 - disable HRD.
-   */
-  private void setHrdUnappliedJobPercentage(String value) {
-    getServerInstanceProperties().put(PROPERTY_HRD_UNAPPLIED_JOB_PCT, value);
-  }
-
-  /**
-   * Set the server port property value.
-   */
-  private void setServerPort(String portString) {
-    getServerInstanceProperties().put(PROPERTY_SERVERPORT, portString);
-  }
-
-  /**
-   * Set the user-defined VM args, separated by space.
-   */
-  private void setUserVMArgs(String args) {
-    getServerInstanceProperties().put(PROPERTY_USER_VM_ARGS, args);
   }
 }

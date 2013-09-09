@@ -14,7 +14,6 @@ package com.google.appengine.eclipse.wtp.runtime;
 
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
-import com.google.common.collect.Maps;
 import com.google.gdt.eclipse.core.StatusUtilities;
 
 import org.eclipse.core.runtime.IStatus;
@@ -23,8 +22,6 @@ import org.eclipse.jdt.launching.IVMInstallType;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jst.server.core.IJavaRuntime;
 import org.eclipse.wst.server.core.model.RuntimeDelegate;
-
-import java.util.Map;
 
 /**
  * Google App Engine server runtime support.
@@ -58,14 +55,6 @@ public final class GaeRuntime extends RuntimeDelegate implements IJavaRuntime {
     return getAttribute(PROPERTY_GAE_SDK_VERSION, (String) null);
   }
 
-  /**
-   * Return instance properties
-   *
-   * @return property map
-   */
-  public Map<?, ?> getServerInstanceProperties() {
-    return getAttribute(SERVER_INSTANCE_PROPERTIES, Maps.newHashMap());
-  }
 
   @Override
   public IVMInstall getVMInstall() {
@@ -125,15 +114,6 @@ public final class GaeRuntime extends RuntimeDelegate implements IJavaRuntime {
   public void setGaeSdk(GaeSdk sdk) {
     setAttribute(PROPERTY_GAE_SDK_NAME, sdk.getName());
     setAttribute(PROPERTY_GAE_SDK_VERSION, sdk.getVersion());
-  }
-
-  /**
-   * Set instance properties.
-   *
-   * @param map
-   */
-  public void setServerInstanceProperties(Map<?, ?> map) {
-    setAttribute(SERVER_INSTANCE_PROPERTIES, map);
   }
 
   /**

@@ -17,6 +17,7 @@ import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
 import com.google.appengine.eclipse.wtp.runtime.RuntimeUtils;
 import com.google.appengine.eclipse.wtp.server.GaeServer;
 import com.google.common.collect.Maps;
+import com.google.gdt.eclipse.core.StatusUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
 
 import org.eclipse.core.runtime.CoreException;
@@ -48,65 +49,52 @@ public final class GaeServerWizardFragment extends WizardFragment {
   private Label autoreloadLabel;
   private Text hrdUnappliedPctText;
 
-  private String serverPort = GaeServer.DEFAULT_SERVER_PORT;
-  private String autoreloadTime = GaeServer.DEFAULT_AUTORELOAD_TIME;
-  private String hrdUnappliedJobPercentage = GaeServer.DEFAULT_HRD_UNAPPLIED_JOB_PCT;
-  boolean isValid = false;
+  private String serverPort;
+  private String autoreloadTime;
+  private String hrdUnappliedJobPercentage;
 
   @Override
   public Composite createComposite(Composite parent, IWizardHandle handle) {
     wizard = handle;
+    // do create UI
     Composite container = new Composite(parent, SWT.NONE);
     container.setLayout(new GridLayout(2, false));
     handle.setImageDescriptor(ImageDescriptor.createFromURL(AppEnginePlugin.getInstance().getBundle().getEntry(
         "/icons/ae-deploy_90x79.png")));
     handle.setTitle("Google App Engine Development Server");
     handle.setDescription("Enter the configuration parameters for Google App Engine");
-    // create UI
     {
       Label serverportLabel = new Label(container, SWT.NONE);
       serverportLabel.setText("Server Port");
       serverPortText = new Text(container, SWT.SHADOW_IN | SWT.BORDER);
       serverPortText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-      serverPortText.setText(serverPort);
+      serverPortText.setText(GaeServer.DEFAULT_SERVER_PORT);
     }
-    {
+    // do not show auto-reload delay controls as not applicable for SDKs < 1.8.1
+    GaeRuntime gaeRuntime = GaeServer.getGaeServer(getServerWorkingCopy()).getGaeRuntime();
+    boolean isUsingAutoreload = true;
+    if (gaeRuntime != null) {
+      isUsingAutoreload = SdkUtils.compareVersionStrings(gaeRuntime.getGaeSdkVersion(),
+          RuntimeUtils.MIN_SDK_VERSION_USING_AUTORELOAD) >= 0;
+    }
+    if (isUsingAutoreload) {
       autoreloadLabel = new Label(container, SWT.NONE);
       autoreloadLabel.setText("Auto scan for resources change, sec (0 - never)");
       autoreloadText = new Text(container, SWT.SHADOW_IN | SWT.BORDER);
       autoreloadText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-      autoreloadText.setText(autoreloadTime);
+      autoreloadText.setText(GaeServer.DEFAULT_AUTORELOAD_TIME);
     }
     {
       Label hrdUnappliedPctLabel = new Label(container, SWT.NONE);
       hrdUnappliedPctLabel.setText("HRD: unapplied job percentage (0 - disable HRD)");
       hrdUnappliedPctText = new Text(container, SWT.SHADOW_IN | SWT.BORDER);
       hrdUnappliedPctText.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-      hrdUnappliedPctText.setText(hrdUnappliedJobPercentage);
+      hrdUnappliedPctText.setText(GaeServer.DEFAULT_HRD_UNAPPLIED_JOB_PCT);
     }
     // add listeners
     addListeners();
     Dialog.applyDialogFont(parent);
-
     return container;
-  }
-
-  @Override
-  public void enter() {
-    // hide auto-reload delay controls as not applicable for SDKs < 1.8.1
-    GaeRuntime gaeRuntime = GaeServer.getGaeServer(getServerWorkingCopy()).getGaeRuntime();
-    if (gaeRuntime != null) {
-      boolean isUsingAutoreload = SdkUtils.compareVersionStrings(gaeRuntime.getGaeSdkVersion(),
-          RuntimeUtils.MIN_SDK_VERSION_USING_AUTORELOAD) >= 0;
-      autoreloadLabel.setVisible(isUsingAutoreload);
-      autoreloadText.setVisible(isUsingAutoreload);
-    }
-    isValid = validate();
-  }
-
-  @Override
-  public void exit() {
-    isValid = validate();
   }
 
   @Override
@@ -115,17 +103,17 @@ public final class GaeServerWizardFragment extends WizardFragment {
   }
 
   @Override
-  public boolean isComplete() {
-    return isValid;
+  public void performCancel(IProgressMonitor monitor) throws CoreException {
+    resetInputValues();
   }
 
   @Override
-  public void performCancel(IProgressMonitor monitor) throws CoreException {
-    // restore defaults as wizard fragment is being re-used
-    serverPort = GaeServer.DEFAULT_SERVER_PORT;
-    autoreloadTime = GaeServer.DEFAULT_AUTORELOAD_TIME;
-    hrdUnappliedJobPercentage = GaeServer.DEFAULT_HRD_UNAPPLIED_JOB_PCT;
-    super.performCancel(monitor);
+  public void performFinish(IProgressMonitor monitor) throws CoreException {
+    // getting there means that the server properties are valid: either user didn't modify default
+    // settings (even didn't go to this page) or passed thru validation earlier.
+    GaeServer gaeServer = getGaeServer();
+    gaeServer.setServerInstanceProperties(getServerProperties());
+    resetInputValues();
   }
 
   private void addListeners() {
@@ -133,7 +121,7 @@ public final class GaeServerWizardFragment extends WizardFragment {
       @Override
       public void modifyText(ModifyEvent e) {
         updateFields();
-        isValid = validate();
+        setComplete(validate());
         wizard.update();
       }
     };
@@ -143,10 +131,24 @@ public final class GaeServerWizardFragment extends WizardFragment {
   }
 
   /**
+   * @return {@link GaeServer} instance using server working copy. Throws an exception if no server
+   *         delegate installed.
+   */
+  private GaeServer getGaeServer() throws CoreException {
+    GaeServer gaeServer = GaeServer.getGaeServer(getServerWorkingCopy());
+    if (gaeServer == null) {
+      throw new CoreException(StatusUtilities.newErrorStatus("Cannot get GaeServer working copy.",
+          AppEnginePlugin.PLUGIN_ID));
+    }
+    return gaeServer;
+  }
+
+  /**
    * Returns the server instance property name/value pairs.
    */
   private Map<String, String> getServerProperties() {
     Map<String, String> propertyMap = Maps.newHashMap();
+    // null values are OK, GaeServer returns default values if the property is not set.
     propertyMap.put(GaeServer.PROPERTY_SERVERPORT, serverPort);
     propertyMap.put(GaeServer.PROPERTY_AUTORELOAD_TIME, autoreloadTime);
     propertyMap.put(GaeServer.PROPERTY_HRD_UNAPPLIED_JOB_PCT, hrdUnappliedJobPercentage);
@@ -158,6 +160,15 @@ public final class GaeServerWizardFragment extends WizardFragment {
    */
   private IServerWorkingCopy getServerWorkingCopy() {
     return (IServerWorkingCopy) getTaskModel().getObject(TaskModel.TASK_SERVER);
+  }
+
+  /**
+   * Do cleanup values as this fragment instance could be reused.
+   */
+  private void resetInputValues() {
+    serverPort = null;
+    autoreloadTime = null;
+    hrdUnappliedJobPercentage = null;
   }
 
   /**
@@ -174,10 +185,12 @@ public final class GaeServerWizardFragment extends WizardFragment {
    */
   private boolean validate() {
     IStatus status = null;
-    GaeServer gaeServer = GaeServer.getGaeServer(getServerWorkingCopy());
-    if (gaeServer != null) {
+    try {
+      GaeServer gaeServer = getGaeServer();
       gaeServer.setServerInstanceProperties(getServerProperties());
       status = gaeServer.validate();
+    } catch (CoreException e) {
+      status = e.getStatus();
     }
 
     if (status == null || status.isOK()) {

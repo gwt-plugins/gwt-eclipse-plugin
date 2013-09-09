@@ -18,6 +18,7 @@ import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
 import com.google.appengine.eclipse.wtp.runtime.RuntimeUtils;
 import com.google.appengine.eclipse.wtp.utils.IOUtils;
 import com.google.common.base.Splitter;
+import com.google.gdt.eclipse.core.StatusUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
 
 import org.eclipse.core.runtime.CoreException;
@@ -37,6 +38,8 @@ import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.IServer;
+import org.eclipse.wst.server.core.IServerType;
+import org.eclipse.wst.server.core.ServerCore;
 import org.eclipse.wst.server.core.ServerPort;
 import org.eclipse.wst.server.core.model.IModuleResource;
 import org.eclipse.wst.server.core.model.IModuleResourceDelta;
@@ -45,6 +48,8 @@ import org.eclipse.wst.server.core.util.SocketUtil;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -59,8 +64,59 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
   private static final String ARG_UNAPPLIED_JOB_PCT = "-Ddatastore.default_high_rep_job_policy_unapplied_job_pct=";
   private static final String GAE_DEV_SERVER_MAIN = "com.google.appengine.tools.development.DevAppServerMain";
 
+  private static boolean isPortAvailable(int port) {
+    Socket socket = null;
+    try {
+      socket = new Socket("localhost", port);
+      return false;
+    } catch (IOException e) {
+      return true;
+    } finally {
+      IOUtils.closeQuietly(socket);
+    }
+  }
+
   private IDebugEventSetListener processListener;
   private PingThread pingThread;
+
+  @Override
+  public IStatus canStart(String launchMode) {
+    // check that the port is not in use before can start
+    GaeServer thisServer = getGaeServer();
+    int port = thisServer.getMainPort().getPort();
+    boolean portInUse = false;
+    IServer[] servers = ServerCore.getServers();
+    IServerType gaeServerType = ServerCore.findServerType(GaeServer.SERVER_TYPE_ID);
+    for (IServer server : servers) {
+      if (server.getServerType().equals(gaeServerType)) {
+        if (getServer() == server) {
+          // don't bother with itself
+          continue;
+        }
+        GaeServer gaeServer = GaeServer.getGaeServer(server);
+        if (gaeServer.getMainPort().getPort() == port) {
+          int serverState = server.getServerState();
+          if (serverState == IServer.STATE_UNKNOWN) {
+            // unknown state, do resource check
+            portInUse = !isPortAvailable(port);
+          }
+          if (serverState != IServer.STATE_STOPPED) {
+            // server is started, starting or stopping
+            portInUse = true;
+            break;
+          }
+        }
+      } else {
+        // some other server type, perform resource check
+        portInUse = !isPortAvailable(port);
+      }
+    }
+    if (portInUse) {
+      return StatusUtilities.newErrorStatus("Port " + port + " is in use.",
+          AppEnginePlugin.PLUGIN_ID);
+    }
+    return super.canStart(launchMode);
+  }
 
   /**
    * @return the directory at which module will be published.

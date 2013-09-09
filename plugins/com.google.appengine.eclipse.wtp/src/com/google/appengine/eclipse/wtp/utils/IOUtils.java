@@ -29,10 +29,10 @@ public class IOUtils {
   /**
    * Closes given {@link Closeable} without throwing any exceptions.
    */
-  public static void closeQuietly(Closeable stream) {
-    if (stream != null) {
+  public static void closeQuietly(Closeable closeable) {
+    if (closeable != null) {
       try {
-        stream.close();
+        closeable.close();
       } catch (Throwable e) {
         // do nothing
       }
