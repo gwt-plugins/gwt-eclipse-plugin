@@ -225,13 +225,14 @@ public class DeployProjectJob extends WorkspaceJob {
   private void launchProjectInBrowser() {
     String urlString = "";
     String appId = gaeProject.getAppId();
+    String version = gaeProject.getAppVersion().trim();
 
     if (appId.contains(":")) {
       // Domain application; app ID follows domainName:appId format
       String[] splitApp = appId.split(":");
 
       if (splitApp.length != 2) {
-        AppEngineCorePluginLog.logError("Error retrieving domain and app id during the lunch of"
+        AppEngineCorePluginLog.logError("Error retrieving domain and app id during the launch of"
             + " the application in a browser.");
         return;
       }
@@ -243,10 +244,10 @@ public class DeployProjectJob extends WorkspaceJob {
       }
 
       appId = splitApp[1];
-      urlString = "http://" + appId + "." + domain;
+      urlString = "http://" + version + "." + appId + "." + domain;
     } else {
       // Regular application
-      urlString = "http://" + appId + ".appspot.com";
+      urlString = "http://" + version + "." + appId + ".appspot.com";
     }
 
     BrowserUtilities.launchBrowserAndHandleExceptions(urlString);
