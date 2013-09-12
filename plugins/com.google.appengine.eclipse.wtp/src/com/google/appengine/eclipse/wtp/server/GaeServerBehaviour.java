@@ -72,7 +72,13 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
     } catch (IOException e) {
       return true;
     } finally {
-      IOUtils.closeQuietly(socket);
+      if (socket != null) {
+        try {
+          socket.close();
+        } catch (IOException e) {
+          // ignore close exceptions
+        }
+      }
     }
   }
 
