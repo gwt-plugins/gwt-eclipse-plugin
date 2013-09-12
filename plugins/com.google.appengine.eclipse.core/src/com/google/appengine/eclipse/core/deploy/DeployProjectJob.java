@@ -21,6 +21,7 @@ import com.google.appengine.eclipse.core.sdk.AppEngineBridge;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.gdt.eclipse.core.ProcessUtilities;
 import com.google.gdt.eclipse.core.StatusUtilities;
+import com.google.gdt.eclipse.core.browser.BrowserUtilities;
 import com.google.gdt.eclipse.core.deploy.DeploymentParticipantManager;
 import com.google.gdt.eclipse.core.deploy.DeploymentSet;
 
@@ -62,6 +63,8 @@ public class DeployProjectJob extends WorkspaceJob {
   private static final String LOG_FILE_PREFIX = "appengine-deploy";
 
   private static final String CLOUD_CONSOLE_URL = "http://cloud.google.com/console";
+
+  private static final String GOOGLEPLEX = "googleplex.com";
 
   private static OutputStream createFileStream(File file) {
     OutputStream stream = null;
@@ -198,6 +201,9 @@ public class DeployProjectJob extends WorkspaceJob {
       DeploymentParticipantManager.notifyAllParticipants(
         gaeProject.getJavaProject(), deploymentSet, warLocation, consoleOutputStream,
         monitor, DeploymentParticipantManager.NotificationType.SUCCEEDED);
+
+      // Launch app after successful deploy
+      launchProjectInBrowser();
     }
 
     return status;
@@ -214,5 +220,36 @@ public class DeployProjectJob extends WorkspaceJob {
                   : statusMessage;
       return prefix + "\n\nSee the deployment console for more details";
     }
+  }
+
+  private void launchProjectInBrowser() {
+    String urlString = "";
+    String appId = gaeProject.getAppId();
+    String version = gaeProject.getAppVersion().trim();
+
+    if (appId.contains(":")) {
+      // Domain application; app ID follows domainName:appId format
+      String[] splitApp = appId.split(":");
+
+      if (splitApp.length != 2) {
+        AppEngineCorePluginLog.logError("Error retrieving domain and app id during the launch of"
+            + " the application in a browser.");
+        return;
+      }
+      String domain = splitApp[0];
+
+      // Update for googleplex
+      if (domain.equals("google.com")) {
+        domain = GOOGLEPLEX;
+      }
+
+      appId = splitApp[1];
+      urlString = "http://" + version + "." + appId + "." + domain;
+    } else {
+      // Regular application
+      urlString = "http://" + version + "." + appId + ".appspot.com";
+    }
+
+    BrowserUtilities.launchBrowserAndHandleExceptions(urlString);
   }
 }
