@@ -66,6 +66,7 @@ public final class ProjectUtils {
   private static final String PROP_LOCATION = "location";
   private static final String TAG_MODULE = "module";
   private static final String TAG_VERSION = "version";
+  private static final String TAG_VM = "vm";
   private static final String TAG_APPLICATION = "application";
   private static final String APPENGINE_WEB_XML = "appengine-web.xml";
   private static final String APPENGINE_APPLICATION_XML = "appengine-application.xml";
@@ -243,6 +244,18 @@ public final class ProjectUtils {
       return facetedProject.hasProjectFacet(gaeFacet);
     }
     return false;
+  }
+
+  /**
+   * Reads and returns &lt;vm&gt; attribute and return <code>true</code> if it has 'true' value.
+   */
+  public static boolean isVmSet(IProject project) throws CoreException {
+    IFile appEngineXmlFile = getAppEngineWebXml(project);
+    if (appEngineXmlFile == null) {
+      return false;
+    }
+    String value = getSingleElementValue(appEngineXmlFile, TAG_VM);
+    return "true".equalsIgnoreCase(value);
   }
 
   /**

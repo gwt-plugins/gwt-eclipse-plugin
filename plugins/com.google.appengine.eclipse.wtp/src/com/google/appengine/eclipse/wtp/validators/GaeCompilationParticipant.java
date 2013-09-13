@@ -18,10 +18,12 @@ import com.google.appengine.eclipse.core.validators.java.GaeChecker;
 import com.google.appengine.eclipse.core.validators.java.GoogleCloudSqlChecker;
 import com.google.appengine.eclipse.core.validators.java.JavaCompilationParticipant;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
+import com.google.appengine.eclipse.wtp.runtime.RuntimeUtils;
 import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 import com.google.gdt.eclipse.core.sdk.SdkSet;
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -53,13 +55,18 @@ public final class GaeCompilationParticipant extends JavaCompilationParticipant 
   protected List<CategorizedProblem> doValidateCompilationUnit(CompilationUnit root,
       ICompilationUnit cu) {
     IJavaProject javaProject = cu.getJavaProject();
-    List<CategorizedProblem> problems = GoogleCloudSqlChecker.check(root, cu.getJavaProject());
+    List<CategorizedProblem> problems = GoogleCloudSqlChecker.check(root, javaProject);
     try {
-      IPath sdkLocation = ProjectUtils.getGaeSdkLocation(javaProject.getProject());
+      IProject project = javaProject.getProject();
+      IPath sdkLocation = ProjectUtils.getGaeSdkLocation(project);
       if (sdkLocation != null) {
         SdkSet<GaeSdk> sdks = GaePreferences.getSdkManager().getSdks();
         GaeSdk sdk = SdkUtils.findSdkForInstallationPath(sdks, sdkLocation);
-        problems.addAll(GaeChecker.check(root, javaProject, sdk));
+        boolean vmSet = false;
+        if (RuntimeUtils.canUseVm(sdk)) {
+          vmSet = ProjectUtils.isVmSet(project);
+        }
+        problems.addAll(GaeChecker.check(root, javaProject, sdk, vmSet));
       }
     } catch (CoreException e) {
       AppEnginePlugin.logMessage(e);

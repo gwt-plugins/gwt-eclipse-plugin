@@ -92,6 +92,8 @@ public class GaeChecker {
 
     private final Set<String> whiteList;
 
+    private boolean disableWhitelist;
+
     GaeValidationVisitor(GaeProject gaeProject,
         List<CategorizedProblem> problems) {
       this(gaeProject.getJavaProject(), gaeProject.getSdk(), problems);
@@ -99,8 +101,14 @@ public class GaeChecker {
 
     GaeValidationVisitor(IJavaProject javaProject, GaeSdk sdk,
         List<CategorizedProblem> problems) {
+      this(javaProject, sdk, problems, false);
+    }
+
+    GaeValidationVisitor(IJavaProject javaProject, GaeSdk sdk, List<CategorizedProblem> problems,
+        boolean disableWhitelist) {
       this.javaProject = javaProject;
       this.problems = problems;
+      this.disableWhitelist = disableWhitelist;
       assert sdk != null;
       whiteList = sdk.getWhiteList();
     }
@@ -176,7 +184,7 @@ public class GaeChecker {
           return;
         }
 
-        if (!whiteList.contains(type.getFullyQualifiedName())) {
+        if (!disableWhitelist && !whiteList.contains(type.getFullyQualifiedName())) {
           // It is an error to use a JRE type that is not included in the
           // white-list.
           CategorizedProblem problem = AppEngineJavaProblem.createUnsupportedTypeError(
@@ -216,10 +224,19 @@ public class GaeChecker {
    */
   public static List<CategorizedProblem> check(CompilationUnit compilationUnit,
       IJavaProject javaProject, GaeSdk sdk) {
+    return check(compilationUnit, javaProject, sdk, false);
+  }
+
+  /**
+   * Version of {@link #check(CompilationUnit, IJavaProject)} which has option to disable whitelist
+   * checks.
+   */
+  public static List<CategorizedProblem> check(CompilationUnit compilationUnit,
+      IJavaProject javaProject, GaeSdk sdk, boolean disableWhitelist) {
     List<CategorizedProblem> problems = new ArrayList<CategorizedProblem>();
     if (sdk != null && sdk.validate().isOK()) {
-      GaeValidationVisitor visitor = new GaeValidationVisitor(javaProject, sdk,
-          problems);
+      GaeValidationVisitor visitor = new GaeValidationVisitor(javaProject, sdk, problems,
+          disableWhitelist);
       compilationUnit.accept(visitor);
     } else {
       // This will be caught by GAE project validation

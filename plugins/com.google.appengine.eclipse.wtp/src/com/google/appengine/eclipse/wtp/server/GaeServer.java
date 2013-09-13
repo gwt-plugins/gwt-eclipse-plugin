@@ -151,6 +151,27 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
   }
 
   /**
+   * Does search within modules for Web Module. If root module is EAR module, searches within it's
+   * children.
+   *
+   * @return {@link IWebModule} found or <code>null</code>.
+   */
+  public IModule findWebModule() throws CoreException {
+    IModule rootModule = getRootModule();
+    if (ModuleUtils.isModuleType(rootModule, ModuleUtils.MODULETYPE_JST_WEB)) {
+      return rootModule;
+    } else if (ModuleUtils.isModuleType(rootModule, ModuleUtils.MODULETYPE_JST_EAR)) {
+      IModule[] childModules = getChildModules(new IModule[] {rootModule});
+      for (IModule module : childModules) {
+        if (ModuleUtils.isModuleType(module, ModuleUtils.MODULETYPE_JST_WEB)) {
+          return module;
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
    * Fire a property change event.
    *
    * @param propertyName a property name
@@ -481,7 +502,7 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
       }
       GaeSdk sdk = RuntimeUtils.getRuntimeSdkNoFallback(gaeRuntime);
       if (sdk != null) {
-        if (FacetedProjectFramework.hasProjectFacet(project, "jst.ear")) {
+        if (FacetedProjectFramework.hasProjectFacet(project, ModuleUtils.MODULETYPE_JST_EAR)) {
           if (!sdk.getCapabilities().contains(GaeSdkCapability.EAR)) {
             runtimeStatus = StatusUtilities.newErrorStatus(
                 "This App Engine SDK doesn't support EAR projects, use "

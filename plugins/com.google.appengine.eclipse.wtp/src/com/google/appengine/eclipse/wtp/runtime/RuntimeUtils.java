@@ -26,7 +26,6 @@ import java.util.List;
  * Various utility methods for GaeRuntime.
  */
 public final class RuntimeUtils {
-  public static final String MIN_SDK_VERSION_USING_AUTORELOAD = "1.8.1";
 
   private static final String ARG_XMX512M = "-Xmx512m";
   private static final String ARG_XSTART_ON_FIRST_THREAD = "-XstartOnFirstThread";
@@ -37,6 +36,48 @@ public final class RuntimeUtils {
    * agent.
    */
   private static final String MIN_SDK_VERSION_USING_KICKSTART_AGENT = "1.2.6";
+  /**
+   * Minimum version of App Engine SDK that can support &lt;vm&gt; tag in appengine-web.xml
+   */
+  private static final String MIN_SDK_VERSION_USING_VM_ARG = "1.8.4";
+  public static final String MIN_SDK_VERSION_USING_AUTORELOAD = "1.8.1";
+
+  /**
+   * @return <code>true</code> if this runtime is able to use Google Compute Engine (GCE).
+   */
+  public static boolean canUseVm(GaeRuntime runtime) {
+    GaeSdk gaeSdk = getRuntimeSdk(runtime);
+    if (gaeSdk == null) {
+      return false;
+    }
+    return canUseVm(gaeSdk);
+  }
+
+  /**
+   * @return <code>true</code> if this runtime is able to use Google Compute Engine (GCE).
+   */
+  public static boolean canUseVm(GaeSdk gaeSdk) {
+    return SdkUtils.compareVersionStrings(gaeSdk.getVersion(), MIN_SDK_VERSION_USING_VM_ARG) >= 0;
+  }
+
+  /**
+   * @return the list of VM arguments required by runtime.
+   */
+  public static List<String> getDefaultRuntimeVMArguments(GaeRuntime runtime, boolean noJavaAgent) {
+    List<String> args = Lists.newArrayList();
+    if (runtime == null) {
+      return args;
+    }
+
+    args.add(getJavaAgentVMArgument(runtime, noJavaAgent));
+    args.add(ARG_XMX512M);
+    args.add(getXBootclassPathVMArgument(runtime));
+    if (Platform.OS_MACOSX.equals(Platform.getOS())) {
+      args.add(ARG_XSTART_ON_FIRST_THREAD);
+    }
+
+    return args;
+  }
 
   /**
    * @return GaeSdk bound for given <code>runtime</code>. If sdk cannot be found, returns default
@@ -76,33 +117,19 @@ public final class RuntimeUtils {
   }
 
   /**
-   * @return the list of VM arguments required by runtime.
+   * @return VM argument representing javaagent or empty string if --no_java_agent should be passed
+   *         to KickStart.
    */
-  public static List<String> getDefaultRuntimeVMArguments(GaeRuntime runtime) {
-    List<String> args = Lists.newArrayList();
-    if (runtime == null) {
-      return args;
-    }
-
-    args.add(getJavaAgentVMArgument(runtime));
-    args.add(ARG_XMX512M);
-    args.add(getXBootclassPathVMArgument(runtime));
-    if (Platform.OS_MACOSX.equals(Platform.getOS())) {
-      args.add(ARG_XSTART_ON_FIRST_THREAD);
-    }
-
-    return args;
-  }
-
-  /**
-   * @return VM argument representing javaagent.
-   */
-  private static String getJavaAgentVMArgument(GaeRuntime runtime) {
+  private static String getJavaAgentVMArgument(GaeRuntime runtime, boolean noJavaAgent) {
     GaeSdk gaeSdk = getRuntimeSdk(runtime);
     if (gaeSdk == null) {
       return null;
     }
     if (SdkUtils.compareVersionStrings(gaeSdk.getVersion(), MIN_SDK_VERSION_USING_KICKSTART_AGENT) >= 0) {
+      boolean canUseVm = canUseVm(runtime);
+      if (canUseVm && noJavaAgent) {
+        return "";
+      }
       String agentPath = gaeSdk.getInstallationPath().append("lib/agent/appengine-agent.jar").toOSString();
       return ARG_JAVAAGENT_PREFIX + agentPath;
     }

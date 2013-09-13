@@ -17,6 +17,7 @@ import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
 import com.google.appengine.eclipse.wtp.runtime.RuntimeUtils;
 import com.google.appengine.eclipse.wtp.utils.IOUtils;
+import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 import com.google.common.base.Splitter;
 import com.google.gdt.eclipse.core.StatusUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
@@ -59,6 +60,7 @@ import java.util.Properties;
  */
 public final class GaeServerBehaviour extends ServerBehaviourDelegate {
   private static final String ARG_PORT = "--port=";
+  private static final String ARG_NO_JAVAAGENT = "--no_java_agent";
   private static final String ARG_DISABLE_UPDATE_CHECK = "--disable_update_check";
   private static final String ARG_ENABLE_AUTO_RELOAD = "-Dappengine.fullscan.seconds=";
   private static final String ARG_UNAPPLIED_JOB_PCT = "-Ddatastore.default_high_rep_job_policy_unapplied_job_pct=";
@@ -289,6 +291,11 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
   protected String getRuntimeProgramArguments() throws CoreException {
     StringBuilder args = new StringBuilder();
     GaeServer gaeServer = GaeServer.getGaeServer(getServer());
+    if (isUsingVm()) {
+      // add --no_java_agent is applicable and set
+      args.append(ARG_NO_JAVAAGENT);
+      args.append(" ");
+    }
     // port (will be checked for availability later)
     args.append(ARG_PORT);
     args.append(gaeServer.getMainPort().getPort());
@@ -395,10 +402,11 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
   /**
    * @return an array of VM arguments
    */
-  private List<String> getRuntimeVMArguments() {
+  private List<String> getRuntimeVMArguments() throws CoreException {
     GaeRuntime gaeRuntime = getGaeRuntime();
     GaeServer gaeServer = getGaeServer();
-    List<String> vmArguments = RuntimeUtils.getDefaultRuntimeVMArguments(gaeRuntime);
+
+    List<String> vmArguments = RuntimeUtils.getDefaultRuntimeVMArguments(gaeRuntime, isUsingVm());
     if (gaeRuntime != null
         && SdkUtils.compareVersionStrings(gaeRuntime.getGaeSdkVersion(),
             RuntimeUtils.MIN_SDK_VERSION_USING_AUTORELOAD) >= 0) {
@@ -428,6 +436,21 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
       }
     }
     return vmArguments;
+  }
+
+  /**
+   * @return <code>true</code> if this server is able to use and using Google Compute Engine (GCE)
+   *         instance.
+   */
+  private boolean isUsingVm() throws CoreException {
+    boolean vmSet = false;
+    if (RuntimeUtils.canUseVm(getGaeRuntime())) {
+      IModule module = getGaeServer().findWebModule();
+      if (module != null) {
+        vmSet = ProjectUtils.isVmSet(module.getProject());
+      }
+    }
+    return vmSet;
   }
 
   /**
