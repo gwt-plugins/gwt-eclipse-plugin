@@ -59,6 +59,7 @@ import java.util.Properties;
  * Controls Google App Engine Server state.
  */
 public final class GaeServerBehaviour extends ServerBehaviourDelegate {
+  private static final String ARG_ADDRESS = "--address=";
   private static final String ARG_PORT = "--port=";
   private static final String ARG_NO_JAVAAGENT = "--no_java_agent";
   private static final String ARG_DISABLE_UPDATE_CHECK = "--disable_update_check";
@@ -292,7 +293,7 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
     StringBuilder args = new StringBuilder();
     GaeServer gaeServer = GaeServer.getGaeServer(getServer());
     if (isUsingVm()) {
-      // add --no_java_agent is applicable and set
+      // add --no_java_agent if applicable and set
       args.append(ARG_NO_JAVAAGENT);
       args.append(" ");
     }
@@ -300,6 +301,13 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
     args.append(ARG_PORT);
     args.append(gaeServer.getMainPort().getPort());
     args.append(" ");
+    // address of the interface on the local machine to bind to
+    String interfaceAddress = gaeServer.getBindInterfaceAddress();
+    if (interfaceAddress != null && !interfaceAddress.trim().isEmpty()) {
+      args.append(ARG_ADDRESS);
+      args.append(interfaceAddress);
+      args.append(" ");
+    }
     // don't check for updates every run
     // TODO(amitin): make optional?
     args.append(ARG_DISABLE_UPDATE_CHECK);

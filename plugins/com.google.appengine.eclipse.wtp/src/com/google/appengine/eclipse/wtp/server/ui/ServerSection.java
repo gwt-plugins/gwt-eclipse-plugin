@@ -50,6 +50,7 @@ public final class ServerSection extends ServerEditorSection implements Property
   private Label autoreloadTimeLabel;
   private Text hrdUnapliedJobPctText;
   private Text vmArgumentsText;
+  private Text localAddressText;
 
   @Override
   public void createSection(Composite parent) {
@@ -82,6 +83,11 @@ public final class ServerSection extends ServerEditorSection implements Property
       serverPortNumberText = toolkit.createText(comp,
           String.valueOf(gaeServer.getMainPort().getPort()), SWT.BORDER);
       txtGDF.applyTo(serverPortNumberText);
+    }
+    {
+      createLabel(comp, "Local interface address to bind to", toolkit);
+      localAddressText = toolkit.createText(comp, gaeServer.getBindInterfaceAddress(), SWT.BORDER);
+      txtGDF.applyTo(localAddressText);
     }
     {
       autoreloadTimeLabel = createLabel(comp,
@@ -161,6 +167,13 @@ public final class ServerSection extends ServerEditorSection implements Property
       public void modifyText(ModifyEvent e) {
         execute(new GaeCommands(server, autoreloadTimeText.getText().trim(),
             GaeServer.PROPERTY_AUTORELOAD_TIME));
+      }
+    });
+    localAddressText.addModifyListener(new ModifyListener() {
+      @Override
+      public void modifyText(ModifyEvent e) {
+        execute(new GaeCommands(server, localAddressText.getText().trim(),
+            GaeServer.PROPERTY_BIND_INTERFACE_ADDRESS));
       }
     });
     hrdUnapliedJobPctText.addModifyListener(new ModifyListener() {

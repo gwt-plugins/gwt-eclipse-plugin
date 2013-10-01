@@ -50,6 +50,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * a {@link ServerDelegate} for Google App Engine.
@@ -64,12 +66,17 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
   public static final String PROPERTY_DEPLOY_DIR = "deploy-directory";
   public static final String PROPERTY_SERVERPORT = "server-port-number";
   public static final String PROPERTY_AUTORELOAD_TIME = "server-autoreload-time";
+  public static final String PROPERTY_BIND_INTERFACE_ADDRESS = "server-bind-address";
   public static final String PROPERTY_HRD_UNAPPLIED_JOB_PCT = "server-hrd-unapplied-job-pct";
   public static final String PROPERTY_USER_VM_ARGS = "server-user-vm-args";
   public static final String DEFAULT_DEPLOYDIR = "wtpwebapps";
   public static final String DEFAULT_SERVER_PORT = "8888";
   public static final String DEFAULT_AUTORELOAD_TIME = "5";
   public static final String DEFAULT_HRD_UNAPPLIED_JOB_PCT = "50";
+
+  private static final String IPV4_PATTERN = "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
+      + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
+      + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
 
   /**
    * @return a {@link GaeServer} instance which associated with gives {@link IServer} instance.
@@ -228,6 +235,17 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
     String value = getServerInstanceProperties().get(PROPERTY_AUTORELOAD_TIME);
     if (value == null) {
       return DEFAULT_AUTORELOAD_TIME;
+    }
+    return value;
+  }
+
+  /**
+   * @return The address of the interface on the local machine to bind to (see --address).
+   */
+  public String getBindInterfaceAddress() {
+    String value = getServerInstanceProperties().get(PROPERTY_BIND_INTERFACE_ADDRESS);
+    if (value == null) {
+      return "";
     }
     return value;
   }
@@ -457,6 +475,16 @@ public final class GaeServer extends ServerDelegate implements IURLProvider {
     if (port < 0 || port > 65535) {
       return StatusUtilities.newErrorStatus("TCP port value is out of range: " + serverPort,
           AppEnginePlugin.PLUGIN_ID);
+    }
+    // validate ip address
+    String interfaceAddress = getBindInterfaceAddress();
+    if (interfaceAddress != null && !interfaceAddress.trim().isEmpty()) {
+      Pattern pattern = Pattern.compile(IPV4_PATTERN);
+      Matcher matcher = pattern.matcher(interfaceAddress);
+      if (!matcher.matches()) {
+        return StatusUtilities.newErrorStatus("Invalid IP address: " + interfaceAddress,
+            AppEnginePlugin.PLUGIN_ID);
+      }
     }
     // validate autoreload time
     String autoreloadTime = getAutoReloadTime();
