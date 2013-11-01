@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<component id="com.google.gdt.eclipse.drive.test" version="2">
+    <resource path="src/com/google/gdt/eclipse/drive/test/MockResourceRuleFactory.java" type="com.google.gdt.eclipse.drive.test.MockResourceRuleFactory">
+        <filter comment="Implemented to mock ResourceRuleFactory in tests" id="574619656">
+            <message_arguments>
+                <message_argument value="IResourceRuleFactory"/>
+                <message_argument value="MockResourceRuleFactory"/>
+            </message_arguments>
+        </filter>
+    </resource>
+</component>

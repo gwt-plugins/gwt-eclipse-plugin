@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point
+         id="com.google.gdt.eclipse.drive.listener"
+         name="listener"
+         schema="schema/com.google.gdt.eclipse.drive.listener.exsd"/>
+
+   <extension point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="com.google.gdt.eclipse.drive.popupMenu.project"
+            objectClass="org.eclipse.core.resources.IProject">
+         <action
+               id="com.google.gdt.eclipse.drive.popupMenu.project.updateAction"
+               class="com.google.gdt.eclipse.drive.actions.UpdateFromDriveProjectAction"
+               icon="icons/script_list.png"
+               label="Update Apps Script project from Drive"
+               menubarPath="com.google.gdt.eclipse.suite.popupMenu.project/actionsContent"
+               enablesFor="1">
+            <enablement>
+               <objectState name="nature" value="com.google.eclipse.gdt.drive.appsScriptNature"/>
+            </enablement>
+         </action>
+      </objectContribution>
+   </extension>
+   
+   <extension point="org.eclipse.ui.importWizards">
+      <category
+            id="com.google.gdt.eclipse.drive.wizards.import.scriptproject"
+            name="Apps Script project">
+      </category>
+      <wizard
+            category="com.google.gdt.eclipse.suite.importWizards"
+            class="com.google.gdt.eclipse.drive.wizards.ScriptProjectImportWizard"
+            icon="icons/script_list.png"
+            id="com.google.gdt.eclipse.drive.wizards.ScriptProjectImportWizard"
+            name="Apps Script Project">
+         <description>
+            Import an Apps Script project from Drive.
+         </description>
+      </wizard>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="com.google.gdt.eclipse.drive.actions.ImportAppsScriptProjectHandler"
+            id="com.google.gdt.eclipse.drive.importAppsScriptProject"
+            name="Import Apps Script Project">
+      </command>
+   </extension>
+   
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:com.google.gdt.eclipse.suite.GDTPulldown?after=toolbarGroup.import">
+         <command
+               commandId="com.google.gdt.eclipse.drive.importAppsScriptProject"
+               tooltip="Import Apps Script project from Drive"
+               icon="icons/script_list.png"
+               label="Import Apps Script Project..."
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+
+   <extension point="com.google.gdt.eclipse.login.oauthScope">
+      <oauthScope scope="https://www.googleapis.com/auth/drive" />
+      <oauthScope scope="https://www.googleapis.com/auth/drive.scripts" />
+   </extension>
+
+   <extension point="com.google.gdt.eclipse.login.loginListener">
+      <loginListener class="com.google.gdt.eclipse.drive.DriveLoginListener" />
+   </extension>
+   
+   <extension point="org.eclipse.core.resources.natures"
+         id="com.google.eclipse.gdt.drive.appsScriptNature">
+      <runtime>
+         <run class="com.google.gdt.eclipse.drive.natures.AppsScriptNature" />
+      </runtime>
+   </extension>
+
+   <extension point="org.eclipse.ui.ide.projectNatureImages">
+      <image
+            icon="icons/script_list_8x8.png"
+            id="com.google.gdt.eclipse.drive.appsScriptNatureImage"
+            natureId="com.google.eclipse.gdt.drive.appsScriptNature" />
+   </extension>
+
+   <extension point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+         id="com.google.gdt.eclipse.drive.appsScriptContentType"
+         base-type="org.eclipse.wst.jsdt.core.jsSource"
+         name="Apps Script Source File"
+         file-extensions="gs" />
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            default="true"
+            class="com.google.gdt.eclipse.drive.editors.AppsScriptEditor"
+            icon="platform:/plugin/org.eclipse.ui.editors/icons/full/obj16/file_obj.gif"
+            id="com.google.gdt.eclipse.drive.appsScriptEditor"
+            name="Apps Script Editor">
+         <contentTypeBinding contentTypeId="com.google.gdt.eclipse.drive.appsScriptContentType" /> 
+      </editor>
+   </extension>
+   
+   <extension point="org.eclipse.ui.decorators">
+      <decorator
+          id="com.google.gdt.eclipse.drive.decorators.notsaved"
+          label="Not saved in Drive"
+          lightweight="true"
+          location="TOP_RIGHT"
+          state="true"
+          class="com.google.gdt.eclipse.drive.images.NotSavedLabelDecorator">
+        <enablement>
+          <objectClass name="org.eclipse.core.resources.IFile" />
+        </enablement>
+        <description>
+          Indicates that the Eclipse resource has not been saved to Drive.
+        </description>
+      </decorator>
+   </extension>
+
+</plugin>

@@ -1,0 +1,5 @@
+<contexts>
+  <context id="import_script_project_context">
+    <description>This wizard imports an Apps Script project from Drive. A Drive Apps Script project contains one or more scripts. The wizard creates a new Eclipse project from the Drive project, containing one file for each script in the Drive project.</description>
+  </context>
+</contexts>
