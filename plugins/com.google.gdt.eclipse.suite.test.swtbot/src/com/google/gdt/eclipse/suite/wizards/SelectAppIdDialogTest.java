@@ -17,14 +17,15 @@ import com.google.gdt.eclipse.swtbot.SwtBotProjectActions;
 import com.google.gdt.eclipse.swtbot.SwtBotTestingUtilities;
 import com.google.gdt.eclipse.swtbot.SwtBotWorkbenchActions;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 
-// TODO(nbashirbello): Restore commented out test when user test login has been
-// fixed.
 /**
  * SWTbot tests for {@link SelectAppIdDialog}.
  */
@@ -40,37 +41,28 @@ public class SelectAppIdDialogTest extends TestCase {
    * displayed.
    */
   public void testUserLoggedIn() {
-    // // Log in
-    // TestGoogleLogin.logIn();
-    //
-    // // Open the "New Web Application Project" wizard and then the
+    // Log in
+    TestGoogleLogin.logIn();
+
+    // Open the "New Web Application Project" wizard and then the
     // "Select App Id" dialog
-    // openSelectAppIdDialog();
-    //
-    // // Check that "OK" button is disabled and "Create App Id" button is
-    // enabled
-    // SWTBotButton createAppIdButton = bot.button("Create App Id");
-    // Assert.assertTrue(createAppIdButton.isEnabled());
-    //
-    // // TODO(nbashirbello): Uncomment after test app has been deleted
-    // // Assert.assertFalse(bot.button("OK").isEnabled());
-    //
-    // // Check that there is a link for the user to log in with appropriate
+    openSelectAppIdDialog();
+
+    // Check that "OK" button is disabled and "Create App Id" button is enabled
+    SWTBotButton createAppIdButton = bot.button("Create App Id");
+    Assert.assertTrue(createAppIdButton.isEnabled());
+    Assert.assertTrue(bot.button("OK").isEnabled());
+
+    // Check that there is a link for the user to log in with appropriate
     // message
-    // Assert.assertEquals(CHANGE_USER_MESSAGE, bot.link().getText());
-    //
-    // // Check that clicking the "Create App Id" button opens the
-    // "Create App Id" dialog
-    // createAppIdButton.click();
-    // SWTBotShell createAppIdDialog = bot.activeShell();
-    // Assert.assertEquals(createAppIdDialog.getText(), "Create App Id");
-    // createAppIdDialog.close();
-    //
-    // // Close the "Select App Id dialog
-    // bot.activeShell().close();
-    //
-    // // Close the "New Web Application Project" wizard
-    // bot.activeShell().close();
+    Assert.assertEquals(CHANGE_USER_MESSAGE, bot.link().getText());
+
+    // Check that clicking the "Create App Id" button opens the "Create App Id"
+    // dialog
+    createAppIdButton.click();
+    SWTBotShell createAppIdDialog = bot.activeShell();
+    Assert.assertEquals(createAppIdDialog.getText(), "Create App Id");
+    createAppIdDialog.close();
   }
 
   /**
@@ -78,42 +70,36 @@ public class SelectAppIdDialogTest extends TestCase {
    * i.e. the correct buttons are enabled and disabled and the appropriate message is displayed.
    */
   public void testUserNotLoggedIn() {
-    // // Log off
-    // TestGoogleLogin.logOut();
-    //
-    // // Open the "New Web Application Project" wizard and then the
+    // Log off
+    TestGoogleLogin.logOut();
+
+    // Open the "New Web Application Project" wizard and then the
     // "Select App Id" dialog
-    // openSelectAppIdDialog();
-    //
-    // // Check that "OK" and "Create App Id" buttons are disabled
-    // Assert.assertFalse(bot.button("OK").isEnabled());
-    // Assert.assertFalse(bot.button("Create App Id").isEnabled());
-    //
-    // // Check that list of App Ids is empty
-    // String[] appIds = bot.listInGroup("App Ids").getItems();
-    // Assert.assertEquals(0, appIds.length);
-    //
-    // // Check that there is a link for the user to log in with appropriate
+    openSelectAppIdDialog();
+
+    // Check that "OK" and "Create App Id" buttons are disabled
+    Assert.assertFalse(bot.button("OK").isEnabled());
+    Assert.assertFalse(bot.button("Create App Id").isEnabled());
+
+    // Check that list of App Ids is empty
+    String[] appIds = bot.listInGroup("App Ids").getItems();
+    Assert.assertEquals(0, appIds.length);
+
+    // Check that there is a link for the user to log in with appropriate
     // message
-    // Assert.assertEquals(SIGN_IN_MESSAGE, bot.link().getText());
-    //
-    // // Close the "Select App Id" dialog
-    // bot.activeShell().close();
-    //
-    // // Close the "New Web Application Project" wizard
-    // bot.activeShell().close();
+    Assert.assertEquals(SIGN_IN_MESSAGE, bot.link().getText());
   }
 
   @Override
   protected void tearDown() {
-    // TestGoogleLogin.logOut();
+    bot.closeAllShells();
+    TestGoogleLogin.logOut();
   }
 
   /**
    * Open the "Select App Id" dialog by first opening the "New Web Application Project" wizard and
    * then selecting "Use App Id" and then clicking its "Browse..." button.
    */
-  @SuppressWarnings("unused")
   private void openSelectAppIdDialog() {
     // Open the list of new project wizards
     bot.menu("File").menu("New").menu("Project...").click();
