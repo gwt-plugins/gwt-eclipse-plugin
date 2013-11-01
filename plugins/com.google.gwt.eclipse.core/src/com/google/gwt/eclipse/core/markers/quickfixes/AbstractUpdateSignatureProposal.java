@@ -41,6 +41,8 @@ import java.util.List;
  * Updates a sync/async method signature to match the associated method
  * declaration.
  */
+@SuppressWarnings("restriction")
+// Restricted access to JavaPluginImages and ASTResolving
 public abstract class AbstractUpdateSignatureProposal extends
     ASTRewriteCorrectionProposal {
 

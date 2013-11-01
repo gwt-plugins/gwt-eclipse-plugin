@@ -112,7 +112,7 @@ public abstract class GWTRuntime extends AbstractSdk {
         URL[] urls = new URL[defaultRuntimeClasspath.length];
         for (int i = 0; i < defaultRuntimeClasspath.length; ++i) {
           File file = new File(defaultRuntimeClasspath[i]);
-          urls[i] = file.toURL();
+          urls[i] = file.toURI().toURL();
         }
         return new URLClassLoader(urls);
       } catch (CoreException e) {

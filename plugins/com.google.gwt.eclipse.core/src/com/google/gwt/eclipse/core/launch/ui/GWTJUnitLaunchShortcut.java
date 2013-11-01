@@ -64,7 +64,7 @@ public class GWTJUnitLaunchShortcut extends JUnitLaunchShortcut {
   }
 
   private String getDecoratedName(String oldname) {
-    return DebugPlugin.getDefault().getLaunchManager().generateUniqueLaunchConfigurationNameFrom(
+    return DebugPlugin.getDefault().getLaunchManager().generateLaunchConfigurationName(
         oldname + getLaunchConfigNameSuffix());
   }
 }

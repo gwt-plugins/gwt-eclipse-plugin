@@ -103,6 +103,8 @@ public class GWTValidatorMarkerResolutionGenerator implements
             GWTProjectValidator.GWT_SDK_TYPE_NAME, GWTProjectPropertyPage.ID));
         break;
       }
+      default:
+        break;
     }
 
     return markerResolutions.toArray(new IMarkerResolution[0]);

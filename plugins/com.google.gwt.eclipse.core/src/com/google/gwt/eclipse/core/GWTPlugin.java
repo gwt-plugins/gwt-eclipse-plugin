@@ -36,6 +36,7 @@ import com.google.gwt.eclipse.core.uibinder.problems.UiBinderTemplateProblemType
 import com.google.gwt.eclipse.core.uibinder.problems.java.UiBinderJavaProblemType;
 import com.google.gwt.eclipse.core.validators.rpc.RemoteServiceProblemType;
 
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
@@ -155,7 +156,7 @@ public class GWTPlugin extends AbstractGooglePlugin {
       GWTPluginLog.logError(e, "Could not stop source viewer server.");
     }
 
-    plugin.savePluginPreferences();
+    InstanceScope.INSTANCE.getNode(PLUGIN_ID).flush();
 
     plugin = null;
 

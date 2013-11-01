@@ -16,8 +16,9 @@ package com.google.gwt.eclipse.core.preferences;
 
 import com.google.gwt.eclipse.core.GWTPlugin;
 
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 
 /**
  * Sets the default preferences values.
@@ -29,8 +30,7 @@ public class GwtPreferenceInitializer extends AbstractPreferenceInitializer {
 
   @Override
   public void initializeDefaultPreferences() {
-    Preferences prefs = GWTPlugin.getDefault().getPluginPreferences();
-    prefs.setDefault(
-        GwtPreferenceConstants.UIBINDER_WIZARD_GENERATE_CONTENT_DEFAULT, true);
+    IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(GWTPlugin.PLUGIN_ID);
+    prefs.putBoolean(GwtPreferenceConstants.UIBINDER_WIZARD_GENERATE_CONTENT_DEFAULT, true);
   }
 }

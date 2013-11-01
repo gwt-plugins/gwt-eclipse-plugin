@@ -250,8 +250,7 @@ public final class SpeedTracerLaunchConfiguration {
 
   private static String computeName(IResource resource) {
     ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-    return manager.generateUniqueLaunchConfigurationNameFrom(resource.getName()
-        + " using Speed Tracer");
+    return manager.generateLaunchConfigurationName(resource.getName() + " using Speed Tracer");
   }
 
   private SpeedTracerLaunchConfiguration() {

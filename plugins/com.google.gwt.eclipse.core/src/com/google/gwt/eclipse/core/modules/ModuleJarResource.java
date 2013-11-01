@@ -14,6 +14,8 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.modules;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJarEntryResource;
@@ -22,7 +24,6 @@ import org.eclipse.wst.sse.core.internal.provisional.IModelManager;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Represents a GWT module resource in a JAR file.
@@ -45,10 +46,8 @@ public class ModuleJarResource extends AbstractModule {
   @Override
   protected IDOMModel doGetModelForRead() throws IOException, CoreException {
     IModelManager modelManager = StructuredModelManager.getModelManager();
-    InputStream moduleStream = storage.getContents();
-    IDOMModel model = (IDOMModel) modelManager.getModelForRead(
-        storage.getName(), moduleStream, null);
-    moduleStream.close();
+    IFile storageFile = ResourcesPlugin.getWorkspace().getRoot().getFile(storage.getFullPath());
+    IDOMModel model = (IDOMModel) modelManager.getModelForRead(storageFile);
     return model;
   }
 

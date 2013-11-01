@@ -129,10 +129,9 @@ public class BundledResourcesSelectionBlock {
     }
   }
 
-  private class SelectionAdapter implements IListAdapter {
+  private class SelectionAdapter implements IListAdapter<ClientBundleResource> {
 
-    @SuppressWarnings("unchecked")
-    public void customButtonPressed(ListDialogField field, int index) {
+    public void customButtonPressed(ListDialogField<ClientBundleResource> field, int index) {
       List<ClientBundleResource> resourcesBefore = resourcesField.getElements();
 
       switch (index) {
@@ -156,11 +155,11 @@ public class BundledResourcesSelectionBlock {
       }
     }
 
-    public void doubleClicked(ListDialogField field) {
+    public void doubleClicked(ListDialogField<ClientBundleResource> field) {
       editSelectedResource();
     }
 
-    public void selectionChanged(ListDialogField field) {
+    public void selectionChanged(ListDialogField<ClientBundleResource> field) {
       int selectedElementsCount = resourcesField.getSelectedElements().size();
       resourcesField.enableButton(IDX_EDIT, selectedElementsCount == 1);
       resourcesField.enableButton(IDX_REMOVE, selectedElementsCount > 0);
@@ -191,7 +190,7 @@ public class BundledResourcesSelectionBlock {
 
   private IPackageFragment pckgFragment;
 
-  private ListDialogField resourcesField;
+  private ListDialogField<ClientBundleResource> resourcesField;
 
   private Shell shell;
 
@@ -232,7 +231,6 @@ public class BundledResourcesSelectionBlock {
     return pckgFragment;
   }
 
-  @SuppressWarnings("unchecked")
   public List<ClientBundleResource> getResources() {
     return resourcesField.getElements();
   }
@@ -313,7 +311,8 @@ public class BundledResourcesSelectionBlock {
     String[] buttons = new String[] {
         "Add...", "Add Multiple...", "Edit", null, "Remove", null};
 
-    resourcesField = new ListDialogField(new SelectionAdapter(), buttons,
+    resourcesField =
+        new ListDialogField<ClientBundleResource>(new SelectionAdapter(), buttons,
         new ColumnLabelProvider());
     resourcesField.setLabelText(labelText);
 

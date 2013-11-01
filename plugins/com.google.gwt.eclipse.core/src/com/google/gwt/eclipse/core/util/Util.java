@@ -60,6 +60,7 @@ import java.util.List;
  * TODO(): Unify with the existing utilities classes in the gdt core plugin.
  */
 @SuppressWarnings("restriction")
+// "restriction" applies to NewWizardMessages, EditorRegistry, and FileEditorMapping.
 public final class Util {
 
   public static final String PLATFORM_LINUX = "linux";
@@ -168,7 +169,7 @@ public final class Util {
     }
 
     ParameterizedType type = ast.newParameterizedType(gwtCallbackType);
-    List typeArgs = type.typeArguments();
+    List<Type> typeArgs = type.typeArguments();
     typeArgs.add(syncReturnType);
 
     parameter.setType(type);

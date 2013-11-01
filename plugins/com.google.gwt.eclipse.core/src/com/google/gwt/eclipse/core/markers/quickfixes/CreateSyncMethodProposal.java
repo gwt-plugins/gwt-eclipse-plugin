@@ -23,6 +23,7 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.internal.ui.text.correction.ASTResolving;
 import org.eclipse.jdt.ui.text.java.IJavaCompletionProposal;
@@ -85,7 +86,6 @@ public class CreateSyncMethodProposal extends AbstractCreateMethodProposal {
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   protected MethodDeclaration createMethodDeclaration(AST ast) {
     MethodDeclaration syncMethodDecl = ast.newMethodDeclaration();
 
@@ -106,7 +106,7 @@ public class CreateSyncMethodProposal extends AbstractCreateMethodProposal {
   @SuppressWarnings("unchecked")
   private void addSyncParameters(AST ast, MethodDeclaration syncMethodDecl) {
     // Clone all existing async method parameters but the last (AsyncCallback)
-    List asyncParameters = getAsyncMethodDeclaration().parameters();
+    List<SingleVariableDeclaration> asyncParameters = getAsyncMethodDeclaration().parameters();
     syncMethodDecl.parameters().addAll(
         JavaASTUtils.cloneParameters(ast,
             asyncParameters.subList(0, asyncParameters.size() - 1),

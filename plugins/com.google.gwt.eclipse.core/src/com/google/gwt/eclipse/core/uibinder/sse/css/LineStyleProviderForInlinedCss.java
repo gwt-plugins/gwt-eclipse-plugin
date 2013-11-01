@@ -42,9 +42,11 @@ import java.util.List;
 @SuppressWarnings({"restriction", "unchecked"})
 public class LineStyleProviderForInlinedCss extends LineStyleProviderForCSS {
 
+  // This method overrides a method declared with a raw parameter type (Collection) in the
+  // Eclipse-defined superclass.
   @Override
   public boolean prepareRegions(ITypedRegion typedRegion, int lineRequestStart,
-      int lineRequestLength, Collection holdResults) {
+      int lineRequestLength, @SuppressWarnings("rawtypes") Collection holdResults) {
 
     ITypedRegion partition = SseUtilities.getPartition(getDocument(),
         typedRegion.getOffset());
@@ -52,7 +54,7 @@ public class LineStyleProviderForInlinedCss extends LineStyleProviderForCSS {
     int regionStart = partition.getOffset();
     int regionEnd = regionStart + partition.getLength();
 
-    List tokens;
+    List<CSSTextToken> tokens;
     String content;
     try {
       content = getDocument().get(partition.getOffset(), partition.getLength());
@@ -75,7 +77,7 @@ public class LineStyleProviderForInlinedCss extends LineStyleProviderForCSS {
     if (0 < tokens.size()) {
       int start = regionStart;
       int end = start;
-      Iterator i = tokens.iterator();
+      Iterator<CSSTextToken> i = tokens.iterator();
       while (i.hasNext()) {
         CSSTextToken token = (CSSTextToken) i.next();
         end = start + token.length;
@@ -122,7 +124,7 @@ public class LineStyleProviderForInlinedCss extends LineStyleProviderForCSS {
     return null;
   }
 
-  private void addStyleRange(Collection holdResults, TextAttribute attribute,
+  private void addStyleRange(Collection<StyleRange> holdResults, TextAttribute attribute,
       int start, int end) {
     if (attribute != null) {
       holdResults.add(new StyleRange(start, end, attribute.getForeground(),

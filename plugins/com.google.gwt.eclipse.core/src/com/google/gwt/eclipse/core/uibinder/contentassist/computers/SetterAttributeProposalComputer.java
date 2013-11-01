@@ -41,6 +41,8 @@ import java.util.Set;
  * A proposal computer that generates completion proposals for attributes based
  * on existing type setter methods.
  */
+@SuppressWarnings("restriction")
+// For IDOMNode
 public class SetterAttributeProposalComputer extends
     AbstractJavaProposalComputer {
 

@@ -83,7 +83,6 @@ public class JsniCompletionProcessor implements IContentAssistProcessor {
     this.cu = cu;
   }
 
-  @SuppressWarnings("unchecked")
   public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,
       int offset) {
     IJavaCompletionProposal[] proposals = null;

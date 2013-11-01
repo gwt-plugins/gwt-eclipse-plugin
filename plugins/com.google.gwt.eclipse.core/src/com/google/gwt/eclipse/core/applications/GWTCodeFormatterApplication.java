@@ -110,7 +110,6 @@ public class GWTCodeFormatterApplication implements IApplication {
   public void stop() {
   }
 
-  @SuppressWarnings("restriction")
   private void doFormat(File file) {
     IDocument doc = new Document();
     try {

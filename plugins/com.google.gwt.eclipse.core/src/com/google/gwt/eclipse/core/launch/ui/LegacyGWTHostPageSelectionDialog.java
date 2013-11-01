@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.internal.ui.SWTFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ViewerComparator;
@@ -45,7 +44,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.osgi.service.prefs.BackingStoreException;
 
 import java.net.MalformedURLException;
@@ -59,6 +57,8 @@ import java.util.Set;
  * Lets the user choose the specific module and host page to launch hosted mode
  * with, when we cannot infer them both from the selection.
  */
+@SuppressWarnings("restriction")
+// Restricted access to SWTFactory
 public class LegacyGWTHostPageSelectionDialog extends
     ElementTreeSelectionDialog {
 
@@ -139,16 +139,10 @@ public class LegacyGWTHostPageSelectionDialog extends
     public boolean isHostPage() {
       return this.parent != null;
     }
-
-    public boolean isModule() {
-      return this.parent == null;
-    }
   }
 
   private static class LegacyHostPageSelectionLabelProvider extends
       LabelProvider {
-
-    private ILabelProvider workbenchLabelProvider = new WorkbenchLabelProvider();
 
     @Override
     public Image getImage(Object element) {

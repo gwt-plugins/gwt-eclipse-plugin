@@ -180,7 +180,6 @@ public class UiBinderXmlCompletionProcessor extends XMLContentAssistProcessor {
    */
   private boolean addedDynamicWidgetProposals;
 
-  @SuppressWarnings("unchecked")
   @Override
   public ICompletionProposal[] computeCompletionProposals(
       ITextViewer textViewer, int documentPosition) {

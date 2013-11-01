@@ -18,12 +18,15 @@ import com.google.gdt.eclipse.core.projects.ProjectUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkSet;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+
+import java.net.URI;
 
 /**
  * Testing-related utility methods dealing with GWT runtime.
@@ -73,8 +76,8 @@ public class GwtRuntimeTestUtilities {
     String gwtDevProjectName = "gwt-dev";
 
     // Get the path to the Eclipse project files for GWT
-    IPath gwtProjectsDir =
-        workspace.getPathVariableManager().getValue("GWT_ROOT").append("eclipse");
+    URI gwtProjectsUri = workspace.getPathVariableManager().getURIValue("GWT_ROOT");
+    IPath gwtProjectsDir = URIUtil.toPath(gwtProjectsUri).append("eclipse");
 
     // Import gwt-dev
     IPath gwtDevDir = gwtProjectsDir.append("dev");

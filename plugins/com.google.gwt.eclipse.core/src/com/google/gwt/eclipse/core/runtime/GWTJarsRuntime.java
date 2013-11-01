@@ -164,7 +164,7 @@ public class GWTJarsRuntime extends GWTRuntime {
     List<URL> buildClasspathUrls = new ArrayList<URL>();
     for (IPath buildClasspath : buildClasspaths) {
       try {
-        buildClasspathUrls.add(buildClasspath.toFile().toURL());
+        buildClasspathUrls.add(buildClasspath.toFile().toURI().toURL());
       } catch (MalformedURLException e) {
         GWTPluginLog.logError(e);
       }

@@ -57,9 +57,8 @@ public class GWTProjectValidator extends AbstractProjectValidator {
   public static final String PROBLEM_MARKER_ID = GWTPlugin.PLUGIN_ID
       + ".gwtProjectProblemMarker";
 
-  @SuppressWarnings("unchecked")
   @Override
-  protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
+  protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor)
       throws CoreException {
 
     // Clear existing markers.

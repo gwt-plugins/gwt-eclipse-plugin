@@ -76,6 +76,8 @@ import java.util.Set;
  * Integrates into the JDT reconcile and build process to flag GWT-specific
  * errors and find Java references inside JSNI blocks.
  */
+@SuppressWarnings("restriction")
+// "restriction" applies to JobStatus and ASTBatchParser.
 public class JavaCompilationParticipant extends CompilationParticipant {
 
   private static final String[] NO_STRINGS = new String[0];
@@ -236,7 +238,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
       CompilationUnit ast = null;
 
       try {
-        ast = context.getAST3();
+        ast = context.getAST4();
       } catch (JavaModelException e) {
         // Fall through to null check below
       }
@@ -359,7 +361,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
                  * we get back for validation.
                  */
                 if (!cu.isConsistent()) {
-                  ast = cu.reconcile(AST.JLS3, true, null, null);
+                  ast = cu.reconcile(AST.JLS4, true, null, null);
                   assert (cu.isConsistent());
                 }
               } catch (JavaModelException e) {

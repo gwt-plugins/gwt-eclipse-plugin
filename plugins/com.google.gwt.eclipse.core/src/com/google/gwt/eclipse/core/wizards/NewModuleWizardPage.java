@@ -86,8 +86,8 @@ public class NewModuleWizardPage extends NewContainerWizardPage {
     }
   }
 
-  private class ModuleDialogFieldAdapter implements IStringButtonAdapter,
-      IDialogFieldListener, IListAdapter {
+  private class ModuleDialogFieldAdapter implements IStringButtonAdapter, IDialogFieldListener,
+      IListAdapter<IModule> {
 
     public void changeControlPressed(DialogField field) {
       // Right now, we do not need to do anything in addition
@@ -98,7 +98,7 @@ public class NewModuleWizardPage extends NewContainerWizardPage {
       }
     }
 
-    public void customButtonPressed(ListDialogField field, int index) {
+    public void customButtonPressed(ListDialogField<IModule> field, int index) {
       if (index == ADD_INHERITS_BUTTON_GROUP_INDEX) {
         moduleAddInheritsButtonPressed();
       } else {
@@ -110,12 +110,12 @@ public class NewModuleWizardPage extends NewContainerWizardPage {
       moduleDialogFieldChanged(field);
     }
 
-    public void doubleClicked(ListDialogField field) {
+    public void doubleClicked(ListDialogField<IModule> field) {
       // Right now, we do not need to do anything special
       // if an item in the inherits list is double-clicked
     }
 
-    public void selectionChanged(ListDialogField field) {
+    public void selectionChanged(ListDialogField<IModule> field) {
       // Right now we do not need to do anything special
       // if a different item in the list is selected
     }
@@ -141,7 +141,7 @@ public class NewModuleWizardPage extends NewContainerWizardPage {
   protected IStatus modulePackageStatus;
 
   private SelectionButtonDialogFieldGroup moduleCreateElementsCheckboxes;
-  private ListDialogField moduleInheritsDialogField;
+  private ListDialogField<IModule> moduleInheritsDialogField;
   private StringDialogField moduleNameField;
   private JavaPackageCompletionProcessor modulePackageCompletionProcessor;
   private StringButtonStatusDialogField modulePackageField;
@@ -168,7 +168,8 @@ public class NewModuleWizardPage extends NewContainerWizardPage {
     String[] addButtons = new String[] {
         NewWizardMessages.NewTypeWizardPage_interfaces_add,
         /* 1 */null, NewWizardMessages.NewTypeWizardPage_interfaces_remove};
-    moduleInheritsDialogField = new ListDialogField(adapter, addButtons,
+    moduleInheritsDialogField =
+        new ListDialogField<IModule>(adapter, addButtons,
         new ModuleSelectionLabelProvider());
     moduleInheritsDialogField.setDialogFieldListener(adapter);
     moduleInheritsDialogField.setTableColumns(new ListDialogField.ColumnsDescription(
@@ -208,7 +209,6 @@ public class NewModuleWizardPage extends NewContainerWizardPage {
     setControl(composite);
   }
 
-  @SuppressWarnings("unchecked")
   public List<IModule> getModuleInherits() {
     return new ArrayList<IModule>(moduleInheritsDialogField.getElements());
   }

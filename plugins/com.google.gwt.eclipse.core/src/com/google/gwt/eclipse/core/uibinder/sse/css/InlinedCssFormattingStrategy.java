@@ -17,7 +17,8 @@ package com.google.gwt.eclipse.core.uibinder.sse.css;
 import com.google.gdt.eclipse.core.StringUtilities;
 import com.google.gwt.eclipse.core.GWTPluginLog;
 
-import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TypedPosition;
@@ -55,13 +56,14 @@ public class InlinedCssFormattingStrategy extends
   }
 
   private String computeOneXmlIndentString() {
-    Preferences preferences = XMLCorePlugin.getDefault().getPluginPreferences();
     char indentChar = ' ';
-    String indentCharPref = preferences.getString(XMLCorePreferenceNames.INDENTATION_CHAR);
+    IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(XMLCorePlugin.DEFAULT_CATALOG_ID);
+    String indentCharPref = prefs.get(XMLCorePreferenceNames.INDENTATION_CHAR, null);
+
     if (XMLCorePreferenceNames.TAB.equals(indentCharPref)) {
       indentChar = '\t';
     }
-    int indentationWidth = preferences.getInt(XMLCorePreferenceNames.INDENTATION_SIZE);
+    int indentationWidth = prefs.getInt(XMLCorePreferenceNames.INDENTATION_SIZE, 0);
 
     StringBuilder indent = new StringBuilder();
     for (int i = 0; i < indentationWidth; i++) {

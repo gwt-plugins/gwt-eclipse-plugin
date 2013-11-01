@@ -16,9 +16,9 @@ package com.google.gwt.eclipse.core.validators.java;
 
 import com.google.gdt.eclipse.core.JavaASTUtils;
 import com.google.gwt.dev.jjs.Correlation;
+import com.google.gwt.dev.jjs.Correlation.Axis;
 import com.google.gwt.dev.jjs.InternalCompilerException;
 import com.google.gwt.dev.jjs.SourceInfo;
-import com.google.gwt.dev.jjs.Correlation.Axis;
 import com.google.gwt.dev.js.JsParser;
 import com.google.gwt.dev.js.JsParserException;
 import com.google.gwt.dev.js.JsParserException.SourceDetail;
@@ -275,9 +275,8 @@ public final class JsniParser {
     if (js != null) {
       // Visit the JavaScript AST to find all Java references
       new JsVisitor() {
-        @SuppressWarnings("unchecked")
         @Override
-        public void endVisit(JsNameRef x, JsContext ctx) {
+        public void endVisit(JsNameRef x, @SuppressWarnings("rawtypes") JsContext ctx) {
           String ident = x.getIdent();
           if (ident.indexOf("@") != -1) {
             JsniJavaRef javaRef = JsniJavaRef.parse(ident);

@@ -90,6 +90,8 @@ public class RemoteServiceProblemMarkerResolutionGenerator extends
             proposals.addAll(UpdateSyncSignatureProposal.createProposalsForProblemsOnAsyncMethod(context.getCoveringNode()));
           }
           break;
+        default:
+          break;
       }
     }
 

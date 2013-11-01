@@ -65,6 +65,8 @@ import org.osgi.service.prefs.BackingStoreException;
  * dialog base, or make our own.
  * 
  */
+@SuppressWarnings("restriction")
+// Restricted access to SWTFactory
 public class WebAppHostPageSelectionDialog extends
     FilteredResourcesSelectionDialog {
 
@@ -167,7 +169,6 @@ public class WebAppHostPageSelectionDialog extends
     setMessage("");
   }
 
-  @SuppressWarnings("restriction")
   @Override
   protected Control createDialogArea(Composite parent) {
     SWTFactory.createVerticalSpacer(parent, 16);
@@ -206,7 +207,6 @@ public class WebAppHostPageSelectionDialog extends
     return controlToReturn;
   }
 
-  @SuppressWarnings("restriction")
   protected Control createExternalRootContentArea(Composite parent) {
 
     Composite c = SWTFactory.createComposite(parent, 1, 1,
@@ -225,7 +225,6 @@ public class WebAppHostPageSelectionDialog extends
     return c;
   }
   
-  @SuppressWarnings("restriction")
   protected void createExternalUI(Composite parent) {
     createExternalRootContentArea(parent);
     SWTFactory.createVerticalSpacer(parent, 16);

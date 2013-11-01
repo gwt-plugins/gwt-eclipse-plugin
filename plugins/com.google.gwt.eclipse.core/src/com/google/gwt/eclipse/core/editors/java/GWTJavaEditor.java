@@ -130,7 +130,6 @@ public class GWTJavaEditor extends CompilationUnitEditor {
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   protected void performSave(final boolean overwrite,
       final IProgressMonitor progressMonitor) {
 
@@ -195,14 +194,14 @@ public class GWTJavaEditor extends CompilationUnitEditor {
     return getInputJavaElement().getJavaProject();
   }
 
-  @SuppressWarnings("unchecked")
   private boolean formatOnSaveEnabled(IJavaProject javaProject) {
     SaveParticipantRegistry spr = JavaPlugin.getDefault().getSaveParticipantRegistry();
     IPostSaveListener[] listeners = spr.getEnabledPostSaveListeners(javaProject.getProject());
 
     for (IPostSaveListener listener : listeners) {
       if (listener instanceof CleanUpPostSaveListener) {
-        Map settings = CleanUpPreferenceUtil.loadSaveParticipantOptions(new ProjectScope(
+        Map<String, String> settings =
+            CleanUpPreferenceUtil.loadSaveParticipantOptions(new ProjectScope(
             javaProject.getProject()));
 
         if (settings == null) {

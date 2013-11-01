@@ -79,7 +79,8 @@ public class EquivalentNodeFinder {
   private int getIndex(ASTNode node) {
     StructuralPropertyDescriptor locationInParent = node.getLocationInParent();
     if (locationInParent != null && locationInParent.isChildListProperty()) {
-      List<ASTNode> parentsChildren = (List) node.getParent().getStructuralProperty(
+      List<ASTNode> parentsChildren =
+          (List<ASTNode>) node.getParent().getStructuralProperty(
           locationInParent);
       if (parentsChildren != null) {
         return parentsChildren.indexOf(node);

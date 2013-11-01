@@ -42,6 +42,7 @@ public class JsniFormattingStrategy extends AbstractFormattingStrategy {
        * and only JavaScript projects can have project-specific JS formatting
        * options.
        */
+      @SuppressWarnings("unchecked")
       TextEdit edit = JsniFormattingUtil.format(document, partition,
           getPreferences(), JavaScriptCore.getOptions(), null);
       if (edit != null) {

@@ -60,6 +60,8 @@ public class GwtProblemsTreeLogger extends TreeLogger {
       case WARN:
         warnings.add(msg);
         break;
+      default:
+        break;
     }
   }
 }

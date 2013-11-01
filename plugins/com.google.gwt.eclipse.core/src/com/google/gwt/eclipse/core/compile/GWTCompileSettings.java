@@ -66,7 +66,6 @@ public class GWTCompileSettings {
     if (bytes == null || bytes.length == 0) {
       return null;
     }
-    String s = new String(bytes);
     
     ByteArrayInputStream byteInputStream = new ByteArrayInputStream(bytes);
     InputStream stream = new BufferedInputStream(byteInputStream);

@@ -188,8 +188,8 @@ public class GWTPreferences {
   }
 
   public static boolean getUiBinderWizardGenerateContentDefault() {
-    return GWTPlugin.getDefault().getPluginPreferences().getBoolean(
-        GwtPreferenceConstants.UIBINDER_WIZARD_GENERATE_CONTENT_DEFAULT);
+    return getEclipsePreferences().getBoolean(
+        GwtPreferenceConstants.UIBINDER_WIZARD_GENERATE_CONTENT_DEFAULT, false);
   }
 
   public static boolean hasRuntime(String name) {
@@ -259,13 +259,12 @@ public class GWTPreferences {
   }
 
   public static void setUiBinderWizardGenerateContentDefault(boolean generateComments) {
-    GWTPlugin.getDefault().getPluginPreferences().setValue(
+    getEclipsePreferences().putBoolean(
         GwtPreferenceConstants.UIBINDER_WIZARD_GENERATE_CONTENT_DEFAULT, generateComments);
   }
 
   private static IEclipsePreferences getEclipsePreferences() {
-    InstanceScope scope = new InstanceScope();
-    IEclipsePreferences workspacePrefs = scope.getNode(GWTPlugin.PLUGIN_ID);
+    IEclipsePreferences workspacePrefs = InstanceScope.INSTANCE.getNode(GWTPlugin.PLUGIN_ID);
     return workspacePrefs;
   }
 

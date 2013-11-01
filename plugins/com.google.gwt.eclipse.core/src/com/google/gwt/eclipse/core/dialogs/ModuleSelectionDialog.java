@@ -447,10 +447,9 @@ public class ModuleSelectionDialog extends FilteredItemsSelectionDialog {
     return settings;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   protected Comparator<?> getItemsComparator() {
-    return new Comparator() {
+    return new Comparator<Object>() {
       public int compare(Object o1, Object o2) {
         Collator collator = Collator.getInstance();
         IModule module1 = (IModule) o1;

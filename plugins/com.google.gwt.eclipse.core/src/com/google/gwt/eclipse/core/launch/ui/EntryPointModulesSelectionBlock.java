@@ -66,10 +66,9 @@ public class EntryPointModulesSelectionBlock {
     }
   }
 
-  private class ModulesSelectionAdapter implements IListAdapter {
+  private class ModulesSelectionAdapter implements IListAdapter<String> {
 
-    @SuppressWarnings("unchecked")
-    public void customButtonPressed(ListDialogField field, int index) {
+    public void customButtonPressed(ListDialogField<String> field, int index) {
       List<String> beforeModules = modulesField.getElements();
 
       if (index == IDX_ADD) {
@@ -84,10 +83,10 @@ public class EntryPointModulesSelectionBlock {
       notifyListenerIfChanged(beforeModules);
     }
 
-    public void doubleClicked(ListDialogField field) {
+    public void doubleClicked(ListDialogField<String> field) {
     }
 
-    public void selectionChanged(ListDialogField field) {
+    public void selectionChanged(ListDialogField<String> field) {
       modulesField.enableButton(IDX_REMOVE,
           !modulesField.getSelectedElements().isEmpty());
     }
@@ -107,7 +106,7 @@ public class EntryPointModulesSelectionBlock {
 
   private final IModulesChangeListener listener;
 
-  private ListDialogField modulesField;
+  private ListDialogField<String> modulesField;
 
   private Composite parent;
 
@@ -142,7 +141,6 @@ public class EntryPointModulesSelectionBlock {
     return javaProject;
   }
 
-  @SuppressWarnings("unchecked")
   public List<String> getModules() {
     return modulesField.getElements();
   }
@@ -167,7 +165,6 @@ public class EntryPointModulesSelectionBlock {
     this.javaProject = javaProject;
   }
 
-  @SuppressWarnings("unchecked")
   public void setModules(List<String> selectedModules) {
     List<String> beforeModules = modulesField.getElements();
 
@@ -202,7 +199,8 @@ public class EntryPointModulesSelectionBlock {
     String[] buttons = new String[] {
         "Add...", "Remove", null, "Restore Defaults"};
 
-    modulesField = new ListDialogField(new ModulesSelectionAdapter(), buttons,
+    modulesField =
+        new ListDialogField<String>(new ModulesSelectionAdapter(), buttons,
         new ModulesLabelProvider());
     modulesField.setLabelText(labelText);
     modulesField.setTableColumns(new ListDialogField.ColumnsDescription(1,

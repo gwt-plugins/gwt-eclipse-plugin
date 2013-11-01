@@ -60,7 +60,7 @@ public class JsniReferenceChangeHelper {
     TextEdit[] oldEdits = rootEdit.removeChildren();
 
     // Generate a new AST for this compilation unit
-    RefactoringASTParser parser = new RefactoringASTParser(AST.JLS3);
+    RefactoringASTParser parser = new RefactoringASTParser(AST.JLS4);
     CompilationUnit astNode = parser.parse(cu, false);
 
     // Now re-validate the compilation unit's AST to get the JSNI Java

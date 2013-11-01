@@ -237,7 +237,7 @@ public class CreateAsyncInterfaceProposal extends
 
     buf.append("</b> {"); //$NON-NLS-1$
 
-    ASTParser parser = ASTParser.newParser(AST.JLS3);
+    ASTParser parser = ASTParser.newParser(AST.JLS4);
     parser.setProject(compilationUnit.getJavaProject());
     parser.setResolveBindings(true);
     StringBuilder sb = new StringBuilder();

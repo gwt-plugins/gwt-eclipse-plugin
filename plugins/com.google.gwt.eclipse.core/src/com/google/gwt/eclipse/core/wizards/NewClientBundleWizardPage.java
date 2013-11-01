@@ -223,7 +223,6 @@ public class NewClientBundleWizardPage extends NewTypeWizardPage {
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   protected IStatus superInterfacesChanged() {
     IStatus superStatus = super.superInterfacesChanged();
 

@@ -28,6 +28,7 @@ import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
 import com.google.gwt.eclipse.core.speedtracer.SpeedTracerArtifactsRemover;
 
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -94,8 +95,8 @@ public class GWTCompileRunner {
      * doesn't complain about stale resources during subsequent file searches.
      */
     if (warLocation != null) {
-      for (IContainer warFolder : ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(
-          warLocation)) {
+       for (IContainer warFolder : ResourcesPlugin.getWorkspace().getRoot()
+          .findContainersForLocationURI(URIUtil.toURI(warLocation))) {
         warFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
       }
     }

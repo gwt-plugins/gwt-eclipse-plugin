@@ -15,7 +15,6 @@
 package com.google.gwt.eclipse.core.editors.java;
 
 import com.google.gwt.eclipse.core.GWTPluginLog;
-import com.google.gwt.eclipse.core.util.Util;
 import com.google.gwt.eclipse.core.validators.java.JsniParser;
 
 import org.eclipse.jdt.core.IJavaProject;
@@ -39,7 +38,6 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -113,18 +111,19 @@ public class JsniFormattingUtil {
     }
   }
 
-  private static final String EMPTY_STRING = "";
-
   /**
    * Same as format(IDocument, Map, String[]), except the formatting options
    * are taken from the given project.
    * 
    */
-  @SuppressWarnings("unchecked")
   public static TextEdit format(IDocument document, IJavaProject project,
       String[] originalJsniMethods) {
-    Map jsOptions = JavaScriptCore.create(project.getProject()).getOptions(true);
-    Map jOptions = project.getOptions(true);
+    @SuppressWarnings("unchecked")
+    // safe by IJavaScriptProject.getOptions spec
+    Map<String, String> jsOptions = JavaScriptCore.create(project.getProject()).getOptions(true);
+    @SuppressWarnings("unchecked")
+    // safe by IJavaScriptProject.getOptions spec
+    Map<String, String> jOptions = project.getOptions(true);
     return format(document, jOptions, jsOptions, originalJsniMethods);
   }
 
@@ -147,7 +146,7 @@ public class JsniFormattingUtil {
    * @return A text edit that when applied to the document, will format the jsni
    *         methods.
    */
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public static TextEdit format(IDocument document, Map javaFormattingPrefs,
       Map javaScriptFormattingPrefs, String[] originalJsniMethods) {
     TextEdit combinedEdit = new MultiTextEdit();
@@ -293,7 +292,8 @@ public class JsniFormattingUtil {
 
   private static int getMethodDeclarationOffset(IDocument document, int offset) {
     // Have JDT parse the compilation unit
-    ASTParser parser = ASTParser.newParser(AST.JLS3);
+    // AST.JLS4 is a superset of earlier version including AST.JLS3
+    ASTParser parser = ASTParser.newParser(AST.JLS4);
     parser.setResolveBindings(false);
     parser.setSource(document.get().toCharArray());
     ASTNode ast = parser.createAST(null);
@@ -359,30 +359,4 @@ public class JsniFormattingUtil {
     return jsni;
   }
 
-  private static String stripLeadingBlankLines(String text, String lineDelimiter) {
-    String[] lines = text.split(lineDelimiter);
-    for (int i = 0; i < lines.length; i++) {
-      if (lines[i].trim().length() > 0) {
-        List<String> linesList = Arrays.asList(lines);
-        linesList = linesList.subList(i, lines.length);
-        return Util.join(linesList, lineDelimiter);
-      }
-    }
-
-    return EMPTY_STRING;
-  }
-
-  private static String stripTrailingWhitespace(String text) {
-    char[] chars = text.toCharArray();
-    int end = chars.length - 1;
-
-    while (end > 0) {
-      if (!Character.isWhitespace(chars[end])) {
-        return text.substring(0, end + 1);
-      }
-      end--;
-    }
-
-    return EMPTY_STRING;
-  }
 }

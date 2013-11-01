@@ -72,7 +72,6 @@ public class SpeedTracerLaunchListener implements ILaunchesListener2 {
     }
   }
 
-  @SuppressWarnings("restriction")
   private boolean isSpeedTracerLaunch(ILaunch launch) {
     try {
       ILaunchConfiguration config = launch.getLaunchConfiguration();

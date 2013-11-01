@@ -21,6 +21,7 @@ import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.GWTProjectUtilities;
 import com.google.gwt.eclipse.core.util.Util;
 
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -43,6 +44,7 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -259,7 +261,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
             outputEntry, userProject);
         List<URL> urls = new ArrayList<URL>();
         for (IRuntimeClasspathEntry entry : resolveRuntimeClasspathEntry) {
-          urls.add(new File(entry.getLocation()).toURL());
+          urls.add(new File(entry.getLocation()).toURI().toURL());
         }
 
         return new URLClassLoader(urls.toArray(NO_URLS), null);
@@ -420,7 +422,13 @@ public class GWTProjectsRuntime extends GWTRuntime {
   public IStatus validate() {
     IWorkspace workspace = ResourcesPlugin.getWorkspace();
     IPathVariableManager pathVariableManager = workspace.getPathVariableManager();
-    IPath gwtRoot = pathVariableManager.getValue("GWT_ROOT");
+    URI gwtUri = pathVariableManager.getURIValue("GWT_ROOT");
+    if (gwtUri == null) {
+      return new Status(IStatus.ERROR, GWTPlugin.PLUGIN_ID,
+          "Path variable 'GWT_ROOT' is not defined");
+    }
+
+    IPath gwtRoot = URIUtil.toPath(pathVariableManager.getURIValue("GWT_ROOT"));
     if (gwtRoot == null) {
       return new Status(IStatus.ERROR, GWTPlugin.PLUGIN_ID,
           "Path variable 'GWT_ROOT' is not defined");
