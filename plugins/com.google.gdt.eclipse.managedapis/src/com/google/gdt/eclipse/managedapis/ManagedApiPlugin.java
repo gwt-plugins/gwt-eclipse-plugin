@@ -61,8 +61,11 @@ public class ManagedApiPlugin extends AbstractGooglePlugin {
   public static final
       String COPY_CLASSPATH_ENTRIES_TARGET_PATH_KEY = "COPY_CLASSPATH_ENTRIES_TARGET_PATH";
 
-  public static final
-      String DEFAULT_MANAGED_API_DIRECTORY_HREF = "http://api-directory.googleapis.com/5935";
+  public static final String DEFAULT_MANAGED_API_DIRECTORY_HREF =
+      "https://developers.google.com/resources/api-libraries/5935";
+
+  public static final String STAGING_MANAGED_API_DIRECTORY_HREF =
+      "https://codegen-staging.appspot.com/resources/api-libraries/5935";
 
   public static final
       String DEFAULT_MANAGED_API_ICON_PREFETCH_HREF = "http://api-directory.googleapis.com/icons";
@@ -97,6 +100,8 @@ public class ManagedApiPlugin extends AbstractGooglePlugin {
 
   private static ManagedApiPlugin plugin;
 
+  private static String defaultManagedApiDirectoryInUse = DEFAULT_MANAGED_API_DIRECTORY_HREF;
+
   /**
    * Provide access to updated set of initialization callbacks configured for
    * this workspace.
@@ -121,7 +126,7 @@ public class ManagedApiPlugin extends AbstractGooglePlugin {
   public static String getManagedApiDirectoryHref() {
     String overrideHref = System.getenv("MANAGED_API_DIRECTORY_HREF");
     if (overrideHref == null) {
-      return DEFAULT_MANAGED_API_DIRECTORY_HREF;
+      return defaultManagedApiDirectoryInUse;
     } else {
       return overrideHref;
     }
@@ -161,6 +166,10 @@ public class ManagedApiPlugin extends AbstractGooglePlugin {
           + project.getProject().getName());
     }
     return false;
+  }
+
+  public static void setTestDefaultManagedApiDir() {
+    defaultManagedApiDirectoryInUse = STAGING_MANAGED_API_DIRECTORY_HREF;
   }
 
   private RemoteApiDirectory apiDirectory = new RemoteApiDirectory(

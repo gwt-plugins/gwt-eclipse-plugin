@@ -39,7 +39,6 @@ import java.net.URLConnection;
  * org.eclipse.update.internal.core.connection package. Consider creating an
  * equivalent in a more available package.
  */
-@SuppressWarnings("restriction")
 public class RemoteApiDirectory implements ApiDirectory {
 
   class ApiDirectoryListingLinkReader {

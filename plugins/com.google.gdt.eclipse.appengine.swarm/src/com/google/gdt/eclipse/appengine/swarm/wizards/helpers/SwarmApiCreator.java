@@ -55,11 +55,19 @@ public class SwarmApiCreator {
   private ApiDependencies apiDependencies;
 
   private static final String DISCOVERY_API_ROOT = "https://webapis-discovery.appspot.com/_ah/api";
-  private static final String CLIENT_LIB_GENERATOR = "https://developers.google.com/resources/api-libraries/generate";
+  private static final String CLIENT_LIB_GENERATOR =
+      "https://developers.google.com/resources/api-libraries/endpoints/genlib";
+  private static final String STAGING_CLIENT_LIB_GENERATOR =
+      "https://codegen-staging.appspot.com/resources/api-libraries/endpoints/genlib";
   // This is used for creating a temp zip file, which can be extracted into the
   // ApiLibs directory of the App Engine project.
   private static final String TMP_ZIP_FILE_PREFIX = "tmp";
   private static final String TMP_ZIP_FILE_SUFFIX = ".zip";
+  private static String clientLibGenApiUrl = CLIENT_LIB_GENERATOR;
+
+  public static void setTestClientLibGenApiUrl() {
+    clientLibGenApiUrl = STAGING_CLIENT_LIB_GENERATOR;
+  }
 
   public SwarmApiCreator(String appId) {
     if (!"".equals(appId)) {
@@ -104,8 +112,6 @@ public class SwarmApiCreator {
     @SuppressWarnings({"rawtypes"})
     Class<Enum> languageEnum = (Class<Enum>) loader.loadClass("com.google.api.server.spi.tools.ClientLibGenerator$Language");
     Class<?> clientLibGenerator = loader.loadClass("com.google.api.server.spi.tools.CloudClientLibGenerator");
-
-    String clientLibGenApiUrl = CLIENT_LIB_GENERATOR;
     Object clientLibGeneratorInstance = clientLibGenerator.getMethod("using", String.class).invoke(
         null, clientLibGenApiUrl);
 
