@@ -35,7 +35,16 @@ public class TestGoogleLogin {
       "https://www.googleapis.com/auth/userinfo#email",
       "https://www.googleapis.com/auth/appsmarketplace",
       "https://www.googleapis.com/auth/sqlservice",
-      "https://www.googleapis.com/auth/appengine.admin"};
+      "https://www.googleapis.com/auth/appengine.admin",
+      "https://www.googleapis.com/auth/drive",
+      "https://www.googleapis.com/auth/drive.scripts"};
+
+  /**
+   * Returns user's stored email address.
+   */
+  public static String getEmail() {
+    return USER_STORED_EMAIL;
+  }
 
   /**
    * Logs in to Google.
