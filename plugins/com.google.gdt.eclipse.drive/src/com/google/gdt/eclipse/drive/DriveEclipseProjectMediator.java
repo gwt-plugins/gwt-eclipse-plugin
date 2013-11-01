@@ -189,10 +189,106 @@ public class DriveEclipseProjectMediator {
   private static void updateEclipseProject(
       IProject eclipseProject, AppsScriptProject driveProjectModel, IProgressMonitor monitor)
       throws BackingStoreException, CoreException {
+    handleDriveRenames(eclipseProject, driveProjectModel, monitor);
     populateEclipseProjectFiles(eclipseProject, driveProjectModel, monitor);
     handleDriveDeletions(eclipseProject, driveProjectModel, monitor);
     AppsScriptProjectPreferences.writeDriveVersionFingerprint(
         eclipseProject, driveProjectModel.getDriveVersionFingerprint());
+  }
+  
+  private static void handleDriveRenames(
+      IProject eclipseProject, AppsScriptProject driveProjectModel, IProgressMonitor monitor)
+      throws CoreException {
+    Map<String, String> driveRenames = getRenamingsMap(eclipseProject, driveProjectModel);
+    adjustPreferencesToReflectRenamings(eclipseProject, driveProjectModel, driveRenames);
+    renameEclipseFiles(eclipseProject, driveRenames, monitor);
+  }
+
+  private static Map<String, String> getRenamingsMap(
+      IProject eclipseProject, AppsScriptProject driveProjectModel) throws CoreException {
+    
+    Map<String, String> documentIdsToDriveFileNames = Maps.newHashMap();
+    for (String driveFileName : driveProjectModel.getScriptFileNames()) {
+      documentIdsToDriveFileNames.put(
+          driveProjectModel.getScriptInfo(driveFileName).getDocumentId(), driveFileName);
+    }
+
+    AppsScriptProject eclipseProjectModel = getModelForEclipseProject(eclipseProject);
+    Map<String, String> oldDriveNamesToNewDriveNames = Maps.newHashMap();
+    for (String eclipseFileName : eclipseProjectModel.getScriptFileNames()) {
+      String documentIdForEclipseFileName =
+          eclipseProjectModel.getScriptInfo(eclipseFileName).getDocumentId();
+      if (documentIdForEclipseFileName != null) {
+        String currentDriveName = documentIdsToDriveFileNames.get(documentIdForEclipseFileName);
+        if (!eclipseFileName.equals(currentDriveName)) {
+          oldDriveNamesToNewDriveNames.put(eclipseFileName, currentDriveName);
+        }
+      }
+    }
+    return oldDriveNamesToNewDriveNames;
+  }
+
+  private static void adjustPreferencesToReflectRenamings(
+      IProject eclipseProject, AppsScriptProject driveProjectModel,
+      Map<String, String> driveRenames) {
+    for (String obsoleteFileName : driveRenames.keySet()) {
+      AppsScriptProjectPreferences.removeFileMetadata(eclipseProject, obsoleteFileName);
+    }
+    for (String newFileName : driveRenames.values()) {
+      DriveScriptInfo newScriptInfo = driveProjectModel.getScriptInfo(newFileName);
+      AppsScriptProjectPreferences.writeDriveImportName(
+          eclipseProject, newFileName, newScriptInfo.getImportName());
+      AppsScriptProjectPreferences.writeDriveScriptId(
+          eclipseProject, newFileName, newScriptInfo.getDocumentId());
+      AppsScriptProjectPreferences.writeDriveType(
+          eclipseProject, newFileName, newScriptInfo.getType());
+    }
+  }
+
+  private static void renameEclipseFiles(
+      IProject eclipseProject, Map<String, String> driveRenames, IProgressMonitor monitor)
+      throws CoreException {
+    // Because old and new names may overlap, we rename from all old names to temporary names, then
+    // from all temporary names to new names. The temporary names are the new names preceded by a
+    // common prefix (a sufficient number of repetitions of the characters "temp-") to ensure that
+    // none of the old or new names is the same as any of the temp names.
+    
+    String tempFileNamePrefix = "temp-";
+    while (!disambiguates(tempFileNamePrefix, driveRenames.entrySet())) {
+      tempFileNamePrefix += "temp-";
+    }
+    
+    eclipseProject.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+    
+    // Change old names to temporary names:
+    for (Entry<String, String> oldToNew : driveRenames.entrySet()) {
+      String oldName = oldToNew.getKey();
+      String tempName = tempFileNamePrefix + oldToNew.getValue();
+      IFile oldFile = eclipseProject.getFile(oldName);
+      IFile tempFile = eclipseProject.getFile(tempName);
+      DrivePlugin.getDefault().startUpdatingFilesFromDrive(oldName, tempName);
+      oldFile.move(tempFile.getFullPath(), false, monitor);
+      DrivePlugin.getDefault().endUpdatingFilesFromDrive();
+    }
+    
+    // Change temporary names to new names:
+    for (String newName : driveRenames.values()) {
+      String tempName = tempFileNamePrefix + newName;
+      IFile tempFile = eclipseProject.getFile(tempName);
+      IFile newFile = eclipseProject.getFile(newName);
+      DrivePlugin.getDefault().startUpdatingFilesFromDrive(tempName, newName);
+      tempFile.move(newFile.getFullPath(), false, monitor);
+      DrivePlugin.getDefault().endUpdatingFilesFromDrive();
+    }
+  }
+  
+  private static boolean disambiguates(String prefix, Set<Entry<String, String>> pairs) {
+    for (Entry<String, String> pair : pairs) {
+      if (pair.getKey().startsWith(prefix) || pair.getValue().startsWith(prefix)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private static void handleDriveDeletions(
@@ -219,9 +315,9 @@ public class DriveEclipseProjectMediator {
             askUserWhetherToMirrorDriveDeletionOnEclipse(fileName, eclipseProject.getName());
         if (deleteFromEclipseToo) {
           AppsScriptProjectPreferences.removeFileMetadata(eclipseProject, fileName);
-          DrivePlugin.getDefault().startUpdatingFileFromDrive(fileName);
+          DrivePlugin.getDefault().startUpdatingFilesFromDrive(fileName);
           eclipseFileDeletedOnDrive.delete(IResource.FORCE | IResource.KEEP_HISTORY, monitor);
-          DrivePlugin.getDefault().endUpdatingFileFromDrive();
+          DrivePlugin.getDefault().endUpdatingFilesFromDrive();
         } else {
           // We make the file look like a file newly created on Eclipse. Then, if the user chooses
           // to overwrite changes on Drive with changes in Eclipse, the file will be restored on
@@ -246,7 +342,7 @@ public class DriveEclipseProjectMediator {
       String scriptChars = scriptInfo.getContents();
       byte[] scriptBytesUtf8 = scriptChars.getBytes(Charsets.UTF_8);
       InputStream fileContentsInputStream = new ByteArrayInputStream(scriptBytesUtf8);
-      DrivePlugin.getDefault().startUpdatingFileFromDrive(fileNameWithExtension);
+      DrivePlugin.getDefault().startUpdatingFilesFromDrive(fileNameWithExtension);
       try {
         if (scriptFile.exists()) {
           scriptFile.setContents(
@@ -268,7 +364,7 @@ public class DriveEclipseProjectMediator {
                 + targetEclipseProject.getName() + "\"",
             e);
       } finally {
-        DrivePlugin.getDefault().endUpdatingFileFromDrive();
+        DrivePlugin.getDefault().endUpdatingFilesFromDrive();
       }
     }
   }

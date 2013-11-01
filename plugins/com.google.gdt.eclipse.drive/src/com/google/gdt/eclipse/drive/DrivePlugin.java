@@ -16,6 +16,7 @@
 package com.google.gdt.eclipse.drive;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableSet;
 import com.google.gdt.eclipse.core.AbstractGooglePlugin;
 import com.google.gdt.eclipse.drive.images.ImageKeys;
 import com.google.gdt.eclipse.drive.resources.PendingSaveManager;
@@ -41,6 +42,7 @@ import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.framework.BundleContext;
 
 import java.io.PrintStream;
+import java.util.Set;
 
 import javax.annotation.concurrent.GuardedBy;
 
@@ -69,6 +71,8 @@ public class DrivePlugin extends AbstractGooglePlugin {
   public static final String PLUGIN_ID = "com.google.gdt.eclipse.drive";
   
   private static final PrintStream alternativeLogStream = System.err;
+  
+  private static final Set<String> EMPTY_SET = ImmutableSet.of();
   
   private static DrivePlugin plugin;
 
@@ -167,7 +171,7 @@ public class DrivePlugin extends AbstractGooglePlugin {
   private int pendingSaveAllCount;
   
   @GuardedBy("this")
-  private String fileBeingUpdatedFromDrive;
+  private Set<String> filesBeingUpdatedFromDrive;
   
   private PendingSaveManager pendingSaveManager;
   private ILogFactory logFactory;
@@ -218,7 +222,7 @@ public class DrivePlugin extends AbstractGooglePlugin {
     this.commandServiceFactory = commandServiceFactory;
     this.inTestMode = inTestMode;
     pendingSaveAllCount = 0;
-    fileBeingUpdatedFromDrive = null;
+    filesBeingUpdatedFromDrive = EMPTY_SET;
   }
 
   @Override
@@ -320,35 +324,38 @@ public class DrivePlugin extends AbstractGooglePlugin {
   }
   
   /**
-   * Marks a specified file as in the process of being updated (either created, updated, or deleted)
+   * Marks specified files as in the process of being updated (either created, updated, or deleted)
    * from Drive. While a file is so marked, an {@code AppsScriptProjectResourceChangedListener} will
    * ignore the resulting resource-change event.
    * 
-   * @param fileName the name of the specified file
+   * @param fileName the names of one or more specified files
    */
-  public synchronized void startUpdatingFileFromDrive(String fileName) {
-    if (fileBeingUpdatedFromDrive != null) {
-      throw new IllegalStateException(
-          "Attempt to start updating " + fileName + " while already updating " 
-          + fileBeingUpdatedFromDrive);
+  public synchronized void startUpdatingFilesFromDrive(String... fileNames) {
+    if (fileNames.length == 0) {
+      throw new IllegalArgumentException("At least one file name must be specified.");
     }
-    fileBeingUpdatedFromDrive = fileName;
+    if (!filesBeingUpdatedFromDrive.isEmpty()) {
+      throw new IllegalStateException(
+          "Attempt to start updating " + fileNames + " while already updating " 
+          + filesBeingUpdatedFromDrive);
+    }
+    filesBeingUpdatedFromDrive = ImmutableSet.copyOf(fileNames);
   }
   
   /**
-   * Unmarks the file currently marked as in the process of being updated from Drive. It is
+   * Unmarks the files currently marked as in the process of being updated from Drive. It is
    * expected that this call will be paired with a preceding call on
-   * {@link #startUpdatingFileFromDrive}.
+   * {@link #startUpdatingFilesFromDrive}.
    * 
    * @throws IllegalStateException
-   *     if {@link #startUpdatingFileFromDrive} has not been called since the previous call
+   *     if {@link #startUpdatingFilesFromDrive} has not been called since the previous call
    *     (if any) on this method
    */
-  public synchronized void endUpdatingFileFromDrive() {
-    if (fileBeingUpdatedFromDrive == null) {
+  public synchronized void endUpdatingFilesFromDrive() {
+    if (filesBeingUpdatedFromDrive == null) {
       throw new IllegalStateException("No file creation for import in progress");
     }
-    fileBeingUpdatedFromDrive = null;
+    filesBeingUpdatedFromDrive = EMPTY_SET;
   }
   
   /**
@@ -359,6 +366,6 @@ public class DrivePlugin extends AbstractGooglePlugin {
    * @return whether the specified file is currently marked
    */
   public synchronized boolean isBeingUpdatedFromDrive(String fileName) {
-    return fileName.equals(fileBeingUpdatedFromDrive);
+    return filesBeingUpdatedFromDrive.contains(fileName);
   }
 }
