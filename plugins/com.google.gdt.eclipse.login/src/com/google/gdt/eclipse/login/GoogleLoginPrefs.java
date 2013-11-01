@@ -16,8 +16,9 @@ package com.google.gdt.eclipse.login;
 
 import com.google.common.base.Joiner;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -26,9 +27,6 @@ import java.util.prefs.Preferences;
  * 
  */
 public class GoogleLoginPrefs {
-  // Delimiter for the list of scopes. 
-  private static final String SCOPE_DELIMITER = " ";
-
   /**
    * Class for marshaling stored credentials to and from the preferences store.
    */
@@ -48,6 +46,9 @@ public class GoogleLoginPrefs {
       this.accessTokenExpiryTime = accessTokenExpiryTime;
     }
   }
+
+  // Delimiter for the list of scopes. 
+  private static final String SCOPE_DELIMITER = " ";
 
   private static final String CREDENTIALS_EMAIL_KEY = "credentials_email";
 
@@ -96,7 +97,7 @@ public class GoogleLoginPrefs {
     String storedScopesString = prefs.get(OAUTH_SCOPES_KEY, null);
     
     // Use a set to ensure uniqueness.
-    Set<String> storedScopes = new HashSet<String>();
+    SortedSet<String> storedScopes = new TreeSet<String>();
     if (storedScopesString != null) {
       for (String scope : storedScopesString.split(SCOPE_DELIMITER)) {
         storedScopes.add(scope);

@@ -59,7 +59,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * Class that handles logging in to Google services.
@@ -161,7 +161,7 @@ public class GoogleLogin {
 
   private long accessTokenExpiryTime;
 
-  private Set<String> cachedOAuthScopes;
+  private SortedSet<String> cachedOAuthScopes;
 
   private String clientId;
 
@@ -508,7 +508,7 @@ public class GoogleLogin {
     return true;
   }
 
-  private Set<String> getOAuthScopes() {
+  private SortedSet<String> getOAuthScopes() {
     if (cachedOAuthScopes == null) {
       cachedOAuthScopes = GoogleLoginUtils.queryOAuthScopeExtensions();
     }

@@ -31,7 +31,7 @@ public class TestGoogleLogin {
   private static final String USER_STORED_EMAIL = "gpe.team.1@gmail.com";
 
   private static final String[] USER_STORED_SCOPES = {
-      "https://www.googleapis.com/auth/compute", "https://www.googleapis.com/auth/projecthosting",
+      "https://www.googleapis.com/auth/projecthosting",
       "https://www.googleapis.com/auth/userinfo#email",
       "https://www.googleapis.com/auth/appsmarketplace",
       "https://www.googleapis.com/auth/sqlservice",

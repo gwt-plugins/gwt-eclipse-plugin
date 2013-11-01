@@ -20,10 +20,10 @@ import com.google.gdt.eclipse.core.extensions.ExtensionQueryStringAttr;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Utils for GoogleLogin.
@@ -63,11 +63,11 @@ public class GoogleLoginUtils {
   /**
    * Returns a space delimited string of the OAuth scope contributions.
    */
-  protected static Set<String> queryOAuthScopeExtensions() {
+  protected static SortedSet<String> queryOAuthScopeExtensions() {
     ExtensionQueryStringAttr q = new ExtensionQueryStringAttr(
         GoogleLoginPlugin.PLUGIN_ID, "oauthScope", "scope");
     List<Data<String>> data = q.getData();
-    Set<String> scopes = new HashSet<String>(data.size());
+    SortedSet<String> scopes = new TreeSet<String>();
     for (Data<String> scopeData : data) {
       scopes.add(scopeData.getExtensionPointData().trim());
     }
