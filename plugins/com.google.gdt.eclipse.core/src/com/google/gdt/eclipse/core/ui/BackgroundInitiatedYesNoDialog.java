@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
@@ -52,29 +53,45 @@ public class BackgroundInitiatedYesNoDialog {
    *     <i>no</i>, or the value of {@code defaultValueIsYes} if the user interrupts the dialog
    */
   public boolean userAnsweredYes(
-      final int type, final String title, final String message, boolean defaultIsYes) {
-    final Semaphore barrier = new Semaphore(0);
-    final AtomicBoolean responseContainer = new AtomicBoolean();
+      final int type, final String title, final String message, final boolean defaultIsYes) {
     final int defaultPosition = defaultIsYes ? YesOrNo.YES.ordinal() : YesOrNo.NO.ordinal();
-    UIJob dialogJob =
-        new UIJob("background-initiated question dialog"){
-          @Override public IStatus runInUIThread(IProgressMonitor monitor) {
-            Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-            MessageDialog dialog =
-                new MessageDialog(activeShell, title, null, message, type, LABELS, defaultPosition);
-            int selection = dialog.open();
-            responseContainer.set(selection == YesOrNo.YES.ordinal());
-            barrier.release();
-            return Status.OK_STATUS;
-          }
-        };
-    dialogJob.schedule();
-    try {
-      barrier.acquire();
-    } catch (InterruptedException e) {
-      return defaultIsYes;
+    if (Display.getCurrent() == null) {
+      // This is not a UI thread. Schedule a UI job to call displayDialogAndGetAnswer, and block
+      // this thread until the UI job is complete.
+      final Semaphore barrier = new Semaphore(0);
+      final AtomicBoolean responseContainer = new AtomicBoolean();
+      UIJob dialogJob =
+          new UIJob("background-initiated question dialog"){
+            @Override public IStatus runInUIThread(IProgressMonitor monitor) {
+              boolean result = displayDialogAndGetAnswer(type, title, message, defaultPosition);
+              responseContainer.set(result);
+              barrier.release();
+              return Status.OK_STATUS;
+            }
+          };
+      dialogJob.schedule();
+      try {
+        barrier.acquire();
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        return defaultIsYes;
+      }
+      return responseContainer.get();
+    } else {
+      // This is the UI thread. Simply call displayDialogAndGetAnswer in this thread.
+      // (Scheduling a UIJob and blocking until it completes would result in deadlock.)
+      return displayDialogAndGetAnswer(type, title, message, defaultPosition);
     }
-    return responseContainer.get();
+  }
+
+  // This method must be run in the UI thread.
+  private static boolean displayDialogAndGetAnswer(
+      int type, String title, final String message, int defaultPosition) {
+    Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+    MessageDialog dialog =
+        new MessageDialog(activeShell, title, null, message, type, LABELS, defaultPosition);
+    int selection = dialog.open();
+    return selection == YesOrNo.YES.ordinal();
   }
 
 }
