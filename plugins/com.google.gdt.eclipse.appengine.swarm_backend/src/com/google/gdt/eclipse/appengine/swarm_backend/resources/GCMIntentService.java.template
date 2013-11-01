@@ -41,7 +41,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
   /*
    * TODO: Set this to a valid project number. See
-   * http://developers.google.com/eclipse/docs/cloud_endpoint for more
+   * http://developers.google.com/eclipse/docs/cloud_endpoints for more
    * information.
    */
   protected static final String PROJECT_NUMBER = "@ProjectNumber@";
