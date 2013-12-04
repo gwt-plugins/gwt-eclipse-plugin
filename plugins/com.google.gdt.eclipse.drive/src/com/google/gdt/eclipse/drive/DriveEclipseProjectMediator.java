@@ -200,7 +200,12 @@ public class DriveEclipseProjectMediator {
       IProject eclipseProject, AppsScriptProject driveProjectModel, IProgressMonitor monitor)
       throws CoreException {
     Map<String, String> driveRenames = getRenamingsMap(eclipseProject, driveProjectModel);
-    adjustPreferencesToReflectRenamings(eclipseProject, driveProjectModel, driveRenames);
+    try {
+      adjustPreferencesToReflectRenamings(eclipseProject, driveProjectModel, driveRenames);
+    } catch (BackingStoreException e) {
+      throw makeCoreException(
+          "Error updating Eclipse project preferences to reflect file renaming on Drive", e);
+    }
     renameEclipseFiles(eclipseProject, driveRenames, monitor);
   }
 
@@ -230,7 +235,7 @@ public class DriveEclipseProjectMediator {
 
   private static void adjustPreferencesToReflectRenamings(
       IProject eclipseProject, AppsScriptProject driveProjectModel,
-      Map<String, String> driveRenames) {
+      Map<String, String> driveRenames) throws BackingStoreException {
     for (String obsoleteFileName : driveRenames.keySet()) {
       AppsScriptProjectPreferences.removeFileMetadata(eclipseProject, obsoleteFileName);
     }
