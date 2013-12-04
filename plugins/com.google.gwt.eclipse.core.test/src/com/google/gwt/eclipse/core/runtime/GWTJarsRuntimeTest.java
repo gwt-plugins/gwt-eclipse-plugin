@@ -18,7 +18,6 @@ import com.google.gdt.eclipse.core.sdk.SdkUtils;
 import com.google.gwt.eclipse.core.test.AbstractGWTPluginTestCase;
 import com.google.gwt.eclipse.core.util.Util;
 
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -156,21 +155,6 @@ public class GWTJarsRuntimeTest extends AbstractGWTPluginTestCase {
     assertNotNull(devJar);
     String devJarName = devJar.getName();
     assertTrue(devJarName.equalsIgnoreCase(Util.getDevJarName(runtime.getInstallationPath())));
-  }
-
-  public void testSupportsOophm() throws Exception {
-    boolean supportsOophm = runtime.supportsTransitionalOOPHM();
-
-    IPath oophmJarPath = runtime.getInstallationPath().append(
-        GWTJarsRuntime.GWT_OOPHM_JAR);
-
-    if (supportsOophm) {
-      assertTrue("The OOPHM jar should be in this runtime.",
-          oophmJarPath.toFile().exists());
-    } else {
-      assertFalse("The OOPHM jar should not be in this runtime.",
-          oophmJarPath.toFile().exists());
-    }
   }
 
   @Override

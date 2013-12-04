@@ -112,13 +112,6 @@ public class GWTJarsRuntime extends GWTRuntime {
   }
 
   @Override
-  public boolean supportsTransitionalOOPHM() {
-    IPath sdkLocation = getInstallationPath();
-    IPath gwtUserPath = sdkLocation.append(GWT_OOPHM_JAR);
-    return gwtUserPath.toFile().exists();
-  }
-
-  @Override
   public IStatus validate() {
     IPath sdkLocation = getInstallationPath();
     File sdkDir = sdkLocation.toFile();

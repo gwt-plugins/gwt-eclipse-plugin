@@ -86,13 +86,6 @@ public class GWTProjectValidator extends AbstractProjectValidator {
       assert (sdk != null);
     }
 
-    if (WebAppUtilities.isWebApp(getProject()) && !sdk.containsSCL()) {
-      // If the project has a web app nature, it must use GWT 1.6+
-      MarkerUtilities.createQuickFixMarker(PROBLEM_MARKER_ID,
-          ProjectStructureOrSdkProblemType.WAR_WITH_PRE_GWT_16, null,
-          getProject());
-    }
-
     return null;
   }
 

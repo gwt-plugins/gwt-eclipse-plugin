@@ -1,16 +1,14 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  *******************************************************************************/
 package com.google.gwt.eclipse.core.launch.ui;
 
@@ -51,7 +49,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaLaunchTab;
 import org.eclipse.jdt.internal.debug.ui.SWTFactory;
 import org.eclipse.jdt.launching.JavaRuntime;
@@ -81,16 +78,15 @@ import java.util.Collections;
 import java.util.List;
 
 /*
- * See ILaunchConfigurationProcessor for details on the UI widget <-> arguments
- * <-> persistent storage synchronization.
+ * See ILaunchConfigurationProcessor for details on the UI widget <-> arguments <-> persistent
+ * storage synchronization.
  */
 /**
  * For webapp launch configuration, tab where you specify GWT options.
  */
 @SuppressWarnings("restriction")
 public class GWTSettingsTab extends JavaLaunchTab implements
-    ILaunchArgumentsContainer.ArgumentsListener,
-    UpdateLaunchConfigurationDialogBatcher.Listener {
+    ILaunchArgumentsContainer.ArgumentsListener, UpdateLaunchConfigurationDialogBatcher.Listener {
 
   /**
    * A factory that returns a GWT settings tab bound to an arguments tab.
@@ -142,8 +138,7 @@ public class GWTSettingsTab extends JavaLaunchTab implements
       codeServerPortComposite.setLayoutData(gd);
 
       serverPortText = new Text(codeServerPortComposite, SWT.BORDER);
-      final GridData serverPortTextGridData = new GridData(SWT.FILL,
-          SWT.CENTER, false, false);
+      final GridData serverPortTextGridData = new GridData(SWT.FILL, SWT.CENTER, false, false);
       serverPortTextGridData.widthHint = 75;
       serverPortText.setLayoutData(serverPortTextGridData);
       serverPortText.setTextLimit(5);
@@ -154,8 +149,7 @@ public class GWTSettingsTab extends JavaLaunchTab implements
       });
 
       autoPortSelectionButton = new Button(codeServerPortComposite, SWT.CHECK);
-      autoPortSelectionButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-          true, false));
+      autoPortSelectionButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
       autoPortSelectionButton.setText("Automatically select an unused port");
       autoPortSelectionButton.addSelectionListener(new SelectionAdapter() {
         @Override
@@ -181,8 +175,7 @@ public class GWTSettingsTab extends JavaLaunchTab implements
           : LogLevelArgumentProcessor.DEFAULT_LOG_LEVEL;
     }
 
-    public void initializeFrom(ILaunchConfiguration config)
-        throws CoreException {
+    public void initializeFrom(ILaunchConfiguration config) throws CoreException {
 
       SWTUtilities.setText(devModeGroup, DEVMODE_GROUP_TITLE);
 
@@ -196,13 +189,11 @@ public class GWTSettingsTab extends JavaLaunchTab implements
 
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
       // Save the log level
-      GWTLaunchConfigurationWorkingCopy.setLogLevel(configuration,
-          getLogLevel());
-      LaunchConfigurationProcessorUtilities.updateViaProcessor(
-          new LogLevelArgumentProcessor(), configuration);
+      GWTLaunchConfigurationWorkingCopy.setLogLevel(configuration, getLogLevel());
+      LaunchConfigurationProcessorUtilities.updateViaProcessor(new LogLevelArgumentProcessor(),
+          configuration);
 
-      GWTLaunchConfigurationWorkingCopy.setCodeServerPort(configuration,
-          getCodeServerPort());
+      GWTLaunchConfigurationWorkingCopy.setCodeServerPort(configuration, getCodeServerPort());
 
       GWTLaunchConfigurationWorkingCopy.setCodeServerPortAuto(configuration,
           getCodeServerPortAuto());
@@ -223,11 +214,9 @@ public class GWTSettingsTab extends JavaLaunchTab implements
   protected class UrlSelectionBlock {
     private final Group browserGroup;
     private final Text urlField;
-    private final Button useOophmButton;
 
     public UrlSelectionBlock(Composite parent) {
-      browserGroup = SWTFactory.createGroup(parent, "Browsers:", 3, 1,
-          GridData.FILL_HORIZONTAL);
+      browserGroup = SWTFactory.createGroup(parent, "Browsers:", 3, 1, GridData.FILL_HORIZONTAL);
 
       SWTFactory.createLabel(browserGroup, "URL:", 1);
       urlField = SWTFactory.createSingleText(browserGroup, 1);
@@ -237,8 +226,7 @@ public class GWTSettingsTab extends JavaLaunchTab implements
         }
       });
 
-      Button urlBrowseButton = createPushButton(browserGroup, "&Browse...",
-          null);
+      Button urlBrowseButton = createPushButton(browserGroup, "&Browse...", null);
       urlBrowseButton.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent e) {
@@ -260,8 +248,7 @@ public class GWTSettingsTab extends JavaLaunchTab implements
               strategy = new LegacyGWTLaunchShortcutStrategy();
             }
 
-            String urlFromUser = strategy.getUrlFromUser(
-                getJavaProject().getProject(), false);
+            String urlFromUser = strategy.getUrlFromUser(getJavaProject().getProject(), false);
 
             if (urlFromUser != null) {
               // TODO: Why do we create a new Path object here?
@@ -271,33 +258,18 @@ public class GWTSettingsTab extends JavaLaunchTab implements
             }
           } catch (CoreException ce) {
             GWTPluginLog.logError(ce);
-            MessageDialog.openError(
-                Workbench.getInstance().getActiveWorkbenchWindow().getShell(),
+            MessageDialog.openError(Workbench.getInstance().getActiveWorkbenchWindow().getShell(),
                 "Error while browsing for URL", ce.getLocalizedMessage());
           }
         }
       });
-
-      useOophmButton = SWTFactory.createCheckButton(browserGroup,
-          "Launch URL using OOPHM", null, false, 3);
-      useOophmButton.addSelectionListener(new SelectionAdapter() {
-        @Override
-        public void widgetSelected(SelectionEvent e) {
-          updateLaunchConfigurationDialog();
-        }
-      });
-
-      GridData oophmButtonData = new GridData(SWT.BEGINNING, SWT.BEGINNING,
-          false, false, 3, 1);
-      useOophmButton.setLayoutData(oophmButtonData);
     }
 
     public String getUrl() {
       return urlField.getText();
     }
 
-    public void initializeFrom(ILaunchConfiguration config)
-        throws CoreException {
+    public void initializeFrom(ILaunchConfiguration config) throws CoreException {
       IJavaProject javaProject = getJavaProject();
       GWTRuntime runtime = javaProject == null ? null : getRuntime(javaProject);
 
@@ -309,40 +281,23 @@ public class GWTSettingsTab extends JavaLaunchTab implements
       layoutData.exclude = !showStartupUrl;
       browserGroup.setVisible(showStartupUrl);
 
-      SWTUtilities.setText(urlField,
-          GWTLaunchConfiguration.getStartupUrl(config));
-
-      boolean useTransitionalOophm = (runtime != null && runtime.supportsTransitionalOOPHM());
-
-      useOophmButton.setVisible(useTransitionalOophm);
-      GridData useOophmButtonLayoutData = (GridData) useOophmButton.getLayoutData();
-      useOophmButtonLayoutData.exclude = !useTransitionalOophm;
-
-      useOophmButton.setSelection(GWTLaunchConfiguration.launchWithTransitionalOophm(config));
-    }
-
-    public boolean launchWithOophm() {
-      return useOophmButton.getSelection();
+      SWTUtilities.setText(urlField, GWTLaunchConfiguration.getStartupUrl(config));
     }
 
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
       // Save the startup URL
-      GWTLaunchConfigurationWorkingCopy.setStartupUrl(configuration,
-          getUrl().trim());
-      LaunchConfigurationProcessorUtilities.updateViaProcessor(
-          new StartupUrlArgumentProcessor(), configuration);
+      GWTLaunchConfigurationWorkingCopy.setStartupUrl(configuration, getUrl().trim());
+      LaunchConfigurationProcessorUtilities.updateViaProcessor(new StartupUrlArgumentProcessor(),
+          configuration);
 
-      // Save whether to use OOPHM
-      GWTLaunchConfigurationWorkingCopy.setLaunchWithOophm(configuration,
-          launchWithOophm());
       LaunchConfigurationProcessorUtilities.updateViaProcessor(
           new XStartOnFirstThreadArgumentProcessor(), configuration);
     }
   }
 
   /**
-   * Provides the labels for the log level and output style combos. The label is
-   * calculated by calculating just the first letter of the element.
+   * Provides the labels for the log level and output style combos. The label is calculated by
+   * calculating just the first letter of the element.
    */
   private static class DefaultComboLabelProvider extends LabelProvider {
     @Override
@@ -351,8 +306,7 @@ public class GWTSettingsTab extends JavaLaunchTab implements
 
       // TODO: this is sensitive to locale. Consider using a helper class
       // to do the label generation
-      return element2.toUpperCase().charAt(0)
-          + element2.toLowerCase().substring(1);
+      return element2.toUpperCase().charAt(0) + element2.toLowerCase().substring(1);
     }
   }
 
@@ -376,9 +330,8 @@ public class GWTSettingsTab extends JavaLaunchTab implements
   protected Button performGwtCompileButton;
 
   /**
-   * See javadoc on
-   * {@link com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor}
-   * for information about why this is required.
+   * See javadoc on {@link com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor} for
+   * information about why this is required.
    */
   protected boolean blockUpdateLaunchConfigurationDialog;
 
@@ -395,9 +348,8 @@ public class GWTSettingsTab extends JavaLaunchTab implements
     this(argsContainer, true, true, false);
   }
 
-  public GWTSettingsTab(ILaunchArgumentsContainer argsContainer,
-      boolean showDevelopmentModeBlock, boolean showUrlSelectionBlock,
-      boolean showPerformGwtCompileSetting) {
+  public GWTSettingsTab(ILaunchArgumentsContainer argsContainer, boolean showDevelopmentModeBlock,
+      boolean showUrlSelectionBlock, boolean showPerformGwtCompileSetting) {
     this.showDevelopmentModeBlock = showDevelopmentModeBlock;
     this.showUrlSelectionBlock = showUrlSelectionBlock;
     this.showPerformGwtCompileSetting = showPerformGwtCompileSetting;
@@ -416,8 +368,7 @@ public class GWTSettingsTab extends JavaLaunchTab implements
   }
 
   public void createControl(Composite parent) {
-    comp = SWTFactory.createComposite(parent, parent.getFont(), 1, 1,
-        GridData.FILL_BOTH);
+    comp = SWTFactory.createComposite(parent, parent.getFont(), 1, 1, GridData.FILL_BOTH);
     ((GridLayout) comp.getLayout()).verticalSpacing = 0;
     setControl(comp);
 
@@ -433,8 +384,8 @@ public class GWTSettingsTab extends JavaLaunchTab implements
 
     if (showPerformGwtCompileSetting) {
       createVerticalSpacer(comp, 1);
-      performGwtCompileButton = SWTFactory.createCheckButton(comp,
-          "Perform GWT compile", null, true, 1);
+      performGwtCompileButton = SWTFactory.createCheckButton(comp, "Perform GWT compile", null,
+          true, 1);
       performGwtCompileButton.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent e) {
@@ -473,8 +424,8 @@ public class GWTSettingsTab extends JavaLaunchTab implements
 
     // Save the entry point modules
     persistModules(configuration, entryPointModulesBlock.getModules());
-    LaunchConfigurationProcessorUtilities.updateViaProcessor(
-        new ModuleArgumentProcessor(), configuration);
+    LaunchConfigurationProcessorUtilities.updateViaProcessor(new ModuleArgumentProcessor(),
+        configuration);
 
     if (performGwtCompileButton != null) {
       LaunchConfigurationAttributeUtilities.set(configuration,
@@ -529,8 +480,7 @@ public class GWTSettingsTab extends JavaLaunchTab implements
         }
 
         if (performGwtCompileButton != null) {
-          boolean performGwtCompile = LaunchConfigurationAttributeUtilities.getBoolean(
-              config,
+          boolean performGwtCompile = LaunchConfigurationAttributeUtilities.getBoolean(config,
               SpeedTracerLaunchConfiguration.Attribute.PERFORM_GWT_COMPILE);
           performGwtCompileButton.setSelection(performGwtCompile);
         }
@@ -556,14 +506,12 @@ public class GWTSettingsTab extends JavaLaunchTab implements
     doPerformApply(configuration);
   }
 
-  public void persistFromArguments(List<String> args,
-      ILaunchConfigurationWorkingCopy config) {
+  public void persistFromArguments(List<String> args, ILaunchConfigurationWorkingCopy config) {
     String logLevel = LogLevelArgumentProcessor.getValidLogLevel(args);
     GWTLaunchConfigurationWorkingCopy.setLogLevel(config, logLevel);
 
     try {
-      List<String> modules = ModuleArgumentProcessor.getModules(args, config,
-          getProject());
+      List<String> modules = ModuleArgumentProcessor.getModules(args, config, getProject());
       persistModules(config, modules);
     } catch (CoreException e) {
       GWTPluginLog.logError(e, "Could not persist entry point modules");
@@ -589,8 +537,7 @@ public class GWTSettingsTab extends JavaLaunchTab implements
   }
 
   protected void createStartupModuleComponent(Composite parent) {
-    Group group = SWTFactory.createGroup(parent, "Available Modules:", 3, 1,
-        GridData.FILL_BOTH);
+    Group group = SWTFactory.createGroup(parent, "Available Modules:", 3, 1, GridData.FILL_BOTH);
     GridLayout groupLayout = (GridLayout) group.getLayout();
     groupLayout.marginBottom = 8;
     group.setLayout(groupLayout);
@@ -609,34 +556,29 @@ public class GWTSettingsTab extends JavaLaunchTab implements
   }
 
   /**
-   * If this project doesn't have the GWT nature, gray out all the controls
-   * recursively.
+   * If this project doesn't have the GWT nature, gray out all the controls recursively.
    */
   protected void maybeGrayControls(IJavaProject javaProject) {
 
-    boolean isGWTProject = javaProject != null
-        && GWTNature.isGWTProject(javaProject.getProject());
-    String message = isGWTProject
-        ? null
+    boolean isGWTProject = javaProject != null && GWTNature.isGWTProject(javaProject.getProject());
+    String message = isGWTProject ? null
         : "GWT is not enabled for this project. You can enable it in the project's properties.";
 
     setMessage(message);
     SWTUtilities.setEnabledRecursive(comp, isGWTProject);
   }
 
-  protected void persistModules(ILaunchConfigurationWorkingCopy configuration,
-      List<String> modules) {
+  protected void persistModules(ILaunchConfigurationWorkingCopy configuration, List<String> modules) {
     if (modules.equals(entryPointModulesBlock.getDefaultModules())) {
       GWTLaunchConfigurationWorkingCopy.clearAttribute(configuration,
           GWTLaunchAttributes.ENTRY_POINT_MODULES);
     } else {
-      GWTLaunchConfigurationWorkingCopy.setEntryPointModules(configuration,
-          modules, Collections.<String>emptyList());
+      GWTLaunchConfigurationWorkingCopy.setEntryPointModules(configuration, modules,
+          Collections.<String> emptyList());
     }
   }
 
-  protected void registerProgramArgsListener(
-      ILaunchArgumentsContainer argsContainer) {
+  protected void registerProgramArgsListener(ILaunchArgumentsContainer argsContainer) {
     argsContainer.registerProgramArgsListener(this);
   }
 
@@ -658,24 +600,20 @@ public class GWTSettingsTab extends JavaLaunchTab implements
   }
 
   private GWTRuntime getRuntime(IJavaProject javaProject) {
-    try {
-      GWTRuntime runtime = GWTRuntime.findSdkFor(javaProject);
-      if (runtime == null) {
+    GWTRuntime runtime = GWTRuntime.findSdkFor(javaProject);
+    if (runtime == null) {
 
-        if (GWTProjectsRuntime.isGWTRuntimeProject(javaProject)) {
-          // Synthesize a contributor runtime if this launch config is
-          // based on a GWT Runtime project
-          GWTRuntime synthesizedRuntime = GWTProjectsRuntime.syntheziseContributorRuntime();
+      if (GWTProjectsRuntime.isGWTRuntimeProject(javaProject)) {
+        // Synthesize a contributor runtime if this launch config is
+        // based on a GWT Runtime project
+        GWTRuntime synthesizedRuntime = GWTProjectsRuntime.syntheziseContributorRuntime();
 
-          if (synthesizedRuntime.validate().isOK()) {
-            runtime = synthesizedRuntime;
-          }
+        if (synthesizedRuntime.validate().isOK()) {
+          runtime = synthesizedRuntime;
         }
       }
-      return runtime;
-    } catch (JavaModelException e) {
-      return null;
     }
+    return runtime;
   }
 
   private void updateEnabledState() {

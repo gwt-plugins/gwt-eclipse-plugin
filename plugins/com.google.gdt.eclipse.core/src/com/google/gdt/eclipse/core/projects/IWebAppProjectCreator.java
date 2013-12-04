@@ -87,15 +87,7 @@ public interface IWebAppProjectCreator {
    * @param generateEmptyProject
    */
   void setGenerateEmptyProject(boolean generateEmptyProject);
-
-  /**
-   * Set the isUseGaeSdkFromDefault field. isUseGaeSdkFromDefault links to the default Google App
-   * Engine SDK for the workspace.
-   * 
-   * @param gaeSdkIsEclipseDefault
-   */
-  void setIsGaeSdkFromEclipseDefault(boolean gaeSdkIsEclipseDefault);
-
+  
   void setLocationURI(URI locationURI);
 
   void setPackageName(String packageName);

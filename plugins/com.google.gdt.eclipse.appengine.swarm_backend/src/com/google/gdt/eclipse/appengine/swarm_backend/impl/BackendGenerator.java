@@ -250,7 +250,6 @@ public class BackendGenerator {
         sdkSelection.getSelectedSdk(), sdkSelection.isDefault()
             ? SdkClasspathContainer.Type.DEFAULT : SdkClasspathContainer.Type.NAMED));
     wapc.addNature(GaeNature.NATURE_ID);
-    wapc.setIsGaeSdkFromEclipseDefault(true);
 
     try {
       wapc.create(submonitor.newChild(20));

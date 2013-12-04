@@ -65,16 +65,6 @@ public class GWTProjectsRuntime extends GWTRuntime {
   static final String GWT_DEV_FALLBACK_PROJECT_NAME = "gwt-dev";
 
   /*
-   * Note that gwt-dev-oophm starts with gwt-dev, which is the fallback name of
-   * the gwt-dev-PLATFORM project. Right now, this isn't a problem, because we
-   * identify the GWT dev project by looking for an exact match of either
-   * gwt-dev-PLATFORM or gwt-dev. However, if we ever loosen the restriction to
-   * match any projects that start with gwt-dev, we'll have to handle the
-   * special case of gwt-dev-oophm.
-   */
-  static final String GWT_OOPHM_PROJECT_NAME = "gwt-dev-oophm";
-
-  /*
    * This location (path on disk) is relative to the folder that is the
    * grandparent of a source folder in either the gwt-user or gwt-dev projects.
    */
@@ -190,7 +180,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
     String projectName = project.getProject().getName();
     return (GWT_USER_PROJECT_NAME.equals(projectName)
         || projectName.equals(GWT_DEV_FALLBACK_PROJECT_NAME)
-        || projectName.equals(getPlatformSpecificDevProjectName()) || GWT_OOPHM_PROJECT_NAME.equals(projectName));
+        || projectName.equals(getPlatformSpecificDevProjectName()));
   }
 
   /**
@@ -409,11 +399,6 @@ public class GWTProjectsRuntime extends GWTRuntime {
   }
 
   @Override
-  public boolean supportsTransitionalOOPHM() {
-    return (findOophmProject() != null);
-  }
-
-  @Override
   public boolean usesGwtDevProject() {
     return true;
   }
@@ -458,10 +443,6 @@ public class GWTProjectsRuntime extends GWTRuntime {
       devProject = JavaProjectUtilities.findJavaProject(GWT_DEV_FALLBACK_PROJECT_NAME);
     }
     return devProject;
-  }
-
-  private IJavaProject findOophmProject() {
-    return JavaProjectUtilities.findJavaProject(GWT_OOPHM_PROJECT_NAME);
   }
 
   private IJavaProject findUserProject() {

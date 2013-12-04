@@ -1,16 +1,14 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  *******************************************************************************/
 package com.google.gwt.eclipse.core.wizards;
 
@@ -27,7 +25,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
@@ -40,8 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Wizard for creating a new GWT Module XML file, and its associated public path
- * directory and client package directory.
+ * Wizard for creating a new GWT Module XML file, and its associated public path directory and
+ * client package directory.
  */
 @SuppressWarnings("restriction")
 public class NewModuleWizard extends AbstractNewFileWizard {
@@ -76,8 +73,8 @@ public class NewModuleWizard extends AbstractNewFileWizard {
 
     try {
 
-      IPackageFragment createdPackageFragment = root.createPackageFragment(
-          packName, false, new NullProgressMonitor());
+      IPackageFragment createdPackageFragment = root.createPackageFragment(packName, false,
+          new NullProgressMonitor());
 
       if (newModuleWizardPage.shouldCreateClientPackage()) {
 
@@ -89,8 +86,7 @@ public class NewModuleWizard extends AbstractNewFileWizard {
           clientPackName = packName + ".client";
         }
 
-        root.createPackageFragment(clientPackName, false,
-            new NullProgressMonitor());
+        root.createPackageFragment(clientPackName, false, new NullProgressMonitor());
       }
 
       if (newModuleWizardPage.shouldCreatePublicPath()) {
@@ -102,18 +98,14 @@ public class NewModuleWizard extends AbstractNewFileWizard {
       }
 
     } catch (Exception e) {
-      MessageDialog.openError(
-          getContainer().getShell(),
+      MessageDialog.openError(getContainer().getShell(),
           "An error occurred while attempting to create a new GWT Module",
-          NLS.bind(
-              IDEWorkbenchMessages.WizardNewFileCreationPage_internalErrorMessage,
-              e));
+          NLS.bind(IDEWorkbenchMessages.WizardNewFileCreationPage_internalErrorMessage, e));
 
       GWTPluginLog.logError(
           e,
           "Unable to create new GWT Module with source folder: {0}, name: {1}, package: {2}, createClientPackage: {4}, createPublicPath: {5}",
-          newModuleWizardPage.getPackageFragmentRootText(),
-          newModuleWizardPage.getModuleName(),
+          newModuleWizardPage.getPackageFragmentRootText(), newModuleWizardPage.getModuleName(),
           newModuleWizardPage.shouldCreateClientPackage(),
           newModuleWizardPage.shouldCreatePublicPath());
 
@@ -148,20 +140,15 @@ public class NewModuleWizard extends AbstractNewFileWizard {
     contents.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
     String gwtModuleDtd = NO_VERSION_FOUND_DTD;
 
-    try {
-      GWTRuntime runtime = GWTRuntime.findSdkFor(javaProject);
-      if (runtime != null) {
-        String versionNum = runtime.getVersion();
+    GWTRuntime runtime = GWTRuntime.findSdkFor(javaProject);
+    if (runtime != null) {
+      String versionNum = runtime.getVersion();
 
-        if (!versionNum.endsWith(".999") && !versionNum.startsWith("0.0")) {
-          gwtModuleDtd = "<!DOCTYPE module PUBLIC \"-//Google Inc.//DTD Google Web Toolkit "
-              + versionNum
-              + "//EN\" \"http://google-web-toolkit.googlecode.com/svn/tags/"
-              + versionNum + "/distro-source/core/src/gwt-module.dtd\">";
-        }
+      if (!versionNum.endsWith(".999") && !versionNum.startsWith("0.0")) {
+        gwtModuleDtd = "<!DOCTYPE module PUBLIC \"-//Google Inc.//DTD Google Web Toolkit "
+            + versionNum + "//EN\" \"http://google-web-toolkit.googlecode.com/svn/tags/"
+            + versionNum + "/distro-source/core/src/gwt-module.dtd\">";
       }
-    } catch (JavaModelException e) {
-      GWTPluginLog.logError(e);
     }
 
     contents.add(gwtModuleDtd);
@@ -175,8 +162,7 @@ public class NewModuleWizard extends AbstractNewFileWizard {
     // preferences for spaces vs. tabs, and the number of spaces that make up an
     // indentation.
     for (IModule moduleInherit : moduleInherits) {
-      contents.add("\t<inherits name=\"" + moduleInherit.getQualifiedName()
-          + "\" />");
+      contents.add("\t<inherits name=\"" + moduleInherit.getQualifiedName() + "\" />");
     }
 
     // Explicitly add the source path element

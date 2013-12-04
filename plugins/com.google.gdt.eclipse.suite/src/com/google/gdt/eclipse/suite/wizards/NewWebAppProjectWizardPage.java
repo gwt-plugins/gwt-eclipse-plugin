@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- * 
- * All rights reserved. This program and the accompanying materials are made available under the
+ *
+ *  All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ *
+ *  Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.wizards;
 
@@ -299,14 +299,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     return null;
   }
 
-  public boolean isDefaultGaeSdk() {
-    return gaeSelectionBlock.isDefault();
-  }
-
-  public boolean isDefaultGwtSdk() {
-    return gwtSelectionBlock.isDefault();
-  }
-
   public boolean isGenerateEmptyProject() {
     return !generateSampleCodeCheckbox.getSelection();
   }
@@ -389,8 +381,8 @@ public class NewWebAppProjectWizardPage extends WizardPage {
   }
 
   private void createGoogleSdkGroup(Composite container) {
-    int widthIndent =
-        PixelConverterFactory.createPixelConverter(this.getControl()).convertWidthInCharsToPixels(2);
+    int widthIndent = PixelConverterFactory.createPixelConverter(this.getControl())
+        .convertWidthInCharsToPixels(2);
 
     Group googleSdkGroup = new Group(container, SWT.NONE);
     googleSdkGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -715,8 +707,8 @@ public class NewWebAppProjectWizardPage extends WizardPage {
       IPath outPath = new Path(getOutputDirectory());
       if (outDirWorkspaceButton.getSelection()) {
         if (outPath.toFile().exists()) {
-          setMessage(
-              "A resource with the project name already exists in the workspace root", ERROR);
+          setMessage("A resource with the project name already exists in the workspace root",
+              ERROR);
           return;
         }
       }
@@ -776,14 +768,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
               "The selected GWT SDK is not valid: " + gwtRuntimeValidationStatus.getMessage(),
               ERROR);
           return;
-        } else {
-          if (!selectedGwtRuntime.containsSCL()) {
-            if (useGaeCheckbox.getSelection()) {
-              setMessage("Web Application Projects that use Google Web Toolkit and App Engine"
-                  + "require a GWT SDK versioned 1.6 or later.", ERROR);
-              return;
-            }
-          }
         }
       }
 

@@ -1,16 +1,14 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  *******************************************************************************/
 package com.google.gwt.eclipse.core.compile.ui;
 
@@ -87,13 +85,12 @@ import java.util.List;
 public class GWTCompileDialog extends TitleAreaDialog {
 
   /**
-   * Interface for extension point for plugins to validate if a project can be
-   * GWT compiled by GPE.
+   * Interface for extension point for plugins to validate if a project can be GWT compiled by GPE.
    */
   public interface GWTCompileProjectValidator {
     /**
-     * If the project cannot be GWT compiled by GPE, return a string explaining 
-     * why, otherwise return null.
+     * If the project cannot be GWT compiled by GPE, return a string explaining why, otherwise
+     * return null.
      */
     String validate(IProject project);
   }
@@ -110,16 +107,12 @@ public class GWTCompileDialog extends TitleAreaDialog {
 
       // TODO: this is sensitive to locale. Consider using a helper class
       // to do the label generation
-      return element2.toUpperCase().charAt(0)
-          + element2.toLowerCase().substring(1);
+      return element2.toUpperCase().charAt(0) + element2.toLowerCase().substring(1);
     }
   }
 
-  private class FieldListener
-      implements
-        ModifyListener,
-        ISelectionChangedListener,
-        IModulesChangeListener {
+  private class FieldListener implements ModifyListener, ISelectionChangedListener,
+      IModulesChangeListener {
     public void modifyText(ModifyEvent e) {
       fieldChanged();
     }
@@ -244,8 +237,7 @@ public class GWTCompileDialog extends TitleAreaDialog {
     parent = (Composite) super.createDialogArea(parent);
 
     Composite container = new Composite(parent, SWT.NONE);
-    GridData containerGridData = new GridData(GridData.FILL, GridData.FILL,
-        true, true, 1, 1);
+    GridData containerGridData = new GridData(GridData.FILL, GridData.FILL, true, true, 1, 1);
     container.setLayoutData(containerGridData);
     GridLayout gridLayout = new GridLayout();
     gridLayout.numColumns = 3;
@@ -300,16 +292,12 @@ public class GWTCompileDialog extends TitleAreaDialog {
   }
 
   private boolean areMultipleModulesAllowed() {
-    try {
-      IJavaProject javaProject = JavaCore.create(project);
-      if (javaProject != null) {
-        GWTRuntime sdk = GWTRuntime.findSdkFor(javaProject);
-        if (sdk != null) {
-          return new GwtCapabilityChecker(sdk).doesCompilerAllowMultipleModules();
-        }
+    IJavaProject javaProject = JavaCore.create(project);
+    if (javaProject != null) {
+      GWTRuntime sdk = GWTRuntime.findSdkFor(javaProject);
+      if (sdk != null) {
+        return new GwtCapabilityChecker(sdk).doesCompilerAllowMultipleModules();
       }
-    } catch (JavaModelException e) {
-      GWTPluginLog.logError(e);
     }
     return false;
   }
@@ -334,12 +322,11 @@ public class GWTCompileDialog extends TitleAreaDialog {
 
     ILabelProvider labelProvider = new JavaElementLabelProvider(
         JavaElementLabelProvider.SHOW_DEFAULT);
-    ElementListSelectionDialog dialog = new ElementListSelectionDialog(
-        getShell(), labelProvider);
+    ElementListSelectionDialog dialog = new ElementListSelectionDialog(getShell(), labelProvider);
     dialog.setTitle("Project Selection");
     dialog.setMessage("Choose a project to compile");
     dialog.setElements(gwtProjects.toArray(new IJavaProject[0]));
-    dialog.setInitialSelections(new Object[]{JavaCore.create(project)});
+    dialog.setInitialSelections(new Object[] {JavaCore.create(project)});
 
     dialog.setHelpAvailable(false);
     if (dialog.open() == Window.OK) {
@@ -352,15 +339,12 @@ public class GWTCompileDialog extends TitleAreaDialog {
     IPixelConverter converter = PixelConverterFactory.createPixelConverter(JFaceResources.getDialogFont());
 
     // Expandable panel for advanced options
-    final ExpandableComposite expandPanel = new ExpandableComposite(parent,
-        SWT.NONE, ExpandableComposite.TWISTIE
-            | ExpandableComposite.CLIENT_INDENT);
+    final ExpandableComposite expandPanel = new ExpandableComposite(parent, SWT.NONE,
+        ExpandableComposite.TWISTIE | ExpandableComposite.CLIENT_INDENT);
     expandPanel.setText("Advanced");
     expandPanel.setExpanded(false);
-    expandPanel.setFont(JFaceResources.getFontRegistry().getBold(
-        JFaceResources.DIALOG_FONT));
-    GridData expandPanelGridData = new GridData(GridData.FILL, GridData.FILL,
-        true, false, 3, 1);
+    expandPanel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DIALOG_FONT));
+    GridData expandPanelGridData = new GridData(GridData.FILL, GridData.FILL, true, false, 3, 1);
     expandPanelGridData.verticalIndent = converter.convertHeightInCharsToPixels(1);
     expandPanel.setLayoutData(expandPanelGridData);
     expandPanel.addExpansionListener(new ExpansionAdapter() {
@@ -370,8 +354,7 @@ public class GWTCompileDialog extends TitleAreaDialog {
         shell.setLayoutDeferred(true); // Suppress redraw flickering
 
         Point size = shell.getSize();
-        int shellHeightDeltaOnExpand = advancedContainer.computeSize(
-            SWT.DEFAULT, SWT.DEFAULT).y;
+        int shellHeightDeltaOnExpand = advancedContainer.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
         if (expandPanel.isExpanded()) {
           shell.setSize(size.x, size.y + shellHeightDeltaOnExpand);
         } else {
@@ -390,18 +373,15 @@ public class GWTCompileDialog extends TitleAreaDialog {
     expandPanel.setClient(advancedContainer);
 
     // Additional compiler parameters field
-    SWTFactory.createLabel(advancedContainer, "Additional compiler arguments:",
-        1);
-    extraArgsText = SWTUtilities.createMultilineTextbox(advancedContainer,
-        SWT.BORDER, false);
+    SWTFactory.createLabel(advancedContainer, "Additional compiler arguments:", 1);
+    extraArgsText = SWTUtilities.createMultilineTextbox(advancedContainer, SWT.BORDER, false);
     GridData extraArgsGridData = new GridData(GridData.FILL_HORIZONTAL);
     extraArgsGridData.heightHint = converter.convertHeightInCharsToPixels(5);
     extraArgsText.setLayoutData(extraArgsGridData);
 
     // Additional VM args field
     SWTFactory.createLabel(advancedContainer, "VM arguments:", 1);
-    vmArgsText = SWTUtilities.createMultilineTextbox(advancedContainer,
-        SWT.BORDER, false);
+    vmArgsText = SWTUtilities.createMultilineTextbox(advancedContainer, SWT.BORDER, false);
     GridData vmArgsGridData = new GridData(GridData.FILL_HORIZONTAL);
     vmArgsGridData.heightHint = converter.convertHeightInCharsToPixels(5);
     vmArgsText.setLayoutData(vmArgsGridData);
@@ -415,8 +395,7 @@ public class GWTCompileDialog extends TitleAreaDialog {
   }
 
   private void createEntryPointModulesComponent(Composite parent) {
-    Group group = SWTFactory.createGroup(parent, "Entry Point Modules", 3, 3,
-        GridData.FILL_BOTH);
+    Group group = SWTFactory.createGroup(parent, "Entry Point Modules", 3, 3, GridData.FILL_BOTH);
     GridLayout groupLayout = (GridLayout) group.getLayout();
     groupLayout.marginBottom = 8;
     group.setLayout(groupLayout);
@@ -443,10 +422,10 @@ public class GWTCompileDialog extends TitleAreaDialog {
 
   private void fieldChanged() {
     IStatus status = updateFields();
-    
+
     boolean valid = (status.getSeverity() != IStatus.ERROR);
     compileButton.setEnabled(valid);
-    
+
     if (valid) {
       GWTCompileSettings currentSettings = getCompileSettings();
       boolean different = !originalSettings.equals(currentSettings);
@@ -463,8 +442,7 @@ public class GWTCompileDialog extends TitleAreaDialog {
     // If we have a GWT project, get its saved compilation settings; otherwise
     // just use the defaults settings.
     GWTCompileSettings settings = (project != null)
-        ? GWTProjectProperties.getGwtCompileSettings(project)
-        : new GWTCompileSettings();
+        ? GWTProjectProperties.getGwtCompileSettings(project) : new GWTCompileSettings();
 
     initializeLogLevel(settings.getLogLevel());
     initializeOutputStyle(settings.getOutputStyle());
@@ -494,12 +472,10 @@ public class GWTCompileDialog extends TitleAreaDialog {
     updateEntryPointModulesIfProjectChanged();
 
     if (entryPointModulesBlock.getModules().isEmpty()) {
-      return StatusUtilities.newErrorStatus("Add an entry point module",
-          GWTPlugin.PLUGIN_ID);
+      return StatusUtilities.newErrorStatus("Add an entry point module", GWTPlugin.PLUGIN_ID);
     }
 
-    if (!areMultipleModulesAllowed()
-        && entryPointModulesBlock.getModules().size() > 1) {
+    if (!areMultipleModulesAllowed() && entryPointModulesBlock.getModules().size() > 1) {
       return StatusUtilities.newErrorStatus(
           "Projects using GWT 1.5 or lower may only specify one entry point module to compile",
           GWTPlugin.PLUGIN_ID);
@@ -511,13 +487,12 @@ public class GWTCompileDialog extends TitleAreaDialog {
   private void updateEntryPointModulesIfProjectChanged() {
     if (project != null) {
       IJavaProject javaProject = JavaCore.create(project);
-      if (javaProject != null
-          && !javaProject.equals(entryPointModulesBlock.getJavaProject())) {
+      if (javaProject != null && !javaProject.equals(entryPointModulesBlock.getJavaProject())) {
         // Set the project for the block (needed for adding a module)
         entryPointModulesBlock.setJavaProject(javaProject);
 
         GWTCompileSettings settings = GWTProjectProperties.getGwtCompileSettings(project);
-        
+
         // Set the default and initially-selected modules for the block from
         // the saved settings
         entryPointModulesBlock.setDefaultModules(settings.getEntryPointModules());
@@ -525,8 +500,8 @@ public class GWTCompileDialog extends TitleAreaDialog {
       }
     } else {
       entryPointModulesBlock.setJavaProject(null);
-      entryPointModulesBlock.setDefaultModules(Collections.<String>emptyList());
-      entryPointModulesBlock.setModules(Collections.<String>emptyList());
+      entryPointModulesBlock.setDefaultModules(Collections.<String> emptyList());
+      entryPointModulesBlock.setModules(Collections.<String> emptyList());
     }
   }
 
@@ -547,9 +522,9 @@ public class GWTCompileDialog extends TitleAreaDialog {
     IStatus extraArgsStatus = updateExtraArgs();
     IStatus vmArgsStatus = updateVmArgs();
 
-    return updateStatus(new IStatus[]{
-        projectStatus, logLevelStatus, outputStyleStatus,
-        entryPointModulesStatus, extraArgsStatus, vmArgsStatus});
+    return updateStatus(new IStatus[] {
+        projectStatus, logLevelStatus, outputStyleStatus, entryPointModulesStatus, extraArgsStatus,
+        vmArgsStatus});
   }
 
   private IStatus updateLogLevel() {
@@ -568,32 +543,28 @@ public class GWTCompileDialog extends TitleAreaDialog {
 
     String projectName = projectText.getText().trim();
     if (projectName.length() == 0) {
-      return StatusUtilities.newErrorStatus("Enter the project name",
-          GWTPlugin.PLUGIN_ID);
+      return StatusUtilities.newErrorStatus("Enter the project name", GWTPlugin.PLUGIN_ID);
     }
 
-    IProject enteredProject = ResourcesPlugin.getWorkspace().getRoot().getProject(
-        projectName);
+    IProject enteredProject = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
     if (!enteredProject.exists()) {
-      return StatusUtilities.newErrorStatus("Project does not exist",
-          GWTPlugin.PLUGIN_ID);
+      return StatusUtilities.newErrorStatus("Project does not exist", GWTPlugin.PLUGIN_ID);
     }
 
     if (!enteredProject.isOpen()) {
-      return StatusUtilities.newErrorStatus("Project is not open",
-          GWTPlugin.PLUGIN_ID);
+      return StatusUtilities.newErrorStatus("Project is not open", GWTPlugin.PLUGIN_ID);
     }
 
     if (!GWTNature.isGWTProject(enteredProject)) {
-      return StatusUtilities.newErrorStatus(projectName
-          + " is not a GWT project", GWTPlugin.PLUGIN_ID);
+      return StatusUtilities.newErrorStatus(projectName + " is not a GWT project",
+          GWTPlugin.PLUGIN_ID);
     }
 
     String validViaExtensionMsg = validateProjectViaExtensions(enteredProject);
     if (validViaExtensionMsg != null) {
       return StatusUtilities.newErrorStatus(validViaExtensionMsg, GWTPlugin.PLUGIN_ID);
     }
-    
+
     // Project is valid (no errors)
     project = enteredProject;
 
@@ -605,10 +576,10 @@ public class GWTCompileDialog extends TitleAreaDialog {
     }
 
     try {
-      if (IMarker.SEVERITY_ERROR == enteredProject.findMaxProblemSeverity(
-          IMarker.PROBLEM, true, IResource.DEPTH_INFINITE)) {
-        return StatusUtilities.newWarningStatus("The project {0} has errors.",
-            GWTPlugin.PLUGIN_ID, enteredProject.getName());
+      if (IMarker.SEVERITY_ERROR == enteredProject.findMaxProblemSeverity(IMarker.PROBLEM, true,
+          IResource.DEPTH_INFINITE)) {
+        return StatusUtilities.newWarningStatus("The project {0} has errors.", GWTPlugin.PLUGIN_ID,
+            enteredProject.getName());
       }
     } catch (CoreException e) {
       GWTPluginLog.logError(e);
@@ -619,8 +590,8 @@ public class GWTCompileDialog extends TitleAreaDialog {
 
   private IStatus updateStatus(IStatus status) {
     if (status.getSeverity() == IStatus.OK) {
-      status = StatusUtilities.newOkStatus(
-          "Build the project with the GWT compiler", GWTPlugin.PLUGIN_ID);
+      status = StatusUtilities.newOkStatus("Build the project with the GWT compiler",
+          GWTPlugin.PLUGIN_ID);
     }
 
     this.setMessage(status.getMessage(), convertSeverity(status));
@@ -640,20 +611,19 @@ public class GWTCompileDialog extends TitleAreaDialog {
 
     return status;
   }
-  
+
   private String validateProjectViaExtensions(IProject project) {
 
     ExtensionQuery<GWTCompileProjectValidator> extQuery = new ExtensionQuery<GWTCompileProjectValidator>(
         GWTPlugin.PLUGIN_ID, "gwtCompileProjectValidator", "class");
     List<ExtensionQuery.Data<GWTCompileProjectValidator>> enablementFinders = extQuery.getData();
     for (ExtensionQuery.Data<GWTCompileProjectValidator> enablementFinder : enablementFinders) {
-      String validityString = enablementFinder.getExtensionPointData().validate(
-          project);
+      String validityString = enablementFinder.getExtensionPointData().validate(project);
       if (validityString != null) {
         return validityString; // take first invalid response
       }
     }
-    
+
     return null;
   }
 }

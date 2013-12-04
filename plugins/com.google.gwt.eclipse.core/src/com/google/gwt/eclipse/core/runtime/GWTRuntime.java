@@ -209,15 +209,6 @@ public abstract class GWTRuntime extends AbstractSdk {
     }
 
     @Override
-    public boolean supportsTransitionalOOPHM() {
-      /*
-       * Don't worry about transtional OOPHM, between GWT versions 1.7.X and
-       * 2.0.
-       */
-      return false;
-    }
-
-    @Override
     public boolean usesGwtDevProject() {
       try {
         IClasspathEntry[] resolvedClasspath = javaProject.getResolvedClasspath(true);
@@ -382,8 +373,6 @@ public abstract class GWTRuntime extends AbstractSdk {
 
   public static final String GWT_DEV_NO_PLATFORM_JAR = "gwt-dev.jar";
 
-  public static final String GWT_OOPHM_JAR = "gwt-dev-oophm.jar";
-
   public static final String GWT_USER_JAR = "gwt-user.jar";
 
   public static final String VALIDATION_API_JAR_PREFIX = "validation-api-";
@@ -404,8 +393,7 @@ public abstract class GWTRuntime extends AbstractSdk {
    * Finds the {@link GWTRuntime} used by the specified project. Note that the
    * SDK need not have been registered.
    */
-  public static GWTRuntime findSdkFor(IJavaProject javaProject)
-      throws JavaModelException {
+  public static GWTRuntime findSdkFor(IJavaProject javaProject) {
 
     ExtensionQuery<GWTRuntime.IProjectBoundSdkFactory> extQuery = new ExtensionQuery<GWTRuntime.IProjectBoundSdkFactory>(
         GWTPlugin.PLUGIN_ID, "gwtProjectBoundSdkFactory", "class");
@@ -462,36 +450,6 @@ public abstract class GWTRuntime extends AbstractSdk {
     super(name, location);
   }
 
-  /*
-   * TODO: need to compute this only once and cache the result. Ideally, this
-   * should be done at the same time that "validateAndSetVersion" is called.
-   * Unfortunately, whenever we're interacting with the runtime list on the main
-   * preference page, those values are extracted straight from a string, and
-   * validateAndSetVersion is never called beforehand.
-   * 
-   * Perhaps the version should not be stored in the prefs string, only the
-   * name/location. That way we can just call validateAndSetVersion after
-   * parsing the prefs string.
-   */
-  public boolean containsSCL() {
-    try {
-      URLClassLoader cl = createClassLoader();
-      cl.loadClass("com.google.gwt.core.ext.ServletContainerLauncher");
-      return true;
-    } catch (ClassNotFoundException e) {
-      /*
-       * No need for logging an exception here; we're just checking to see if
-       * this runtime supports SCLs or not.
-       */
-    } catch (MalformedURLException e) {
-      GWTPluginLog.logError(e);
-    } catch (SdkException e) {
-      GWTPluginLog.logError(e);
-    }
-
-    return false;
-  }
-
   // FIXME: Why is this returning URLClassLoader instead of ClassLoader
   public abstract URLClassLoader createClassLoader() throws SdkException,
       MalformedURLException;
@@ -526,16 +484,6 @@ public abstract class GWTRuntime extends AbstractSdk {
 
     return "";
   }
-
-  /**
-   * Ask this runtime whether it supports "transitional" OOPHM. This is the
-   * range of source code after GWT 1.7 but before the GWT 2.0 release. This
-   * form of OOPHM requires either the gwt-dev-oophm.jar, or the gwt-dev-oophm
-   * project.
-   * 
-   * TODO: Remove this once pre-GWT 2.0 releases are deprecated.
-   */
-  public abstract boolean supportsTransitionalOOPHM();
 
   /**
    * Returns <code>true</code> if the {@link GWTRuntime} references the gwt-dev

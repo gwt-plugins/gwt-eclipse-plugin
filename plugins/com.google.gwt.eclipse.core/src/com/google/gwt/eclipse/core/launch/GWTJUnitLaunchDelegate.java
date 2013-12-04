@@ -180,7 +180,7 @@ public class GWTJUnitLaunchDelegate extends JUnitLaunchConfigurationDelegate {
     }
 
     String dynamicVMArgs = GWTLaunchConfiguration.computeJunitDynamicVMArgsAsString(
-        javaProject, configuration);
+        javaProject);
     gwtArgs += ' ' + dynamicVMArgs;
 
     /*

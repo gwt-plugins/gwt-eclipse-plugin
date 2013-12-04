@@ -218,15 +218,6 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
     return new File[0];
   }
 
-  /**
-   * TODO: Transitional OOPHM no longer exists; this method should be removed
-   * from the superclass entirely.
-   */
-  @Override
-  public boolean supportsTransitionalOOPHM() {
-    return false;
-  }
-
   @Override
   public IStatus validate() {
     try {

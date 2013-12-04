@@ -36,18 +36,13 @@ import java.util.List;
  * 
  */
 public class GWTLaunchConfiguration {
-  public static List<String> computeCompileDynamicVMArgsAsList(
-      IJavaProject javaProject, boolean wantsTransitionalOOPHM)
-      throws CoreException {
+  public static List<String> computeCompileDynamicVMArgsAsList(IJavaProject javaProject) {
 
-    return computeDynamicVMArgs(javaProject, wantsTransitionalOOPHM);
+    return computeDynamicVMArgs(javaProject);
   }
 
-  public static List<String> computeJunitDynamicVMArgsAsList(
-      IJavaProject javaProject, boolean wantsTransitionalOOPHM)
-      throws CoreException {
-    List<String> out = computeDynamicVMArgs(javaProject,
-        wantsTransitionalOOPHM);
+  public static List<String> computeJunitDynamicVMArgsAsList(IJavaProject javaProject) {
+    List<String> out = computeDynamicVMArgs(javaProject);
 
     // Default the maximum heap size to 512 MB
     out.add("-Xmx512m");
@@ -55,17 +50,8 @@ public class GWTLaunchConfiguration {
     return out;
   }
 
-  public static List<String> computeJunitDynamicVMArgsAsList(
-      IJavaProject javaProject, ILaunchConfiguration configuration)
-      throws CoreException {
-    return computeJunitDynamicVMArgsAsList(javaProject,
-        launchWithTransitionalOophm(configuration));
-  }
-
-  public static String computeJunitDynamicVMArgsAsString(IJavaProject javaProject,
-      ILaunchConfiguration configuration) throws CoreException {
-    return StringUtilities.join(computeJunitDynamicVMArgsAsList(javaProject,
-        configuration), " ");
+  public static String computeJunitDynamicVMArgsAsString(IJavaProject javaProject) {
+    return StringUtilities.join(computeJunitDynamicVMArgsAsList(javaProject), " ");
   }
 
   public static String getCodeServerPort(ILaunchConfiguration launchConfiguration) 
@@ -113,19 +99,12 @@ public class GWTLaunchConfiguration {
     return getStringAttribute(launchConfiguration, GWTLaunchAttributes.URL);
   }
 
-  public static boolean launchWithTransitionalOophm(
-      ILaunchConfiguration launchConfiguration) throws CoreException {
-    return getBooleanAttribute(launchConfiguration,
-        GWTLaunchAttributes.LAUNCH_WITH_OOPHM);
-  }
-
   /**
    * Dynamic VM args common to both computeJUnitDynamicVMArgsAsList and
    * computeCompileDynamicVMArgsAsList.
    */
   private static List<String> computeDynamicVMArgs(
-      IJavaProject javaProject, boolean wantsTransitionalOOPHM)
-      throws CoreException {
+      IJavaProject javaProject) {
     ArrayList<String> out = new ArrayList<String>();
 
     String devJarPath = maybeGetDevJarPath(javaProject);

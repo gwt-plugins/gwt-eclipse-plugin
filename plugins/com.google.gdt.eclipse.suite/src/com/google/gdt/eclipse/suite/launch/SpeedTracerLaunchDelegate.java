@@ -223,11 +223,7 @@ public class SpeedTracerLaunchDelegate extends JavaLaunchDelegate {
       /*
        * wtp publish
        */
-      try {
-        WebAppLaunchDelegate.maybePublishModulesToWarDirectory(config, subMonitor, javaProject, true);
-      } catch (IOException e) {
-        GdtPlugin.getLogger().logError(e, "Could not perform a WTP publish.");
-      }
+      WebAppLaunchDelegate.maybePublishModulesToWarDirectory(config, subMonitor, javaProject, true);
 
       // Build was successful, mark this last successful build
       project.setPersistentProperty(PREVIOUS_ST_BUILD_PROJECT_CHANGE_STAMP_KEY,

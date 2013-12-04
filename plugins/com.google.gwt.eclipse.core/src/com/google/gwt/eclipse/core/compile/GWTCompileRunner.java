@@ -23,9 +23,7 @@ import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.GWTProjectUtilities;
 import com.google.gwt.eclipse.core.launch.GWTLaunchConfiguration;
-import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
-import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
 import com.google.gwt.eclipse.core.speedtracer.SpeedTracerArtifactsRemover;
 
 import org.eclipse.core.filesystem.URIUtil;
@@ -41,9 +39,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.variables.VariablesPlugin;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 
@@ -61,6 +57,8 @@ import java.util.regex.Pattern;
  * Performs a GWT compilation on a project.
  */
 public class GWTCompileRunner {
+
+  private static final String COMPILER_NAME = "com.google.gwt.dev.Compiler";
 
   private static final Pattern EXTRACT_QUOTED_ARGS_PATTERN = Pattern.compile("^([\"'])(.*)([\"'])$");
 
@@ -216,24 +214,6 @@ public class GWTCompileRunner {
     return resolvedRuntimeClasspath;
   }
 
-  private static String computeCompilerClassName(IJavaProject javaProject)
-      throws JavaModelException {
-    IClasspathEntry classpathContainer = ClasspathUtilities.findClasspathEntryContainer(
-        javaProject.getRawClasspath(), GWTRuntimeContainer.CONTAINER_ID);
-    if (classpathContainer != null) {
-      GWTRuntime sdk = GWTPreferences.getSdkManager().findSdkForPath(
-          classpathContainer.getPath());
-      if (sdk != null) {
-        if (!sdk.containsSCL()) {
-          return "com.google.gwt.dev.GWTCompiler";
-        }
-      }
-    }
-
-    // Default to using the post-GWT 1.6 compiler class
-    return "com.google.gwt.dev.Compiler";
-  }
-
   /**
    * Computes the command line arguments required to invoke the GWT compiler for
    * this project.
@@ -247,7 +227,7 @@ public class GWTCompileRunner {
     commandLine.add(javaExecutable);
 
     commandLine.addAll(GWTLaunchConfiguration.computeCompileDynamicVMArgsAsList(
-        javaProject, false));
+        javaProject));
 
     commandLine.addAll(splitArgs(VariablesPlugin.getDefault().getStringVariableManager().performStringSubstitution(
         settings.getVmArgs())));
@@ -257,7 +237,7 @@ public class GWTCompileRunner {
     commandLine.add(ClasspathUtilities.flattenToClasspathString(computeClasspath(javaProject)));
 
     // add the GWT compiler class name
-    commandLine.add(computeCompilerClassName(javaProject));
+    commandLine.add(COMPILER_NAME);
 
     // add the GWT compiler options
     commandLine.addAll(computeCompilerOptions(warLocation, settings));

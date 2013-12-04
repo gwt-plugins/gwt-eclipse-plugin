@@ -16,7 +16,6 @@ package com.google.gwt.eclipse.core.launch.processors;
 
 import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
 import com.google.gwt.eclipse.core.GWTPluginLog;
-import com.google.gwt.eclipse.core.launch.GWTLaunchConfiguration;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 import com.google.gwt.eclipse.core.util.Util;
 
@@ -46,8 +45,8 @@ public class XStartOnFirstThreadArgumentProcessor implements
    * 
    * @param javaProject if <code>null</code>
    */
-  private static boolean needsStartOnFirstThreadHack(IJavaProject javaProject,
-      boolean wantsTransitionalOOPHM, ILaunchConfiguration config)
+  private static boolean needsStartOnFirstThreadHack(IJavaProject javaProject, 
+      ILaunchConfiguration config)
       throws CoreException {
 
     if (!Util.isPlatformMac()) {
@@ -116,15 +115,10 @@ public class XStartOnFirstThreadArgumentProcessor implements
 
     boolean startOnFirstThread = launchConfig.getAttribute(ATTR_XSTART_ON_FIRST_THREAD, false);
 
-    if (needsStartOnFirstThreadHack(javaProject,
-        GWTLaunchConfiguration.launchWithTransitionalOophm(launchConfig),
-        launchConfig)) {
+    if (needsStartOnFirstThreadHack(javaProject, launchConfig)) {
       /*
-       * If we're on a mac, we need the -XstartOnFirstThread attribute set to true in order to work
+       * If we're on a mac, we might need the -XstartOnFirstThread attribute set to true in order to work
        * around a UI threading issue with the Mac platform.
-       * 
-       * However, if we are using OOPHM, then we can't use -XstartOnFirstThread because this
-       * interferes with the swing UI.
        * 
        * We need to do this whether we're running GWT by itself, GWT + GAE, or GAE by itself.
        */
@@ -144,16 +138,11 @@ public class XStartOnFirstThreadArgumentProcessor implements
 
     int argIndex = vmArgs.indexOf(ARG_XSTART_ON_FIRST_THREAD);
 
-    if (needsStartOnFirstThreadHack(javaProject,
-        GWTLaunchConfiguration.launchWithTransitionalOophm(launchConfig),
-        launchConfig)) {
+    if (needsStartOnFirstThreadHack(javaProject, launchConfig)) {
       /*
-       * If we're on a mac, we need the -XstartOnFirstThread argument in order
+       * If we're on a mac, we might need the -XstartOnFirstThread argument in order
        * to work around a UI threading issue with the Mac platform.
-       * 
-       * However, if we are using OOPHM, then we can't use -XstartOnFirstThread
-       * because this interferes with the swing UI.
-       * 
+       *  
        * We need to do this whether we're running GWT by itself, GWT + GAE, or
        * GAE by itself.
        */

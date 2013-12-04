@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.runtime.ui;
 
-import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkClasspathContainerPage;
 import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
@@ -33,26 +32,5 @@ public class GWTRuntimeContainerPage extends
     super("GWT SDK", "GWT SDK", GWTPlugin.getDefault().getImageDescriptor(
         GWTImages.GWT_LOGO), GWTPreferences.getSdkManager(),
         GWTRuntimeContainer.CONTAINER_ID, GwtPreferencePage.ID);
-  }
-
-  @Override
-  protected GWTRuntime validateJavaProjectAndSelectedSdk() {
-    GWTRuntime selectedSdk = super.validateJavaProjectAndSelectedSdk();
-
-    if (selectedSdk == null) {
-      // There was an error when validating the Java project and
-      // SDK chosen by the user; abort our validation.
-      // FIXME: Are we supposed to return null here?
-    }
-
-    // Verify that if the user has a pre-GWT 1.6 SDK selected, that their
-    // project does not have a configured WAR directory
-    if (WebAppUtilities.isWebApp(javaProject.getProject())
-        && !selectedSdk.containsSCL()) {
-      setErrorMessage("You must use GWT 1.6+ with a Web Application project.");
-      setPageComplete(false);
-    }
-
-    return selectedSdk;
   }
 }

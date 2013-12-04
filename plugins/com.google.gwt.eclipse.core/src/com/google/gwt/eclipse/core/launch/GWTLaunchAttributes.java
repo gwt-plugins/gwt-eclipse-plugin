@@ -45,11 +45,6 @@ public enum GWTLaunchAttributes implements ILaunchConfigurationAttribute {
    * URL to launch.
    */
   URL(""),
-
-  /**
-   * Whether this launch config launches with oophm.
-   */
-  LAUNCH_WITH_OOPHM(false),
   
   CODE_SERVER_PORT("9997"),
   

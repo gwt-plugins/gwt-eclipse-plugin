@@ -52,12 +52,6 @@ public class GWTLaunchConfigurationWorkingCopy extends GWTLaunchConfiguration {
         entryPointModules, defaultValue);
   }
 
-  public static void setLaunchWithOophm(
-      ILaunchConfigurationWorkingCopy workingCopy, boolean launchWithOophm) {
-    setBooleanAttribute(workingCopy,
-        GWTLaunchAttributes.LAUNCH_WITH_OOPHM, launchWithOophm);
-  }
-
   public static void setLogLevel(ILaunchConfigurationWorkingCopy workingCopy,
       String logLevel) {
     setStringAttribute(workingCopy, GWTLaunchAttributes.LOG_LEVEL, logLevel);

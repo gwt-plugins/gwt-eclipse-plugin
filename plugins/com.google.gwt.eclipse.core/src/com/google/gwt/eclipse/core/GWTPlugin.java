@@ -1,15 +1,13 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
 package com.google.gwt.eclipse.core;
@@ -39,7 +37,6 @@ import com.google.gwt.eclipse.core.validators.rpc.RemoteServiceProblemType;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -95,12 +92,7 @@ public class GWTPlugin extends AbstractGooglePlugin {
   private final WebInfFolderUpdater webInfFolderUpdater = new WebInfFolderUpdater() {
     @Override
     protected Sdk getSdk(IJavaProject javaProject) {
-      try {
-        return GWTRuntime.findSdkFor(javaProject);
-      } catch (JavaModelException e) {
-        GWTPluginLog.logError(e, "Could not update WEB-INF folder");
-        return null;
-      }
+      return GWTRuntime.findSdkFor(javaProject);
     }
 
     @Override
@@ -118,9 +110,10 @@ public class GWTPlugin extends AbstractGooglePlugin {
     plugin = this;
 
     // Load problem severities
-    GdtProblemSeverities.getInstance().addProblemTypeEnums(new Class<?>[] {
-        GWTProblemType.class, RemoteServiceProblemType.class, UiBinderJavaProblemType.class,
-        ClientBundleProblemType.class, UiBinderTemplateProblemType.class});
+    GdtProblemSeverities.getInstance().addProblemTypeEnums(
+        new Class<?>[] {
+            GWTProblemType.class, RemoteServiceProblemType.class, UiBinderJavaProblemType.class,
+            ClientBundleProblemType.class, UiBinderTemplateProblemType.class});
 
     addLaunchListener();
 
@@ -173,8 +166,7 @@ public class GWTPlugin extends AbstractGooglePlugin {
 
     reg.put(GWTImages.JSNI_DEFAULT_METHOD_SMALL, imageDescriptorFromPath("icons/methdef_obj.gif"));
     reg.put(GWTImages.JSNI_PRIVATE_METHOD_SMALL, imageDescriptorFromPath("icons/methpri_obj.gif"));
-    reg.put(GWTImages.JSNI_PROTECTED_METHOD_SMALL,
-        imageDescriptorFromPath("icons/methpro_obj.gif"));
+    reg.put(GWTImages.JSNI_PROTECTED_METHOD_SMALL, imageDescriptorFromPath("icons/methpro_obj.gif"));
     reg.put(GWTImages.JSNI_PUBLIC_METHOD_SMALL, imageDescriptorFromPath("icons/methpub_obj.gif"));
 
     reg.put(GWTImages.NEW_ASYNC_INTERFACE_LARGE,

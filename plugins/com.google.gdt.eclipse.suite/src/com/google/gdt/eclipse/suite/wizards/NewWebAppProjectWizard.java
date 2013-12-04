@@ -69,8 +69,6 @@ public class NewWebAppProjectWizard extends NewElementWizard
 
   private boolean isGenerateEmptyProject;
 
-  private boolean gaeSdkIsEclipseDefault;
-
   public NewWebAppProjectWizard() {
   }
 
@@ -103,7 +101,6 @@ public class NewWebAppProjectWizard extends NewElementWizard
     projectName = newProjectWizardPage.getProjectName();
     useGae = newProjectWizardPage.useGae();
     gaeSdkContainerPath = newProjectWizardPage.getGaeSdkContainerPath();
-    gaeSdkIsEclipseDefault = newProjectWizardPage.isDefaultGaeSdk();
     useGWT = newProjectWizardPage.useGWT();
     gwtSdkContainerPath = newProjectWizardPage.getGWTSdkContainerPath();
     packageName = newProjectWizardPage.getPackage();
@@ -147,7 +144,6 @@ public class NewWebAppProjectWizard extends NewElementWizard
       if (useGae) {
         wapc.addContainerPath(gaeSdkContainerPath);
         wapc.addNature(GaeNature.NATURE_ID);
-        wapc.setIsGaeSdkFromEclipseDefault(gaeSdkIsEclipseDefault);
       }
 
       if (useGWT) {
