@@ -33,7 +33,6 @@ public class TestGoogleLogin {
   private static final String[] USER_STORED_SCOPES = {
       "https://www.googleapis.com/auth/projecthosting",
       "https://www.googleapis.com/auth/userinfo#email",
-      "https://www.googleapis.com/auth/appsmarketplace",
       "https://www.googleapis.com/auth/sqlservice",
       "https://www.googleapis.com/auth/appengine.admin",
       "https://www.googleapis.com/auth/drive",
