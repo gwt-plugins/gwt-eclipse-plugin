@@ -43,7 +43,8 @@ import org.eclipse.jdt.launching.JavaRuntime;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -464,8 +465,9 @@ public abstract class GWTRuntime extends AbstractSdk {
       cl = createClassLoader();
       // Extract version from gwt-dev-<platform>
       Class<?> about = cl.loadClass("com.google.gwt.dev.About");
-      Field versionField = about.getField("GWT_VERSION_NUM");
-      return SdkUtils.cleanupVersion((String) versionField.get(null));
+      Method method = about.getMethod("getGwtVersionNum");
+      String versionStr = (String) method.invoke(null);            
+      return SdkUtils.cleanupVersion(versionStr);
     } catch (MalformedURLException e) {
       GWTPluginLog.logError(e, exceptionMessage);
     } catch (SdkException e) {
@@ -474,11 +476,13 @@ public abstract class GWTRuntime extends AbstractSdk {
       GWTPluginLog.logError(e, exceptionMessage);
     } catch (SecurityException e) {
       GWTPluginLog.logError(e, exceptionMessage);
-    } catch (NoSuchFieldException e) {
-      GWTPluginLog.logError(e, exceptionMessage);
     } catch (IllegalArgumentException e) {
       GWTPluginLog.logError(e, exceptionMessage);
     } catch (IllegalAccessException e) {
+      GWTPluginLog.logError(e, exceptionMessage);
+    } catch (NoSuchMethodException e) {
+      GWTPluginLog.logError(e, exceptionMessage);
+    } catch (InvocationTargetException e) {
       GWTPluginLog.logError(e, exceptionMessage);
     }
 

@@ -127,7 +127,7 @@ public class GWTJUnitLaunchDelegate extends JUnitLaunchConfigurationDelegate {
 
     String outDir = config.getAttribute(GWTLaunchConstants.ATTR_OUT_DIR, "");
     if (outDir.length() > 0) {
-      argsBuilder.append(" -out ");
+      argsBuilder.append(" -war ");
       argsBuilder.append("\"" + outDir + "\"");
     }
 
