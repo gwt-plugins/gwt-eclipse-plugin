@@ -363,6 +363,8 @@ public class DeployProjectDialog extends TitleAreaDialog {
 
   private Button chooseProjectButton;
 
+  private Button launchBrowserButton;
+
   private Button deployButton;
 
   private DeployTree deployTree;
@@ -470,6 +472,10 @@ public class DeployProjectDialog extends TitleAreaDialog {
     treeGridData.heightHint = 150;
     deployTree = new DeployTree(container, treeGridData);
 
+    launchBrowserButton = new Button(container, SWT.CHECK);
+    launchBrowserButton.setText("Launch app in browser after successful deploy");
+    launchBrowserButton.setSelection(true);
+
     projectPropertiesLink = new Link(container, SWT.NONE);
     GridData createAppIdLinkGridData = new GridData(SWT.LEAD, SWT.TOP, true,
         false, 3, 1);
@@ -496,6 +502,13 @@ public class DeployProjectDialog extends TitleAreaDialog {
     } catch (BackingStoreException e) {
       AppEngineCorePluginLog.logError(e,
           "Could not save deploy dialog settings.");
+    }
+
+    try {
+      GaeProjectProperties.setGaeLaunchAppInBrowser(project, launchBrowserButton.getSelection());
+    } catch (BackingStoreException e) {
+      AppEngineCorePluginLog.logError(e,
+          "Could not save preference to lunch app in browser after successful deploy");
     }
 
     // do this last so that the widgets aren't disposed so that info
@@ -602,6 +615,7 @@ public class DeployProjectDialog extends TitleAreaDialog {
 
         appId = gaeProject.getAppId();
         appVersion = gaeProject.getAppVersion();
+        launchBrowserButton.setSelection(GaeProjectProperties.getGaeLaunchAppInBrowser(project));
       }
     }
   }

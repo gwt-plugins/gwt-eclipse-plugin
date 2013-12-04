@@ -16,6 +16,7 @@ package com.google.appengine.eclipse.core.deploy.ui;
 
 import com.google.appengine.eclipse.core.AppEngineCorePluginLog;
 import com.google.appengine.eclipse.core.deploy.DeployProjectJob;
+import com.google.appengine.eclipse.core.properties.GaeProjectProperties;
 import com.google.appengine.eclipse.core.resources.GaeProject;
 import com.google.gdt.eclipse.core.ActiveProjectFinder;
 import com.google.gdt.eclipse.core.WebAppUtilities;
@@ -44,6 +45,22 @@ import java.io.OutputStream;
  * Deploys a GAE project.
  */
 public class DeployProjectHandler extends AbstractHandler {
+
+  private static boolean shouldDeploy(GaeProject gaeProject) {
+    IStatus status = gaeProject.getDeployableStatus();
+    if (status.getSeverity() == IStatus.ERROR) {
+      MessageDialog.openError(Display.getDefault().getActiveShell(),
+          "Google App Engine", status.getMessage());
+      return false;
+    } else if (status.getSeverity() == IStatus.WARNING) {
+      String message = status.getMessage()
+          + "\n\nDo you want to continue and deploy anyway?";
+      return MessageDialog.openQuestion(
+          Display.getDefault().getActiveShell(), "Google App Engine", message);
+    }
+
+    return true;
+  }
 
   public Object execute(ExecutionEvent event) {
 
@@ -107,8 +124,9 @@ public class DeployProjectHandler extends AbstractHandler {
     }
 
     OutputStream newMessageStream = messageConsole.newMessageStream();
-    Job deployJob = new DeployProjectJob(
-        oauth2Token, gaeProject, warLocation, deploymentSet, newMessageStream);
+    Job deployJob =
+        new DeployProjectJob(oauth2Token, gaeProject, warLocation, deploymentSet, newMessageStream,
+            GaeProjectProperties.getGaeLaunchAppInBrowser(project));
 
     final TerminateJobAction terminateJobAction = new TerminateJobAction(
         deployJob);
@@ -127,22 +145,6 @@ public class DeployProjectHandler extends AbstractHandler {
     deployJob.schedule();
 
     return null;
-  }
-
-  private static boolean shouldDeploy(GaeProject gaeProject) {
-    IStatus status = gaeProject.getDeployableStatus();
-    if (status.getSeverity() == IStatus.ERROR) {
-      MessageDialog.openError(Display.getDefault().getActiveShell(),
-          "Google App Engine", status.getMessage());
-      return false;
-    } else if (status.getSeverity() == IStatus.WARNING) {
-      String message = status.getMessage()
-          + "\n\nDo you want to continue and deploy anyway?";
-      return MessageDialog.openQuestion(
-          Display.getDefault().getActiveShell(), "Google App Engine", message);
-    }
-
-    return true;
   }
 
 }

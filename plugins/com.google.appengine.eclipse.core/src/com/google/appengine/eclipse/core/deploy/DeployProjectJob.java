@@ -88,8 +88,10 @@ public class DeployProjectJob extends WorkspaceJob {
     return errorLog;
   }
 
+  private boolean launchAppInBrowser;
+
   private final DeploymentSet deploymentSet;
-  
+
   private final OutputStream consoleOutputStream;
 
   private final GaeProject gaeProject;
@@ -97,15 +99,16 @@ public class DeployProjectJob extends WorkspaceJob {
   private final IPath warLocation;
 
   private final String oauth2token;
-  
+
   public DeployProjectJob(String oauth2token, GaeProject gaeProject, IPath warLocation,
-      DeploymentSet deploymentSet, OutputStream consoleOutputStream) {
+      DeploymentSet deploymentSet, OutputStream consoleOutputStream, boolean launchBrowser) {
     super("Deploying " + gaeProject.getProject().getName() + " to Google");
     this.oauth2token = oauth2token;
     this.gaeProject = gaeProject;
     this.warLocation = warLocation;
     this.consoleOutputStream = consoleOutputStream;
     this.deploymentSet = deploymentSet;
+    this.launchAppInBrowser = launchBrowser;
   }
 
   @Override
@@ -203,7 +206,9 @@ public class DeployProjectJob extends WorkspaceJob {
         monitor, DeploymentParticipantManager.NotificationType.SUCCEEDED);
 
       // Launch app after successful deploy
-      launchProjectInBrowser();
+      if (launchAppInBrowser) {
+        launchProjectInBrowser();
+      }
     }
 
     return status;
@@ -250,6 +255,9 @@ public class DeployProjectJob extends WorkspaceJob {
       urlString = "http://" + version + "." + appId + ".appspot.com";
     }
 
-    BrowserUtilities.launchBrowserAndHandleExceptions(urlString);
+    // Open URI in Desktop default browser if possible, or else open in Eclipse default browser
+    if (!BrowserUtilities.launchDesktopDefaultBrowserAndHandleExceptions(urlString)) {
+      BrowserUtilities.launchBrowserAndHandleExceptions(urlString);
+    }
   }
 }

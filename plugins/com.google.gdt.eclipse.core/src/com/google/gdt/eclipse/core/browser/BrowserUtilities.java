@@ -35,9 +35,11 @@ import org.eclipse.ui.internal.browser.IBrowserDescriptor;
 import org.eclipse.ui.internal.browser.IBrowserDescriptorWorkingCopy;
 import org.eclipse.ui.internal.browser.SystemBrowserDescriptor;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -280,6 +282,25 @@ public class BrowserUtilities {
     mb.setMessage(errorMsg);
     mb.open();
     return null;
+  }
+
+  /**
+   * Launches the desktop's default browser.
+   * 
+   * @param targetUrl The string to be parsed into a URI for the browser.
+   * @return true, if browser was launched and false otherwise.
+   */
+  public static boolean launchDesktopDefaultBrowserAndHandleExceptions(String targetUrl) {
+    if (Desktop.isDesktopSupported()) {
+      try {
+        Desktop.getDesktop().browse(new URI(targetUrl));
+        return true;
+      } catch (Exception ex) {
+        // Throws exceptions if it cannot access the default browser
+        CorePluginLog.logError(ex, "There was an error launching the desktop default browser.");
+      }
+    }
+    return false;
   }
 
   /**

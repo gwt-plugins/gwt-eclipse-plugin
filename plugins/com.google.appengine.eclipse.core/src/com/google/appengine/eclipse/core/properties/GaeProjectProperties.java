@@ -57,6 +57,8 @@ public final class GaeProjectProperties {
 
   private static final String GAE_DEPLOY_DIALOG_SETTINGS = "gaeDeployDialogSettings";
 
+  private static final String GAE_LAUNCH_APP_IN_BROWSER = "gaeLaunchAppInBrowser";
+
   private static final String GAE_HRD_ENABLED = "gaeHrdEnabled";
 
   private static final String GAE_DATANUCLEUS_ENABLED = "gaeDatanucleusEnabled";
@@ -119,6 +121,12 @@ public final class GaeProjectProperties {
     // old/existing project - hence we default to false. New projects will
     // enable HRD upon creation.
     return prefs.getBoolean(GAE_HRD_ENABLED, false);
+  }
+
+  public static boolean getGaeLaunchAppInBrowser(IProject project) {
+    IEclipsePreferences prefs = getProjectProperties(project);
+    // If the property is not present, default to true.
+    return prefs.getBoolean(GAE_LAUNCH_APP_IN_BROWSER, true);
   }
 
   public static boolean getGaeRetainStagingDir(IProject project) {
@@ -280,6 +288,13 @@ public final class GaeProjectProperties {
       throws BackingStoreException {
     IEclipsePreferences prefs = getProjectProperties(project);
     prefs.putBoolean(GAE_HRD_ENABLED, hrdEnabled);
+    prefs.flush();
+  }
+
+  public static void setGaeLaunchAppInBrowser(IProject project, boolean launchAppInBrowser)
+      throws BackingStoreException {
+    IEclipsePreferences prefs = getProjectProperties(project);
+    prefs.putBoolean(GAE_LAUNCH_APP_IN_BROWSER, launchAppInBrowser);
     prefs.flush();
   }
 
