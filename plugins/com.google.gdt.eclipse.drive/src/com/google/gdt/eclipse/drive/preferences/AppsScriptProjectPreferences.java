@@ -28,18 +28,17 @@ import com.google.common.collect.Sets;
 import com.google.gdt.eclipse.drive.DrivePlugin;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResourceRuleFactory;
 import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.resources.WorkspaceJob;
-import org.eclipse.core.resources.team.ResourceRuleFactory;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.osgi.service.prefs.BackingStoreException;
 
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.annotation.Nullable;
 
@@ -102,13 +101,35 @@ import javax.annotation.Nullable;
  * {@code .settings/com.google.gdt.eclipse.drive.prefs} file.
  */
 public class AppsScriptProjectPreferences {
+  
   // All direct access to the Eclipse preferences store is through the private low-level methods
   // readPreference, writePreference, writeIntPreference, erasePreference, and getKeys.
   // Higher-level public methods concerned with particular persistent properties are implemented
-  // on top of the low-level methods. To synchronize access to the preferences store,
-  // it would suffice to synchronize the low-level methods.
-  
-  private static boolean runningUnitTest = false;
+  // on top of the low-level methods.
+  //
+  // The low-level methods, in turn, all accomplish their work by submitting calls to the
+  // single-thread executor preferencesAccessSerializer. In effect, the single thread executes a
+  // loop of the following form:
+  //
+  // while (true) {
+  //   remove the next submitted call from the queue; // may block until a call is submitted
+  //   execute the call; // if the call includes an invocation of Preferences.flush() that conflicts
+  //                     // with a workspace operation currently in progress, blocks until
+  //                     // no conflict exists
+  // }
+  //
+  // This achieves two purposes:
+  //
+  // (1) The public methods of this class are sometimes called from a thread executing an
+  //     IResourceChangeListener, at which time the resource tree is locked. Since flushing the
+  //     preferences would require write access to the resource tree, we submit a callable that does
+  //     the flush when the lock is released.
+  //
+  // (2) Using a single-thread executor ensures that accesses to the preferences on behalf of
+  //     public-method invocations in different threads do not overlap in time, and occur in an
+  //     order consistent with the order of the method invocations.  
+  private static final ExecutorService preferencesAccessSerializer =
+      Executors.newSingleThreadExecutor();
   
   /**
    * An interface for obtaining the {@link IScopeContext} for a particular {@link IProject}.
@@ -127,10 +148,6 @@ public class AppsScriptProjectPreferences {
           return new ProjectScope(project);
         }
       };
-      
-  // The value of resourceRuleFactory is replaced during tests by a call on setMockFactories.
-  // In production, it is set in the first call on flushPreferences.
-  private static IResourceRuleFactory resourceRuleFactory = null;
 
   /**
    * Initializes the project preferences for a particular project. This method should be called
@@ -148,7 +165,8 @@ public class AppsScriptProjectPreferences {
    * @param project the specified Eclipse project
    * @param fileId the specified Drive file ID
    */
-  public static void writeDriveFileId(IProject project, String fileId) {
+  public static void writeDriveFileId(IProject project, String fileId)
+      throws BackingStoreException {
     writePreference(project, DRIVE_FILE_ID_KEY, fileId);
   }
   
@@ -161,7 +179,7 @@ public class AppsScriptProjectPreferences {
    *     the file ID; otherwise {@code null}
    */
   @Nullable
-  public static String readDriveFileId(IProject project) {
+  public static String readDriveFileId(IProject project) throws BackingStoreException {
     return readPreference(project, DRIVE_FILE_ID_KEY);
   }
     
@@ -174,7 +192,7 @@ public class AppsScriptProjectPreferences {
    *     Eclipse project, the timestamp; otherwise {@code null}
    */
   @Nullable
-  public static String readDriveVersionFingerprint(IProject project) {
+  public static String readDriveVersionFingerprint(IProject project) throws BackingStoreException {
     return readPreference(project, DRIVE_VERSION_FINGERPRINT_KEY);
   }
   
@@ -185,7 +203,7 @@ public class AppsScriptProjectPreferences {
    * @param driveVersionFingerprint the specified Drive version fingerprint
    */
   public static void writeDriveVersionFingerprint(
-      IProject project, String driveVersionFingerprint) {
+      IProject project, String driveVersionFingerprint) throws BackingStoreException {
     writePreference(project, DRIVE_VERSION_FINGERPRINT_KEY, driveVersionFingerprint);
   }
 
@@ -199,7 +217,7 @@ public class AppsScriptProjectPreferences {
    * @param driveImportName the specified Drive import name
    */
   public static void writeDriveImportName(
-      IProject project, String fileName, String driveImportName) {
+      IProject project, String fileName, String driveImportName) throws BackingStoreException {
     writePreference(
         project, keyForStringValue(DRIVE_IMPORT_NAME_KEY_PREFIX, fileName), driveImportName);
   }
@@ -216,7 +234,8 @@ public class AppsScriptProjectPreferences {
    *     the specified Eclipse project, that import name; otherwise {@code null}
    */
   @Nullable
-  public static String readDriveImportName(IProject project, String fileName) {
+  public static String readDriveImportName(IProject project, String fileName)
+      throws BackingStoreException {
     return readPreference(project, keyForStringValue(DRIVE_IMPORT_NAME_KEY_PREFIX, fileName));
   }
   
@@ -239,7 +258,8 @@ public class AppsScriptProjectPreferences {
    * @param fileName the specified file name
    * @param scriptId the specified Drive script ID
    */
-  public static void writeDriveScriptId(IProject project, String fileName, String scriptId) {
+  public static void writeDriveScriptId(IProject project, String fileName, String scriptId)
+      throws BackingStoreException {
     writePreference(project, keyForStringValue(DRIVE_SCRIPT_ID_KEY_PREFIX, fileName), scriptId);
   }
   
@@ -254,7 +274,8 @@ public class AppsScriptProjectPreferences {
    *     specified Eclipse project, that script ID; otherwise {@code null}
    */
   @Nullable
-  public static String readDriveScriptId(IProject project, String fileName) {
+  public static String readDriveScriptId(IProject project, String fileName)
+      throws BackingStoreException {
     return readPreference(project, keyForStringValue(DRIVE_SCRIPT_ID_KEY_PREFIX, fileName));
   }
   
@@ -277,7 +298,8 @@ public class AppsScriptProjectPreferences {
    * @param fileName the specified file name
    * @param type the specified Drive file type
    */
-  public static void writeDriveType(IProject project, String fileName, String type) {
+  public static void writeDriveType(IProject project, String fileName, String type)
+      throws BackingStoreException {
     writePreference(project, keyForStringValue(DRIVE_TYPE_KEY_PREFIX, fileName), type);
   }
   
@@ -292,7 +314,8 @@ public class AppsScriptProjectPreferences {
    *     the specified Eclipse project, that type; otherwise {@code null}
    */
   @Nullable
-  public static String readDriveType(IProject project, String fileName) {
+  public static String readDriveType(IProject project, String fileName)
+      throws BackingStoreException {
     return readPreference(project, keyForStringValue(DRIVE_TYPE_KEY_PREFIX, fileName));
   }
   
@@ -313,7 +336,8 @@ public class AppsScriptProjectPreferences {
    * @param project the project containing the file
    * @param fileName the name of the file, including its extension but not a path
    */
-  public static void addUnsavedFileName(IProject project, String fileName) {
+  public static void addUnsavedFileName(IProject project, String fileName)
+      throws BackingStoreException {
     writePreference(project, keyForStringValue(UNSAVED_KEY_PREFIX, fileName), "true");
   }
   
@@ -378,68 +402,87 @@ public class AppsScriptProjectPreferences {
     return result;
   }
   
-  private static String[] getKeys(IProject project) throws BackingStoreException {
-    return getProjectPreferences(project).keys();
+  private static String[] getKeys(final IProject project) throws BackingStoreException {
+    return futureValue(
+        preferencesAccessSerializer.submit(
+            new Callable<String[]>() {
+              @Override
+              public String[] call() throws BackingStoreException {
+                return getProjectPreferences(project).keys();
+              }
+            }));
   }
 
-  @Nullable
-  private static String readPreference(IProject project, String key) {
-    IEclipsePreferences prefs = getProjectPreferences(project);
-    PreferencesVersionManager.ensureCurrentVersion(prefs);
-    return prefs.get(key, null);
+  private static String readPreference(final IProject project, final String key)
+      throws BackingStoreException {
+    return futureValue(
+        preferencesAccessSerializer.submit(
+            new Callable<String>() {
+              @Override
+              public String call() {
+                IEclipsePreferences prefs = getProjectPreferences(project);
+                PreferencesVersionManager.ensureCurrentVersion(prefs);
+                return prefs.get(key, null);
+              }
+            }));
   }
   
-  private static void writePreference(IProject project, String key, String value) {
-    IEclipsePreferences prefs = getProjectPreferences(project);
-    PreferencesVersionManager.ensureCurrentVersion(prefs);
-    prefs.put(key, value);
-    flushPreferences(prefs, project);
-  }
-  
-  private static void writeIntPreference(IProject project, String key, int value) {
-    IEclipsePreferences prefs = getProjectPreferences(project);
-    PreferencesVersionManager.ensureCurrentVersion(prefs);
-    prefs.putInt(key, value);
-    flushPreferences(prefs, project);
-  }
-  
-  private static void erasePreference(IProject project, String key) {
-    IEclipsePreferences prefs = getProjectPreferences(project);
-    prefs.remove(key);
-    flushPreferences(prefs, project);
-  }
-  
-  private static void flushPreferences(final IEclipsePreferences prefs, IProject project) {
-    // This method is sometimes called from a thread executing an IResourceChangeListener, at which
-    // time the resource tree is locked. Since flushing the preferences would require write access
-    // to the resource tree, we schedule a job to do the flush when the lock is released.
-    if (runningUnitTest) {
-      return; // Can't construct a WorkspaceJob without a real workspace.
-    }
-    WorkspaceJob flushingJob =
-        new WorkspaceJob("writing preferences"){
-          @Override public IStatus runInWorkspace(IProgressMonitor monitor) {
-            try {
-              prefs.flush();
-              return Status.OK_STATUS;
-            } catch (BackingStoreException e) {
-              DrivePlugin.logError("BackingStoreException while flushing preferences", e);
-              return new Status(
-                  IStatus.ERROR,
-                  DrivePlugin.PLUGIN_ID,
-                  "BackingStoreException while flushing preferences",
-                  e);
-            }
+  private static void writePreference(final IProject project, final String key, final String value)
+      throws BackingStoreException {
+    preferencesAccessSerializer.submit(
+        new Callable<Void>(){
+          @Override public Void call() throws BackingStoreException {
+            IEclipsePreferences prefs = getProjectPreferences(project);
+            PreferencesVersionManager.ensureCurrentVersion(prefs);
+            prefs.put(key, value);
+            prefs.flush();
+            return null;
           }
-        };
-    if (resourceRuleFactory == null) {
-      // Initialization deferred because the constructor cannot be called in unit tests.
-      // In unit tests, resourceRuleFactory is initialized by setMockFactories before any call on
-      // flushPreferences.
-      resourceRuleFactory = new ResourceRuleFactory() { };
+        });
+  }
+  
+  private static void writeIntPreference(
+      final IProject project, final String key, final int value) {
+    preferencesAccessSerializer.submit(
+        new Callable<Void>(){
+          @Override public Void call() throws BackingStoreException {
+            IEclipsePreferences prefs = getProjectPreferences(project);
+            PreferencesVersionManager.ensureCurrentVersion(prefs);
+            prefs.putInt(key, value);
+            prefs.flush();
+            return null;
+          }
+        });
+  }
+  
+  private static void erasePreference(final IProject project, final String key) {
+    preferencesAccessSerializer.submit(
+        new Callable<Void>(){
+          @Override public Void call() throws BackingStoreException {
+            IEclipsePreferences prefs = getProjectPreferences(project);
+            prefs.remove(key);
+            prefs.flush();
+            return null;
+          }
+        });
+  }
+  
+  private static <T> T futureValue(Future<T> future) throws BackingStoreException {
+    T result;
+    try {
+      result = future.get();
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new BackingStoreException("preferenceAccessSerializer interrupted");
+    } catch (ExecutionException e) {
+      Throwable cause = e.getCause();
+      if (cause instanceof BackingStoreException) {
+        throw (BackingStoreException) cause;
+      } else {
+        throw new BackingStoreException("Error in preferenceAccessSerializer operation", cause);
+      }
     }
-    flushingJob.setRule(resourceRuleFactory.modifyRule(project));
-    flushingJob.schedule();
+    return result;
   }
 
   private static IEclipsePreferences getProjectPreferences(IProject project) {
@@ -453,19 +496,13 @@ public class AppsScriptProjectPreferences {
   
   /**
    * Places this {@code AppsScriptProjectPreferences} object in a state suitable for testing,
-   * in which the default {@link IScopeContextFactory} and {@link IResourceRuleFactory} are replaced
-   * by specified mock factories and a flag is set that prevents invocation of other operations that
-   * require an actual workspace.
+   * in which the default {@link IScopeContextFactory} is replaced by a specified mock factory.
    * 
    * @param mockScopeContextFactory the mock {@code IScopeFactory}
-   * @param mockResourceRuleFactory the mock {@code IResourceRuleFactory}
    */
   @VisibleForTesting
-  public static void setMockFactories(
-      IScopeContextFactory mockScopeContextFactory, IResourceRuleFactory mockResourceRuleFactory) {
+  public static void setMockScopeContextFactory(IScopeContextFactory mockScopeContextFactory) {
     scopeFactory = mockScopeContextFactory;
-    resourceRuleFactory = mockResourceRuleFactory;
-    runningUnitTest = true;
   }
   
   private AppsScriptProjectPreferences() {

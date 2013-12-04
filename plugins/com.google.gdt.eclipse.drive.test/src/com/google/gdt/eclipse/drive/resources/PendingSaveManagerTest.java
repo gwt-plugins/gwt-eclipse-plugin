@@ -27,7 +27,6 @@ import com.google.common.collect.Multiset;
 import com.google.gdt.eclipse.drive.preferences.AppsScriptProjectPreferences;
 import com.google.gdt.eclipse.drive.preferences.AppsScriptProjectPreferences.IScopeContextFactory;
 import com.google.gdt.eclipse.drive.test.MockEclipsePreferences;
-import com.google.gdt.eclipse.drive.test.MockResourceRuleFactory;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -67,7 +66,7 @@ public class PendingSaveManagerTest {
     when(mockFile2.getProject()).thenReturn(mockProject2);
     when(mockProject1.getName()).thenReturn("project1");
     when(mockProject2.getName()).thenReturn("project2");
-    AppsScriptProjectPreferences.setMockFactories(
+    AppsScriptProjectPreferences.setMockScopeContextFactory(
         new IScopeContextFactory(){
           @Override public IScopeContext scopeForProject(IProject project) {
             if (project == mockProject1) {
@@ -78,8 +77,7 @@ public class PendingSaveManagerTest {
               return null;
             }
           }
-        },
-        new MockResourceRuleFactory());
+        });
     mockPreferences1 = new MockEclipsePreferences();
     mockPreferences2 = new MockEclipsePreferences();
     when(mockContext1.getNode(any(String.class))).thenReturn(mockPreferences1);

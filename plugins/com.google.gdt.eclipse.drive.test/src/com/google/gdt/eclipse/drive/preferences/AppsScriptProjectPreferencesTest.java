@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.gdt.eclipse.drive.test.MockEclipsePreferences;
-import com.google.gdt.eclipse.drive.test.MockResourceRuleFactory;
 
 import org.eclipse.core.internal.resources.Project;
 import org.eclipse.core.resources.IProject;
@@ -63,8 +62,7 @@ public class AppsScriptProjectPreferencesTest {
   public void setUp() throws BackingStoreException {
     MockitoAnnotations.initMocks(this);
     projectNamesToSettings = Maps.newHashMap();
-    AppsScriptProjectPreferences.setMockFactories(
-        new MockScopeContextFactory(), new MockResourceRuleFactory());
+    AppsScriptProjectPreferences.setMockScopeContextFactory(new MockScopeContextFactory());
    }
   
   @Test

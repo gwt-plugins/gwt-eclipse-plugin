@@ -458,7 +458,11 @@ public class DriveEclipseProjectMediator {
     String newFingerprint = modelForEclipseProject.getContentHash(NO_EXCLUDED_FILES);
     DrivePlugin.logInfo(
         "About to change project version fingerprint on Eclipse to " + newFingerprint);
-    AppsScriptProjectPreferences.writeDriveVersionFingerprint(eclipseProject, newFingerprint);
+    try {
+      AppsScriptProjectPreferences.writeDriveVersionFingerprint(eclipseProject, newFingerprint);
+    } catch (BackingStoreException e) {
+      DrivePlugin.logError("Error trying to record Drive version fingerprint.", e);
+    }
   }
 
   /**
@@ -559,7 +563,12 @@ public class DriveEclipseProjectMediator {
         eclipseProject.hasNature(AppsScriptNature.NATURE_ID),
         "Project " + eclipseProject.getName() + " does not have Apps Script nature.");
 
-    String driveFileId = AppsScriptProjectPreferences.readDriveFileId(eclipseProject);
+    String driveFileId;
+    try {
+      driveFileId = AppsScriptProjectPreferences.readDriveFileId(eclipseProject);
+    } catch (BackingStoreException e) {
+      throw makeCoreException("Error reading Drive document ID from preferences", e);
+    }
     if (driveFileId == null) {
       throw makeCoreException(
           "There is no Drive file ID saved in the .settings file of project "
@@ -570,8 +579,13 @@ public class DriveEclipseProjectMediator {
     Map<String, DriveScriptInfo> fileNamesToInfo = informationAboutExistingFiles(eclipseProject);    
     addInformationAboutRetainedDeletions(fileNamesToInfo, eclipseProject);
     
-    String driveVersionFingerprint =
-        AppsScriptProjectPreferences.readDriveVersionFingerprint(eclipseProject);
+    String driveVersionFingerprint;
+    try {
+      driveVersionFingerprint =
+          AppsScriptProjectPreferences.readDriveVersionFingerprint(eclipseProject);
+    } catch (BackingStoreException e) {
+      throw makeCoreException("Error reading Drive version fingerprint.", e);
+    }
     if (driveVersionFingerprint == null) {
       throw makeCoreException(
           "There is no Drive version fingerprint saved in the .settings file of project "
@@ -658,28 +672,37 @@ public class DriveEclipseProjectMediator {
           throws CoreException {
     String driveImportName;
     String driveType;
-    String driveScriptId =
-        AppsScriptProjectPreferences.readDriveScriptId(eclipseProject, fileName);
-    if (driveScriptId == null) {
-      // A new file created in Eclipse and not yet saved on Drive
-      int lastDotPos = fileName.lastIndexOf('.');
-      if (lastDotPos == -1) {
-        // should never happen
-        throw makeCoreException(
-            "File name \"" + fileName + "\" without extension found in Eclipse project preferences",
-            null);
+    String driveScriptId;
+    try {
+      driveScriptId = AppsScriptProjectPreferences.readDriveScriptId(eclipseProject, fileName);
+    } catch (BackingStoreException e) {
+      throw makeCoreException("Error reading Drive document ID.", e);
+    }
+    try {
+      if (driveScriptId == null) {
+        // A new file created in Eclipse and not yet saved on Drive
+        int lastDotPos = fileName.lastIndexOf('.');
+        if (lastDotPos == -1) {
+          // should never happen
+          throw makeCoreException(
+              "File name \"" + fileName
+                  + "\" without extension found in Eclipse project preferences",
+              null);
+        }
+        driveImportName = fileName.substring(0, lastDotPos); // fileName with extension removed
+        String extension = fileName.substring(lastDotPos); // Include the dot.
+        driveType = FileTypes.driveTypeForExtension(extension);
+      } else if (fileContents == null) {
+        // A file deleted from Eclipse but meant to be retained in Drive
+        driveImportName = null;
+        driveType = AppsScriptProjectPreferences.readDriveType(eclipseProject, fileName);
+      } else {
+        driveImportName =
+            AppsScriptProjectPreferences.readDriveImportName(eclipseProject, fileName);
+        driveType = AppsScriptProjectPreferences.readDriveType(eclipseProject, fileName);
       }
-      driveImportName = fileName.substring(0, lastDotPos); // fileName with extension removed
-      String extension = fileName.substring(lastDotPos); // Include the dot.
-      driveType = FileTypes.driveTypeForExtension(extension);
-    } else if (fileContents == null) {
-      // A file deleted from Eclipse but meant to be retained in Drive
-      driveImportName = null;
-      driveType = AppsScriptProjectPreferences.readDriveType(eclipseProject, fileName);
-    } else {
-      driveImportName =
-          AppsScriptProjectPreferences.readDriveImportName(eclipseProject, fileName);
-      driveType = AppsScriptProjectPreferences.readDriveType(eclipseProject, fileName);
+    } catch (BackingStoreException e) {
+      throw makeCoreException("Error trying to read Drive import name or file type", e);
     }
     return new DriveScriptInfo(driveImportName, driveScriptId, driveType, fileContents);
   }
@@ -714,12 +737,17 @@ public class DriveEclipseProjectMediator {
     for (Entry<String, DriveScriptInfo> nameToInfo : newFileNamesToInfos.entrySet()) {
       String fileName = nameToInfo.getKey();
       DriveScriptInfo scriptInfo = nameToInfo.getValue();
-      AppsScriptProjectPreferences.writeDriveImportName(
-          eclipseProject, fileName, scriptInfo.getImportName());
-      AppsScriptProjectPreferences.writeDriveType(
-          eclipseProject, fileName, scriptInfo.getType());
-      AppsScriptProjectPreferences.writeDriveScriptId(
-          eclipseProject, fileName, scriptInfo.getDocumentId());
+      try {
+        AppsScriptProjectPreferences.writeDriveImportName(
+            eclipseProject, fileName, scriptInfo.getImportName());
+        AppsScriptProjectPreferences.writeDriveType(
+            eclipseProject, fileName, scriptInfo.getType());
+        AppsScriptProjectPreferences.writeDriveScriptId(
+            eclipseProject, fileName, scriptInfo.getDocumentId());
+      } catch (BackingStoreException e) {
+        DrivePlugin.logError(
+            "Error trying to record Drive import name,  file type, or document ID", e);
+      }
     }
   }
 

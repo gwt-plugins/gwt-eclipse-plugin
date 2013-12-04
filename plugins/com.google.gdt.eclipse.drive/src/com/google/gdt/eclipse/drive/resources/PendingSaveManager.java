@@ -107,7 +107,11 @@ public class PendingSaveManager {
     IProject project = file.getProject();
     String fileName = file.getName();
     projectNamesToUnsavedPaths.put(project.getName(), fileName);
-    AppsScriptProjectPreferences.addUnsavedFileName(project, fileName);
+    try {
+      AppsScriptProjectPreferences.addUnsavedFileName(project, fileName);
+    } catch (BackingStoreException e) {
+      DrivePlugin.logError("Error trying to mark " + fileName + " as unsaved.", e);
+    }
     DrivePlugin.logInfo(project.getName() + ':' + fileName + " marked as unsaved.");
     firePendingSaveEvent(file, true);
   }

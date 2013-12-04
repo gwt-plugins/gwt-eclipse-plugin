@@ -39,7 +39,6 @@ import com.google.gdt.eclipse.drive.resources.PendingSaveManager;
 import com.google.gdt.eclipse.drive.resources.WorkspaceUtils;
 import com.google.gdt.eclipse.drive.test.MockDriveClient;
 import com.google.gdt.eclipse.drive.test.MockEclipsePreferences;
-import com.google.gdt.eclipse.drive.test.MockResourceRuleFactory;
 
 import org.eclipse.core.commands.IExecutionListener;
 import org.eclipse.core.resources.IFile;
@@ -219,13 +218,12 @@ public class DrivePluginTest {
     final IEclipsePreferences mockPreferences = new MockEclipsePreferences();
     final IScopeContext mockScopeContext = Mockito.mock(IScopeContext.class);
     when(mockScopeContext.getNode(Mockito.<String>anyObject())).thenReturn(mockPreferences);
-    AppsScriptProjectPreferences.setMockFactories(
+    AppsScriptProjectPreferences.setMockScopeContextFactory(
         new IScopeContextFactory(){
           @Override public IScopeContext scopeForProject(IProject project) {
             return mockScopeContext;
           }
-        },
-        new MockResourceRuleFactory());
+        });
     IProject mockProject = Mockito.mock(IProject.class);
     when(mockFile1.getName()).thenReturn(file1Name);
     when(mockFile2.getName()).thenReturn(file2Name);
