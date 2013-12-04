@@ -67,8 +67,6 @@ public class NewWebAppProjectWizard extends NewElementWizard
 
   private boolean useGWT;
 
-  private boolean isAppsMarketplaceSupported;
-
   private boolean isGenerateEmptyProject;
 
   private boolean gaeSdkIsEclipseDefault;
@@ -110,8 +108,6 @@ public class NewWebAppProjectWizard extends NewElementWizard
     gwtSdkContainerPath = newProjectWizardPage.getGWTSdkContainerPath();
     packageName = newProjectWizardPage.getPackage();
     locationURI = newProjectWizardPage.getCreationLocationURI();
-    isAppsMarketplaceSupported = newProjectWizardPage
-      .isAppsMarketplaceSupported();
     isGenerateEmptyProject = newProjectWizardPage.isGenerateEmptyProject();
     appId = newProjectWizardPage.getAppId();
 
@@ -147,7 +143,6 @@ public class NewWebAppProjectWizard extends NewElementWizard
       wapc.setPackageName(packageName);
       wapc.setLocationURI(locationURI);
       wapc.setGenerateEmptyProject(isGenerateEmptyProject);
-      wapc.setAppsMarketplaceSupported(isAppsMarketplaceSupported);
 
       if (useGae) {
         wapc.addContainerPath(gaeSdkContainerPath);

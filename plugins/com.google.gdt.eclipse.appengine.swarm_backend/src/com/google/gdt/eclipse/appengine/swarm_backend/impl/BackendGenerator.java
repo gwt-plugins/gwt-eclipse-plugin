@@ -98,7 +98,8 @@ public class BackendGenerator {
     Iterator<IType> it = entityList.iterator();
     while (it.hasNext()) {
       IType entity = it.next();
-      if (GCMSupport.APP_ENGINE_ENTITIES_TO_SKIP_ENDPOINT_GENERATION.contains(entity.getElementName())) {
+      if (GCMSupport.APP_ENGINE_ENTITIES_TO_SKIP_ENDPOINT_GENERATION.contains(
+          entity.getElementName())) {
         it.remove();
         break;
       }
@@ -244,7 +245,6 @@ public class BackendGenerator {
     wapc.setPackageName(androidProjectPackageName);
     wapc.setLocationURI(ResourcesPlugin.getWorkspace().getRoot().getLocationURI());
     wapc.setGenerateEmptyProject(true);
-    wapc.setAppsMarketplaceSupported(false);
 
     wapc.addContainerPath(SdkClasspathContainer.computeContainerPath(GaeSdkContainer.CONTAINER_ID,
         sdkSelection.getSelectedSdk(), sdkSelection.isDefault()
@@ -284,7 +284,8 @@ public class BackendGenerator {
           projectNumber, apiKey);
 
       // Add GCM templates for App Engine
-      String appEnginePackageName = BackendGenerator.getAndroidBackendProjectPackage(androidProjectPackageName);
+      String appEnginePackageName =
+          BackendGenerator.getAndroidBackendProjectPackage(androidProjectPackageName);
       gcmSupport.addAppEngineSupport(submonitor.newChild(10), appEnginePackageName);
 
       if (submonitor.isCanceled()) {
@@ -327,8 +328,9 @@ public class BackendGenerator {
       isSuccessful = true;
 
       // Notify callbacks
-      ExtensionQuery<IEndpointsActionCallback> extensionQuery = new ExtensionQuery<IEndpointsActionCallback>(
-          AppEngineSwarmPlugin.PLUGIN_ID, "endpointscallback", "class");
+      ExtensionQuery<IEndpointsActionCallback> extensionQuery =
+          new ExtensionQuery<IEndpointsActionCallback>(
+              AppEngineSwarmPlugin.PLUGIN_ID, "endpointscallback", "class");
       for (ExtensionQuery.Data<IEndpointsActionCallback> extensionData : extensionQuery.getData()) {
         if (isNewlyCreatedAndroidProject) {
           extensionData.getExtensionPointData().onGenerateAppEngineConnectedAndroidProject(
@@ -352,6 +354,7 @@ public class BackendGenerator {
    */
   private void generateWebApi(GaeProject gaeProject, SubMonitor monitor) throws Exception {
     IPath gaeInstallationPath = gaeProject.getSdk().getInstallationPath();
-    generateWebApi(gaeProject.getJavaProject(), gaeInstallationPath, gaeProject.getAppId(), monitor);
+    generateWebApi(
+        gaeProject.getJavaProject(), gaeInstallationPath, gaeProject.getAppId(), monitor);
   }
 }

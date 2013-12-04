@@ -23,10 +23,6 @@ import com.google.appengine.eclipse.core.sdk.AppEngineUpdateWebInfFolderCommand;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.appengine.eclipse.core.sdk.GaeSdkCapability;
 import com.google.appengine.eclipse.core.sdk.GaeSdkContainer;
-import com.google.gdt.eclipse.appsmarketplace.resources.AppsMarketplaceProject;
-import com.google.gdt.eclipse.appsmarketplace.resources.AppsMarketplaceProjectResources;
-import com.google.gdt.eclipse.appsmarketplace.sdk.AppsMarketplaceSdk;
-import com.google.gdt.eclipse.appsmarketplace.sdk.AppsMarketplaceUpdateWebInfFolderCommand;
 import com.google.gdt.eclipse.core.ResourceUtils;
 import com.google.gdt.eclipse.core.StringUtilities;
 import com.google.gdt.eclipse.core.WebAppUtilities;
@@ -245,8 +241,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
 
   private String[] templates = new String[] {"sample"};
 
-  private boolean isAppsMarketplaceSupported;
-
   private String[] templateSources;
 
   private boolean isGenerateEmptyProject;
@@ -346,19 +340,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
      */
     project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 
-    // Must be before createFiles(), which actually creates files from
-    // fileInfos.
-    if (isAppsMarketplaceSupported) {
-      AppsMarketplaceProject.enableAppsMarketplace(project);
-      if (generateAppsMarketplaceSampleApp()) {
-        AppsMarketplaceProjectResources.createAppsMarketplaceMetadataAndSamples(
-            packageName, fileInfos);
-      } else {
-        AppsMarketplaceProjectResources.createAppsMarketplaceMetadata(
-            projectName, fileInfos);
-      }
-    }
-
     // Create files
     createFiles(project, monitor);
 
@@ -392,11 +373,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
       if (gaeSdk != null) {
         new AppEngineUpdateWebInfFolderCommand(javaProject, gaeSdk).execute();
       }
-
-      if (isAppsMarketplaceSupported) {
-        new AppsMarketplaceUpdateWebInfFolderCommand(
-            javaProject, new AppsMarketplaceSdk()).execute();
-      }
     }
 
     // Set the project migrator version of the project to the current version,
@@ -408,17 +384,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
       setGaeDefaults(javaProject);
     }
     setProjectClasspath(javaProject, srcFolder, monitor);
-
-    // Update the web.xml and welcome page to support servlets created by both
-    // Apps marketplace plugin.
-    if (isAppsMarketplaceSupported && generateAppsMarketplaceSampleApp()) {
-      AppsMarketplaceProjectResources.updateWelcomeFile(project,
-          generateServletName(projectName), generateServletPath(projectName),
-          monitor);
-      AppsMarketplaceProjectResources.updateWebXml(
-          project, packageName, monitor);
-      AppsMarketplaceProjectResources.updateAppEngineWebxml(project, monitor);
-    }
 
     if (useGae) {
       // Update WEB-INF folder to get the latest datanucleus jars.
@@ -485,10 +450,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
 
   public void setAppId(String appId) {
     this.appId = appId;
-  }
-
-  public void setAppsMarketplaceSupported(boolean isAppsMarketplaceSupported) {
-    this.isAppsMarketplaceSupported = isAppsMarketplaceSupported;
   }
 
   public void setContainerPaths(List<IPath> containerPaths) {
@@ -714,10 +675,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     }
 
     classpathEntries.addAll(Arrays.asList(PreferenceConstants.getDefaultJRELibrary()));
-    if (isAppsMarketplaceSupported) {
-      classpathEntries.addAll(Arrays.asList(
-          new AppsMarketplaceSdk().getClasspathEntriesFromWebInfLib(project)));
-    }
     javaProject.setRawClasspath(
         classpathEntries.toArray(new IClasspathEntry[0]), monitor);
   }
@@ -827,12 +784,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
           "Exception occured while attempting to create project and application, using runtime  "
               + runtime.getName() + " " + e);
     }
-  }
-
-  private boolean generateAppsMarketplaceSampleApp() {
-    boolean useGwt = natureIds.contains(GWTNature.NATURE_ID);
-    boolean useGae = natureIds.contains(GaeNature.NATURE_ID);
-    return !isGenerateEmptyProject && useGae && !useGwt;
   }
 
   private String getGaeDatanucleusVersion(GaeSdk sdk) {

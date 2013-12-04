@@ -165,8 +165,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
   private Button generateSampleCodeCheckbox;
 
-  private Button appsMarketplaceCheckbox;
-
   private Button noAppIdButton;
 
   private Button useAppIdButton;
@@ -229,8 +227,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     createGoogleSdkGroup(container);
 
     createIdentifiersGroup(container);
-
-    createAppsMarketplaceGroup(container);
 
     createOtherOptionsGroup(container);
 
@@ -303,10 +299,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     return null;
   }
 
-  public boolean isAppsMarketplaceSupported() {
-    return appsMarketplaceCheckbox.getSelection();
-  }
-
   public boolean isDefaultGaeSdk() {
     return gaeSelectionBlock.isDefault();
   }
@@ -363,22 +355,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
       default:
         return NONE;
     }
-  }
-
-  private void createAppsMarketplaceGroup(Composite container) {
-    // Google Apps Marketplace options group
-    final Group marketplaceGroup = new Group(container, SWT.NULL);
-    marketplaceGroup.setText("Google Apps Marketplace");
-    final GridData gd3 = new GridData(GridData.FILL_HORIZONTAL);
-    gd3.horizontalSpan = 2;
-    marketplaceGroup.setLayoutData(gd3);
-
-    final GridLayout otherGridLayout = new GridLayout();
-    otherGridLayout.numColumns = 3;
-    marketplaceGroup.setLayout(otherGridLayout);
-
-    appsMarketplaceCheckbox = new Button(marketplaceGroup, SWT.CHECK);
-    appsMarketplaceCheckbox.setText("Add support for listing on Google Apps Marketplace");
   }
 
   private void createGaeSdkGroup(Group googleSdkGroup,

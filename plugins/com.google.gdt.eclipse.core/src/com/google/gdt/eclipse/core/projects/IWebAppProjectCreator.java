@@ -82,14 +82,6 @@ public interface IWebAppProjectCreator {
   void setAppId(String appId);
 
   /**
-   * Set the isAppsMarketplaceSupported field. If true, support for the Apps Market Place plugin
-   * will be added on project creation.
-   * 
-   * @param isAppsMarketplaceSupported
-   */
-  void setAppsMarketplaceSupported(boolean isAppsMarketplaceSupported);
-
-  /**
    * Set the isGenerateEmptyProject field.
    * 
    * @param generateEmptyProject
