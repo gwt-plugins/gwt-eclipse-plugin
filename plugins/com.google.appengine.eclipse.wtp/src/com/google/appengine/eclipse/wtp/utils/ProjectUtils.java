@@ -18,6 +18,7 @@ import com.google.appengine.eclipse.core.sdk.GaeSdkCapability;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
 import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
+import com.google.common.base.Preconditions;
 import com.google.gdt.eclipse.core.DynamicWebProjectUtilities;
 import com.google.gdt.eclipse.core.XmlUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkSet;
@@ -171,6 +172,7 @@ public final class ProjectUtils {
    * Searches for {@link GaeSdk} location.
    */
   public static IPath getGaeSdkLocation(IRuntime primaryRuntime) {
+    Preconditions.checkNotNull(primaryRuntime);
     for (IRuntimeComponent component : primaryRuntime.getRuntimeComponents()) {
       IRuntimeComponentType type = component.getRuntimeComponentType();
       if (GaeRuntime.GAE_RUNTIME_ID.equals(type.getId())) {

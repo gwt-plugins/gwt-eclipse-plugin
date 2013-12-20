@@ -173,7 +173,7 @@ public final class GaeFacetInstallDelegate implements IDelegate {
   /**
    * Opens Import Managed API Wizard.
    */
-  protected void openManagedApisImportWizard(IProject project) throws CoreException {
+  protected static void openManagedApisImportWizard(IProject project) throws CoreException {
     if (JavaProjectCheckDialog.canAddGoogleApi(project)) {
       ApiImportWizard wizard = new ApiImportWizard();
       wizard.setProject(project);
@@ -187,21 +187,21 @@ public final class GaeFacetInstallDelegate implements IDelegate {
   /**
    * Generates servlet class name basing on project name.
    */
-  private String generateServletClassName(String projectName) {
+  private static String generateServletClassName(String projectName) {
     return generateServletName(projectName) + "Servlet";
   }
 
   /**
    * Generates servlet class name basing on project name.
    */
-  private String generateServletName(String projectName) {
+  private static String generateServletName(String projectName) {
     return StringUtilities.capitalize(sanitizeProjectName(projectName));
   }
 
   /**
    * Generates path basing on project name.
    */
-  private String generateServletPath(String projectName) {
+  private static String generateServletPath(String projectName) {
     return generateServletName(projectName).toLowerCase();
   }
 
@@ -209,7 +209,7 @@ public final class GaeFacetInstallDelegate implements IDelegate {
    * @return the {@link GaeSdk} for given {@link IPath} (location in filesystem) or
    *         <code>null</code> if SDK is not found.
    */
-  private GaeSdk getSdk(IPath sdkLocation) {
+  private static GaeSdk getSdk(IPath sdkLocation) {
     if (sdkLocation != null) {
       SdkSet<GaeSdk> sdks = GaePreferences.getSdkManager().getSdks();
       return SdkUtils.findSdkForInstallationPath(sdks, sdkLocation);
@@ -221,7 +221,7 @@ public final class GaeFacetInstallDelegate implements IDelegate {
    * Searches runtime components and retrieves runtime location (GAE SDK location). Returns
    * <code>null</code>, if cannot be found.
    */
-  private IPath getSdkLocation(IDataModel model) {
+  private static IPath getSdkLocation(IDataModel model) {
     IFacetedProjectWorkingCopy fpwc = (IFacetedProjectWorkingCopy) model.getProperty(IFacetDataModelProperties.FACETED_PROJECT_WORKING_COPY);
     IRuntime primaryRuntime = fpwc.getPrimaryRuntime();
     return primaryRuntime == null ? null : ProjectUtils.getGaeSdkLocation(primaryRuntime);
@@ -230,7 +230,7 @@ public final class GaeFacetInstallDelegate implements IDelegate {
   /**
    * Does some project name validations. Borrowed from WebAppProjectCreator.
    */
-  private String sanitizeProjectName(String projectName) {
+  private static String sanitizeProjectName(String projectName) {
     assert projectName != null && projectName.length() > 0;
     String sanitized = null;
     // Replace first character if it's invalid
