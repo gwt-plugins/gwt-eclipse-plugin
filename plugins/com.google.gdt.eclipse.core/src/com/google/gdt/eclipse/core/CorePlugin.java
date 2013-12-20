@@ -66,9 +66,9 @@ public class CorePlugin extends AbstractGooglePlugin {
     plugin = this;
     
     // Make sure the executing JVM and JRE are up to date. This plugin and everything it depends on
-    // are Java 1.5 compatible, so this check will run at workbench startup in any JVM/JRE at level
-    // 1.5 or later. However, some other parts of GPE require MIN_GPE_JAVA_VERSION or later. If we
-    // run on a version later than or equal to 1.5 but less than MIN_GPE_JAVA_VERSION, the code
+    // are Java 1.6 compatible, so this check will run at workbench startup in any JVM/JRE at level
+    // 1.6 or later. However, some other parts of GPE require MIN_GPE_JAVA_VERSION or later. If we
+    // run on a version later than or equal to 1.6 but less than MIN_GPE_JAVA_VERSION, the code
     // below pops up an error dialog and then throws an exception so that GPE does not start, and
     // does not make any contributions to the UI.
     try {

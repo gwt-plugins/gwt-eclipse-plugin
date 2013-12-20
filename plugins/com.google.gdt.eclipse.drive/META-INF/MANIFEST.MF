@@ -4,8 +4,7 @@ Bundle-Name: Drive
 Bundle-SymbolicName: com.google.gdt.eclipse.drive;singleton:=true
 Bundle-Version: 0.0.0.qualifier
 Bundle-ClassPath: .,
- lib/google-api-services-drive-v2-rev90-1.16.0-rc.jar,
- lib/gson-2.1.jar
+ lib/google-api-services-drive-v2-rev90-1.16.0-rc.jar
 Bundle-Activator: com.google.gdt.eclipse.drive.DrivePlugin
 Bundle-Vendor: Google, Inc.
 Require-Bundle: org.eclipse.ui,

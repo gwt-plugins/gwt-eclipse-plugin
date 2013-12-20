@@ -14,6 +14,7 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.launch;
 
+import com.google.common.io.Files;
 import com.google.gdt.eclipse.core.ResourceUtils;
 import com.google.gdt.eclipse.core.SWTUtilities;
 import com.google.gdt.eclipse.core.StatusUtilities;
@@ -90,14 +91,7 @@ public class SpeedTracerLaunchDelegate extends JavaLaunchDelegate {
   }
 
   private static File createTempExtraDir() throws CoreException {
-    File tempDir = null;
-    try {
-      tempDir = ResourceUtils.createTempDir("speedTracerGwtCompilationExtra",
-          "");
-    } catch (IOException e) {
-      abortLaunch("Could not create a temporary directory.");
-    }
-    return tempDir;
+    return Files.createTempDir();
   }
 
   private static boolean needsGenFiles(IPath warOutLocation) {

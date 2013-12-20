@@ -275,28 +275,6 @@ public class ResourceUtils {
   }
 
   /**
-   * Creates a temporary directory
-   * 
-   * @see File#createTempFile(String, String)
-   */
-  public static File createTempDir(String prefix, String suffix)
-      throws IOException {
-    // There's no java API to create a temp directory, so instead create a temp
-    // file, delete it, and use that name for the temp directory
-    File tmpDir = File.createTempFile(prefix, suffix);
-
-    if (!tmpDir.delete()) {
-      throw new IOException("Could not delete temp file");
-    }
-
-    if (!tmpDir.mkdir()) {
-      throw new IOException("Could not create temp dir");
-    }
-
-    return tmpDir;
-  }
-
-  /**
    * Delete the specified file. If the {@link File} is a directory child
    * directories will also be deleted.
    */

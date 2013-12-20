@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.appengine.swarm.wizards.helpers;
 
+import com.google.common.io.Files;
 import com.google.gdt.eclipse.appengine.swarm.AppEngineSwarmPlugin;
 import com.google.gdt.eclipse.appengine.swarm.util.ConnectedProjectHandler;
 import com.google.gdt.eclipse.appengine.swarm.util.SwarmAnnotationUtils;
@@ -433,7 +434,7 @@ public class SwarmServiceCreator {
       }
       xmlUtil.updateWebXml(fullyQualifiedServiceClassList, project);
 
-      File outputFolder = ResourceUtils.createTempDir(".Web Api", "Temp Dir");
+      File outputFolder = Files.createTempDir();
       outputFolder.deleteOnExit();
 
       if (monitor.isCanceled()) {

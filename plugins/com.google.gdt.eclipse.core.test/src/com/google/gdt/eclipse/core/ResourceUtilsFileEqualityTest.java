@@ -14,6 +14,8 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.core;
 
+import com.google.common.io.Files;
+
 import junit.framework.TestCase;
 
 import java.io.File;
@@ -90,7 +92,7 @@ public class ResourceUtilsFileEqualityTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    File tmpDir1 = ResourceUtils.createTempDir("tmp", "");
+    File tmpDir1 = Files.createTempDir();
     for (int i = 0; i < 20; i++) {
       File tmpFile = File.createTempFile("tempFile", "", tmpDir1);
       files.add(tmpFile);
@@ -104,7 +106,7 @@ public class ResourceUtilsFileEqualityTest extends TestCase {
     }
 
     byte[] buf = new byte[4096];
-    File tmpDir2 = ResourceUtils.createTempDir("tmp", "");
+    File tmpDir2 = Files.createTempDir();
     for (int i = 0; i < files.size(); i++) {
       File srcFile = files.get(i);
       File destFile = new File(tmpDir2, srcFile.getName());
@@ -127,7 +129,10 @@ public class ResourceUtilsFileEqualityTest extends TestCase {
   @Override
   protected void tearDown() throws Exception {
     deleteFilesAndDir(files);
+    files.clear();
+    
     deleteFilesAndDir(copiedFiles);
+    copiedFiles.clear();
   }
 
   private byte[] generateTempData() {

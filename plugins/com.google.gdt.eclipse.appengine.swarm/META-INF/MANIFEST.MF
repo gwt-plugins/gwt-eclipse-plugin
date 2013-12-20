@@ -22,8 +22,7 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
-Bundle-ClassPath: .,
- lib/gson-1.6.jar
+Bundle-ClassPath: .
 Export-Package: com.google.gdt.eclipse.appengine.swarm,
  com.google.gdt.eclipse.appengine.swarm.util,
  com.google.gdt.eclipse.appengine.swarm.wizards,
