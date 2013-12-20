@@ -69,26 +69,14 @@ public class UpdateFromDriveProjectAction implements IActionDelegate {
             currentlySelectedProject, new NullProgressMonitor());
         // TODO(nhcohen): Find the context in which we could run the above call in an
         // IRunnableWithContext, then pass a real progress monitor to the call.
-      } catch (CoreException e) {
-        // TODO(nhcohen): When we advance the source-compliance level to Java 7, combine these
-        // handlers into one multi-catch and inline handleUpdatingException.
-        handleUpdatingException(e);
-      } catch (IOException e) {
-        handleUpdatingException(e);
-      } catch (InterruptedException e) {
-        handleUpdatingException(e);
-      } catch (BackingStoreException e) {
-        handleUpdatingException(e);
+      } catch (CoreException | IOException | InterruptedException | BackingStoreException e) {
+        DrivePlugin.logError("Exception updating an Eclipse project from Drive", e);
+        DrivePlugin.displayLoggedErrorDialog(
+            "The Eclipse project could not be updated because of an internal error");
       }
     }
   }
   
-  private static void handleUpdatingException(Exception e) {
-    DrivePlugin.logError("Exception updating an Eclipse project from Drive", e);
-    DrivePlugin.displayLoggedErrorDialog(
-        "The Eclipse project could not be updated because of an internal error");
-  }
-
   private static boolean askUserWhetherToOverwrite(Collection<String> unsavedFiles) {
     StringBuilder messageBuilder = new StringBuilder();
     messageBuilder.append("Changes made on Eclipse to ");

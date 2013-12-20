@@ -429,16 +429,12 @@ public class DriveEclipseProjectMediator {
       if (shouldAbortDueToConflict(eclipseProject, modelForEclipseProject, modelForDriveProject)) {
         return;
       }
-    } catch (CoreException e) {
-      // TODO(nhcohen): Once we upgrade to Java 7 compliance level, combine these handlers into one
-      // multicatch, and inline reportEclipseReadingException.
-      reportEclipseReadingException(e, eclipseProject.getName());
-      return;
-    } catch (IOException e) {
-      reportEclipseReadingException(e, eclipseProject.getName());
-      return;
-    } catch (BackingStoreException e) {
-      reportEclipseReadingException(e, eclipseProject.getName());
+    } catch (CoreException | IOException | BackingStoreException e) {
+      String message =
+          "Error extracting information from Eclipse project " + eclipseProject.getName()
+          + " to update the Drive project";
+      DrivePlugin.logError(message, e);
+      DrivePlugin.displayLoggedErrorDialog(message);
       return;
     }
     
@@ -600,14 +596,6 @@ public class DriveEclipseProjectMediator {
     return AppsScriptProject.make(driveFileId, fileNamesToInfo, driveVersionFingerprint);
   }
   
-  private static void reportEclipseReadingException(Exception e, String eclipseProjectName) {
-    String message =
-        "Error extracting information from Eclipse project " + eclipseProjectName
-        + " to update the Drive project";
-    DrivePlugin.logError(message, e);
-    DrivePlugin.displayLoggedErrorDialog(message);
-  }
-
   /**
    * Gathers information for files that have been deleted from the Eclipse project but are to be
    * retained in the Drive project, and adds it to a specified map.

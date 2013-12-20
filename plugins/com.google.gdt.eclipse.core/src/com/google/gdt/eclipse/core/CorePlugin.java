@@ -19,17 +19,27 @@ import com.google.gdt.eclipse.core.markers.ProjectStructureOrSdkProblemType;
 import com.google.gdt.eclipse.core.projects.ProjectChangeTimestampTracker;
 import com.google.gdt.eclipse.core.resources.CoreImages;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.UIJob;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Version;
 
 /**
  */
 public class CorePlugin extends AbstractGooglePlugin {
   public static final String PLUGIN_ID = CorePlugin.class.getPackage().getName();
+  
+  private static final Version MIN_GPE_JAVA_VERSION = new Version(1, 7, 0);
 
   private static CorePlugin plugin;
 
@@ -54,12 +64,66 @@ public class CorePlugin extends AbstractGooglePlugin {
   public void start(BundleContext context) throws Exception {
     super.start(context);
     plugin = this;
-
+    
+    // Make sure the executing JVM and JRE are up to date. This plugin and everything it depends on
+    // are Java 1.5 compatible, so this check will run at workbench startup in any JVM/JRE at level
+    // 1.5 or later. However, some other parts of GPE require MIN_GPE_JAVA_VERSION or later. If we
+    // run on a version later than or equal to 1.5 but less than MIN_GPE_JAVA_VERSION, the code
+    // below pops up an error dialog and then throws an exception so that GPE does not start, and
+    // does not make any contributions to the UI.
+    try {
+      checkVersion("JVM version", "java.vm.specification.version", MIN_GPE_JAVA_VERSION);
+      checkVersion("JRE version", "java.specification.version", MIN_GPE_JAVA_VERSION);
+    } catch (final GpeVersionException e) {
+      UIJob dialogJob =
+          new UIJob("background-initiated question dialog"){
+            @Override public IStatus runInUIThread(IProgressMonitor monitor) {
+              Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+              MessageDialog.openError(
+                  activeShell,
+                  "Newer Java version needed to run Google Plugin for Eclipse",
+                  e.getMessage());
+              return Status.OK_STATUS;
+            }
+          };
+      dialogJob.schedule();
+      throw e; // Prevent plugin from starting up.
+    }
+    
     // Load problem severities
     GdtProblemSeverities.getInstance().addProblemTypeEnums(
         new Class<?>[] {ProjectStructureOrSdkProblemType.class});
 
     ProjectChangeTimestampTracker.INSTANCE.startTracking();
+  }
+  
+  private static void checkVersion(
+      String description, String key, Version minVersion) throws GpeVersionException {
+    String detectedVersionString = System.getProperty(key);
+    if (key == null) {
+      // Shouldn't happen
+      throw new GpeVersionException(
+          "Can't check Java version: System property \"" + key + "\" is not defined.");
+    }
+    Version detectedVersion;
+    try {
+      detectedVersion = new Version(detectedVersionString);
+    } catch (IllegalArgumentException e) {
+      throw new GpeVersionException(
+          String.format(
+              "Can't check Java version: Value of %s property, \"%s\", has an unexpected form.",
+              description,
+              detectedVersionString),
+          e);
+    }
+    if (detectedVersion.compareTo(minVersion) < 0) {
+      throw new GpeVersionException(
+          String.format(
+              "%s is %s; version %s or later is needed to run Google Plugin for Eclipse.",
+              description,
+              detectedVersion,
+              minVersion));
+    }
   }
 
   @Override
