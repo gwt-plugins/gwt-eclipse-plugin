@@ -19,7 +19,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jface.text,
  com.google.gdt.eclipse.suite,
  com.google.gdt.eclipse.managedapis;visibility:=reexport
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Bundle-ClassPath: .,

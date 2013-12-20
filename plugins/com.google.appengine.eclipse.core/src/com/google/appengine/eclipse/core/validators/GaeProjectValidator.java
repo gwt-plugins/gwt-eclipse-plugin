@@ -66,6 +66,87 @@ public class GaeProjectValidator extends AbstractProjectValidator {
   public static final String PROBLEM_MARKER_ID = AppEngineCorePlugin.PLUGIN_ID
       + ".problemMarker";
 
+  private static boolean validateUsingJava17OrNewer(IJavaProject javaProject)
+      throws CoreException {
+    IVMInstall3 vm = (IVMInstall3) JavaRuntime.getVMInstall(javaProject);
+    if (vm == null) {
+      // No VM is configured; wait until one is configured before warning user
+      return true;
+    }
+
+    // This property maps to the JRE version, which is what App Engine checks
+    // against
+    String vmVersionSysProp = "java.specification.version";
+    Map<String, String> sysPropValues = vm.evaluateSystemProperties(
+        new String[] {vmVersionSysProp},
+        null);
+    String vmVersion = sysPropValues.get(vmVersionSysProp);
+    if (StringUtilities.isEmpty(vmVersion)) {
+      AppEngineCorePluginLog.logWarning("Checking JRE version but the system property is empty.");
+      // Assume it passes
+      return true;
+    }
+    
+    String[] vmVersionComponents = vmVersion.split("\\.");
+    if (vmVersionComponents.length >= 2) {
+      if (vmVersionComponents[0].equals("1")) {
+        try {
+          int minorVersion = Integer.parseInt(vmVersionComponents[1]);
+          if (minorVersion < 7) {
+            MarkerUtilities.createQuickFixMarker(
+                PROBLEM_MARKER_ID,
+                AppEngineProblemType.JAVA16_DEPRECATED,
+                null,
+                javaProject.getProject());
+            return false;
+          }
+        } catch (NumberFormatException e) {
+          AppEngineCorePluginLog.logWarning(e, "Unexpected JRE version.");
+        }
+      }
+    }
+
+    return true;
+  }
+
+  private static boolean validateUsingJDKifUsingJSPs(IFolder warFolder,
+      IJavaProject javaProject) throws CoreException {
+
+    boolean isProjectUsingJdk = ProcessUtilities.isUsingJDK(javaProject);
+
+    if (isProjectUsingJdk) {
+      // If the project is using a JDK, there is no point in doing
+      // further checking - we know that JSPs in the project are not
+      // a problem if it is using a JDK.
+      return true;
+    }
+
+    JSPResourceVisitor jspResourcevisitor = new JSPResourceVisitor() {
+
+      private boolean wasJSPFound = false;
+
+      public boolean visit(IResource resource) throws CoreException {
+        if (resource.getType() == IResource.FILE) {
+          IFile file = (IFile) resource;
+          if ("JSP".equalsIgnoreCase(file.getFileExtension())) {
+            wasJSPFound = true;
+            MarkerUtilities.createQuickFixMarker(PROBLEM_MARKER_ID,
+                AppEngineProblemType.JSP_WITHOUT_JDK, null, resource);
+          }
+        }
+        return true;
+      }
+
+      public boolean wasJspFound() {
+        return wasJSPFound;
+      }
+    };
+
+    warFolder.accept(jspResourcevisitor);
+
+    return jspResourcevisitor.wasJspFound();
+  }
+
   @Override
   // Overrides an Eclipse API method with a raw parameter type
   protected IProject[] build(
@@ -110,7 +191,7 @@ public class GaeProjectValidator extends AbstractProjectValidator {
         return null;
       }
 
-      if (!validateUsingJava16OrNewer(javaProject)) {
+      if (!validateUsingJava17OrNewer(javaProject)) {
         return null;
       }
     }
@@ -176,86 +257,5 @@ public class GaeProjectValidator extends AbstractProjectValidator {
     }
 
     return true;
-  }
-
-  private static boolean validateUsingJava16OrNewer(IJavaProject javaProject)
-      throws CoreException {
-    IVMInstall3 vm = (IVMInstall3) JavaRuntime.getVMInstall(javaProject);
-    if (vm == null) {
-      // No VM is configured; wait until one is configured before warning user
-      return true;
-    }
-
-    // This property maps to the JRE version, which is what App Engine checks
-    // against
-    String vmVersionSysProp = "java.specification.version";
-    Map<String, String> sysPropValues = vm.evaluateSystemProperties(
-        new String[] {vmVersionSysProp},
-        null);
-    String vmVersion = sysPropValues.get(vmVersionSysProp);
-    if (StringUtilities.isEmpty(vmVersion)) {
-      AppEngineCorePluginLog.logWarning("Checking JRE version but the system property is empty.");
-      // Assume it passes
-      return true;
-    }
-    
-    String[] vmVersionComponents = vmVersion.split("\\.");
-    if (vmVersionComponents.length >= 2) {
-      if (vmVersionComponents[0].equals("1")) {
-        try {
-          int minorVersion = Integer.parseInt(vmVersionComponents[1]);
-          if (minorVersion < 6) {
-            MarkerUtilities.createQuickFixMarker(
-                PROBLEM_MARKER_ID,
-                AppEngineProblemType.JAVA15_DEPRECATED,
-                null,
-                javaProject.getProject());
-            return false;
-          }
-        } catch (NumberFormatException e) {
-          AppEngineCorePluginLog.logWarning(e, "Unexpected JRE version.");
-        }
-      }
-    }
-
-    return true;
-  }
-
-  private static boolean validateUsingJDKifUsingJSPs(IFolder warFolder,
-      IJavaProject javaProject) throws CoreException {
-
-    boolean isProjectUsingJdk = ProcessUtilities.isUsingJDK(javaProject);
-
-    if (isProjectUsingJdk) {
-      // If the project is using a JDK, there is no point in doing
-      // further checking - we know that JSPs in the project are not
-      // a problem if it is using a JDK.
-      return true;
-    }
-
-    JSPResourceVisitor jspResourcevisitor = new JSPResourceVisitor() {
-
-      private boolean wasJSPFound = false;
-
-      public boolean visit(IResource resource) throws CoreException {
-        if (resource.getType() == IResource.FILE) {
-          IFile file = (IFile) resource;
-          if ("JSP".equalsIgnoreCase(file.getFileExtension())) {
-            wasJSPFound = true;
-            MarkerUtilities.createQuickFixMarker(PROBLEM_MARKER_ID,
-                AppEngineProblemType.JSP_WITHOUT_JDK, null, resource);
-          }
-        }
-        return true;
-      }
-
-      public boolean wasJspFound() {
-        return wasJSPFound;
-      }
-    };
-
-    warFolder.accept(jspResourcevisitor);
-
-    return jspResourcevisitor.wasJspFound();
   }
 }

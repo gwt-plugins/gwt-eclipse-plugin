@@ -1,15 +1,13 @@
 /*******************************************************************************
  * Copyright 2012 Google Inc. All Rights Reserved.
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
 package com.google.gdt.eclipse.appengine.swarm.wizards.helpers;
@@ -72,16 +70,15 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The main class responsible for generating Swarm service classes and
- * triggering lib creation / web.xml modifications.
+ * The main class responsible for generating Swarm service classes and triggering lib creation /
+ * web.xml modifications.
  * 
  */
 @SuppressWarnings("nls")
 public class SwarmServiceCreator {
 
   /**
-   * Helper class to track of ownerDomain and packagePath information for a
-   * given Cloud Endpoint.
+   * Helper class to track of ownerDomain and packagePath information for a given Cloud Endpoint.
    */
   public static class EndpointPackageInfo {
 
@@ -102,8 +99,8 @@ public class SwarmServiceCreator {
     }
 
     /**
-     * Returns ownerDomain.packagePath, unless ownerDomain is empty. In that
-     * case, just ownerDomain is returned.
+     * Returns ownerDomain.packagePath, unless ownerDomain is empty. In that case, just ownerDomain
+     * is returned.
      */
     @Override
     public String toString() {
@@ -112,71 +109,26 @@ public class SwarmServiceCreator {
 
   }
 
+  public static final String API_FILE_EXTENSION = ".api";
+
   public static final EndpointPackageInfo DEFAULT_PACKAGE_INFO = new EndpointPackageInfo(
       "mycompany.com", "services");
-
   public static final String DISCOVERY_FILE_EXTENSION = ".discovery";
+  public static final String GENERATED_SOURCE_NAME_SUBSTRING = "generated-source";
+  public static final String JAR_FILE_EXTENSION = ".jar";
+
   public static final String SERVICE_CLASS_SUFFIX = "Endpoint";
   // The downloaded client-lib JARs having source files will have the following
   // as substring of their filename.
   public static final String SOURCE_JAR_NAME_SUBSTRING = "source";
-  public static final String JAR_FILE_EXTENSION = ".jar";
-
   public static final String SWARM_LIB_NAME_PREFIX = "lib";
-  public static final String API_FILE_EXTENSION = ".api";
   private static final String META_INF_PATH = "src/META-INF/";
-  public static final String GENERATED_SOURCE_NAME_SUBSTRING = "generated-source";
-
-  
-  /**
-   * Given a root package, generates the Cloud Endpoint ownerDomain and
-   * packagePath information.
-   * 
-   * If rootPackage is com.foo.bar, then the ownerDomain will be "foo.com", and
-   * the packagePath will be "bar".
-   * 
-   * As another example, if the rootPackage is "com.foo.bar.baz", the
-   * ownerDomain is still "foo.com", and the packgePath is "bar.baz".
-   * 
-   * In the case where the rootPackage has only two components, packagePath is
-   * the empty string.
-   * 
-   * If rootPackage has less than two components, then
-   * <code>DEFAULT_PACKAGE_INFO</code> will be returned.
-   * 
-   * @param rootPackage the root package. Cannot be null.
-   * @return
-   */
-  public static EndpointPackageInfo getEndpointPackageInfo(String rootPackage) {
-
-    assert (rootPackage != null);
-
-    String[] packageComponents = rootPackage.split("\\.");
-
-    String ownerDomain = "";
-    String packagePath = "";
-
-    if (packageComponents.length < 2) {
-      return DEFAULT_PACKAGE_INFO;
-    } else {
-      ownerDomain = packageComponents[1] + "." + packageComponents[0];
-      for (int i = 2; i < packageComponents.length; i++) {
-        packagePath += packageComponents[i];
-        if (i != packageComponents.length - 1) {
-          packagePath += ".";
-        }
-      }
-    }
-
-    return new EndpointPackageInfo(ownerDomain, packagePath);
-  }
 
   /**
-   * Copies the generated libraries and dependencies from the App Engine project
-   * to connected Android project. Also updated the android project's classpath
-   * by removing all the previous files inside ApiLibs folder, deleting it,
-   * copying from ApiLibs folder in App Engine project and then add the jars in
-   * the copied folder.
+   * Copies the generated libraries and dependencies from the App Engine project to connected
+   * Android project. Also updated the android project's classpath by removing all the previous
+   * files inside ApiLibs folder, deleting it, copying from ApiLibs folder in App Engine project and
+   * then add the jars in the copied folder.
    * 
    * @throws InvocationTargetException
    * @throws IllegalArgumentException
@@ -220,8 +172,8 @@ public class SwarmServiceCreator {
     }
 
     /*
-     * Now that we've copied the updated endpoint information over to the
-     * possibly newly-created endpoint libs folder, re-read the deps file.
+     * Now that we've copied the updated endpoint information over to the possibly newly-created
+     * endpoint libs folder, re-read the deps file.
      */
     binaryDepsToadd = ManagedApiUtils.computeBinaryDepsToAdd(
         ManagedApiUtils.findAndReadDependencyFile(androidEndpointLibsFolder),
@@ -253,16 +205,57 @@ public class SwarmServiceCreator {
   }
 
   /**
-   * Given the name of an entity, return the name of the API that GPE will
-   * generate if generating a Cloud Endpoint for the entity.
+   * Given the name of an entity, return the name of the API that GPE will generate if generating a
+   * Cloud Endpoint for the entity.
    */
   public static String getApiNameFromEntityName(String entityName) {
     return getServiceNameFromEntityName(entityName).toLowerCase();
   }
 
   /**
-   * Given the name of an entity, return the name of the Endpoint class that GPE
-   * will generate for it.
+   * Given a root package, generates the Cloud Endpoint ownerDomain and packagePath information.
+   * 
+   * If rootPackage is com.foo.bar, then the ownerDomain will be "foo.com", and the packagePath will
+   * be "bar".
+   * 
+   * As another example, if the rootPackage is "com.foo.bar.baz", the ownerDomain is still
+   * "foo.com", and the packgePath is "bar.baz".
+   * 
+   * In the case where the rootPackage has only two components, packagePath is the empty string.
+   * 
+   * If rootPackage has less than two components, then <code>DEFAULT_PACKAGE_INFO</code> will be
+   * returned.
+   * 
+   * @param rootPackage the root package. Cannot be null.
+   * @return
+   */
+  public static EndpointPackageInfo getEndpointPackageInfo(String rootPackage) {
+
+    assert (rootPackage != null);
+
+    String[] packageComponents = rootPackage.split("\\.");
+
+    String ownerDomain = "";
+    String packagePath = "";
+
+    if (packageComponents.length < 2) {
+      return DEFAULT_PACKAGE_INFO;
+    } else {
+      ownerDomain = packageComponents[1] + "." + packageComponents[0];
+      for (int i = 2; i < packageComponents.length; i++) {
+        packagePath += packageComponents[i];
+        if (i != packageComponents.length - 1) {
+          packagePath += ".";
+        }
+      }
+    }
+
+    return new EndpointPackageInfo(ownerDomain, packagePath);
+  }
+
+  /**
+   * Given the name of an entity, return the name of the Endpoint class that GPE will generate for
+   * it.
    */
   public static String getServiceNameFromEntityName(String entityName) {
     return entityName + SERVICE_CLASS_SUFFIX;
@@ -270,11 +263,10 @@ public class SwarmServiceCreator {
 
   /**
    * Adds all the jar files in <code>androidEndpointLibsfolder</code>, given in
-   * <code>libJarsList</code> to <code>androidLibsFolder</code> if
-   * <code>addFiles</code> is true. If <code>addFiles</code> is false, then
-   * removes all the jar files in <code>androidEndpointLibsfolder</code> from
-   * the <code>androidLibsFolder</code>. Also, based on <code>addFiles</code>,
-   * adds or removes source folder in <code>androidEndpointLibsfolder</code>
+   * <code>libJarsList</code> to <code>androidLibsFolder</code> if <code>addFiles</code> is true. If
+   * <code>addFiles</code> is false, then removes all the jar files in
+   * <code>androidEndpointLibsfolder</code> from the <code>androidLibsFolder</code>. Also, based on
+   * <code>addFiles</code>, adds or removes source folder in <code>androidEndpointLibsfolder</code>
    * from <code>rawClasspathList</code>.
    * 
    * @throws InvocationTargetException
@@ -341,43 +333,23 @@ public class SwarmServiceCreator {
     }
   }
 
-  private List<IType> entityList;
+  private IProject androidProject;
   private String appId;
   private IType current;
-  private String primaryKeyType;
+  private List<IType> entityList;
   private String factoryClassPath;
-  private SwarmType swarmType;
-  private IProject project;
-
-  private IProject androidProject;
+  private IPath gaeInstallationPath;
+  private String idGetterName;
 
   private ClassLoader loader;
 
-  private String idGetterName;
+  private String primaryKeyType;
 
-  private IPath gaeInstallationPath;
+  private IProject project;
+
+  private SwarmType swarmType;
 
   public SwarmServiceCreator() {
-  }
-
-  /**
-   * Checks if a class with the given classname exists in the project.
-   * 
-   * @throws JavaModelException
-   */
-  private boolean classExists(String className) throws JavaModelException {
-    for (IPackageFragment pkgFragment : JavaCore.create(project).getPackageFragments()) {
-      if (pkgFragment.getKind() != IPackageFragmentRoot.K_SOURCE) {
-        continue;
-      }
-      for (ICompilationUnit cu : pkgFragment.getCompilationUnits()) {
-        if (cu.getElementName().equals(className)) {
-          factoryClassPath = pkgFragment.getElementName();
-          return true;
-        }
-      }
-    }
-    return false;
   }
 
   public void create(boolean generateLibs, IProgressMonitor progressMonitor)
@@ -512,6 +484,67 @@ public class SwarmServiceCreator {
     }
   }
 
+  /**
+   * Deletes all the Api / Discovery Configs in the project.
+   */
+  public void deleteAllConfigs(String fileExtension) throws CoreException {
+    IPath webInfPath = WebAppUtilities.getWebInfPath(project);
+    if (webInfPath == null || !webInfPath.toFile().exists() || !webInfPath.toFile().isDirectory()) {
+      throw new CoreException(new Status(IStatus.ERROR, AppEngineSwarmPlugin.PLUGIN_ID,
+          "Can't find WEB-INF directory"));
+    }
+    File apiConfigFolder = webInfPath.toFile();
+    for (File file : apiConfigFolder.listFiles()) {
+      if (file.isFile() && file.getName().endsWith(fileExtension)) {
+        file.delete();
+      }
+    }
+  }
+
+  public boolean serviceExists(String serviceName, IPackageFragment pack) {
+    if (!pack.exists()) {
+      return false;
+    }
+    ICompilationUnit serviceUnit = pack.getCompilationUnit(serviceName + ".java");
+    return serviceUnit.exists();
+  }
+
+  public void setAppId(String applicationId) {
+    appId = applicationId;
+  }
+
+  public void setEntities(Iterable<IType> entityTypes) {
+    entityList = (List<IType>) entityTypes;
+  }
+
+  public void setGaeSdkPath(IPath gaeInstallationPath) {
+    this.gaeInstallationPath = gaeInstallationPath;
+  }
+
+  public void setProject(IProject project) {
+    this.project = project;
+  }
+
+  /**
+   * Checks if a class with the given classname exists in the project.
+   * 
+   * @throws JavaModelException
+   */
+  private boolean classExists(String className) throws JavaModelException {
+    for (IPackageFragment pkgFragment : JavaCore.create(project).getPackageFragments()) {
+      if (pkgFragment.getKind() != IPackageFragmentRoot.K_SOURCE) {
+        continue;
+      }
+      for (ICompilationUnit cu : pkgFragment.getCompilationUnits()) {
+        if (cu.getElementName().equals(className)) {
+          factoryClassPath = pkgFragment.getElementName();
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   private File createEmptySwarmLib(SubMonitor monitor) throws CoreException {
     IFolder f = project.getFolder(ManagedApiPlugin.SWARM_LIB_FOLDER_NAME);
     File libFolder = project.getLocation().append(ManagedApiPlugin.SWARM_LIB_FOLDER_NAME).toFile();
@@ -628,23 +661,6 @@ public class SwarmServiceCreator {
     monitor.done();
   }
 
-  /**
-   * Deletes all the Api / Discovery Configs in the project.
-   */
-  public void deleteAllConfigs(String fileExtension) throws CoreException {
-    IPath webInfPath = WebAppUtilities.getWebInfPath(project);
-    if (webInfPath == null || !webInfPath.toFile().exists() || !webInfPath.toFile().isDirectory()) {
-      throw new CoreException(new Status(IStatus.ERROR, AppEngineSwarmPlugin.PLUGIN_ID,
-          "Can't find WEB-INF directory"));
-    }
-    File apiConfigFolder = webInfPath.toFile();
-    for (File file : apiConfigFolder.listFiles()) {
-      if (file.isFile() && file.getName().endsWith(fileExtension)) {
-        file.delete();
-      }
-    }
-  }
-
   private Class<?> getClassObject(String serviceClassName) throws ClassNotFoundException {
     return loader.loadClass(current.getPackageFragment().getElementName() + "." + serviceClassName);
   }
@@ -663,8 +679,7 @@ public class SwarmServiceCreator {
           "failed to find output folder"));
     }
     File binRoot = binRootPath.toFile();
-    
-    
+
     IClasspathEntry[] entries = javaProject.getResolvedClasspath(false);
     // list will not be any larger than entries.length + 2
     List<URL> classpathUrlList = new ArrayList<URL>(entries.length + 2);
@@ -681,7 +696,7 @@ public class SwarmServiceCreator {
       File classPathEntry = new File(jarLocation.replace("/", File.separator));
       classpathUrlList.add(classPathEntry.toURI().toURL());
     }
-    //Todo(appu): expose via sdkinfo class
+    // Todo(appu): expose via sdkinfo class
     classpathUrlList.add(gaeInstallationPath.append(
         "lib/opt/tools/appengine-local-endpoints/v1/appengine-local-endpoints.jar").toFile().toURI().toURL());
     classpathUrlList.add(gaeInstallationPath.append(
@@ -689,30 +704,6 @@ public class SwarmServiceCreator {
     loader = new URLClassLoader(classpathUrlList.toArray(new URL[classpathUrlList.size()]));
   }
 
-  public boolean serviceExists(String serviceName, IPackageFragment pack) {
-    if (!pack.exists()) {
-      return false;
-    }
-    ICompilationUnit serviceUnit = pack.getCompilationUnit(serviceName + ".java");
-    return serviceUnit.exists();
-  }
-
-  public void setAppId(String applicationId) {
-    appId = applicationId;
-  }
-
-  public void setEntities(Iterable<IType> entityTypes) {
-    entityList = (List<IType>) entityTypes;
-  }
-
-  public void setGaeSdkPath(IPath gaeInstallationPath) {
-    this.gaeInstallationPath = gaeInstallationPath;
-  }
-
-  public void setProject(IProject project) {
-    this.project = project;
-  }
-  
   private void updateProguardInfo() throws CoreException, IOException {
     if (androidProject == null) {
       return;

@@ -1,15 +1,13 @@
 /*******************************************************************************
  * Copyright 2012 Google Inc. All Rights Reserved.
  * 
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
 package com.google.gdt.eclipse.appengine.swarm.wizards;
@@ -29,7 +27,7 @@ import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
@@ -37,19 +35,22 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IActionDelegate;
+import org.eclipse.ui.PlatformUI;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Swarm Generation class of contextual menu. Triggers the service class and API
- * generation.
+ * Swarm Generation class of contextual menu. Triggers the service class and API generation.
  */
 public class GenerateSwarmApiClassAction extends Action implements IActionDelegate {
 
@@ -99,17 +100,30 @@ public class GenerateSwarmApiClassAction extends Action implements IActionDelega
       serviceCreator.setAppId(gaeProject.getAppId());
       serviceCreator.setProject(project);
       serviceCreator.setGaeSdkPath(gaeProject.getSdk().getInstallationPath());
-      serviceCreator.create(false, new NullProgressMonitor());
 
-      ExtensionQuery<IEndpointsActionCallback> extensionQuery = new ExtensionQuery<IEndpointsActionCallback>(
-          AppEngineSwarmPlugin.PLUGIN_ID, "endpointscallback", "class");
+      new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()).run(
+          true, true, new IRunnableWithProgress() {
+            public void run(IProgressMonitor monitor) throws InvocationTargetException {
+              try {
+                serviceCreator.create(false, monitor);
 
-      for (ExtensionQuery.Data<IEndpointsActionCallback> extensionData : extensionQuery.getData()) {
-        extensionData.getExtensionPointData().onGenerateEndpointClass(project);
-      }
-    } catch (Exception e) {
+                // Reporting
+                ExtensionQuery<IEndpointsActionCallback> extensionQuery = new ExtensionQuery<IEndpointsActionCallback>(
+                    AppEngineSwarmPlugin.PLUGIN_ID, "endpointscallback", "class");
+
+                for (ExtensionQuery.Data<IEndpointsActionCallback> extensionData : extensionQuery.getData()) {
+                  extensionData.getExtensionPointData().onGenerateEndpointClass(project);
+                }
+              } catch (Exception e) {
+                throw new InvocationTargetException(e);
+              }
+            }
+          });
+
+    } catch (InvocationTargetException|InterruptedException|JavaModelException e) {
       MessageDialog.openInformation(Display.getDefault().getActiveShell(),
-          "Error in Generating Entity class", e.getMessage());
+          "Error in Generating Endpoint Class",
+          "An error occurred when generating the endpoint class. See the Error Log for more details.");
       AppEngineSwarmPlugin.getLogger().logError(e);
     }
   }

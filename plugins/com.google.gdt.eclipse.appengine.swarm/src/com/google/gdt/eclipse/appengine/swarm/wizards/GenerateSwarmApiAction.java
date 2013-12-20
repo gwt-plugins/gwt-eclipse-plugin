@@ -1,15 +1,13 @@
 /*******************************************************************************
  * Copyright 2012 Google Inc. All Rights Reserved.
- *
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * 
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
 package com.google.gdt.eclipse.appengine.swarm.wizards;
@@ -47,8 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Swarm Generation class of contextual menu. Triggers the service class and API
- * generation.
+ * Swarm Generation class of contextual menu. Triggers the service class and API generation.
  */
 public class GenerateSwarmApiAction extends Action implements IActionDelegate {
 
@@ -77,7 +74,7 @@ public class GenerateSwarmApiAction extends Action implements IActionDelegate {
       GaeProject gaeProject = GaeProject.create(project);
       serviceCreator.setGaeSdkPath(gaeProject.getSdk().getInstallationPath());
       new ProgressMonitorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell()).run(
-          false, false, new IRunnableWithProgress() {
+          true, true, new IRunnableWithProgress() {
             public void run(IProgressMonitor monitor) throws InvocationTargetException {
               try {
                 serviceCreator.create(true, monitor);
@@ -86,11 +83,11 @@ public class GenerateSwarmApiAction extends Action implements IActionDelegate {
               }
             }
           });
-    } catch (InvocationTargetException e) {
-      MessageDialog.openInformation(Display.getDefault().getActiveShell(),
-          "Error in Generating API", e.getCause().getMessage());
-      AppEngineSwarmPlugin.getLogger().logError(e);
-    } catch (InterruptedException e) {
+    } catch (InvocationTargetException|InterruptedException e) {
+      MessageDialog.openInformation(
+          Display.getDefault().getActiveShell(),
+          "Error in Generating Client Libraries",
+          "An error occured when attempting to generate the client libraries. See the Error Log for more details.");
       AppEngineSwarmPlugin.getLogger().logError(e);
     }
   }

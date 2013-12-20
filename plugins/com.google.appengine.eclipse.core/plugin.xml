@@ -9,7 +9,7 @@
   <extension-point id="com.google.appengine.eclipse.core.gaeProjectChange" name="gaeProjectChange" schema="schema/com.google.appengine.eclipse.core.gaeProjectChange.exsd"/>
   <extension-point id="com.google.appengine.eclipse.core.logGaeStats" name="logGaeStats" schema="schema/com.google.appengine.eclipse.core.logGaeStats.exsd"/>
   <extension
-         point="org.eclipse.jdt.core.compilationParticipant">
+        point="org.eclipse.jdt.core.compilationParticipant">
       <compilationParticipant
             class="com.google.appengine.eclipse.core.validators.java.JavaCompilationParticipant"
             createsProblems="true"
@@ -251,5 +251,16 @@
          point="com.google.appengine.eclipse.core.enhancerJobExtension">
       <datanucleusVersionProvider
             class="com.google.appengine.eclipse.core.projects.DatanucleusVersionProvider"/>
+   </extension>
+   <extension
+         id="endpointsProblemMarker"
+         name="Google App Engine Cloud Endpoints Problem Marker"
+         point="org.eclipse.core.resources.markers">
+      <persistent
+            value="true">
+      </persistent>
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
    </extension>
 </plugin>

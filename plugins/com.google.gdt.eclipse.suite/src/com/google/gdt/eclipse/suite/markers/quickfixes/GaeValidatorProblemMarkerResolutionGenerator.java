@@ -115,7 +115,7 @@ public class GaeValidatorProblemMarkerResolutionGenerator implements
             break;
           }
 
-          case JAVA15_DEPRECATED: {
+          case JAVA16_DEPRECATED: {
             markerResolutions.add(new ChooseWorkspaceJreMarkerResolution());
             markerResolutions.add(new ChooseProjectJreSystemLibraryMarkerResolution());
             break;

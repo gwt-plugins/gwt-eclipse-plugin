@@ -124,10 +124,6 @@ public class GCMIntentService extends GCMBaseIntentService {
    */
   @Override
   public void onRegistered(Context context, String registration) {
-    /*
-     * This is some special exception-handling code that we're using to work around a problem
-     * with the DevAppServer and methods that return null in App Engine 1.7.5.
-     */
     boolean alreadyRegisteredWithEndpointServer = false;
 
     try {

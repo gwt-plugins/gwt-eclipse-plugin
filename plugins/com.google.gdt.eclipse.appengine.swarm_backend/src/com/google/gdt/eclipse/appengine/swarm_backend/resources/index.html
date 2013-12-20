@@ -91,44 +91,11 @@ if (window.location.hostname == 'localhost'
     gapi.client.load('messageEndpoint', 'v1', function() {});
   }
 
-  // Specialized function for checking error responses; it's needed to work around bugs in the
-  // current version of the DevAppServer
-  function checkErrorResponse(result, rawResult) {      
-    // Generally, !result should never occur. It's a bug with the DevAppServer. It will be fixed
-    // in a forthcoming version of App Engine.    
-    if (!result) {           
-      try {
-        // This is some special exception-handling code to deal with the DevAppServer not 
-        // handling empty (void responses) from an endpoint method in App Engine 1.7.5.
-        result = JSON.parse(rawResult);
-      } catch (err) {
-      // This is a spurious error. Return true.
-      if (rawResult.indexOf("Error 400 Failed to parse JSON request: Unexpected character") != -1) {
-          return {isError: false};
-      } else {
-        if (rawResult == "") {
-          // Empty result; perhaps we're disconnected?
-          return {isError: true, errorMessage: "No response from server! Is it up and running?" };
-
-        } else {
-          // Unknown error; this shouldn't really happen
-          var safeErrorHtml = $('<div/>').text(rawResult).html();
-          return {isError: true, errorMessage: safeErrorHtml};
-        }         
-      }
-      }   
-    }   
-      
-    if (result.error) {
-      // This is really what should happen; if there's an error, a result.error object will
-      // exist
-          var safeErrorHtml = $('<div/>').text(result.error.message).html();
-      return {isError: true, errorMessage: safeErrorHtml};
-    } else if (result[0] && result[0].error) {
-      // This is yet another hack; the DevAppServer incorrectly returns an array of error
-      // responses in the case where the endpoint method throws an app-level exception.
-      // Again, this will be fixed in a forthcoming version of App Engine.
-          var safeErrorHtml = $('<div/>').text(result[0].error.message).html();
+  // Function for checking error responses; it correctly sanitizes error messages
+  // so that they are safe to display in the UI
+  function checkErrorResponse(result) {      
+    if (result && result.error) {
+      var safeErrorHtml = $('<div/>').text(result.error.message).html();
       return {isError: true, errorMessage: safeErrorHtml};
     }
     
@@ -193,7 +160,7 @@ if (window.location.hostname == 'localhost'
   
   function updateRegisteredDeviceTable() {
     gapi.client.deviceinfoendpoint
-        .listDeviceInfo({})
+        .listDeviceInfo()
         .execute(
             function(deviceInfoItems, deviceInfoItemsRaw) {
               errorResult = checkErrorResponse(deviceInfoItems, deviceInfoItemsRaw);

@@ -162,6 +162,69 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
 
   private static final String RUN_GROUP_ID = "org.eclipse.debug.ui.launchGroup.run";
 
+  private static String getJdoConfigValue(boolean v1) {
+    if (v1) {
+      return "org.datanucleus.store.appengine.jdo.DatastoreJDOPersistenceManagerFactory";
+    } else {
+      return "org.datanucleus.api.jdo.JDOPersistenceManagerFactory";
+    }
+  }
+
+  private static String getPersitenceValue(boolean v1) {
+    if (v1) {
+      return "org.datanucleus.store.appengine.jpa.DatastorePersistenceProvider";
+    } else {
+      return "org.datanucleus.api.jpa.PersistenceProviderImpl";
+    }
+  }
+
+  // TODO: This check should be extracted out to com.google.gdt.eclipse.core
+  private static boolean isGWTProject(IProject project) {
+    try {
+      return project.isAccessible()
+          && project.hasNature("com.google.gwt.eclipse.core.GWTPlugin.gwtNature");
+    } catch (CoreException e) {
+      AppEngineCorePluginLog.logError(e);
+    }
+    return false;
+  }
+
+  private static void openBrowser(String url) {
+    BrowserUtilities.launchBrowserAndHandleExceptions(url);
+  }
+
+  private static Document parseXML(String path) {
+    Document document = null;
+    try {
+      DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      document = docBuilder.parse(path);
+    } catch (IOException e) {
+      AppEngineCorePluginLog.logError("Unable to read " + path);
+    } catch (SAXException e) {
+      AppEngineCorePluginLog.logError(path + " is not in the correct format. Left unaltered.");
+    } catch (ParserConfigurationException e) {
+      AppEngineCorePluginLog.logError(e);
+    }
+    return document;
+  }
+
+  private static void writeXML(Document document, String path) {
+    try {
+      Transformer transformer = TransformerFactory.newInstance().newTransformer();
+      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+      transformer.transform(new DOMSource(document), new StreamResult(new Path(path).toFile()));
+    } catch (IllegalArgumentException e) {
+      // Not possible but just in case.
+      AppEngineCorePluginLog.logError(e);
+    } catch (TransformerConfigurationException e) {
+      AppEngineCorePluginLog.logError(e);
+    } catch (TransformerException e) {
+      AppEngineCorePluginLog.logError(e);
+    } catch (TransformerFactoryConfigurationError e) {
+      AppEngineCorePluginLog.logError(e);
+    }
+  }
+
   private Link apisConsoleLink;
 
   private Link appengineCloudSqlConfigureLink;
@@ -270,9 +333,9 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
       }
     }
 
-    if (useGae) {
+    saveChangesToAppEngineWebXml();
 
-      saveChangesToAppEngineWebXml();
+    if (useGae) {
 
       if (hasHrdChanged()) {
         GaeProjectProperties.jobSetGaeHrdEnabled(getProject(), useHrdCheckbox.getSelection());
@@ -309,7 +372,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
          */
         setDatanucleusVersionAndUpdateClasspath(getDatanucleusVersion(),
             useDatanucleusCheckbox.getSelection());
-      }
+      }      
     }
 
     GoogleCloudSqlProperties.jobSetGoogleCloudSqlEnabled(getProject(),
@@ -724,22 +787,6 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
         .getFirstElement();
   }
 
-  private static String getJdoConfigValue(boolean v1) {
-    if (v1) {
-      return "org.datanucleus.store.appengine.jdo.DatastoreJDOPersistenceManagerFactory";
-    } else {
-      return "org.datanucleus.api.jdo.JDOPersistenceManagerFactory";
-    }
-  }
-
-  private static String getPersitenceValue(boolean v1) {
-    if (v1) {
-      return "org.datanucleus.store.appengine.jpa.DatastorePersistenceProvider";
-    } else {
-      return "org.datanucleus.api.jpa.PersistenceProviderImpl";
-    }
-  }
-
   private boolean hasDatanucleusChanged() {
     return useDatanucleusCheckbox.getSelection() ^ initialUseDatanucleus;
   }
@@ -806,36 +853,6 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     return true;
   }
 
-  // TODO: This check should be extracted out to com.google.gdt.eclipse.core
-  private static boolean isGWTProject(IProject project) {
-    try {
-      return project.isAccessible()
-          && project.hasNature("com.google.gwt.eclipse.core.GWTPlugin.gwtNature");
-    } catch (CoreException e) {
-      AppEngineCorePluginLog.logError(e);
-    }
-    return false;
-  }
-
-  private static void openBrowser(String url) {
-    BrowserUtilities.launchBrowserAndHandleExceptions(url);
-  }
-
-  private static Document parseXML(String path) {
-    Document document = null;
-    try {
-      DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      document = docBuilder.parse(path);
-    } catch (IOException e) {
-      AppEngineCorePluginLog.logError("Unable to read " + path);
-    } catch (SAXException e) {
-      AppEngineCorePluginLog.logError(path + " is not in the correct format. Left unaltered.");
-    } catch (ParserConfigurationException e) {
-      AppEngineCorePluginLog.logError(e);
-    }
-    return document;
-  }
-
   private void recordInitialSettings() {
     initialUseGae = GaeNature.isGaeProject(getProject());
     initialUseHrd = GaeProjectProperties.getGaeHrdEnabled(getProject());
@@ -872,13 +889,6 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
 
     if (!appId.equals(initialAppId)) {
       gaeProject.setAppId(appId, true);
-      ExtensionQuery<GaeProjectChangeExtension> extQuery = new ExtensionQuery<
-          GaeProjectChangeExtension>(AppEngineCorePlugin.PLUGIN_ID, "gaeProjectChange", "class");
-      List<ExtensionQuery.Data<GaeProjectChangeExtension>> contributors = extQuery.getData();
-      for (ExtensionQuery.Data<GaeProjectChangeExtension> c : contributors) {
-        GaeProjectChangeExtension data = c.getExtensionPointData();
-        data.gaeAppIdChanged(getProject());
-      }
     }
 
     if (!version.equals(initialVersion)) {
@@ -997,36 +1007,6 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     }
   }
 
-  private void updateProjectSdk() throws FileNotFoundException, CoreException,
-      BackingStoreException {
-    SdkSelection<GaeSdk> sdkSelection = sdkSelectionBlock.getSdkSelection();
-    boolean isDefault = false;
-    GaeSdk newSdk = null;
-    if (sdkSelection != null) {
-      newSdk = sdkSelection.getSelectedSdk();
-      isDefault = sdkSelection.isDefault();
-    }
-
-    GaeSdk oldSdk = sdkSelectionBlock.getInitialSdk();
-
-    UpdateType updateType = AppEngineUpdateProjectSdkCommand.computeUpdateType(
-        sdkSelectionBlock.getInitialSdk(), newSdk, isDefault);
-
-    /*
-     * Update the project classpath which will trigger the <WAR>/WEB-INF/lib
-     * jars to be updated, if the WAR output directory is managed
-     */
-    new AppEngineUpdateProjectSdkCommand(getJavaProject(), oldSdk, newSdk, updateType, null)
-      .execute();
-  }
-
-  private void updateProjectWebInfLibFolder() throws CoreException, BackingStoreException,
-      FileNotFoundException {
-    IJavaProject javaProject = getJavaProject();
-    GaeSdk sdk = GaeSdk.findSdkFor(javaProject);
-    (new AppEngineUpdateWebInfFolderCommand(javaProject, sdk)).execute();
-  }
-
   private void updateJdoConfig(String datanucleusVersion) {
     try {
       // TODO(rdayal): Don't hardcode this value. Look through the project's source paths. 
@@ -1098,6 +1078,36 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
       AppEngineCorePluginLog.logError(
           "jdoconfig.xml is not in the correct format. Left unaltered.");
     }
+  }
+
+  private void updateProjectSdk() throws FileNotFoundException, CoreException,
+      BackingStoreException {
+    SdkSelection<GaeSdk> sdkSelection = sdkSelectionBlock.getSdkSelection();
+    boolean isDefault = false;
+    GaeSdk newSdk = null;
+    if (sdkSelection != null) {
+      newSdk = sdkSelection.getSelectedSdk();
+      isDefault = sdkSelection.isDefault();
+    }
+
+    GaeSdk oldSdk = sdkSelectionBlock.getInitialSdk();
+
+    UpdateType updateType = AppEngineUpdateProjectSdkCommand.computeUpdateType(
+        sdkSelectionBlock.getInitialSdk(), newSdk, isDefault);
+
+    /*
+     * Update the project classpath which will trigger the <WAR>/WEB-INF/lib
+     * jars to be updated, if the WAR output directory is managed
+     */
+    new AppEngineUpdateProjectSdkCommand(getJavaProject(), oldSdk, newSdk, updateType, null)
+      .execute();
+  }
+
+  private void updateProjectWebInfLibFolder() throws CoreException, BackingStoreException,
+      FileNotFoundException {
+    IJavaProject javaProject = getJavaProject();
+    GaeSdk sdk = GaeSdk.findSdkFor(javaProject);
+    (new AppEngineUpdateWebInfFolderCommand(javaProject, sdk)).execute();
   }
 
   private IStatus validateAppId() {
@@ -1219,22 +1229,5 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
 
     version = enteredVersion;
     return StatusUtilities.OK_STATUS;
-  }
-
-  private static void writeXML(Document document, String path) {
-    try {
-      Transformer transformer = TransformerFactory.newInstance().newTransformer();
-      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-      transformer.transform(new DOMSource(document), new StreamResult(new Path(path).toFile()));
-    } catch (IllegalArgumentException e) {
-      // Not possible but just in case.
-      AppEngineCorePluginLog.logError(e);
-    } catch (TransformerConfigurationException e) {
-      AppEngineCorePluginLog.logError(e);
-    } catch (TransformerException e) {
-      AppEngineCorePluginLog.logError(e);
-    } catch (TransformerFactoryConfigurationError e) {
-      AppEngineCorePluginLog.logError(e);
-    }
   }
 }
