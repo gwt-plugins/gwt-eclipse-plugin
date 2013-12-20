@@ -82,7 +82,7 @@
     
     <extension point="org.eclipse.wst.common.project.facet.core.facets">        
         <project-facet id="com.google.appengine.facet">
-            <label>%gaefacetlabel</label>
+            <label>%gaefacetlabel.war</label>
             <description>%gaefacetdescription</description>
         </project-facet>
         <project-facet-version facet="com.google.appengine.facet" version="1">
@@ -117,7 +117,7 @@
     </extension>
     <extension point="org.eclipse.wst.common.project.facet.core.facets">        
         <project-facet id="com.google.appengine.facet.ear">
-            <label>%gaefacetlabel</label>
+            <label>%gaefacetlabel.ear</label>
             <description>%gaeearfacetdescription</description>
         </project-facet>
         <project-facet-version facet="com.google.appengine.facet.ear" version="1">
@@ -196,11 +196,19 @@
     </extension>    
     
     <extension id="com.google.appengine.defaultFacets"
-               name="%gaefacetlabel"
+               name="%gaefacetlabel.war"
                point="org.eclipse.wst.common.project.facet.core.defaultFacets">
         <default-facets>
             <runtime-component id="com.google.appengine.runtime.id" version="1"/>
-            <facet id="com.google.appengine.facet" version="1" />
+            <facet id="com.google.appengine.facet.ear" version="1" />
+        </default-facets>
+    </extension>      
+    
+    <extension id="com.google.appengine.defaultFacets"
+               name="%gaefacetlabel.ear"
+               point="org.eclipse.wst.common.project.facet.core.defaultFacets">
+        <default-facets>
+            <runtime-component id="com.google.appengine.runtime.id" version="1"/>
             <facet id="com.google.appengine.facet.ear" version="1" />
         </default-facets>
     </extension>      

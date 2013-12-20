@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<plugin>
+    <extension
+          point="org.eclipse.m2e.wtp.facetDetectors">
+       <facetDetector
+             class="com.google.appengine.eclipse.wtp.maven.GaeFacetDetector"
+             facetId="com.google.appengine.facet"
+             priority="1">
+       </facetDetector>
+    </extension>
+    
+    <extension
+          point="org.eclipse.m2e.core.projectConversionParticipants">
+       <conversionParticipantConfiguration
+             compatiblePackagings="war,ear"
+             conversionParticipantId="com.google.appengine.eclipse.wtp.maven.gaeConversionParticipantConfiguration">
+       </conversionParticipantConfiguration>
+       <projectConversionParticipant
+             class="com.google.appengine.eclipse.wtp.maven.GaeProjectConversionParticipant"
+             id="com.google.appengine.eclipse.wtp.maven.gaeProjectConversionParticipant"
+             nature="com.google.appengine.eclipse.wtp.maven.projectConversionParticipant1">
+       </projectConversionParticipant>
+    </extension>
+    
+    <extension
+          point="org.eclipse.m2e.core.mavenComponentContributors">
+       <configurator
+             class="com.google.appengine.eclipse.wtp.maven.GaeMavenComponentContributor">
+       </configurator>
+    </extension>
+    
+    <extension
+          point="org.eclipse.m2e.core.projectConfigurators">
+       <configurator
+             class="com.google.appengine.eclipse.wtp.maven.GaeProjectConfigurator"
+             id="com.google.appengine.eclipse.wtp.maven.gaeConfigurator"
+             name="App Engine Web"
+             secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator">
+       </configurator>
+    </extension>
+   <!--
+    <extension
+          point="org.eclipse.m2e.core.projectConfigurators">
+       <configurator
+             class="com.google.appengine.eclipse.wtp.maven.CopyOfGaeProjectConfigurator"
+             id="com.google.appengine.eclipse.wtp.maven.gaeConfigurator2"
+             name="App Engine Web2"
+             secondaryTo="org.eclipse.m2e.jdt.javaConfigurator">
+       </configurator>
+    </extension>
+    -->
+   <extension
+         point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
+   </extension>
+</plugin>

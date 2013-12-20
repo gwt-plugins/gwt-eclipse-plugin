@@ -224,7 +224,7 @@ public final class GaeFacetInstallDelegate implements IDelegate {
   private IPath getSdkLocation(IDataModel model) {
     IFacetedProjectWorkingCopy fpwc = (IFacetedProjectWorkingCopy) model.getProperty(IFacetDataModelProperties.FACETED_PROJECT_WORKING_COPY);
     IRuntime primaryRuntime = fpwc.getPrimaryRuntime();
-    return ProjectUtils.getGaeSdkLocation(primaryRuntime);
+    return primaryRuntime == null ? null : ProjectUtils.getGaeSdkLocation(primaryRuntime);
   }
 
   /**
