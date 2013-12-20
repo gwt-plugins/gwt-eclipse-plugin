@@ -232,6 +232,13 @@ public class DeployProjectJob extends WorkspaceJob {
     String appId = gaeProject.getAppId();
     String version = gaeProject.getAppVersion().trim();
 
+    assert (version != null);
+    assert (appId != null);
+    
+    if (version.length() > 0) {
+      version += "-dot-";
+    }
+    
     if (appId.contains(":")) {
       // Domain application; app ID follows domainName:appId format
       String[] splitApp = appId.split(":");
@@ -249,10 +256,10 @@ public class DeployProjectJob extends WorkspaceJob {
       }
 
       appId = splitApp[1];
-      urlString = "http://" + version + "." + appId + "." + domain;
+      urlString = "http://" + version + appId + "." + domain;
     } else {
       // Regular application
-      urlString = "http://" + version + "." + appId + ".appspot.com";
+      urlString = "http://" + version + appId + ".appspot.com";
     }
 
     // Open URI in Desktop default browser if possible, or else open in Eclipse default browser
