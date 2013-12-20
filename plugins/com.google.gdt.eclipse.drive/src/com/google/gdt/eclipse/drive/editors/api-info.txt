@@ -6345,7 +6345,7 @@ void
 setText(text)
 DocumentApp.ParagraphHeading
 
-7
+9
 HEADING1
 DocumentApp.ParagraphHeading
 
@@ -6374,6 +6374,14 @@ NORMAL
 DocumentApp.ParagraphHeading
 
 NORMAL
+SUBTITLE
+DocumentApp.ParagraphHeading
+
+SUBTITLE
+TITLE
+DocumentApp.ParagraphHeading
+
+TITLE
 DocumentApp.SearchResult
 
 4
@@ -15798,7 +15806,7 @@ SitesApp.PageType
 WEB_PAGE
 SitesApp.Site
 
-39
+38
 addEditor
 SitesApp.Site
 
@@ -15851,10 +15859,6 @@ createWebPage
 SitesApp.Page
 
 createWebPage(title, name, html)
-deleteSite
-void
-
-deleteSite()
 getAllDescendants
 SitesApp.Page[]
 
@@ -25632,7 +25636,7 @@ setProperty(key, value)
 2
 Utilities
 
-30
+28
 Charset
 Utilities.Charset
 
@@ -25697,14 +25701,6 @@ formatString
 String
 
 formatString(template, args)
-jsonParse
-Object
-
-jsonParse(jsonString)
-jsonStringify
-String
-
-jsonStringify(obj)
 newBlob
 Blob
 
@@ -26709,6 +26705,30 @@ valueOf
 BigNumber
 
 valueOf(value)
+0
+JSON
+
+5
+parse
+Object
+
+parse(text)
+parse
+Object
+
+parse(text, reviver)
+stringify
+String
+
+stringify(value)
+stringify
+String
+
+stringify(value, replacer)
+stringify
+String
+
+stringify(value, replacer, space)
 0
 Math
 
