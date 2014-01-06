@@ -65,15 +65,14 @@ public class CorePlugin extends AbstractGooglePlugin {
     super.start(context);
     plugin = this;
     
-    // Make sure the executing JVM and JRE are up to date. This plugin and everything it depends on
-    // are Java 1.6 compatible, so this check will run at workbench startup in any JVM/JRE at level
-    // 1.6 or later. However, some other parts of GPE require MIN_GPE_JAVA_VERSION or later. If we
-    // run on a version later than or equal to 1.6 but less than MIN_GPE_JAVA_VERSION, the code
+    // Make sure the executing JRE is up to date. This plugin and everything it depends on
+    // are Java 1.5 compatible, so this check will run at workbench startup in any JRE at level
+    // 1.5 or later. However, some other parts of GPE require MIN_GPE_JAVA_VERSION or later. If we
+    // run on a version later than or equal to 1.5 but less than MIN_GPE_JAVA_VERSION, the code
     // below pops up an error dialog and then throws an exception so that GPE does not start, and
     // does not make any contributions to the UI.
     try {
-      checkVersion("JVM version", "java.vm.specification.version", MIN_GPE_JAVA_VERSION);
-      checkVersion("JRE version", "java.specification.version", MIN_GPE_JAVA_VERSION);
+      checkVersion("java.specification.version", MIN_GPE_JAVA_VERSION);
     } catch (final GpeVersionException e) {
       UIJob dialogJob =
           new UIJob("background-initiated question dialog"){
@@ -87,7 +86,11 @@ public class CorePlugin extends AbstractGooglePlugin {
             }
           };
       dialogJob.schedule();
-      throw e; // Prevent plugin from starting up.
+      // TODO(nhcohen): Uncomment the following once we no longer support Indigo. Due to a bug in
+      // Indigo, throwing this exception from CorePlugin.start() indirectly leads to the throwing of
+      // an unhandled exception in the main Eclipse thread, so Eclipse cannot start.
+      //
+      // throw e; // Prevent plugin from starting up.
     }
     
     // Load problem severities
@@ -97,8 +100,7 @@ public class CorePlugin extends AbstractGooglePlugin {
     ProjectChangeTimestampTracker.INSTANCE.startTracking();
   }
   
-  private static void checkVersion(
-      String description, String key, Version minVersion) throws GpeVersionException {
+  private static void checkVersion(String key, Version minVersion) throws GpeVersionException {
     String detectedVersionString = System.getProperty(key);
     if (key == null) {
       // Shouldn't happen
@@ -111,16 +113,15 @@ public class CorePlugin extends AbstractGooglePlugin {
     } catch (IllegalArgumentException e) {
       throw new GpeVersionException(
           String.format(
-              "Can't check Java version: Value of %s property, \"%s\", has an unexpected form.",
-              description,
+              "Can't check JRE version: Value of %s property, \"%s\", has an unexpected form.",
+              key,
               detectedVersionString),
           e);
     }
     if (detectedVersion.compareTo(minVersion) < 0) {
       throw new GpeVersionException(
           String.format(
-              "%s is %s; version %s or later is needed to run Google Plugin for Eclipse.",
-              description,
+              "JRE version is %s; version %s or later is needed to run Google Plugin for Eclipse.",
               detectedVersion,
               minVersion));
     }
