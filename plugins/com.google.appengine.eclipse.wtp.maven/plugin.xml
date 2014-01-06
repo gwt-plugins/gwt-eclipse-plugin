@@ -36,21 +36,10 @@
        <configurator
              class="com.google.appengine.eclipse.wtp.maven.GaeProjectConfigurator"
              id="com.google.appengine.eclipse.wtp.maven.gaeConfigurator"
-             name="App Engine Web"
-             secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator">
+             name="App Engine Web">
        </configurator>
     </extension>
-   <!--
-    <extension
-          point="org.eclipse.m2e.core.projectConfigurators">
-       <configurator
-             class="com.google.appengine.eclipse.wtp.maven.CopyOfGaeProjectConfigurator"
-             id="com.google.appengine.eclipse.wtp.maven.gaeConfigurator2"
-             name="App Engine Web2"
-             secondaryTo="org.eclipse.m2e.jdt.javaConfigurator">
-       </configurator>
-    </extension>
-    -->
+
    <extension
          point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
    </extension>

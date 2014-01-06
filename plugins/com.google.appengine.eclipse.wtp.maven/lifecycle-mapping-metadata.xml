@@ -1,101 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lifecycleMappingMetadata>
-<!-- Alex's version -->
-<!--
-            <pluginExecutions>
-                <pluginExecution>
-                    <pluginExecutionFilter>
-                        <groupId>com.google.appengine</groupId>
-                        <artifactId>appengine-maven-plugin</artifactId>
-                        <versionRange>[1.8.2,)</versionRange>
-                        <goals>
-                            <goal>endpoints_get_discovery_doc</goal>
-                        </goals>
-                    </pluginExecutionFilter>
-                    <action>
-                        <configurator>
-                            <id>com.google.appengine.eclipse.wtp.maven.gaeConfigurator</id>
-                        </configurator>
-                    </action>
-                </pluginExecution>
-            </pluginExecutions> 
--->
-
-<!-- Alex's version with addition of a war goal adapted from
-     org.eclipse.m2e.wtp.jpa/lifecycle-mapping-metadata.xml -->
-
-            <pluginExecutions>
-                <pluginExecution>
-                    <pluginExecutionFilter>
-                        <groupId>com.google.appengine</groupId>
-                        <artifactId>appengine-maven-plugin</artifactId>
-                        <versionRange>[1.8.2,)</versionRange>
-                        <goals>
-                            <goal>endpoints_get_discovery_doc</goal>
-                        </goals>
-                    </pluginExecutionFilter>
-                    <action>
-                        <configurator>
-                            <id>com.google.appengine.eclipse.wtp.maven.gaeConfigurator</id>
-                        </configurator>
-                    </action>
-                </pluginExecution>
-                
-                <pluginExecution>
-                    <pluginExecutionFilter>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <versionRange>[1.0,)</versionRange>
-                        <goals>
-                            <goal>war</goal>
-                        </goals>
-                    </pluginExecutionFilter>
-                    <action>
-                        <configurator>
-                            <id>com.google.appengine.eclipse.wtp.maven.gaeConfigurator</id>
-                        </configurator>
-                    </action>
-                </pluginExecution>
-            </pluginExecutions> 
-
-  
- <!-- Alex's version with goal changed to "initialize" --><!--
-            <pluginExecutions>
-                <pluginExecution>
-                    <pluginExecutionFilter>
-                        <groupId>com.google.appengine</groupId>
-                        <artifactId>appengine-maven-plugin</artifactId>
-                        <versionRange>[1.8.2,)</versionRange>
-                        <goals>
-                            <goal>initialize</goal>
-                        </goals>
-                    </pluginExecutionFilter>
-                    <action>
-                        <configurator>
-                            <id>com.google.appengine.eclipse.wtp.maven.gaeConfigurator</id>
-                        </configurator>
-                    </action>
-                </pluginExecution>
-            </pluginExecutions> -->
-
-<!-- From org.eclipse.m2e.wtp.jpa/lifecycle-mapping-metadata.xml, with configurator name changed -->
-<!--       
-    <pluginExecutions>    
+    <pluginExecutions>
         <pluginExecution>
-          <pluginExecutionFilter>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <versionRange>[2.0,)</versionRange>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </pluginExecutionFilter>
-          <action>
-            <configurator>
-              <id>com.google.appengine.eclipse.wtp.maven.gaeConfigurator</id>
-            </configurator>
-          </action>
+            <pluginExecutionFilter>
+                <groupId>com.google.appengine</groupId>
+                <artifactId>appengine-maven-plugin</artifactId>
+                <versionRange>[1.8.2,)</versionRange>
+                <goals>
+                    <goal>endpoints_get_discovery_doc</goal>
+                </goals>
+            </pluginExecutionFilter>
+            <action>
+                <configurator>
+                    <id>com.google.appengine.eclipse.wtp.maven.gaeConfigurator</id>
+                </configurator>
+            </action>
         </pluginExecution>
+        
         <pluginExecution>
             <pluginExecutionFilter>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -106,27 +27,10 @@
                 </goals>
             </pluginExecutionFilter>
             <action>
-                <configurator>
+                <configurator secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator">
                     <id>com.google.appengine.eclipse.wtp.maven.gaeConfigurator</id>
                 </configurator>
             </action>
         </pluginExecution>
-        <pluginExecution>
-            <pluginExecutionFilter>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-ejb-plugin</artifactId>
-                <versionRange>[1.0,)</versionRange>
-                <goals>
-                    <goal>ejb</goal>
-                </goals>
-            </pluginExecutionFilter>
-            <action>
-                <configurator>
-                    <id>com.google.appengine.eclipse.wtp.maven.gaeConfigurator</id>
-                </configurator>
-            </action>
-        </pluginExecution>        
-    </pluginExecutions>  
--->   
- 
+    </pluginExecutions> 
 </lifecycleMappingMetadata>
