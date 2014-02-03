@@ -34,13 +34,16 @@ public class GaeRuntimeManager {
   
   private static final IRuntimeType GAE_RUNTIME_TYPE =
       ServerCore.findServerType(GaeServer.SERVER_TYPE_ID).getRuntimeType();
+  
+  // The %s in this template is meant to be replaced by a version number.
+  private static final String GAE_RUNTIME_NAME_TEMPLATE = "Google App Engine %s";
 
   /**
-   * Finds the first {@link GaeRuntime} registered with {@code org.eclipse.wst.server.core}, or
-   * creates and registers a new {@code GaeRuntime} if one is not already registered, then sets the
-   * SDK of that {@code GaeRuntime} to a specified {@link GaeSdk}.
+   * Finds the first {@link GaeRuntime} registered with {@code org.eclipse.wst.server.core} whose
+   * GAE SDK has the same version as a specified GAE SDK; or, if such a {@code GaeRuntime} is not
+   * already registered, creates and registers a new one and sets its SDK to the specified GAE SDK.
    * 
-   * @param sdk the specified SDK
+   * @param sdk the specified GAE SDK
    * @param monitor a progress monitor for the execution of this method
    * @return the newly created {@link GaeRuntime}
    * @throws CoreException
@@ -48,7 +51,8 @@ public class GaeRuntimeManager {
    */
   public static GaeRuntime ensureGaeRuntimeWithSdk(GaeSdk sdk, IProgressMonitor monitor)
       throws CoreException {
-    IRuntime existingRuntime = getGaeRuntime();
+    String sdkVersion = sdk.getVersion();
+    IRuntime existingRuntime = getGaeRuntime(sdkVersion);
     String runtimeId = existingRuntime == null ? null : existingRuntime.getId();
     // The call on createRuntime below creates a new runtime if runtimeId==null, and reuses the
     // existing one otherwise.
@@ -58,22 +62,29 @@ public class GaeRuntimeManager {
       String location = sdk.getInstallationPath().toOSString();
       runtime.setGaeSdk(sdk);
       runtimeWorkingCopy.setLocation(new Path(location));
+      runtimeWorkingCopy.setName(String.format(GAE_RUNTIME_NAME_TEMPLATE, sdkVersion));
     }
     runtimeWorkingCopy.save(true, monitor);
     return runtime;
   }
   
   /**
+   * Obtains the registered GAE {@link IRuntime} if any, whose GAE SDK has a specified version.
+   * 
+   * @param sdkVersion the specified version
    * @return
-   *     the GAE runtime registered with {@link org.eclipse.wst.server.core.ServerCore},
-   *     or {@code null} if there is none
+   *     a GAE runtime registered with {@link org.eclipse.wst.server.core.ServerCore} and having
+   *     the specified version, or {@code null} if there is none
    */
   @Nullable
-  private static IRuntime getGaeRuntime() {
+  private static IRuntime getGaeRuntime(String sdkVersion) {
     IRuntime[] runtimes = ServerCore.getRuntimes();
     for (IRuntime runtime : runtimes) {
       if (runtime != null && runtime.getRuntimeType().equals(GAE_RUNTIME_TYPE)) {
-        return runtime;
+        GaeRuntime gaeRuntime = (GaeRuntime) runtime.getAdapter(GaeRuntime.class);
+        if (gaeRuntime.getGaeSdkVersion().equals(sdkVersion)) {
+          return runtime;
+        }
       }
     }
     return null;
