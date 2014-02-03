@@ -12,7 +12,7 @@
             </pluginExecutionFilter>
             <action>
                 <configurator>
-                    <id>com.google.appengine.eclipse.wtp.maven.gaeConfigurator</id>
+                    <id>com.google.appengine.eclipse.wtp.maven.endpointsDiscoveryConfigurator</id>
                 </configurator>
             </action>
         </pluginExecution>
@@ -27,7 +27,7 @@
                 </goals>
             </pluginExecutionFilter>
             <action>
-                <configurator secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator">
+                <configurator>
                     <id>com.google.appengine.eclipse.wtp.maven.gaeConfigurator</id>
                 </configurator>
             </action>

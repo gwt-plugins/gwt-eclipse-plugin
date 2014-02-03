@@ -6,27 +6,16 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jst.server.core.FacetUtil;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
-import org.eclipse.wst.common.project.facet.core.IFacetedProject.Action;
-import org.eclipse.wst.common.project.facet.core.IFacetedProject.Action.Type;
 import org.eclipse.wst.common.project.facet.core.IFacetedProjectWorkingCopy;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
-import org.eclipse.wst.common.project.facet.core.internal.FacetedProjectWorkingCopy;
-import org.eclipse.wst.server.core.IRuntime;
-import org.eclipse.wst.server.core.IRuntimeWorkingCopy;
-import org.eclipse.wst.server.core.IServerType;
-import org.eclipse.wst.server.core.ServerCore;
 
-import com.google.appengine.eclipse.core.preferences.GaePreferences;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
-import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
 import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
-import com.google.appengine.eclipse.wtp.server.GaeServer;
 
 /**
  * Provides a method for determining whether an AppEngine facet (for either war or ear packaging)
@@ -47,17 +36,25 @@ public class GaeFacetManager {
    * 
    * @param pom the Maven model for the project
    * @param eclipseProject the given project
+   * @param monitor a progress monitor for the operations
    */
-  public void addGaeFacetIfNeeded(Model pom, IProject eclipseProject) {
+  public void addGaeFacetIfNeeded(Model pom, IProject eclipseProject, IProgressMonitor monitor) {
     if (!isGaeProject(pom)) {
+      return;
+    }
+    GaeRuntime runtime;
+    try {
+      GaeSdk sdkFromRepository = new GaeSdkInstaller().installGaeSdkIfNeeded(pom, monitor);
+      runtime = GaeRuntimeManager.ensureGaeRuntimeWithSdk(sdkFromRepository, monitor);
+    } catch (CoreException e) {
+      AppEngineMavenPlugin.logError("Error ensuring that correct GAE SDK is installed", e);
       return;
     }
     try {
       IFacetedProject facetedProject = getFacetedProject(eclipseProject);
       IProjectFacet facetOfInterest = getFacetForPackaging(pom.getPackaging());
       if (!facetedProject.hasProjectFacet(facetOfInterest)) {
-        ensureGaeRuntimeDefined();
-        addFacetToProject(facetOfInterest, facetedProject);
+        addFacetToProject(facetOfInterest, facetedProject, runtime, monitor);
       }
     } catch (EarlyExit e) {
       return;
@@ -77,7 +74,8 @@ public class GaeFacetManager {
 
   private static IFacetedProject getFacetedProject(IProject eclipseProject) throws EarlyExit {
     try {
-      return ProjectFacetsManager.create(eclipseProject);
+      IFacetedProject result = ProjectFacetsManager.create(eclipseProject);
+      return result;
     } catch (CoreException e) {
       AppEngineMavenPlugin.logError(
           "Error obtaining IFacetedProject for Eclipse project " + eclipseProject.getName(), e);
@@ -103,63 +101,25 @@ public class GaeFacetManager {
     }
     return ProjectFacetsManager.getProjectFacet(facetIdOfInterest);
   }
-  
-  private static void ensureGaeRuntimeDefined() {
-    // HACK: access GdtPreferences forces it container plug-in to start
-    // which will implicitly invoke auto-register GAE SDK
-//    GdtPreferences.getInstallationId();
-    GaeSdk sdk = GaePreferences.getDefaultSdk();
-    try {
-      IServerType serverType = ServerCore.findServerType(GaeServer.SERVER_TYPE_ID);
-      IRuntime[] runtimes = ServerCore.getRuntimes();
-      for (IRuntime runtime : runtimes) {
-        if (runtime != null && serverType.getRuntimeType().equals(runtime.getRuntimeType())) {
-          return;
-        }
-      }
-      // not found, create new
-      IRuntimeWorkingCopy runtimeWorkingCopy = serverType.getRuntimeType().createRuntime(null, null);
-      GaeRuntime runtime = (GaeRuntime) runtimeWorkingCopy.loadAdapter(GaeRuntime.class,
-          new NullProgressMonitor());
-      if (sdk != null) {
-        // have sdk, initialize
-        String location = sdk.getInstallationPath().toOSString();
-        runtime.setGaeSdk(sdk);
-        runtimeWorkingCopy.setLocation(new Path(location));
-      }
-      runtimeWorkingCopy.save(true, null);
-    } catch (CoreException e) {
-      AppEnginePlugin.logMessage(e);
-    }
-  }
 
   // See https://code.google.com/p/appengine-maven-plugin/source/browse/src/main/java/com/google/appengine/SdkResolver.java
-  // Also see GaeRuntimeConfigurator
   private static void addFacetToProject(
-      IProjectFacet facetOfInterest, IFacetedProject facetedProject) throws EarlyExit {
+      IProjectFacet facetOfInterest, IFacetedProject facetedProject, GaeRuntime gaeRuntime,
+      IProgressMonitor monitor)
+      throws EarlyExit {
     IFacetedProjectWorkingCopy workingCopy = facetedProject.createWorkingCopy();
     workingCopy.addProjectFacet(facetOfInterest.getDefaultVersion());
-    suppressSampleAppGeneration(workingCopy);
+    workingCopy.addTargetedRuntime(FacetUtil.getRuntime(gaeRuntime.getRuntime()));
+    // GaeRuntime.getRuntime returns a value of type org.eclipse.wst.server.core.IRuntime.
+    // IFacetedProjectWorkingCopy.addTargetedRuntime takes an argument of a different type,
+    // org.eclipse.wst.common.project.facet.core.runtime.IRuntime. FacetUtil.getRuntime converts
+    // between the two IRuntime types.
     try {
-      workingCopy.commitChanges(null);
+      workingCopy.commitChanges(monitor);
     } catch (CoreException e) {
       AppEngineMavenPlugin.logError(
           "Error committing addition of " + facetOfInterest.getId() + " facet to project", e);
       throw new EarlyExit();
-    }
-  }
-  
-  // For now, we suppress generation of a sample app, because it erroneously expects the file
-  // $project_root/target/generated-sources/appengine-endpoints/WEB-INF/web.xml to exist, and aborts
-  // the facet installation upon discovering that it doesn't.
-  // TODO(nhcohen): Remove the call on this method, and the method itself, when we fix the problem
-  // with sample app generation.
-  private static void suppressSampleAppGeneration(IFacetedProjectWorkingCopy fpwc) {
-    for (Action action : ((IFacetedProjectWorkingCopy) fpwc).getProjectFacetActions()) {
-      if (action.getType().equals(Type.INSTALL)) {
-        IDataModel dm = ((IDataModel) action.getConfig());
-        dm.setBooleanProperty(IGaeFacetConstants.GAE_PROPERTY_CREATE_SAMPLE, false);
-      }
     }
   }
 

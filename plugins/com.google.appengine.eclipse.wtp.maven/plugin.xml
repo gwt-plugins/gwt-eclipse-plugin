@@ -36,7 +36,17 @@
        <configurator
              class="com.google.appengine.eclipse.wtp.maven.GaeProjectConfigurator"
              id="com.google.appengine.eclipse.wtp.maven.gaeConfigurator"
+             secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator"
              name="App Engine Web">
+       </configurator>
+    </extension>
+    
+    <extension
+          point="org.eclipse.m2e.core.projectConfigurators">
+       <configurator
+             class="com.google.appengine.eclipse.wtp.maven.EndpointsDiscoveryConfigurator"
+             id="com.google.appengine.eclipse.wtp.maven.endpointsDiscoveryConfigurator"
+             name="App Engine Web Endpoints Discovery">
        </configurator>
     </extension>
 

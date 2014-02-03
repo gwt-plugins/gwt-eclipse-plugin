@@ -25,9 +25,11 @@ Require-Bundle: com.google.appengine.eclipse.wtp,
  org.eclipse.wst.common.project.facet.ui,
  org.eclipse.m2e.maven.runtime,
  org.eclipse.core.resources,
- com.google.appengine.eclipse.core
+ com.google.appengine.eclipse.core,
+ org.eclipse.jst.server.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.eclipse.wst.server.core
+Import-Package: org.eclipse.wst.server.core,
+ org.eclipse.wst.server.core.model
 
 
 

@@ -35,7 +35,8 @@ public class GaeProjectConfigurator extends WTPProjectConfigurator {
     AppEngineMavenPlugin.logInfo(
         "GaeProjectConfigurator.configure invoked with the following request: " + request);
     GaeFacetManager gaeFacetManager = new GaeFacetManager();
-    gaeFacetManager.addGaeFacetIfNeeded(request.getMavenProject().getModel(), request.getProject());
+    gaeFacetManager.addGaeFacetIfNeeded(
+        request.getMavenProject().getModel(), request.getProject(), monitor);
   }
 
   @Override
