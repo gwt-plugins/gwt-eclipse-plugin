@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright 2013 Google Inc. All Rights Reserved.
+ *
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *******************************************************************************/
 package com.google.appengine.eclipse.wtp.maven;
 
 import java.util.Set;
@@ -43,7 +55,7 @@ public class GaeFacetManager {
   public void addGaeFacet(Model pom, IFacetedProject facetedProject, IProgressMonitor monitor) {
     GaeRuntime runtime;
     try {
-      GaeSdk sdkFromRepository = new GaeSdkInstaller().installGaeSdkIfNeeded(pom, monitor);
+      GaeSdk sdkFromRepository = new GaeSdkInstaller().installGaeSdkIfNeeded(pom);
       runtime = GaeRuntimeManager.ensureGaeRuntimeWithSdk(sdkFromRepository, monitor);
     } catch (CoreException e) {
       AppEngineMavenPlugin.logError("Error ensuring that correct GAE SDK is installed", e);
@@ -122,9 +134,6 @@ public class GaeFacetManager {
     workingCopy.setProjectFacetActionConfig(facet, model);
   }
   
-  // For now, we suppress generation of a sample app, because it indirectly triggers the bug
-  // https://bugs.eclipse.org/bugs/show_bug.cgi?id=408327, which aborts the facet installation.
-  // TODO(nhcohen): Remove when the bug is fixed or a workaround is found.
   private static void suppressSampleAppGeneration(IFacetedProjectWorkingCopy fpwc) {
     for (Action action : ((IFacetedProjectWorkingCopy) fpwc).getProjectFacetActions()) {
       if (action.getType().equals(Type.INSTALL)) {

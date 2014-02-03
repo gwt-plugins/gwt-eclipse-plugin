@@ -79,7 +79,7 @@ public final class GaeFacetInstallDelegate implements IDelegate {
     if (JavaEEProjectUtilities.isDynamicWebProject(project)) {
       // Add a special container to be dependency of the Web App (WEB-INF/lib), unless this is a 
       // Maven project (in which case we use the Maven dependency container)
-      if (!isMavenProject(config)) {
+      if (!isMavenProject(model)) {
         ProjectUtils.addWebAppDependencyContainer(
             project, fv, GaeWtpClasspathContainer.CONTAINER_PATH);
       }
@@ -254,11 +254,19 @@ public final class GaeFacetInstallDelegate implements IDelegate {
     return sanitized;
   }
   
-  private static boolean isMavenProject(Object config) {
-    if (!(config instanceof IDataModel)) {
-      return false;
-    }
-    IDataModel model = (IDataModel) config;
+  /**
+   * Reports whether a specified faceted-project-configuration data model indicates that the faceted
+   * project is marked as a Maven project. If so, the classpath container
+   * {@link GaeWtpClasspathContainer.CONTAINER_PATH} should not be added to the project, because
+   * this will duplicate dependencies provided through Maven.
+   * 
+   * <p>(The class {@link com.google.appengine.eclipse.wtp.maven.GaeFacetManager} adds such a mark
+   * to a faceted project when adding the GAE facet to the project.)
+   * 
+   * @param model the specified faceted-project-configuration data model
+   * @return {@code true} if the project has been marked as a Maven project, {@code false} otherwise
+   */
+  private static boolean isMavenProject(IDataModel model) {
     if (!model.isProperty(AppEnginePlugin.USE_MAVEN_DEPS_PROPERTY_NAME)) {
       return false;
     }
