@@ -88,7 +88,6 @@ public final class GaeFacetInstallDelegate implements IDelegate {
           BuilderUtilities.addBuilderToProject(project, ProjectChangeNotifier.BUILDER_ID);
         }
       }
-      BuilderUtilities.addBuilderToProject(project, AppEnginePlugin.PLUGIN_ID + ".projectValidator");
       // add "appengine-web.xml" file
       operations.add(new AppEngineXmlCreateOperation(model));
       // add "logging.properties"
