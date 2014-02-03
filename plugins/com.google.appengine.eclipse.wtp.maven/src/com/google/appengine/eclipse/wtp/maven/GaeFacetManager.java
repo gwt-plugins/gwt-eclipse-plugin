@@ -1,6 +1,7 @@
 package com.google.appengine.eclipse.wtp.maven;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
@@ -8,19 +9,27 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jst.server.core.FacetUtil;
+import org.eclipse.wst.common.frameworks.datamodel.AbstractDataModelProvider;
+import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
+import org.eclipse.wst.common.frameworks.internal.datamodel.DataModelImpl;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
+import org.eclipse.wst.common.project.facet.core.IFacetedProject.Action;
+import org.eclipse.wst.common.project.facet.core.IFacetedProject.Action.Type;
 import org.eclipse.wst.common.project.facet.core.IFacetedProjectWorkingCopy;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
+import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
 import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Provides a method for determining whether an AppEngine facet (for either war or ear packaging)
  * should be added to a given project, and if so, adding it.
  */
+@SuppressWarnings("restriction") // DataModelImpl
 public class GaeFacetManager {
   
   private static final String APPENGINE_GROUP_ID = "com.google.appengine";
@@ -114,12 +123,47 @@ public class GaeFacetManager {
     // IFacetedProjectWorkingCopy.addTargetedRuntime takes an argument of a different type,
     // org.eclipse.wst.common.project.facet.core.runtime.IRuntime. FacetUtil.getRuntime converts
     // between the two IRuntime types.
+    markToUseMavenDependencies(facetOfInterest, workingCopy);
+    suppressSampleAppGeneration(workingCopy);
+    
     try {
       workingCopy.commitChanges(monitor);
     } catch (CoreException e) {
       AppEngineMavenPlugin.logError(
           "Error committing addition of " + facetOfInterest.getId() + " facet to project", e);
       throw new EarlyExit();
+    }
+  }
+  
+  // Sets a property that will be read by GaeFacetInstallDelegate to decide whether or not to
+  // create a WTP classpath container with GAE SDK dependencies. A property value of true indicates
+  // that we should not create the WTP classpath container, because we will be using the Maven
+  // classpath container.
+  private static void markToUseMavenDependencies(
+      IProjectFacet facet, IFacetedProjectWorkingCopy workingCopy) {
+    Object config = workingCopy.getProjectFacetAction(facet).getConfig();
+    IDataModel model = (IDataModel) config;
+    model.addNestedModel(
+        AppEnginePlugin.USE_MAVEN_DEPS_PROPERTY_NAME + ".model",
+        new DataModelImpl(
+            new AbstractDataModelProvider(){
+              @Override public Set<?> getPropertyNames() {
+                return ImmutableSet.of(AppEnginePlugin.USE_MAVEN_DEPS_PROPERTY_NAME);
+              }
+            }));
+    model.setBooleanProperty(AppEnginePlugin.USE_MAVEN_DEPS_PROPERTY_NAME, true);
+    workingCopy.setProjectFacetActionConfig(facet, model);
+  }
+  
+  // For now, we suppress generation of a sample app, because it indirectly triggers the bug
+  // https://bugs.eclipse.org/bugs/show_bug.cgi?id=408327, which aborts the facet installation.
+  // TODO(nhcohen): Remove when the bug is fixed or a workaround is found.
+  private static void suppressSampleAppGeneration(IFacetedProjectWorkingCopy fpwc) {
+    for (Action action : ((IFacetedProjectWorkingCopy) fpwc).getProjectFacetActions()) {
+      if (action.getType().equals(Type.INSTALL)) {
+        IDataModel dm = ((IDataModel) action.getConfig());
+        dm.setBooleanProperty(IGaeFacetConstants.GAE_PROPERTY_CREATE_SAMPLE, false);
+      }
     }
   }
 

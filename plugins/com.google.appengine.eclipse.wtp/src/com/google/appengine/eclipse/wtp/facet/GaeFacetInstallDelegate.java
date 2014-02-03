@@ -77,9 +77,12 @@ public final class GaeFacetInstallDelegate implements IDelegate {
     GaeNature.removeNatureFromProject(project);
     // do create project contents
     if (JavaEEProjectUtilities.isDynamicWebProject(project)) {
-      // add a special container to be dependency of the Web App (WEB-INF/lib)
-      ProjectUtils.addWebAppDependencyContainer(project, fv,
-          GaeWtpClasspathContainer.CONTAINER_PATH);
+      // Add a special container to be dependency of the Web App (WEB-INF/lib), unless this is a 
+      // Maven project (in which case we use the Maven dependency container)
+      if (!isMavenProject(config)) {
+        ProjectUtils.addWebAppDependencyContainer(
+            project, fv, GaeWtpClasspathContainer.CONTAINER_PATH);
+      }
       // add custom builders
       if (sdk != null) {
         // since 1.8.1 Development server scans and reloads application automatically
@@ -249,5 +252,19 @@ public final class GaeFacetInstallDelegate implements IDelegate {
       }
     }
     return sanitized;
+  }
+  
+  private static boolean isMavenProject(Object config) {
+    if (!(config instanceof IDataModel)) {
+      return false;
+    }
+    IDataModel model = (IDataModel) config;
+    if (!model.isProperty(AppEnginePlugin.USE_MAVEN_DEPS_PROPERTY_NAME)) {
+      return false;
+    }
+    if (!model.isPropertySet(AppEnginePlugin.USE_MAVEN_DEPS_PROPERTY_NAME)) {
+      return false;
+    }
+    return model.getBooleanProperty(AppEnginePlugin.USE_MAVEN_DEPS_PROPERTY_NAME);
   }
 }

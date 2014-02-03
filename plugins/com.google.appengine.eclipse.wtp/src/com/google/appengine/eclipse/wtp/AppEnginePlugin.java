@@ -27,6 +27,7 @@ import java.util.HashSet;
 public final class AppEnginePlugin extends AbstractUIPlugin {
 
   public static final String PLUGIN_ID = "com.google.appengine.eclipse.wtp";
+  public static final String USE_MAVEN_DEPS_PROPERTY_NAME = PLUGIN_ID + ".useMavenDependencies";
   private static AppEnginePlugin INSTANCE;
   private static HashSet<String[]> commandsToExecuteAtExit = new HashSet<String[]>();
 
