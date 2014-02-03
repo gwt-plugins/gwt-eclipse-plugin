@@ -1,11 +1,8 @@
 package com.google.appengine.eclipse.wtp.maven;
 
-import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.model.Model;
-import org.apache.maven.model.Plugin;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jst.server.core.FacetUtil;
@@ -31,26 +28,19 @@ import com.google.common.collect.ImmutableSet;
  */
 @SuppressWarnings("restriction") // DataModelImpl
 public class GaeFacetManager {
-  
-  private static final String APPENGINE_GROUP_ID = "com.google.appengine";
-  private static final String APPENGINE_MAVEN_PLUGIN_ARTIFACT_ID = "appengine-maven-plugin";
-  
+   
   /**
-   * Determines whether an AppEngine facet should be added to a given project, and if so, adds it.
-   * If the Maven project depends on appengine-maven-plugin and has war packaging, and does not
-   * already have the facet {@link IGaeFacetConstants.GAE_FACET_ID}, that facet is added;
-   * otherwise, if the Maven project depends on appengine-maven-plugin and has ear packaging, and
-   * does not already have the facet {@link IGaeFacetConstants.GAE_EAR_FACET_ID}, that facet is
-   * added.
+   * Adds the appropriate AppEngine facet (WAR or EAR) to a given {@code IFacetedProject} if the
+   * project does not already have that facet. If the project has WAR packaging, and does not
+   * already have the facet {@link Constants.GAE_WAR_FACET_ID}, that facet is added; otherwise, if
+   * the project has EAR packaging, and does not already have the facet
+   * {@link Constants.GAE_EAR_FACET_ID}, that facet is added.
    * 
    * @param pom the Maven model for the project
-   * @param eclipseProject the given project
-   * @param monitor a progress monitor for the operations
+   * @param facetedProject the given project, expected to be an App Engine project
+   * @param monitor a progress monitor for the operation
    */
-  public void addGaeFacetIfNeeded(Model pom, IProject eclipseProject, IProgressMonitor monitor) {
-    if (!isGaeProject(pom)) {
-      return;
-    }
+  public void addGaeFacet(Model pom, IFacetedProject facetedProject, IProgressMonitor monitor) {
     GaeRuntime runtime;
     try {
       GaeSdk sdkFromRepository = new GaeSdkInstaller().installGaeSdkIfNeeded(pom, monitor);
@@ -60,7 +50,6 @@ public class GaeFacetManager {
       return;
     }
     try {
-      IFacetedProject facetedProject = getFacetedProject(eclipseProject);
       IProjectFacet facetOfInterest = getFacetForPackaging(pom.getPackaging());
       if (!facetedProject.hasProjectFacet(facetOfInterest)) {
         addFacetToProject(facetOfInterest, facetedProject, runtime, monitor);
@@ -69,42 +58,20 @@ public class GaeFacetManager {
       return;
     }
   }
-  
-  private static boolean isGaeProject(Model pom) {
-    List<Plugin> plugins = pom.getBuild().getPlugins();
-    for (Plugin plugin : plugins) {
-      if (APPENGINE_GROUP_ID.equals(plugin.getGroupId())
-          && APPENGINE_MAVEN_PLUGIN_ARTIFACT_ID.equals(plugin.getArtifactId())) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private static IFacetedProject getFacetedProject(IProject eclipseProject) throws EarlyExit {
-    try {
-      IFacetedProject result = ProjectFacetsManager.create(eclipseProject);
-      return result;
-    } catch (CoreException e) {
-      AppEngineMavenPlugin.logError(
-          "Error obtaining IFacetedProject for Eclipse project " + eclipseProject.getName(), e);
-      throw new EarlyExit();
-    }
-  }
 
   private static IProjectFacet getFacetForPackaging(String packaging) throws EarlyExit {
     String facetIdOfInterest;
     switch (packaging) {
       case "war":
-        facetIdOfInterest = IGaeFacetConstants.GAE_FACET_ID;
+        facetIdOfInterest = Constants.GAE_WAR_FACET_ID;
         break;
       case "ear":
-        facetIdOfInterest = IGaeFacetConstants.GAE_EAR_FACET_ID;
+        facetIdOfInterest = Constants.GAE_EAR_FACET_ID;
         break;
       default:
         AppEngineMavenPlugin.logError(
             "Unexpected packaging \"" + packaging + "\" for a project using "
-                + APPENGINE_MAVEN_PLUGIN_ARTIFACT_ID,
+                + Constants.APPENGINE_MAVEN_PLUGIN_ARTIFACT_ID,
             null);
         throw new EarlyExit();
     }
