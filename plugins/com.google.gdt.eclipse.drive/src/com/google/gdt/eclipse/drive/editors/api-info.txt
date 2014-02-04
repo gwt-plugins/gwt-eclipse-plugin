@@ -3779,7 +3779,7 @@ getToken()
 DocsList.Token
 
 0
-35
+34
 DocumentApp
 
 12
@@ -4050,19 +4050,19 @@ DocumentApp.Text
 
 editAsText()
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType)
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType, from)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern, from)
 getAttributes
@@ -4281,19 +4281,19 @@ DocumentApp.Text
 
 editAsText()
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType)
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType, from)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern, from)
 getAttributes
@@ -4360,36 +4360,9 @@ setLinkUrl
 DocumentApp.ContainerElement
 
 setLinkUrl(url)
-DocumentApp.Cursor
-
-6
-getElement
-DocumentApp.Element
-
-getElement()
-getOffset
-Integer
-
-getOffset()
-getSurroundingText
-DocumentApp.Text
-
-getSurroundingText()
-getSurroundingTextOffset
-Integer
-
-getSurroundingTextOffset()
-insertInlineImage
-DocumentApp.InlineImage
-
-insertInlineImage(image)
-insertText
-DocumentApp.Text
-
-insertText(text)
 DocumentApp.Document
 
-27
+29
 addEditor
 DocumentApp.Document
 
@@ -4435,7 +4408,7 @@ DocumentApp.Body
 
 getBody()
 getCursor
-DocumentApp.Cursor
+DocumentApp.Position
 
 getCursor()
 getEditors
@@ -4463,7 +4436,7 @@ String
 
 getName()
 getSelection
-DocumentApp.Selection
+DocumentApp.Range
 
 getSelection()
 getUrl
@@ -4494,10 +4467,18 @@ saveAndClose
 void
 
 saveAndClose()
+setCursor
+DocumentApp.Document
+
+setCursor(position)
 setName
 DocumentApp.Document
 
 setName(name)
+setSelection
+DocumentApp.Document
+
+setSelection(range)
 DocumentApp.Element
 
 30
@@ -4732,19 +4713,19 @@ DocumentApp.Text
 
 editAsText()
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType)
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType, from)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern, from)
 getAttributes
@@ -4827,19 +4808,19 @@ DocumentApp.Text
 
 editAsText()
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType)
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType, from)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern, from)
 getAttributes
@@ -5163,19 +5144,19 @@ DocumentApp.Text
 
 editAsText()
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType)
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType, from)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern, from)
 getAttributes
@@ -5349,19 +5330,19 @@ DocumentApp.Text
 
 editAsText()
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType)
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType, from)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern, from)
 getAttributes
@@ -5523,19 +5504,19 @@ DocumentApp.Text
 
 editAsText()
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType)
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType, from)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern, from)
 getAttributes
@@ -5862,19 +5843,19 @@ DocumentApp.Text
 
 editAsText()
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType)
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType, from)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern, from)
 getAlignment
@@ -6156,19 +6137,19 @@ DocumentApp.Text
 
 editAsText()
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType)
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType, from)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern, from)
 getAlignment
@@ -6382,51 +6363,59 @@ TITLE
 DocumentApp.ParagraphHeading
 
 TITLE
-DocumentApp.SearchResult
+DocumentApp.Position
 
-4
+6
 getElement
 DocumentApp.Element
 
 getElement()
-getEndOffsetInclusive
+getOffset
 Integer
 
-getEndOffsetInclusive()
-getStartOffset
+getOffset()
+getSurroundingText
+DocumentApp.Text
+
+getSurroundingText()
+getSurroundingTextOffset
 Integer
 
-getStartOffset()
-isPartial
-Boolean
+getSurroundingTextOffset()
+insertInlineImage
+DocumentApp.InlineImage
 
-isPartial()
-DocumentApp.SelectedElement
+insertInlineImage(image)
+insertText
+DocumentApp.Text
 
-4
-getElement
-DocumentApp.Element
-
-getElement()
-getEndOffsetInclusive
-Integer
-
-getEndOffsetInclusive()
-getStartOffset
-Integer
-
-getStartOffset()
-isPartial
-Boolean
-
-isPartial()
-DocumentApp.Selection
+insertText(text)
+DocumentApp.Range
 
 1
-getSelectedElements
-DocumentApp.SelectedElement[]
+getRangeElements
+DocumentApp.RangeElement[]
 
-getSelectedElements()
+getRangeElements()
+DocumentApp.RangeElement
+
+4
+getElement
+DocumentApp.Element
+
+getElement()
+getEndOffsetInclusive
+Integer
+
+getEndOffsetInclusive()
+getStartOffset
+Integer
+
+getStartOffset()
+isPartial
+Boolean
+
+isPartial()
 DocumentApp.Table
 
 37
@@ -6451,19 +6440,19 @@ DocumentApp.Text
 
 editAsText()
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType)
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType, from)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern, from)
 getAttributes
@@ -6634,19 +6623,19 @@ DocumentApp.Text
 
 editAsText()
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType)
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType, from)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern, from)
 getAttributes
@@ -6841,19 +6830,19 @@ DocumentApp.Text
 
 editAsText()
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType)
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType, from)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern, from)
 getAttributes
@@ -6944,19 +6933,19 @@ DocumentApp.Text
 
 editAsText()
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType)
 findElement
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findElement(elementType, from)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern, from)
 getAttributes
@@ -7083,11 +7072,11 @@ DocumentApp.Text
 
 editAsText()
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern)
 findText
-DocumentApp.SearchResult
+DocumentApp.RangeElement
 
 findText(searchPattern, from)
 getAttributes
@@ -8285,7 +8274,7 @@ volume
 Integer
 
 volume
-23
+24
 FormApp
 
 9
@@ -8592,7 +8581,7 @@ FormApp.DurationItem
 setTitle(title)
 FormApp.Form
 
-58
+63
 addCheckboxItem
 FormApp.CheckboxItem
 
@@ -8661,6 +8650,10 @@ addTimeItem
 FormApp.TimeItem
 
 addTimeItem()
+addVideoItem
+FormApp.VideoItem
+
+addVideoItem()
 canEditResponse
 Boolean
 
@@ -8689,6 +8682,10 @@ getConfirmationMessage
 String
 
 getConfirmationMessage()
+getCustomClosedFormMessage
+String
+
+getCustomClosedFormMessage()
 getDescription
 String
 
@@ -8749,6 +8746,10 @@ getTitle
 String
 
 getTitle()
+hasProgressBar
+Boolean
+
+hasProgressBar()
 hasRespondAgainLink
 Boolean
 
@@ -8801,6 +8802,10 @@ setConfirmationMessage
 FormApp.Form
 
 setConfirmationMessage(message)
+setCustomClosedFormMessage
+FormApp.Form
+
+setCustomClosedFormMessage(message)
 setDescription
 FormApp.Form
 
@@ -8809,6 +8814,10 @@ setDestination
 FormApp.Form
 
 setDestination(type, id)
+setProgressBar
+FormApp.Form
+
+setProgressBar(enabled)
 setPublishingSummary
 FormApp.Form
 
@@ -8988,7 +8997,7 @@ FormApp.ImageItem
 setWidth(width)
 FormApp.Item
 
-22
+23
 asCheckboxItem
 FormApp.CheckboxItem
 
@@ -9045,6 +9054,10 @@ asTimeItem
 FormApp.TimeItem
 
 asTimeItem()
+asVideoItem
+FormApp.VideoItem
+
+asVideoItem()
 duplicate
 FormApp.Item
 
@@ -9614,6 +9627,61 @@ setTitle
 FormApp.TimeItem
 
 setTitle(title)
+FormApp.VideoItem
+
+13
+duplicate
+FormApp.VideoItem
+
+duplicate()
+getAlignment
+FormApp.Alignment
+
+getAlignment()
+getHelpText
+String
+
+getHelpText()
+getId
+Integer
+
+getId()
+getIndex
+Integer
+
+getIndex()
+getTitle
+String
+
+getTitle()
+getType
+FormApp.ItemType
+
+getType()
+getWidth
+Integer
+
+getWidth()
+setAlignment
+FormApp.VideoItem
+
+setAlignment(alignment)
+setHelpText
+FormApp.VideoItem
+
+setHelpText(text)
+setTitle
+FormApp.VideoItem
+
+setTitle(title)
+setVideoUrl
+FormApp.VideoItem
+
+setVideoUrl(youtubeUrl)
+setWidth
+FormApp.VideoItem
+
+setWidth(width)
 4
 GmailApp
 
@@ -15318,19 +15386,27 @@ setProperty(key, value)
 0
 Session
 
-3
+5
 getActiveUser
 User
 
 getActiveUser()
+getActiveUserLocale
+String
+
+getActiveUserLocale()
+getActiveUserTimeZone
+String
+
+getActiveUserTimeZone()
 getEffectiveUser
 User
 
 getEffectiveUser()
-getTimeZone
+getScriptTimeZone
 String
 
-getTimeZone()
+getScriptTimeZone()
 8
 SitesApp
 
@@ -16172,7 +16248,7 @@ String
 getHelpText()
 SpreadsheetApp.DataValidationBuilder
 
-34
+35
 build
 SpreadsheetApp.DataValidation
 
@@ -16229,6 +16305,10 @@ requireDateOnOrBefore
 SpreadsheetApp.DataValidationBuilder
 
 requireDateOnOrBefore(date)
+requireFormulaSatisfied
+SpreadsheetApp.DataValidationBuilder
+
+requireFormulaSatisfied(formula)
 requireNumberBetween
 SpreadsheetApp.DataValidationBuilder
 
@@ -16311,7 +16391,11 @@ SpreadsheetApp.DataValidationBuilder
 withCriteria(criteria, args)
 SpreadsheetApp.DataValidationCriteria
 
-23
+24
+CUSTOM_FORMULA
+SpreadsheetApp.DataValidationCriteria
+
+CUSTOM_FORMULA
 DATE_AFTER
 SpreadsheetApp.DataValidationCriteria
 
@@ -18158,7 +18242,7 @@ void
 updateChart(chart)
 SpreadsheetApp.Spreadsheet
 
-100
+95
 addEditor
 void
 
@@ -18419,22 +18503,6 @@ insertSheet
 SpreadsheetApp.Sheet
 
 insertSheet(sheetName, options)
-isAnonymousView
-Boolean
-
-isAnonymousView()
-isAnonymousWrite
-Boolean
-
-isAnonymousWrite()
-isReadable
-Boolean
-
-isReadable()
-isWritable
-Boolean
-
-isWritable()
 moveActiveSheet
 void
 
@@ -18487,10 +18555,6 @@ setActiveSheet
 SpreadsheetApp.Sheet
 
 setActiveSheet(sheet)
-setAnonymousAccess
-void
-
-setAnonymousAccess(anonymousReadAllowed, anonymousWriteAllowed)
 setColumnWidth
 SpreadsheetApp.Sheet
 
@@ -27030,6 +27094,10 @@ ColumnType
 
 STRING
 0
+DataTable
+
+0
+0
 DataTableBuilder
 
 4
@@ -27085,10 +27153,6 @@ SHA_512
 DigestAlgorithm
 
 SHA_512
-0
-DataTable
-
-0
 0
 Menu
 
