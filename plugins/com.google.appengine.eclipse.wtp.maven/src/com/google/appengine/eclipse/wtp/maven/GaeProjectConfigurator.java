@@ -42,7 +42,6 @@ public class GaeProjectConfigurator extends WTPProjectConfigurator {
     Model pom = request.getMavenProject().getModel();
     if (isGaeProject(pom)) {
       IProject eclipseProject = request.getProject();
-      ProjectCleanser.prepareCleanSlate(eclipseProject, monitor);
       IFacetedProject facetedProject = ProjectFacetsManager.create(eclipseProject);
       new GaeFacetManager().addGaeFacet(pom, facetedProject, monitor);
       new JpaFacetManager().addJpaFacet(facetedProject, monitor);

@@ -11,7 +11,6 @@ Require-Bundle: com.google.gdt.eclipse.maven,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
  com.google.gdt.eclipse.core,
- com.google.appengine.eclipse.core,
  com.google.gwt.eclipse.core,
  org.eclipse.jdt.core,
  org.eclipse.ui

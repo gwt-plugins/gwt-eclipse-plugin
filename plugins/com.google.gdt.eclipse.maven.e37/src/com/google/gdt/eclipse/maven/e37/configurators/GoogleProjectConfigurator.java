@@ -12,15 +12,8 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.maven.e37.configurators;
 
-import com.google.appengine.eclipse.core.nature.GaeNature;
-import com.google.gdt.eclipse.core.StringUtilities;
-import com.google.gdt.eclipse.core.properties.WebAppProjectProperties;
-import com.google.gdt.eclipse.maven.Activator;
-import com.google.gdt.eclipse.maven.sdk.GWTMavenRuntime;
-import com.google.gwt.eclipse.core.nature.GWTNature;
+import java.util.List;
 
-import org.apache.maven.execution.DefaultMavenExecutionRequest;
-import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
@@ -37,11 +30,14 @@ import org.eclipse.m2e.core.embedder.IMaven;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.osgi.service.prefs.BackingStoreException;
 
-import java.util.Arrays;
-import java.util.List;
+import com.google.gdt.eclipse.core.StringUtilities;
+import com.google.gdt.eclipse.core.properties.WebAppProjectProperties;
+import com.google.gdt.eclipse.maven.Activator;
+import com.google.gdt.eclipse.maven.sdk.GWTMavenRuntime;
+import com.google.gwt.eclipse.core.nature.GWTNature;
 
 /**
- * M2Eclipse project configuration extension that configures a project to get the Google GWT/GAE
+ * M2Eclipse project configuration extension that configures a project to get the Google GWT
  * project nature.
  * 
  * NOTE: Do not access this class from outside of the configurators package. All classes in the
@@ -60,8 +56,6 @@ public class GoogleProjectConfigurator extends AbstractGoogleProjectConfigurator
   private static final boolean ECLIPSE_LAUNCH_SRC_DIR_DEFAULT = false;
   private static final String WAR_SRC_DIR_PROPERTY_KEY = "warSourceDirectory";
   private static final String WAR_SRC_DIR_DEFAULT = "src/main/webapp";
-
-  private static final List<String> GAE_UNPACK_GOAL = Arrays.asList(new String[] {"net.kindleit:maven-gae-plugin:unpack"});
   
   /**
    * @param config gwt-maven-maven config DOM
@@ -102,34 +96,7 @@ public class GoogleProjectConfigurator extends AbstractGoogleProjectConfigurator
   protected void doConfigure(final MavenProject mavenProject, IProject project,
       ProjectConfigurationRequest request, final IProgressMonitor monitor) throws CoreException {
 
-    final IMaven maven = MavenPlugin.getDefault().getMaven();
-
-    boolean configureGaeNatureSuccess = configureNature(project, mavenProject, GaeNature.NATURE_ID,
-        true, new NatureCallbackAdapter() {
-
-          @Override
-          public void beforeAddingNature() {
-            try {
-              DefaultMavenExecutionRequest executionRequest = new DefaultMavenExecutionRequest();
-              executionRequest.setBaseDirectory(mavenProject.getBasedir());
-              executionRequest.setLocalRepository(maven.getLocalRepository());
-              executionRequest.setRemoteRepositories(mavenProject.getRemoteArtifactRepositories());
-              executionRequest.setPluginArtifactRepositories(mavenProject.getPluginArtifactRepositories());
-              executionRequest.setPom(mavenProject.getFile());
-              executionRequest.setGoals(GAE_UNPACK_GOAL);
-
-              MavenExecutionResult result = maven.execute(executionRequest, monitor);
-              if (result.hasExceptions()) {
-                Activator.getDefault().getLog().log(
-                    new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error configuring project",
-                        result.getExceptions().get(0)));
-              }
-            } catch (CoreException e) {
-              Activator.getDefault().getLog().log(
-                  new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error configuring project", e));
-            }
-          }
-        }, monitor);
+    final IMaven maven = MavenPlugin.getMaven();
 
     boolean configureGWTNatureSuccess = configureNature(project, mavenProject, GWTNature.NATURE_ID,
         true, new NatureCallbackAdapter() {
@@ -169,7 +136,7 @@ public class GoogleProjectConfigurator extends AbstractGoogleProjectConfigurator
     Plugin gwtPlugin = mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID);
     Xpp3Dom config = gwtPlugin == null ? null : (Xpp3Dom) gwtPlugin.getConfiguration();
 
-    if (configureGWTNatureSuccess || configureGaeNatureSuccess) {
+    if (configureGWTNatureSuccess) {
       try {
         // Add GWT Web Application configuration parameters
         WebAppProjectProperties.setWarSrcDir(project, new Path(getWarSrcDir(config)));

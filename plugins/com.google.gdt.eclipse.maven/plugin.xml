@@ -2,12 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="com.google.appengine.eclipse.core.gaeSdk">
-      <gaeSdk
-            class="com.google.gdt.eclipse.maven.sdk.MavenSdkInstallationPathLocator">
-      </gaeSdk>
-   </extension>
-   <extension
          point="org.eclipse.jdt.launching.classpathProviders">
       <classpathProvider
             class="com.google.gdt.eclipse.maven.launch.MavenClasspathProvider"
@@ -20,11 +14,6 @@
             priority="30"
             providerClass="com.google.gdt.eclipse.maven.launch.MavenClasspathProvider$MavenClasspathProviderIdProvider">
       </moduleClasspathProvider>
-   </extension>
-   <extension
-         point="com.google.appengine.eclipse.core.enhancerJobExtension">
-      <enhancerJobCpFinder
-            class="com.google.gdt.eclipse.maven.enhancement.MavenEnhancerClasspathBuilder"></enhancerJobCpFinder>
    </extension>
    <extension
          point="com.google.gwt.eclipse.core.gwtProjectBoundSdkFactory">

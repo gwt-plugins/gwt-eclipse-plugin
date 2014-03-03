@@ -14,11 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.maven;
 
-import com.google.gdt.eclipse.maven.builders.EnsureEnhancerBuilderLast;
-
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -32,8 +27,6 @@ public class Activator extends AbstractUIPlugin {
 
   // The shared instance
   private static Activator plugin;
-
-  private static IResourceChangeListener ensureEnhancerBuilderLastListener;
 
   /**
    * Returns the shared instance
@@ -53,15 +46,9 @@ public class Activator extends AbstractUIPlugin {
   public void start(BundleContext context) throws Exception {
     super.start(context);
     plugin = this;
-    ensureEnhancerBuilderLastListener = new EnsureEnhancerBuilderLast();
-    ResourcesPlugin.getWorkspace().addResourceChangeListener(
-        ensureEnhancerBuilderLastListener, IResourceChangeEvent.PRE_BUILD);
   }
 
   public void stop(BundleContext context) throws Exception {
-    ResourcesPlugin.getWorkspace().removeResourceChangeListener(
-        ensureEnhancerBuilderLastListener);
-    ensureEnhancerBuilderLastListener = null;
     plugin = null;
     super.stop(context);
   }

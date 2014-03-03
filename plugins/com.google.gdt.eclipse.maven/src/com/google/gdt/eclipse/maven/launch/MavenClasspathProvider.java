@@ -14,14 +14,11 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.maven.launch;
 
-import com.google.appengine.eclipse.core.nature.GaeNature;
-import com.google.appengine.eclipse.core.sdk.GaeSdk;
-import com.google.gdt.eclipse.core.sdk.Sdk.SdkException;
-import com.google.gdt.eclipse.maven.Activator;
-import com.google.gdt.eclipse.maven.MavenUtils;
-import com.google.gwt.eclipse.core.launch.ModuleClasspathProvider;
-import com.google.gwt.eclipse.core.nature.GWTNature;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -35,11 +32,12 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import com.google.gdt.eclipse.core.sdk.Sdk.SdkException;
+import com.google.gdt.eclipse.maven.Activator;
+import com.google.gdt.eclipse.maven.MavenUtils;
+import com.google.gwt.eclipse.core.launch.ModuleClasspathProvider;
+import com.google.gwt.eclipse.core.nature.GWTNature;
+import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 
 /**
  * Generates the runtime classpath based on the Maven build path.
@@ -62,79 +60,30 @@ public class MavenClasspathProvider extends ModuleClasspathProvider {
     }
   }
 
-  private static void addAppengineToolsJarIfPossible(IJavaProject proj,
-      Set<IRuntimeClasspathEntry> classpath) throws CoreException {
-    GaeSdk sdk = GaeSdk.findSdkFor(proj);
-    if (sdk != null) {
-      IStatus validationStatus = sdk.validate();
-      if (!validationStatus.isOK()) {
-        throw new CoreException(validationStatus);
-      }
-
-      IPath toolsJarPath = sdk.getInstallationPath().append(
-          GaeSdk.APPENGINE_TOOLS_API_JAR_PATH);
-      IRuntimeClasspathEntry toolsJar = JavaRuntime.newArchiveRuntimeClasspathEntry(toolsJarPath);
-      classpath.add(toolsJar);
-    } else {
-      Activator.getDefault().getLog().log(
-          new Status(
-              IStatus.WARNING,
-              Activator.PLUGIN_ID,
-              "Unable to find a GAE SDK for project "
-                  + proj.getElementName()
-                  + ". Cannot add appengine-tools-api to the runtime classpath."));
-    }
-  }
-
   private static void addGwtDevjarIfPossible(IJavaProject proj,
       Set<IRuntimeClasspathEntry> classpath) throws CoreException {
     GWTRuntime runtime = GWTRuntime.findSdkFor(proj);
+    if (runtime == null) {
+      Activator.getDefault().getLog().log(
+          new Status(IStatus.WARNING, Activator.PLUGIN_ID,
+              "Unable to find a GWT Runtime for project "
+                  + proj.getElementName()
+                  + ". Cannot add gwt-dev to the runtime classpath."));
+      return;
+    }
     IStatus validationStatus = runtime.validate();
     if (!validationStatus.isOK()) {
       throw new CoreException(validationStatus);
     }
 
     try {
-      if (runtime != null) {
-        IPath devJarPath = Path.fromOSString(runtime.getDevJar().getAbsolutePath());
-        IRuntimeClasspathEntry devJarCpEntry = JavaRuntime.newArchiveRuntimeClasspathEntry(devJarPath);
-        classpath.add(devJarCpEntry);
-      } else {
-        Activator.getDefault().getLog().log(
-            new Status(IStatus.WARNING, Activator.PLUGIN_ID,
-                "Unable to find a GWT Runtime for project "
-                    + proj.getElementName()
-                    + ". Cannot add gwt-dev to the runtime classpath."));
-      }
+      IPath devJarPath = Path.fromOSString(runtime.getDevJar().getAbsolutePath());
+      IRuntimeClasspathEntry devJarCpEntry = JavaRuntime.newArchiveRuntimeClasspathEntry(devJarPath);
+      classpath.add(devJarCpEntry);
     } catch (SdkException sdke) {
       throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
           "Unable to add gwt-dev.jar to the runtime classpath.", sdke));
     }
-  }
-
-  /**
-   * Given a list of resolved runtime classpath entries, search for any jars
-   * that are blacklisted from being present on the system classpath. Right now,
-   * the <code>asm-*.jar</code> are the only such jars.
-   */
-  private static void removeBlacklistedAppEngineJars(IJavaProject proj,
-      List<IRuntimeClasspathEntry> classpath) {
-    List<IRuntimeClasspathEntry> entriesToRemove = new ArrayList<IRuntimeClasspathEntry>();
-
-    for (IRuntimeClasspathEntry cpEntry : classpath) {
-
-      if (cpEntry.getType() != IRuntimeClasspathEntry.ARCHIVE) {
-        continue;
-      }
-
-      IPath cpEntryPath = cpEntry.getPath();
-      if (cpEntryPath.lastSegment().startsWith("asm-")) {
-        entriesToRemove.add(cpEntry);
-        continue;
-      }
-    }
-
-    classpath.removeAll(entriesToRemove);
   }
 
   @Override
@@ -180,11 +129,6 @@ public class MavenClasspathProvider extends ModuleClasspathProvider {
         unresolvedClasspathEntries.length);
     classpath.addAll(Arrays.asList(unresolvedClasspathEntries));
 
-    // add GAE tools api jar
-    if (GaeNature.isGaeProject(proj.getProject())) {
-      addAppengineToolsJarIfPossible(proj, classpath);
-    }
-
     // Add GWT dev jar
     if (GWTNature.isGWTProject(proj.getProject())) {
       addGwtDevjarIfPossible(proj, classpath);
@@ -208,9 +152,6 @@ public class MavenClasspathProvider extends ModuleClasspathProvider {
 
     List<IRuntimeClasspathEntry> resolvedEntriesList = new ArrayList<IRuntimeClasspathEntry>(
         Arrays.asList(resolvedEntries));
-    if (GaeNature.isGaeProject(proj.getProject())) {
-      removeBlacklistedAppEngineJars(proj, resolvedEntriesList);
-    }
 
     return resolvedEntriesList.toArray(new IRuntimeClasspathEntry[resolvedEntriesList.size()]);
   }
