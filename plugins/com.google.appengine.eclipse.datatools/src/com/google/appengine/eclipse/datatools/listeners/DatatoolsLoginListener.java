@@ -15,7 +15,7 @@
 package com.google.appengine.eclipse.datatools.listeners;
 
 import com.google.appengine.eclipse.datatools.utils.DatatoolsUtils;
-import com.google.gdt.eclipse.login.extensions.LoginListener;
+import com.google.gdt.eclipse.login.common.LoginListener;
 
 import org.eclipse.datatools.connectivity.IConnectionProfile;
 import org.eclipse.datatools.connectivity.ProfileManager;

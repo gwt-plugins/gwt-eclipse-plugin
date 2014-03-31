@@ -14,29 +14,11 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.login;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleOAuthConstants;
-import com.google.api.client.googleapis.auth.oauth2.GoogleRefreshTokenRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson.JacksonFactory;
-import com.google.gdt.eclipse.core.StringUtilities;
-import com.google.gdt.eclipse.core.browser.BrowserUtilities;
-import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
-import com.google.gdt.eclipse.login.GoogleLoginPrefs.Credentials;
-import com.google.gdt.eclipse.login.extensions.IClientProvider;
-import com.google.gdt.eclipse.login.extensions.LoginListener;
-import com.google.gdt.eclipse.login.ui.LoginBrowser;
-import com.google.gdt.eclipse.login.ui.LoginTrimContribution;
+import java.io.IOException;
+import java.net.MalformedURLException;
+
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -53,13 +35,22 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.SortedSet;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
+import com.google.gdt.eclipse.core.browser.BrowserUtilities;
+import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
+import com.google.gdt.eclipse.login.common.OAuthData;
+import com.google.gdt.eclipse.login.common.OAuthDataStore;
+import com.google.gdt.eclipse.login.common.GoogleLoginState;
+import com.google.gdt.eclipse.login.common.LoggerFacade;
+import com.google.gdt.eclipse.login.common.LoginListener;
+import com.google.gdt.eclipse.login.common.UiFacade;
+import com.google.gdt.eclipse.login.extensions.IClientProvider;
+import com.google.gdt.eclipse.login.ui.LoginBrowser;
+import com.google.gdt.eclipse.login.ui.LoginTrimContribution;
 
 /**
  * Class that handles logging in to Google services.
@@ -69,35 +60,56 @@ public class GoogleLogin {
   /**
    * Class representing a problem with a response.
    */
+  @SuppressWarnings("serial")
   public static class ResponseException extends Exception {
     public ResponseException(String reason) {
       super(reason);
     }
   }
 
-  private static final String
-      EXTERNAL_BROWSER_MSG =
-          "An embedded browser could not be created for signing in. "
-          + "An external web browser has been launched instead. Please sign in using this browser, "
-          + "and enter the verification code here";
+  private static final String LOGIN_NOTIFICATION_EXTENSION_POINT = "loginListener";
 
-  private static final String
-      GET_EMAIL_URL = "https://www.googleapis.com/userinfo/email";
-
-  private static final String
-      LOGIN_NOTIFICATION_EXTENSION_POINT = "loginListener";
-
+  private static EclipseUiFacade uiFacade;
   private static GoogleLogin instance;
 
-  private static final JsonFactory jsonFactory = new JacksonFactory();
-
-  private static final String
-      OAUTH2_NATIVE_CALLBACK_URL = GoogleOAuthConstants.OOB_REDIRECT_URI;
-  private static final HttpTransport transport = new NetHttpTransport();
-
   static {
-    instance = new GoogleLogin();
-    instance.loadLogin();
+    ClientIdSecretPair clientInfo = getClientIdAndSecretFromExtensionPoints();
+    uiFacade = new EclipseUiFacade();
+    GoogleLoginState state =
+        new GoogleLoginState(
+            clientInfo.getClientId(),
+            clientInfo.getClientSecret(),
+            GoogleLoginUtils.queryOAuthScopeExtensions(),
+            new EclipsePreferencesOAuthDataStore(),
+            uiFacade,
+            new EclipseLoggerFacade());
+    addLoginListenersFromExtensionPoints(state);
+    instance = new GoogleLogin(state);
+  }
+
+  private static ClientIdSecretPair getClientIdAndSecretFromExtensionPoints() {
+    ExtensionQuery<IClientProvider> clientProviderExtensionQuery =
+        new ExtensionQuery<IClientProvider>(
+            GoogleLoginPlugin.PLUGIN_ID, "oauthClientProvider", "class");
+    for (ExtensionQuery.Data<IClientProvider> data : clientProviderExtensionQuery.getData()) {
+      IClientProvider provider = data.getExtensionPointData();
+      String clientId = provider.getId();
+      String clientSecret = provider.getSecret();
+      if (clientId != null && clientId.trim().length() > 0
+          && clientSecret != null && clientSecret.trim().length() > 0) {
+        return new ClientIdSecretPair(clientId, clientSecret);
+      }
+    }
+    throw new IllegalStateException("No suitable oauthClientProvider extension point found");
+  }
+
+  private static void addLoginListenersFromExtensionPoints(GoogleLoginState state) {
+    ExtensionQuery<LoginListener> listenerExtensionQuery =
+        new ExtensionQuery<LoginListener>(
+            GoogleLoginPlugin.PLUGIN_ID, LOGIN_NOTIFICATION_EXTENSION_POINT, "class");
+    for (ExtensionQuery.Data<LoginListener> extensionData : listenerExtensionQuery.getData()) {
+      state.addLoginListener(extensionData.getExtensionPointData());
+    }
   }
 
   public static GoogleLogin getInstance() {
@@ -117,79 +129,18 @@ public class GoogleLogin {
       });
     }
   }
+  
+  private final GoogleLoginState delegate;
 
-  private static void showNoBrowsersMessageDialog() {
-    MessageDialog noBrowsersMd = new MessageDialog(Display.getDefault()
-      .getActiveShell(),
-        "No browsers found",
-        null,
-        null,
-        MessageDialog.ERROR,
-        new String[] {"Ok"},
-        0) {
-
-        @Override
-      protected Control createMessageArea(Composite parent) {
-        super.createMessageArea(parent);
-
-        Link link = new Link(parent, SWT.WRAP);
-        link.setText("An embedded browser could not be created for signing in."
-            + "\nAn external browser is needed to sign in, however, none are defined in Eclipse." + "\nPlease add a browser in <a href=\"#\">Window -> Preferences -> General -> Web Browser</a> and sign in again.");
-
-        link.addSelectionListener(new SelectionAdapter() {
-            @Override
-          public void widgetSelected(SelectionEvent e) {
-            PreferenceDialog dialog = PreferencesUtil.createPreferenceDialogOn(
-                Display.getDefault().getActiveShell(),
-                "org.eclipse.ui.browser.preferencePage",
-                new String[] {"org.eclipse.ui.browser.preferencePage"}, null);
-
-            if (dialog != null) {
-              dialog.open();
-            }
-          }
-        });
-        return parent;
-      }
-    };
-    noBrowsersMd.open();
-  }
-
-  private Credential access;
-
-  private String accessToken;
-
-  private long accessTokenExpiryTime;
-
-  private SortedSet<String> cachedOAuthScopes;
-
-  private String clientId;
-
-  private String clientSecret;
-
-  // if we connected to the internet
-  private boolean connected;
-
-  private String email;
-
-  private boolean isLoggedIn;
-
-  private String refreshToken;
-
-  private LoginTrimContribution trim;
-
-  protected GoogleLogin() {
-    isLoggedIn = false;
-    email = "";
-    connected = true; // assume we're connected until checkCredentials is called
-    initializeOauthClientInfo();
+  protected GoogleLogin(GoogleLoginState delegate) {
+    this.delegate = delegate;
   }
 
   /**
    * See {@link #createRequestFactory(String)}.
    */
   public HttpRequestFactory createRequestFactory() {
-    return createRequestFactory(null);
+    return delegate.createRequestFactory(null);
   }
 
   /**
@@ -208,10 +159,7 @@ public class GoogleLogin {
    *          is created. See {@link #logIn(String)}
    */
   public HttpRequestFactory createRequestFactory(String message) {
-    if (!checkLoggedIn(message)) {
-      return null;
-    }
-    return transport.createRequestFactory(access);
+    return delegate.createRequestFactory(message);
   }
 
   /**
@@ -224,33 +172,19 @@ public class GoogleLogin {
    * 
    */
   public String fetchAccessToken() throws IOException {
-    if (!checkLoggedIn(null)) {
-      return null;
-    }
-    if (accessTokenExpiryTime != 0) {
-      long currentTime = new GregorianCalendar().getTimeInMillis() / 1000;
-      if (currentTime >= accessTokenExpiryTime) {
-        fetchOAuth2Token();
-      }
-    } else {
-      fetchOAuth2Token();
-    }
-    return accessToken;
+    return delegate.fetchAccessToken();
   }
 
   public String fetchOAuth2ClientId() {
-    return clientId;
+    return delegate.fetchOAuth2ClientId();
   }
 
   public String fetchOAuth2ClientSecret() {
-    return clientSecret;
+    return delegate.fetchOAuth2ClientSecret();
   }
 
   public String fetchOAuth2RefreshToken() {
-    if (!checkLoggedIn(null)) {
-      return null;
-    }
-    return refreshToken;
+    return delegate.fetchOAuth2RefreshToken();
   }
 
   /**
@@ -263,31 +197,11 @@ public class GoogleLogin {
    * 
    */
   public String fetchOAuth2Token() throws IOException {
-    if (!checkLoggedIn(null)) {
-      return null;
-    }
-
-    try {
-      GoogleRefreshTokenRequest request = new GoogleRefreshTokenRequest(
-          transport, jsonFactory, refreshToken, clientId, clientSecret);
-      GoogleTokenResponse authResponse = request.execute();
-      accessToken = authResponse.getAccessToken();
-      access.setAccessToken(accessToken);
-      accessTokenExpiryTime = new GregorianCalendar().getTimeInMillis() / 1000
-          + authResponse.getExpiresInSeconds().longValue();
-    } catch (IOException e) {
-      GoogleLoginPlugin.logError("Could not obtain an Oauth2 access token.", e);
-      throw e;
-    }
-    saveCredentials();
-    return accessToken;
+    return delegate.fetchOAuth2Token();
   }
 
   public Credential getCredential() {
-    if (access == null) {
-      access = makeCredential();
-    }
-    return access;
+    return delegate.getCredential();
   }
 
   /**
@@ -295,7 +209,7 @@ public class GoogleLogin {
    *         out, or null if the user's email couldn't be retrieved
    */
   public String getEmail() {
-    return email;
+    return delegate.getEmail();
   }
 
   /**
@@ -304,21 +218,21 @@ public class GoogleLogin {
    * credentials, but it could not connect to verify.
    */
   public boolean isConnected() {
-    return connected;
+    return delegate.isConnected();
   }
 
   /**
    * @return true if the user is logged in, false otherwise
    */
   public boolean isLoggedIn() {
-    return isLoggedIn;
+    return delegate.isLoggedIn();
   }
 
   /**
    * See {@link #logIn(String)}.
    */
   public boolean logIn() {
-    return logIn(null);
+    return delegate.logIn(null);
   }
 
   /**
@@ -335,74 +249,7 @@ public class GoogleLogin {
    * @return true if the user signed in or is already signed in, false otherwise
    */
   public boolean logIn(String message) {
-
-    if (isLoggedIn) {
-      return true;
-    }
-
-    String authorizeUrl =
-        new GoogleAuthorizationCodeRequestUrl(
-            clientId, OAUTH2_NATIVE_CALLBACK_URL, getOAuthScopes()).build();
-
-    connected = true;
-    final LoginBrowser loginBrowser = new LoginBrowser(
-        Display.getDefault().getActiveShell(), authorizeUrl, message);
-
-    int rc = LoginBrowser.BROWSER_ERROR;
-
-    try {
-      rc = loginBrowser.open();
-    } catch (Throwable e) {
-      // the login browser logs its own errors
-    }
-
-    String verificationCode;
-
-    if (rc == LoginBrowser.CANCEL) {
-      return false;
-    } else if (rc == LoginBrowser.BROWSER_ERROR) {
-      // if the embedded browser couldn't be opened, have to fall back
-      // on an external browser.
-      verificationCode = openExternalBrowserForLogin(authorizeUrl);
-      if (verificationCode == null) {
-        return false;
-      }
-    } else {
-      verificationCode = loginBrowser.getVerificationCode();
-    }
-    if ((verificationCode == null) || verificationCode.isEmpty()) {
-      return false;
-    }
-
-    GoogleAuthorizationCodeTokenRequest authRequest = new GoogleAuthorizationCodeTokenRequest(transport,
-        jsonFactory,
-        clientId,
-        clientSecret,
-        verificationCode,
-        OAUTH2_NATIVE_CALLBACK_URL);
-    GoogleTokenResponse authResponse;
-    try {
-      authResponse = authRequest.execute();
-    } catch (IOException e) {
-      MessageDialog.openError(Display.getDefault().getActiveShell(),
-          "Error while signing in", "An error occured while trying to sign in: "
-              + e.getMessage() + ". See the error log for more details.");
-      GoogleLoginPlugin.logError(
-          "Could not sign in. Make sure that you entered the correct verification code.",
-          e);
-      return false;
-    }
-    refreshToken = authResponse.getRefreshToken();
-    accessToken = authResponse.getAccessToken();
-    access = makeCredential();
-    accessTokenExpiryTime = new GregorianCalendar().getTimeInMillis() / 1000
-        + authResponse.getExpiresInSeconds().longValue();
-    isLoggedIn = true;
-    email = queryEmail();
-    saveCredentials();
-    notifyTrim();
-    notifyLoginStatusChange(true);
-    return true;
+    return delegate.logIn(message);
   }
 
   /**
@@ -412,7 +259,7 @@ public class GoogleLogin {
    * @return true if the user logged out, false otherwise
    */
   public boolean logOut() {
-    return logOut(true);
+    return delegate.logOut();
   }
 
   /**
@@ -424,17 +271,11 @@ public class GoogleLogin {
    *         if the user chose not to log out
    */
   public boolean logOut(boolean showPrompt) {
-    return logOut(showPrompt, true);
+    return delegate.logOut(showPrompt);
   }
 
   public Credential makeCredential() {
-    Credential cred = new GoogleCredential.Builder()
-      .setJsonFactory(jsonFactory)
-      .setTransport(transport)
-      .setClientSecrets(clientId, clientSecret).build();
-    cred.setAccessToken(accessToken);
-    cred.setRefreshToken(refreshToken);
-    return cred;
+    return delegate.makeCredential();
   }
 
   /**
@@ -445,7 +286,7 @@ public class GoogleLogin {
    * @param trim
    */
   public void setLoginTrimContribution(LoginTrimContribution trim) {
-    this.trim = trim;
+    uiFacade.setLoginTrimContribution(trim);
   }
 
   public void stop() {
@@ -455,205 +296,213 @@ public class GoogleLogin {
   }
 
   /**
-   * Updates eclipse when an internal login is done.
+   * Performs the firing of listeners and the updates to the status indicator in the trim
+   * contribution that are normally performed as part of a log in or log out, and retrieves any
+   * persistently stored credentials upon log in, but does not actually interact with an OAuth
+   * server.
    * 
-   * @param login Whether the user is logged in or not
+   * @param login
+   *     {@code true} if a log in is to be simulated, {@code false} if a log out is to be simulated
    */
+  @VisibleForTesting
   public void updateInternalLogin(boolean login) {
-    if (login) {
-      loadLogin();
-    }
-    notifyLoginStatusChange(login);
-    notifyTrim();
-  }
-
-  protected void loadLogin() {
-
-    Credentials prefs = GoogleLoginPrefs.loadCredentials();
-
-    // the stored email can be null in the case where the external browser
-    // was launched, because we can't extract the email from the external
-    // browser
-    if (prefs.refreshToken == null || prefs.storedScopes == null) {
-      GoogleLoginPrefs.clearStoredCredentials();
-      return;
-    }
-
-    accessToken = prefs.accessToken;
-    refreshToken = prefs.refreshToken;
-    accessTokenExpiryTime = prefs.accessTokenExpiryTime;
-    this.email = prefs.storedEmail;
-
-    isLoggedIn = true;
-
-    if (!getOAuthScopes().equals(prefs.storedScopes)) {
-      GoogleLoginPlugin.logWarning(
-          "OAuth scope set for stored credentials no longer valid, logging out.");
-      GoogleLoginPlugin.logWarning(
-          getOAuthScopes() + " vs. " + prefs.storedScopes);
-      logOut(false);
-    }
-
-    access = makeCredential();
-  }
-
-  private boolean checkLoggedIn(String msg) {
-    if (!isLoggedIn) {
-      boolean rc = logIn(msg);
-      if (!rc) {
-        return false;
-      }
-      notifyTrim();
-    }
-    return true;
-  }
-
-  private SortedSet<String> getOAuthScopes() {
-    if (cachedOAuthScopes == null) {
-      cachedOAuthScopes = GoogleLoginUtils.queryOAuthScopeExtensions();
-    }
-
-    return cachedOAuthScopes;
-  }
-
-  private void initializeOauthClientInfo() {
-    ExtensionQuery<IClientProvider> extensionQuery = new ExtensionQuery<
-        IClientProvider>(
-        GoogleLoginPlugin.PLUGIN_ID, "oauthClientProvider", "class");
-    for (ExtensionQuery.Data<IClientProvider> data : extensionQuery.getData()) {
-      String id = data.getExtensionPointData().getId();
-      String secret = data.getExtensionPointData().getSecret();
-      if (!StringUtilities.isEmpty(id) && id.trim().length() > 0
-          && !StringUtilities.isEmpty(secret) && secret.trim().length() > 0) {
-        clientId = id;
-        clientSecret = secret;
-        return;
-      }
-    }
-  }
-
-  private boolean logOut(boolean showPrompt, boolean doRevoke) {
-
-    if (!isLoggedIn) {
-      return true;
-    }
-
-    boolean logOut = true;
-    if (showPrompt) {
-      logOut = MessageDialog.openQuestion(Display.getDefault().getActiveShell(),
-          "Sign out?", "Are you sure you want to sign out?");
-    }
-
-    if (logOut) {
-      email = "";
-      isLoggedIn = false;
-
-      GoogleLoginPrefs.clearStoredCredentials();
-
-      notifyLoginStatusChange(false);
-      notifyTrim();
-      return true;
-    }
-    return false;
-  }
-
-  private void notifyLoginStatusChange(boolean login) {
-    ExtensionQuery<LoginListener> extensionQuery = new ExtensionQuery<
-        LoginListener>(GoogleLoginPlugin.PLUGIN_ID,
-        LOGIN_NOTIFICATION_EXTENSION_POINT, "class");
-
-    List<ExtensionQuery.Data<LoginListener>> loginListenerList = extensionQuery
-      .getData();
-    for (ExtensionQuery.Data<LoginListener> loginListener : loginListenerList) {
-      loginListener.getExtensionPointData().statusChanged(login);
-    }
-  }
-
-  private void notifyTrim() {
-    if (trim != null) {
-      Display.getDefault().asyncExec(new Runnable() {
-        public void run() {
-          trim.updateUi();
-        }
-      });
-    }
-  }
-
-  /**
-   * Opens an external browser for the user to login, opens a dialog telling the user to login using
-   * that browser, and paste the verification code in a dialog box that pops up.
-   */
-  private String openExternalBrowserForLogin(String authorizeUrl) {
-
-    IWebBrowser browser = null;
-    try {
-      // we don't send them to the logout url because we don't want to
-      // force them to log out of their normal sessions
-      browser = BrowserUtilities.launchBrowser(authorizeUrl);
-    } catch (PartInitException e) {
-      showNoBrowsersMessageDialog();
-      return null;
-    } catch (MalformedURLException e) {
-      GoogleLoginPlugin.logError("Could not open external browser", e);
-    }
-
-    final InputDialog md = new InputDialog(
-        Display.getDefault().getActiveShell(), "Sign in to Google Services",
-        EXTERNAL_BROWSER_MSG, null, new IInputValidator() {
-          public String isValid(String newText) {
-            if (!newText.trim().isEmpty()) {
-              return null;
-            }
-            return "Verification code cannot be empty";
-          }
-        });
-
-    int rc = md.open();
-    String verificationCode = md.getValue();
-
-    browser.close();
-    md.close();
-    return verificationCode;
+    delegate.simulateLoginStatusChange(login);
   }
   
-  private String queryEmail() {
-    String url = GET_EMAIL_URL;
-
-    HttpResponse resp = null;
-    try {
-      HttpRequest get = createRequestFactory().buildGetRequest(
-          new GenericUrl(url));
-      resp = get.execute();
-      Scanner scan = new Scanner(resp.getContent());
-      String respStr = "";
-      while (scan.hasNext()) {
-        respStr += scan.nextLine();
-      }
-
-      Map<String, String> params = GoogleLoginUtils.parseUrlParameters(respStr);
-      String userEmail = params.get("email");
-      if (userEmail == null) {
-        throw new Exception("Response from server is invalid.");
-      }
-
-      return userEmail;
-
-    } catch (Exception e) {
-      // catch exception in case something goes wrong in parsing the response
-      GoogleLoginPlugin.logError(
-          "Could not parse email after Google service sign-in", e);
+  /**
+   * A pair consisting of the OAuth client ID and OAuth client secret for a client application.
+   */
+  @Immutable
+  private static class ClientIdSecretPair {
+    private final String clientId;
+    private final String clientSecret;
+    
+    public ClientIdSecretPair(String clientId, String clientSecret) {
+      this.clientId = clientId;
+      this.clientSecret = clientSecret;
     }
-
-    return null;
+    
+    public String getClientId() {
+      return clientId;
+    }
+    
+    public String getClientSecret() {
+      return clientSecret;
+    }
   }
+    
+  /**
+   * An implementation of {@link UiFacade} using Eclipse dialogs and embedded browsers.
+   */
+  private static class EclipseUiFacade implements UiFacade {
 
-  private void saveCredentials() {
-    if (!isLoggedIn) {
-      GoogleLoginPrefs.clearStoredCredentials();
-    } else {
-      Credentials creds = new Credentials(accessToken, refreshToken, email,
-          getOAuthScopes(), accessTokenExpiryTime);
-      GoogleLoginPrefs.saveCredentials(creds);
+    private static final String EXTERNAL_BROWSER_MSG =
+        "An embedded browser could not be created for signing in. "
+            + "An external web browser has been launched instead. "
+            + "Please sign in using this browser, and enter the verification code here.";
+    
+    private static final String NO_BROWSER_MSG =
+        "An embedded browser could not be created for signing in."
+            + "\nAn external browser is needed to sign in, however, none are defined in Eclipse."
+            + "\nPlease add a browser in <a href=\"#\">Window -> Preferences -> General -> "
+            + "Web Browser</a> and sign in again.";
+    
+    private LoginTrimContribution trim;
+
+    public void setLoginTrimContribution(LoginTrimContribution trim) {
+      this.trim = trim;
     }
+
+    public void notifyStatusIndicator() {
+      if (trim != null) {
+        Display.getDefault().asyncExec(new Runnable() {
+          public void run() {
+            trim.updateUi();
+          }
+        });
+      }
+    }
+
+    @Nullable
+    public String obtainVerificationCodeFromUserInteraction(
+        String message, GoogleAuthorizationCodeRequestUrl requestUrl) {
+      final LoginBrowser loginBrowser =
+          new LoginBrowser(Display.getDefault().getActiveShell(), requestUrl, message);
+
+      int rc;
+      try {
+        rc = loginBrowser.open();
+      } catch (Throwable e) {
+        rc = LoginBrowser.BROWSER_ERROR;
+        // the login browser logs its own errors
+      }
+
+      if (rc == LoginBrowser.CANCEL) {
+        return null;
+      } else if (rc == LoginBrowser.BROWSER_ERROR) {
+        // if the embedded browser couldn't be opened, have to fall back
+        // on an external browser.
+        return Strings.emptyToNull(openExternalBrowserForLogin(requestUrl));
+      } else {
+        return Strings.emptyToNull(loginBrowser.getVerificationCode());
+      }
+    }
+
+    /**
+     * Opens an external browser for the user to login, issues a request to the OAuth server
+     * specified by a given {@link GoogleAuthorizationCodeRequestUrl}, and opens a dialog telling
+     * the user to log in using that browser and to paste the verification code displayed in the
+     * browser into the dialog. This is a fall-back for the case in which it is impossible to obtain
+     * the authorization code that the OAuth server sends back to the browser directly from the
+     * browser, without user intervention.
+     * 
+     * @param requestUrl the given {@code GoogleAuthorizationCodeRequestUrl}
+     */
+    private String openExternalBrowserForLogin(GoogleAuthorizationCodeRequestUrl requestUrl) {
+
+      IWebBrowser browser = null;
+      try {
+        // we don't send them to the logout url because we don't want to
+        // force them to log out of their normal sessions
+        browser = BrowserUtilities.launchBrowser(requestUrl.build());
+      } catch (PartInitException e) {
+        showNoBrowsersMessageDialog();
+        return null;
+      } catch (MalformedURLException e) {
+        GoogleLoginPlugin.logError("Could not open external browser", e);
+      }
+
+      final InputDialog md =
+          new InputDialog(
+              Display.getDefault().getActiveShell(),
+              "Sign in to Google Services",
+              EXTERNAL_BROWSER_MSG,
+              null,
+              new IInputValidator() {
+                public String isValid(String newText) {
+                  return newText.trim().isEmpty() ? "Verification code cannot be empty" : null;
+                }
+              });
+
+      md.open();
+      String verificationCode = md.getValue();
+
+      browser.close();
+      md.close();
+      return verificationCode;
+    }
+
+    private static void showNoBrowsersMessageDialog() {
+      MessageDialog noBrowsersMd =
+          new MessageDialog(
+              Display.getDefault().getActiveShell(),
+              "No browsers found",
+              null,
+              null,
+              MessageDialog.ERROR,
+              new String[] {"Ok"},
+              0) {
+
+            @Override
+            protected Control createMessageArea(Composite parent) {
+              super.createMessageArea(parent);
+    
+              Link link = new Link(parent, SWT.WRAP);
+              link.setText(NO_BROWSER_MSG);
+    
+              link.addSelectionListener(new SelectionAdapter() {
+                  @Override
+                public void widgetSelected(SelectionEvent e) {
+                  PreferenceDialog dialog = PreferencesUtil.createPreferenceDialogOn(
+                      Display.getDefault().getActiveShell(),
+                      "org.eclipse.ui.browser.preferencePage",
+                      new String[] {"org.eclipse.ui.browser.preferencePage"}, null);
+    
+                  if (dialog != null) {
+                    dialog.open();
+                  }
+                }
+              });
+              return parent;
+            }
+          };
+      noBrowsersMd.open();
+    }
+    
+    public void showErrorDialog(String title, String message) {
+      MessageDialog.openError(Display.getDefault().getActiveShell(), title, message);
+    }
+    
+    public boolean askYesOrNo(String title, String message) {
+      return MessageDialog.openQuestion(Display.getDefault().getActiveShell(), title, message);
+    }
+  }
+  
+  /**
+   * An implementation of the {@link OAuthDataStore} interface using Eclipse preferences.
+   */
+  private static class EclipsePreferencesOAuthDataStore implements OAuthDataStore {
+
+    public void saveOAuthData(OAuthData credentials) {
+      GoogleLoginPrefs.saveOAuthData(credentials);      
+    }
+
+    public OAuthData loadOAuthData() {
+      return GoogleLoginPrefs.loadOAuthData();
+    }
+
+    public void clearStoredOAuthData() {
+      GoogleLoginPrefs.clearStoredOAuthData();      
+    }    
+  }
+  
+  private static class EclipseLoggerFacade implements LoggerFacade {
+    public void logError(String msg, Throwable t) {
+      GoogleLoginPlugin.logError(msg, t);
+    }
+
+    public void logWarning(String msg) {
+      GoogleLoginPlugin.logWarning(msg);
+    }    
   }
 }

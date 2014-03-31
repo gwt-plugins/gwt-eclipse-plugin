@@ -46,7 +46,7 @@ public class GoogleLoginPlugin extends AbstractUIPlugin {
     plugin.getLog().log(new Status(severity, plugin.getPluginId(), msg, t));
   }
 
-  public static void logError(String msg, Exception t) {
+  public static void logError(String msg, Throwable t) {
     log(Status.ERROR, msg, t);
   }
 

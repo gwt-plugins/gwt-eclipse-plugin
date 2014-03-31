@@ -14,9 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.login.ui;
 
-import com.google.gdt.eclipse.core.browser.BrowserUtilities;
-import com.google.gdt.eclipse.login.GoogleLoginPlugin;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -36,8 +33,14 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
+import com.google.gdt.eclipse.core.browser.BrowserUtilities;
+import com.google.gdt.eclipse.login.GoogleLoginPlugin;
+
 /**
- * A dialog that has an embedded browser for the user to sign in.
+ * A dialog that has an embedded browser for the user to sign in. The browser issues a request to
+ * the URL specified by a {@link GoogleAuthorizationCodeRequestUrl} to start an interaction with the
+ * OAuth server.
  */
 public class LoginBrowser extends Dialog {
 
@@ -106,7 +109,7 @@ public class LoginBrowser extends Dialog {
        */
       if (browser.getUrl().toLowerCase().contains("logout")
           || browser.getUrl().contains("ManageAccount")) {
-        browser.setUrl(url);
+        browser.setUrl(urlString);
         return;
       }
     }
@@ -125,16 +128,20 @@ public class LoginBrowser extends Dialog {
   private final String message;
   private String verificationCode;
 
-  private final String url;
+  private final String urlString;
 
   /**
+   * @param requestUrl
+   *     the {@link GoogleAuthorizationCodeRequestUrl} used for the initial browser request to the
+   *     OAuth server
    * @param parentShell The parents shell for this dialog.
    * @param message The message to be displayed at the top of the dialog. If
    *          null, then no message area is created and nothing is displayed.
    */
-  public LoginBrowser(Shell parentShell, String url, String message) {
+  public LoginBrowser(
+      Shell parentShell, GoogleAuthorizationCodeRequestUrl requestUrl, String message) {
     super(parentShell);
-    this.url = url;
+    this.urlString = requestUrl.build();
     this.message = message;
   }
 
@@ -226,7 +233,7 @@ public class LoginBrowser extends Dialog {
     // Success code=<token>
     browser.addTitleListener(browserTitleListener);
 
-    browser.setUrl(url);
+    browser.setUrl(urlString);
 
     return parent;
   }

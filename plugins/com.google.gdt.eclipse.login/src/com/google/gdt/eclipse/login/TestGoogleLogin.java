@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.login;
 
-import com.google.gdt.eclipse.login.GoogleLoginPrefs.Credentials;
+import com.google.gdt.eclipse.login.common.OAuthData;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -49,8 +49,8 @@ public class TestGoogleLogin {
    * Logs in to Google.
    */
   public static void logIn() {
-    Credentials credentials = createCredentials();
-    GoogleLoginPrefs.saveCredentials(credentials);
+    OAuthData credentials = createCredentials();
+    GoogleLoginPrefs.saveOAuthData(credentials);
     GoogleLogin.getInstance().updateInternalLogin(true);
   }
 
@@ -67,14 +67,14 @@ public class TestGoogleLogin {
    * 
    * @return The credential.
    */
-  private static Credentials createCredentials() {
+  private static OAuthData createCredentials() {
     Set<String> storedScopes = new HashSet<String>();
     for (String scope : USER_STORED_SCOPES) {
       storedScopes.add(scope);
     }
 
-    Credentials credentials =
-        new Credentials(USER_ACCESS_TOKEN, USER_REFRESH_TOKEN, USER_STORED_EMAIL, storedScopes, 0);
+    OAuthData credentials =
+        new OAuthData(USER_ACCESS_TOKEN, USER_REFRESH_TOKEN, USER_STORED_EMAIL, storedScopes, 0);
     return credentials;
   }
 }

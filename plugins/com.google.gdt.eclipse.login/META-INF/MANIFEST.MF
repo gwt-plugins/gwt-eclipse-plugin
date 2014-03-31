@@ -19,4 +19,5 @@ Bundle-ClassPath: .,
  com.google.gdt.eclipse.login.extensions
 Bundle-Localization: plugin
 Export-Package: com.google.gdt.eclipse.login,
+ com.google.gdt.eclipse.login.common,
  com.google.gdt.eclipse.login.extensions

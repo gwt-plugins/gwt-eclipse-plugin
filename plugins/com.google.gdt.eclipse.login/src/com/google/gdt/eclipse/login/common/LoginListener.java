@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.google.gdt.eclipse.login.extensions;
+package com.google.gdt.eclipse.login.common;
 
 /**
  * Listener for the login status change of the user.

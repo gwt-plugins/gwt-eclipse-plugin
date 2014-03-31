@@ -15,7 +15,7 @@
 package com.google.gdt.eclipse.drive;
 
 import com.google.gdt.eclipse.drive.driveapi.DriveServiceFacade;
-import com.google.gdt.eclipse.login.extensions.LoginListener;
+import com.google.gdt.eclipse.login.common.LoginListener;
 
 /**
  * A listener for login-status-change events reported by the Google login plugin.
