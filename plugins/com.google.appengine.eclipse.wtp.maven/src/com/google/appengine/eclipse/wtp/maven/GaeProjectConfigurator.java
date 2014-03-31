@@ -44,7 +44,7 @@ public class GaeProjectConfigurator extends WTPProjectConfigurator {
       IProject eclipseProject = request.getProject();
       IFacetedProject facetedProject = ProjectFacetsManager.create(eclipseProject);
       new GaeFacetManager().addGaeFacet(pom, facetedProject, monitor);
-      new JpaFacetManager().addJpaFacet(facetedProject, monitor);
+      new JpaFacetManager().configureJpaFacet(facetedProject, monitor);
     }
   }
 

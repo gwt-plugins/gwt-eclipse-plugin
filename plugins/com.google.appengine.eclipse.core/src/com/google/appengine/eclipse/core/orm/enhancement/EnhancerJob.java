@@ -12,11 +12,12 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.core.orm.enhancement;
 
-import com.google.appengine.eclipse.core.AppEngineCorePlugin;
-import com.google.gdt.eclipse.core.ProcessUtilities;
-import com.google.gdt.eclipse.core.console.MessageConsoleUtilities;
-import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
-import com.google.gdt.eclipse.core.extensions.ExtensionQueryWithElement;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -32,15 +33,27 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.ui.console.MessageConsole;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import com.google.appengine.eclipse.core.AppEngineCorePlugin;
+import com.google.appengine.eclipse.core.AppEngineCorePluginLog;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.gdt.eclipse.core.ProcessUtilities;
+import com.google.gdt.eclipse.core.console.MessageConsoleUtilities;
+import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
+import com.google.gdt.eclipse.core.extensions.ExtensionQueryWithElement;
+import com.google.gdt.eclipse.maven.MavenUtils;
 
 /**
  * Job that performs a datanucleus enhancement on a set <code>.class</code> files.
  */
 public class EnhancerJob extends WorkspaceJob {
+  
+  private static final Pattern DATANUCLEUS_JAR_PATTERN =
+      Pattern.compile(
+          "datanucleus/datanucleus-(?<part>[a-z\\-]+)/(?<version>[^/]+)/datanucleus-\\k<part>-\\k<version>\\.jar$");
+  
+  private static final Set<String> DATANUCLEUS_PARTS_PACKAGED_WITH_APP_ENGINE =
+      ImmutableSet.of("api-jdo", "api-jpa", "appengine", "core");
 
   /**
    * Interface for extension points to provide a classpath for the Datanucleus Enhancer.
@@ -75,7 +88,25 @@ public class EnhancerJob extends WorkspaceJob {
       }
     }
 
-    return LaunchUtilities.getDefaultClasspath(javaProject);
+    List<String> unfilteredClasspath = LaunchUtilities.getDefaultClasspath(javaProject);
+    // If this classpath contains certain enhancer JARs, they must be removed from the classpath
+    // that will be used for invoking the enhancer, because conflicting JARs from the Maven
+    // repository are added to the classpath by some other mechanism that we do not understand and
+    // possibly cannot control.
+    return MavenUtils.hasMavenNature(javaProject.getProject()) ?
+        removeDatanucleusJars(unfilteredClasspath) : unfilteredClasspath;
+  }
+  
+  private static final List<String> removeDatanucleusJars(List<String> input) {
+    List<String> result = Lists.newArrayListWithCapacity(input.size());
+    for (String classpathItem : input) {
+      Matcher m = DATANUCLEUS_JAR_PATTERN.matcher(classpathItem);
+      boolean matches = m.find();
+      if (!(matches && DATANUCLEUS_PARTS_PACKAGED_WITH_APP_ENGINE.contains(m.group("part")))) {
+        result.add(classpathItem);
+      }
+    }
+    return result;
   }
 
   /**
@@ -139,8 +170,15 @@ public class EnhancerJob extends WorkspaceJob {
 
       IPath projectLocation = javaProject.getProject().getLocation();
 
-      ProcessUtilities.launchProcessAndActivateOnError(commands, projectLocation.toFile(),
-          messageConsole);
+      int exitCode =
+          ProcessUtilities.launchProcessAndActivateOnError(
+              commands, projectLocation.toFile(), messageConsole);
+      
+      if (exitCode != 0) {
+        AppEngineCorePluginLog.logError(
+            "Datanucleus enhancer terminated with exit code " + exitCode
+            + ".\nNavigate to the console view for \"Datanucleus Enhancer\" for more information");
+      }
 
       refreshEnhancedResources(monitor);
 

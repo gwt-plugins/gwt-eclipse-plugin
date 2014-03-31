@@ -516,14 +516,21 @@ public class GaeSdk extends AbstractSdk {
       }
       return Status.OK_STATUS;
     } catch (CoreException e) {
+      logValidationException(e);
       return e.getStatus();
     } catch (RuntimeException e) {
+      logValidationException(e);
       return new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID,
           e.getLocalizedMessage(), e);
     } catch (ReflectionException e) {
+      logValidationException(e);
       return new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID, e.getLocalizedMessage(),
           e.getTargetException());
     }
+  }
+  
+  private void logValidationException(Throwable t) {
+    AppEngineCorePluginLog.logError(t, "GAE SDK " + getName() + " failed validation");
   }
 
   private Set<GaeSdkCapability> doGetCapabilities() {

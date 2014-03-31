@@ -7,6 +7,7 @@ Bundle-Activator: com.google.appengine.eclipse.core.AppEngineCorePlugin
 Bundle-Vendor: %providerName
 Require-Bundle: com.google.gdt.eclipse.core;visibility:=reexport,
  com.google.gdt.eclipse.login,
+ com.google.gdt.eclipse.maven,
  org.eclipse.core.runtime,
  org.eclipse.debug.ui,
  org.eclipse.jdt.core,
@@ -16,9 +17,11 @@ Require-Bundle: com.google.gdt.eclipse.core;visibility:=reexport,
  org.eclipse.ui,
  org.eclipse.ui.console,
  org.eclipse.ui.ide,
+ org.eclipse.wst.common.project.facet.core,
  org.eclipse.wst.sse.core,
  org.eclipse.wst.xml.core,
- org.eclipse.core.variables
+ org.eclipse.core.variables,
+ org.eclipse.wst.server.core
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: com.google.appengine.eclipse.core,

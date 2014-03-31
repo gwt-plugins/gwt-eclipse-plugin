@@ -200,7 +200,7 @@
                point="org.eclipse.wst.common.project.facet.core.defaultFacets">
         <default-facets>
             <runtime-component id="com.google.appengine.runtime.id" version="1"/>
-            <facet id="com.google.appengine.facet.ear" version="1" />
+            <facet id="com.google.appengine.facet" version="1" />
         </default-facets>
     </extension>      
     
