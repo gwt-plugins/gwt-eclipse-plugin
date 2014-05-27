@@ -14,9 +14,11 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.core.update.internal.core;
 
-import com.google.gdt.eclipse.core.CorePlugin;
-import com.google.gdt.eclipse.core.CorePluginLog;
-import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -27,15 +29,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-import org.eclipse.wst.common.project.facet.core.IFacetedProject;
-import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
-import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import com.google.common.base.Joiner;
+import com.google.gdt.eclipse.core.CorePlugin;
+import com.google.gdt.eclipse.core.CorePluginLog;
+import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 
 /**
  * Builds the query string to include with a feature update check request.
@@ -53,10 +51,6 @@ public class UpdateQueryBuilder {
   private static final String ACTION_PARAM = "&action=";
 
   private static final String APP_ENGINE_CORE_PLUGIN_ID = "com.google.appengine.eclipse.core";
-
-  private static final String FACET_JST_JAVA = "jst.java";
-
-  private static final String FACET_JAVA = "java";
 
   public static final String ENDPOINTS_GEN_APP_ENGINE_BACKEND = "endpoints_genbackend";
 
@@ -168,22 +162,11 @@ public class UpdateQueryBuilder {
   }
 
   /**
-   * Retrieves info about whether the project is Cloud Endpoint project.
+   * Sets flag indicating whether the project is Cloud Endpoint project.
    */
   public void retrieveCloudEndpointEnabled(IProject project) {
-    IFolder f = ResourcesPlugin.getWorkspace().getRoot().getFolder(
-        project.getFullPath().append("/war/WEB-INF/"));
-    try {
-      if (f.exists() && f.members().length != 0) {
-        for (IResource r : f.members()) {
-          if (r.getName().endsWith(".api")) {
-            isCloudEndpointProject = true;
-            break;
-          }
-        }
-      }
-    } catch (CoreException e) {
-      CorePluginLog.logError(e);
+    if (ProjectInformationUtils.isCloudEndpointProject(project)) {
+      isCloudEndpointProject = true;
     }
   }
 
@@ -206,30 +189,12 @@ public class UpdateQueryBuilder {
    * Retrieves information about the facets enabled on this project.
    */
   public void retrieveFacetsEnabled(IProject project) {
-    IFacetedProject facetedProject;
-    try {
-      facetedProject = ProjectFacetsManager.create(project);
-    } catch (CoreException e) {
-      CorePluginLog.logError(e);
-      return;
-    }
-    if (facetedProject == null) {
-      return;
-    }
-    facetsEnabled = "";
-    for (IProjectFacetVersion facet : facetedProject.getProjectFacets()) {
-      // Skip JAVA facet, since that is always on by default.
-      String facetId = facet.getProjectFacet().getId();
-      if (!facetId.equals(FACET_JST_JAVA) && !facetId.equals(FACET_JAVA)) {
-        facetsEnabled += "," + facetId;
-      }
-    }
+    List<String> facetIdList = FacetFinder.getEnabledNonJavaFacetIds(project);
     // Set string to null if no non-JAVA facets
-    if (facetsEnabled.isEmpty()) {
+    if (facetIdList.isEmpty()) {
       facetsEnabled = null;
     } else {
-      // Remove the first comma
-      facetsEnabled = facetsEnabled.substring(1);
+      facetsEnabled = Joiner.on(',').join(facetIdList);
       try {
         facetsEnabled = URLEncoder.encode(facetsEnabled, "UTF-8");
       } catch (UnsupportedEncodingException e) {

@@ -88,18 +88,19 @@ public class Logger {
    * @param message a human-readable message, localized to the current locale.
    */
   public void logInfo(String message) {
-    LogUtils.logInfo(log, message, new Object[0]);
+    LogUtils.log(log, IStatus.INFO, IStatus.OK, message, null);
   }
 
   /**
-   * Log the specified information.
+   * Logs a message formed by inserting argument values into a pattern. Patterns have the form
+   * described at "Patterns and Their Interpretation" in the {@link MessageFormat} class
+   * description.
    * 
-   * @param message a human-readable message, localized to the current locale.
+   * @param message the pattern for a human-readable message, localized to the current locale.
    * @param args message arguments.
    */
   public void logInfo(String message, Object... args) {
-    message = MessageFormat.format(message, args);
-    LogUtils.log(log, IStatus.INFO, IStatus.OK, message, null);
+    logInfo(MessageFormat.format(message, args));
   }
 
   /**
