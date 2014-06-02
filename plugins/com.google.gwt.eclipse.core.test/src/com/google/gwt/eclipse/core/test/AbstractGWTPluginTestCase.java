@@ -18,6 +18,7 @@ import com.google.gdt.eclipse.core.TestUtilities;
 import com.google.gdt.eclipse.core.jobs.JobsUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkClasspathContainer;
 import com.google.gdt.eclipse.core.sdk.SdkManager;
+import com.google.gdt.eclipse.swtbot.SwtBotTestingUtilities;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
@@ -46,6 +47,7 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.Signature;
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -154,6 +156,8 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
     return file;
   }
 
+  private final SWTWorkbenchBot bot = new SWTWorkbenchBot();
+
   public AbstractGWTPluginTestCase() {
     this(null);
   }
@@ -214,6 +218,9 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
 
+    // used to close the welcome view
+    SwtBotTestingUtilities.setUp(bot);
+
     TestUtilities.setUp();
 
     if (requiresGWTProjects()) {
@@ -228,6 +235,11 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
       createTestProject();
       addClassesToTestProject();
     }
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    SwtBotTestingUtilities.tearDown();
   }
 
   private void addClassesToTestProject() throws Exception {
