@@ -5,6 +5,7 @@ The Google Plugin for Eclipse repository.
 * [common/](common/) - `com.google.gdt.googleapi.core` common library.
 * [eclipse/](eclipse/) - Eclipse settings resources such as code style imports.
 * [features/](features/) - Eclipse features for plugin by Eclipse platform version.
+* [plugins/](plugins/) - Eclipse plugins.
 * [tools/](tools/) - Third party tools to for working on this project.
 
 
@@ -32,7 +33,7 @@ directory (on 3.4) or `/plugins` directory (on 3.3).
 ###Eclipse 3.5+:
 
 * Copy the plugin JARs from `tools/swtbot/3.5` into your Eclipse's `/dropins` 
-directory.
+directory. Do not copy these to 4.3.
 * The `com.google.gdt.eclipse.maven` plugin requires M2Eclipse (Maven support) 
 to be installed.
 * The `com.google.gdt.eclipse.gph.hge` project requires MercurialEclipse to be 
@@ -45,10 +46,9 @@ http://subclipse.tigris.org/update_1.6.x.
 be installed. You can either close the project, or install Subversive: 
 http://download.eclipse.org/releases/helios (under Collaboration).
 
-###Eclipse 3.7 (only):
+###Eclipse 3.7:
 
 ####Mylyn
-Only required for Eclipse 3.7
 
 1. Go to Help->Install New Software
 2. From the drop down list, select Google Internal for Eclipe 3.7
@@ -56,6 +56,30 @@ Only required for Eclipse 3.7
 4. Install Mylyn Commons
 5. If you are not using the internal version of Eclipse, please install 
 Mylyn Commons from the Indigo Update site.
+
+###Eclipse 4.3
+For Eclipse Kepler version 4.3.
+
+####SWTBot
+Install SWTBot for automated testing.
+
+1. Goto [SWTBot for testing Eclipse Applications](http://www.vogella.com/tutorials/SWTBot/article.html)
+2. Goto Install new sofware: http://download.eclipse.org/technology/swtbot/releases/latest/
+3. Select all and install. Sources are optional.
+
+####Dali
+Install Dali for the JPA persistence plugins.
+
+1. Goto Install New Software.
+2. Filter `Dali`.
+3. Select all the `Dali Java Persistence Tools - *` and install them.
+
+####M2e
+Install the Maven Eclilpse Integration for the Maven plugin features.
+
+1. Goto Install New Software.
+2. Filter `m2e`.
+3. Select all `m2e - *` and install.
 
 
 ##Formatting Preferences
@@ -239,3 +263,8 @@ pick up changes to these variables,  go to the Main tab in your launch
 configuration, and check 'Clear' under Workspace Data. Note that this will also
 remove any projects that you created in the runtime workbench.
 
+
+##Running SWTBot Unit Tests
+Running SWTBot unit tests individually can take more memory.
+
+* Use larger memory configurations: Debug Configurations -> Arguments -> Vm Arguments > `-Xmx1024M -XX:MaxPermSize=128m`
