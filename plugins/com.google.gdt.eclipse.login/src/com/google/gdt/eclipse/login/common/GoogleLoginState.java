@@ -249,7 +249,7 @@ public class GoogleLoginState {
   /**
    * Conducts a user interaction, which may involve both browsers and platform-specific UI widgets,
    * if the user is not already signed in, to allow the user to attempt to sign in, and returns a
-   * result indicating whether the user is successfully signed. (If the user is already signed in,
+   * result indicating whether the user is successfully signed in. (If the user is already signed in
    * when this method is called, then the method immediately returns true, without conducting any
    * user interaction.)
    * 
@@ -302,16 +302,61 @@ public class GoogleLoginState {
           "Could not sign in. Make sure that you entered the correct verification code.", e);
       return false;
     }
-    refreshToken = authResponse.getRefreshToken();
-    accessToken = authResponse.getAccessToken();
-    oAuth2Credential = makeCredential();
-    accessTokenExpiryTime = new GregorianCalendar().getTimeInMillis() / 1000
-        + authResponse.getExpiresInSeconds().longValue();
     isLoggedIn = true;
-    email = queryEmail();
-    saveCredentials();
-    uiFacade.notifyStatusIndicator();
-    notifyLoginStatusChange(true);
+    updateUserCredentials(authResponse);
+    return true;
+  }
+
+  /**
+   * Conducts a user interaction, which may involve a browser or platform-specific UI widgets,
+   * if the user is not already signed in, to allow the user to attempt to sign in, and returns a
+   * result indicating whether the user is successfully signed in. (If the user is already signed in
+   * when this method is called, then the method immediately returns true, without conducting any
+   * user interaction.)
+   *
+   * The caller would generate their own Google authorization URL which allows the user to set
+   * their local http server. This allows the user to get the verification code from a local
+   * server that OAuth can redirect to.
+   *
+   * @param title
+   *     the title to be displayed at the top of the interaction if the platform supports it, or
+   *     {@code null} if no title is to be displayed
+   * @return true if the user signed in or is already signed in, false otherwise
+   */
+  public boolean logInWithLocalServer(@Nullable String title) {
+
+    if (isLoggedIn) {
+      return true;
+    }
+
+    connected = true;
+    VerificationCodeHolder verificationCodeHolder =
+        uiFacade.obtainVerificationCodeFromExternalUserInteraction(title);
+
+    if (verificationCodeHolder == null) {
+      return false;
+    }
+
+    GoogleAuthorizationCodeTokenRequest authRequest =
+        new GoogleAuthorizationCodeTokenRequest(
+            transport,
+            jsonFactory,
+            clientId,
+            clientSecret,
+            verificationCodeHolder.getVerificationCode(),
+            verificationCodeHolder.getRedirectUrl());
+    GoogleTokenResponse authResponse;
+    try {
+      authResponse = authRequest.execute();
+    } catch (IOException e) {
+      uiFacade.showErrorDialog(
+          "Error while signing in",
+          "An error occured while trying to sign in: " + e.getMessage());
+      loggerFacade.logError("Could not sign in", e);
+      return false;
+    }
+    isLoggedIn = true;
+    updateUserCredentials(authResponse);
     return true;
   }
 
@@ -363,6 +408,18 @@ public class GoogleLoginState {
     }
     notifyLoginStatusChange(login);
     uiFacade.notifyStatusIndicator();
+  }
+
+  private void updateUserCredentials(GoogleTokenResponse tokenResponse) {
+    refreshToken = tokenResponse.getRefreshToken();
+    accessToken = tokenResponse.getAccessToken();
+    oAuth2Credential = makeCredential();
+    accessTokenExpiryTime = System.currentTimeMillis() / 1000
+        + tokenResponse.getExpiresInSeconds().longValue();
+    email = queryEmail();
+    saveCredentials();
+    uiFacade.notifyStatusIndicator();
+    notifyLoginStatusChange(true);
   }
 
   private void retrieveSavedCredentials() {

@@ -14,9 +14,9 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.login.common;
 
-import javax.annotation.Nullable;
-
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
+
+import javax.annotation.Nullable;
 
 /**
  * Presents a common API, implementable on a variety of platforms, for specific user interactions
@@ -41,6 +41,21 @@ public interface UiFacade {
   String obtainVerificationCodeFromUserInteraction(
       String title, GoogleAuthorizationCodeRequestUrl authCodeRequestUrl);
   
+  /**
+   * Initiates a browser-based user-facing interaction with the OAuth server that culminates in the
+   * delivery of an OAuth verification code from the OAuth server, and returns that code. An
+   * implementation of this method may obtain its return value, for example, directly from the
+   * browser, or from a widget into which the user is asked to copy and paste a verification code
+   * displayed by the browser.
+   *
+   * @param title a title for the widget containing the browser display
+   * @return a {@link VerificationCodeHolder} object with the verification code generated and the 
+   *     redirect URL or null if there was an error generating the verification code or the redirect
+   *     URL.
+   */
+  @Nullable
+  VerificationCodeHolder obtainVerificationCodeFromExternalUserInteraction(String title);
+
   /**
    * Displays an error dialog with a specified title and message and blocks until the user dismisses
    * it.

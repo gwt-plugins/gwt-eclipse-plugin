@@ -48,6 +48,7 @@ import com.google.gdt.eclipse.login.common.GoogleLoginState;
 import com.google.gdt.eclipse.login.common.LoggerFacade;
 import com.google.gdt.eclipse.login.common.LoginListener;
 import com.google.gdt.eclipse.login.common.UiFacade;
+import com.google.gdt.eclipse.login.common.VerificationCodeHolder;
 import com.google.gdt.eclipse.login.extensions.IClientProvider;
 import com.google.gdt.eclipse.login.ui.LoginBrowser;
 import com.google.gdt.eclipse.login.ui.LoginTrimContribution;
@@ -361,6 +362,13 @@ public class GoogleLogin {
           }
         });
       }
+    }
+
+    @Nullable
+    public VerificationCodeHolder obtainVerificationCodeFromExternalUserInteraction
+      (String message) {
+      // not used in Eclipse
+      return null;
     }
 
     @Nullable
