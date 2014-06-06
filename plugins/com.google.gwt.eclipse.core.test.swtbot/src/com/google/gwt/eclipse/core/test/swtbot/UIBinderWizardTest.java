@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google Inc. All Rights Reserved.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -16,55 +16,55 @@ package com.google.gwt.eclipse.core.test.swtbot;
 
 import com.google.gdt.eclipse.swtbot.SwtBotFileActions;
 import com.google.gdt.eclipse.swtbot.SwtBotProjectActions;
-import com.google.gdt.eclipse.swtbot.SwtBotSdkActions;
-import com.google.gdt.eclipse.swtbot.SwtBotTestingUtilities;
-
-import junit.framework.TestCase;
+import com.google.gwt.eclipse.core.test.swtbot.test.AbstractGWTPluginSwtBotTestCase;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 
 /**
  * Test the deploy process.
  */
-public class UIBinderWizardTest extends TestCase {
+public class UIBinderWizardTest extends AbstractGWTPluginSwtBotTestCase {
 
-  private static final String PROJECT_NAME = "WebApp";
-
-  private SWTWorkbenchBot bot = new SWTWorkbenchBot();
-
+  protected static final String PROJECT_NAME = "WebApp";
+  
   public void testUIBinderWizard() {
-    SwtBotSdkActions.setupGwtSdk(bot);
+    SWTWorkbenchBot bot = getSwtWorkbenchBot();
 
-    SwtBotProjectActions.createWebAppProject(bot, PROJECT_NAME, "com.example.webapp", true, false,
-        true);
+    // When a ui binder is created
+    SwtBotProjectActions.createUiBinder(bot, PROJECT_NAME, "com.example.webapp", "TestWithContent",
+        true, true);
 
-    SwtBotProjectActions.createUiBinder(bot, PROJECT_NAME,
-        "com.example.webapp", "TestWithContent", true, true);
-
+    // Then the editor will return these parts
     String text = SwtBotFileActions.getEditorText(bot, "TestWithContent.java");
     assertTrue(text.contains("implements HasText"));
     assertTrue(text.contains("public TestWithContent()"));
     assertTrue(text.contains("public TestWithContent(String firstName)"));
 
-    // then create one without sample content and check that the above is not
-    // there
-    SwtBotProjectActions.createUiBinder(bot, PROJECT_NAME,
-        "com.example.webapp", "TestWithoutContent", false, true);
+    // And when, create uibinder without the sample content
+    // and check that the above is not there
+    SwtBotProjectActions.createUiBinder(bot, PROJECT_NAME, "com.example.webapp",
+        "TestWithoutContent", false, true);
 
-    String text2 = SwtBotFileActions.getEditorText(bot,
-        "TestWithoutContent.java");
+    // And then verify the creating another uibinder with out content
+    // doesn't have content
+    String text2 = SwtBotFileActions.getEditorText(bot, "TestWithoutContent.java");
     assertFalse(text2.contains("implements HasText"));
     assertTrue(text2.contains("public TestWithoutContent()"));
     assertFalse(text2.contains("public TestWithoutContent(String firstName)"));
   }
-
+  
   @Override
   protected void setUp() throws Exception {
-    SwtBotTestingUtilities.setUp(bot);
+    super.setUp();
+    
+    givenProjectIsCreated(PROJECT_NAME);
   }
 
   @Override
   protected void tearDown() throws Exception {
-    SwtBotTestingUtilities.tearDown();
+    thenTearDownProject(PROJECT_NAME);
+    
+    super.tearDown();
   }
+  
 }
