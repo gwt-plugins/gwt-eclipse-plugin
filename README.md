@@ -35,8 +35,7 @@ Install and configure the Java 7 SE JDK for your specific OS. [More details](htt
 
 ###GWT
 The Google plug-in for Eclipse depends on the gwt-dev and gwt-user projects
-which must imported into your workspace and successfully building.
-
+which must be imported into your workspace and successfully building.
 See the GWT [README.txt](https://gwt.googlesource.com/gwt/+/master/eclipse/README.txt) page for more details.
 
 ###Google App Engine SDK
@@ -148,7 +147,7 @@ Install Dali for the JPA persistence plug-ins.
 
 ###Spelling
 1. Window->Preferences->General->Editors->Text Editors->Spelling
-2. Enable spell checking
+2. Enable spell checking.
 3. Use "settings/english.dictionary".
 
 
