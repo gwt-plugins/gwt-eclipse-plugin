@@ -84,6 +84,9 @@ installed. You can either close the project, or install Subclipse: http://subcli
 * The `com.google.gdt.eclipse.gph.subversive` project requires Subversive to 
 be installed. You can either close the project, or install Subversive: http://download.eclipse.org/releases/helios
 
+* Known Issue: MercurialEclipse, Subclipse, and Subversive can cause SWTBot and JUnit Plug-in Tests to fail
+due to their popups on launch of fresh Eclipse.
+
 ###Eclipse 3.3, 3.4
 
 * Copy the plug-in JARs from `tools/swtbot/3.3` into your Eclipse's `/dropins` 
@@ -287,6 +290,7 @@ The following packages are tested by Run As->JUnit Plug-in Test:
 
 * com.google.appengine.eclipse.core.test
 * com.google.gdt.eclipse.core.test
+* com.google.gdt.eclipse.managedapis.test
 * com.google.gdt.eclipse.suite.test
 * com.google.gwt.eclipse.core.test
 
