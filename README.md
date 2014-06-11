@@ -27,25 +27,25 @@ Modify the eclipse.ini file in your root Eclipse directory in the following ways
 * Change -Xmx512m to at least -Xmx1024m
 
 ##Environment Variables
-Update your .bashrc (or equivalent file) with the following Environment Variables.
+Update your .bashrc (or equivalent) file with the following Environment Variables.
 For Eclipse to pick up these variables, it may be required to run it from a terminal
 window instead of from the launcher.
 
-* export GWT_TOOLS=<local path>/gwt/tools
-* export GWT_ROOT=<local path>/gwt/trunk
-* export GWT_VERSION=<version number> i.e. 2.6.1
-* export GWT_HOME=<path to GWT SDK> i.e. /opt/gwt-2.6.1
-* export GAE_HOME=<path to GAE SDK> i.e. /opt/appengine-java-sdk-1.9.6
-* export JDK_HOME=<path to JDK> i.e. /usr/lib/jvm/java-7-oracle
-* export JAVA_HOME=<path to JDK> i.e. /usr/lib/jvm/java-7-oracle
+* export GWT_TOOLS=```<local path>/gwt/tools```
+* export GWT_ROOT=```<local path>/gwt/trunk```
+* export GWT_VERSION=```<version number>``` i.e. 2.6.1
+* export GWT_HOME=```<path to GWT SDK>``` i.e. /opt/gwt-2.6.1
+* export GAE_HOME=```<path to GAE SDK>``` i.e. /opt/appengine-java-sdk-1.9.6
+* export JDK_HOME=```<path to JDK>``` i.e. /usr/lib/jvm/java-7-oracle
+* export JAVA_HOME=```<path to JDK>``` i.e. /usr/lib/jvm/java-7-oracle
 
 ##Eclipse Plug-in Development Settings
 
 * Open Window->Preferences->Plug-in Development
 * Verify that the Workspace location defaults are appropriate
-For new Eclipse Applications, ```${workspace_loc}/../runtime-``` with "Append
+* For new Eclipse Applications, ```${workspace_loc}/../runtime-``` with "Append
 launch configuration name" should work.
-For JUnit Plug-in Tests, ```${workspace_loc}/../junit-workspace``` with
+* For JUnit Plug-in Tests, ```${workspace_loc}/../junit-workspace``` with
 "Use as workspace location" should work.
 * Select Plug-in Development->API Baselines and verify that you have a default baseline.
 * If you do not, select "Add Baseline..." and select the location of the Eclipse installation
@@ -62,23 +62,23 @@ Some projects will not compile without an Eclipse API Baseline defined.
 * The `com.google.gdt.eclipse.maven` plugin requires m2e (Maven Integration for Eclipse)
 to be installed.
 * The `com.google.gdt.eclipse.gph.hge` project requires MercurialEclipse to be 
-installed. You can either close the project, or install [MercurialEclipse](http://cbes.javaforge.com/update).
+installed. You can either close the project, or install MercurialEclipse - [Update Site](http://cbes.javaforge.com/update).
 * The `com.google.gdt.eclipse.gph.subclipse` project requires Subclipse to be 
-installed. You can either close the project, or install [Subclipse](http://subclipse.tigris.org/update_1.6.x).
+installed. You can either close the project, or install Subclipse - [Update Site](http://subclipse.tigris.org/update_1.6.x).
 * The `com.google.gdt.eclipse.gph.subversive` project requires Subversive to 
-be installed. You can either close the project, or install [Subversive](http://download.eclipse.org/releases/helios).
+be installed. You can either close the project, or install Subversive - [Update Site](http://download.eclipse.org/releases/helios).
 
-###Eclipse 3.3, 3.4:
+###Eclipse 3.3, 3.4
 
 * Copy the plugin JARs from `tools/swtbot/3.3` into your Eclipse's `/dropins` 
 directory (on 3.4) or `/plugins` directory (on 3.3).
 
-###Eclipse 3.5:
+###Eclipse 3.5
 
 * Copy the plugin JARs from `tools/swtbot/3.5` into your Eclipse's `/dropins` 
 directory.
 
-###Eclipse 3.7:
+###Eclipse 3.7
 
 ####Mylyn
 
@@ -236,7 +236,7 @@ fail about 700+ checks.
 The Google Plugin for Eclipse depends on the gwt-dev and gwt-user projects
 which must imported into your workspace and successfully building.
 
-See the [GWT README.txt](https://gwt.googlesource.com/gwt/+/master/eclipse/README.txt) page for more details.
+See the GWT [README.txt](https://gwt.googlesource.com/gwt/+/master/eclipse/README.txt) page for more details.
 
 ##Importing the Google Plugin projects
 
@@ -257,7 +257,7 @@ For example, if you have Eclipse 4.3, do not import a project that has "e33" in 
 * Once your projects have been imported, go to the Package Explorer and
 right-click on the "`com.google.gdt.eclipse.suite`" project. 
 * Go to "Run As" -> "Eclipse Application".
-* Another instance of Eclipse should launch, running GPE!
+* Another instance of Eclipse should launch, running the GPE!
 
 ##Running JUnit Tests
 The following packages are tested by Run As->JUnit Test:
