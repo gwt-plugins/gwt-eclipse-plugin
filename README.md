@@ -59,14 +59,14 @@ Some projects will not compile without an Eclipse API Baseline defined.
 
 ###All Eclipse versions
 
-* The `com.google.gdt.eclipse.maven` plugin requires m2e (Maven Integration for Eclipse)
-to be installed.
+* The `com.google.gdt.eclipse.maven` plugin requires m2e (Maven Integration for Eclipse) to be installed. 
+Install m2e from your Eclipse version's default update site. i.e. http://download.eclipse.org/releases/kepler
 * The `com.google.gdt.eclipse.gph.hge` project requires MercurialEclipse to be 
-installed. You can either close the project, or install MercurialEclipse - [Update Site](http://cbes.javaforge.com/update).
+installed. You can either close the project, or install MercurialEclipse: http://cbes.javaforge.com/update
 * The `com.google.gdt.eclipse.gph.subclipse` project requires Subclipse to be 
-installed. You can either close the project, or install Subclipse - [Update Site](http://subclipse.tigris.org/update_1.6.x).
+installed. You can either close the project, or install Subclipse: http://subclipse.tigris.org/update_1.6.x
 * The `com.google.gdt.eclipse.gph.subversive` project requires Subversive to 
-be installed. You can either close the project, or install Subversive - [Update Site](http://download.eclipse.org/releases/helios).
+be installed. You can either close the project, or install Subversive: http://download.eclipse.org/releases/helios
 
 ###Eclipse 3.3, 3.4
 
@@ -105,13 +105,6 @@ Install Dali for the JPA persistence plugins.
 1. Goto Install New Software.
 2. Filter `Dali`.
 3. Select all the `Dali Java Persistence Tools - *` and install them.
-
-####M2e
-Install the Maven Eclilpse Integration for the Maven plugin features.
-
-1. Goto Install New Software.
-2. Filter `m2e`.
-3. Select all `m2e - *` and install.
 
 
 ##Formatting Preferences
