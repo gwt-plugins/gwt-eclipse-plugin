@@ -1,22 +1,22 @@
-#Google Plugin for Eclipse (GPE)
-The Google Plugin for Eclipse repository. 
+#Google Plug-in for Eclipse (GPE)
+The Google Plug-in for Eclipse repository. 
 
 ##Repository manifest 
 * [common/](common/) - `com.google.gdt.googleapi.core` common library.
 * [eclipse/](eclipse/) - Eclipse settings resources such as code style imports.
-* [features/](features/) - Eclipse features for plugin by Eclipse platform version.
-* [plugins/](plugins/) - Eclipse plugins.
+* [features/](features/) - Eclipse features for plug-in by Eclipse platform version.
+* [plugins/](plugins/) - Eclipse plug-ins.
 * [tools/](tools/) - Third party tools to for working on this project.
 
 
 ##Configuring the Eclipse Workspace
 This file contains instructions on how to setup the Eclipse environment to
-work with the source code for the Google Plugin for Eclipse.
+work with the source code for the Google Plug-in for Eclipse.
 
-Configuring the Eclipse workspace to develop on the Google Eclipse plugin is very
+Configuring the Eclipse workspace to develop on the GPE is very
 much like getting set up to develop for GWT. Most of the same style rules apply, and
 Eclipse projects are provided for import. The "settings" directory
-mentioned below is under "eclipse", in your checkout of plugin.
+mentioned below is under "eclipse", in your checkout of google-plugin-for-eclipse.
 
 * *Macintosh users*: Note that on the Macintosh version of Eclipse, "Preferences"
 is under the "Eclipse" menu, not under "Window".
@@ -25,6 +25,23 @@ Default Eclipse settings will give you out of memory errors in many test and com
 Modify the eclipse.ini file in your root Eclipse directory in the following ways:
 
 * Change -Xmx512m to at least -Xmx1024m
+
+##Dependent Projects and SDKs
+These must be configured prior to the Google Plug-in for Eclipse.
+
+###Java 7
+Google App Engine requires Java 7.
+Install and configure the Java 7 SE JDK for your specific OS. [More details](http://java.sun.com/javase/downloads/index.jsp).
+
+###GWT
+The Google plug-in for Eclipse depends on the gwt-dev and gwt-user projects
+which must imported into your workspace and successfully building.
+
+See the GWT [README.txt](https://gwt.googlesource.com/gwt/+/master/eclipse/README.txt) page for more details.
+
+###Google App Engine SDK
+The GAE SDK for Java must be downloaded and unzipped locally.
+Get the [latest version](https://developers.google.com/appengine/downloads).
 
 ##Environment Variables
 Update your .bashrc (or equivalent) file with the following Environment Variables.
@@ -53,13 +70,13 @@ that you want to be used in your launches. Give it an appropriate name.
 
 Some projects will not compile without an Eclipse API Baseline defined.
 
-##Dependent Plugins
+##Dependent Plug-ins
 
-* Restart Eclipse to detect the new plugins.
+* Restart Eclipse to detect the new plug-ins.
 
 ###All Eclipse versions
 
-* The `com.google.gdt.eclipse.maven` plugin requires m2e (Maven Integration for Eclipse) to be installed. 
+* The `com.google.gdt.eclipse.maven` plug-in requires m2e (Maven Integration for Eclipse) to be installed. 
 Install m2e from your Eclipse version's default update site. i.e. http://download.eclipse.org/releases/kepler
 * The `com.google.gdt.eclipse.gph.hge` project requires MercurialEclipse to be 
 installed. You can either close the project, or install MercurialEclipse: http://cbes.javaforge.com/update
@@ -70,12 +87,12 @@ be installed. You can either close the project, or install Subversive: http://do
 
 ###Eclipse 3.3, 3.4
 
-* Copy the plugin JARs from `tools/swtbot/3.3` into your Eclipse's `/dropins` 
+* Copy the plug-in JARs from `tools/swtbot/3.3` into your Eclipse's `/dropins` 
 directory (on 3.4) or `/plugins` directory (on 3.3).
 
 ###Eclipse 3.5
 
-* Copy the plugin JARs from `tools/swtbot/3.5` into your Eclipse's `/dropins` 
+* Copy the plug-in JARs from `tools/swtbot/3.5` into your Eclipse's `/dropins` 
 directory.
 
 ###Eclipse 3.7
@@ -100,7 +117,7 @@ Install SWTBot for automated testing.
 3. Select all and install. Sources are optional.
 
 ####Dali
-Install Dali for the JPA persistence plugins.
+Install Dali for the JPA persistence plug-ins.
 
 1. Goto Install New Software.
 2. Filter `Dali`.
@@ -222,16 +239,10 @@ alphabetically.
 Checkstyle is used to enforce good programming style.
 Currently Checkstyle configuring is being revisted and the new policies are TBA.
 The GWT team upgraded to Checkstyle 5.7 and modified their policies recently.
-Do not try to enable the Checkstyle plugin at this time as the code base will
+Do not try to enable the Checkstyle plug-in at this time as the code base will
 fail about 700+ checks.
 
-##Dependent Projects
-The Google Plugin for Eclipse depends on the gwt-dev and gwt-user projects
-which must imported into your workspace and successfully building.
-
-See the GWT [README.txt](https://gwt.googlesource.com/gwt/+/master/eclipse/README.txt) page for more details.
-
-##Importing the Google Plugin projects
+##Importing the Google Plug-in projects
 
 Having set up your workspace appropriately, you can now import the appropriate
 projects.
@@ -245,7 +256,7 @@ the platform you are running on.
 
 For example, if you have Eclipse 4.3, do not import a project that has "e33" in its name.
 
-##Launching the Plugin
+##Launching the Plug-in
 
 * Once your projects have been imported, go to the Package Explorer and
 right-click on the "`com.google.gdt.eclipse.suite`" project. 
