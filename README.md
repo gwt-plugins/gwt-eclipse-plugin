@@ -1,64 +1,115 @@
-#Google Eclipse Plugin (GPE)
-The Google Plugin for Eclipse repository. 
+#Google Plug-in for Eclipse (GPE)
+The Google Plug-in for Eclipse repository. 
 
 ##Repository manifest 
 * [common/](common/) - `com.google.gdt.googleapi.core` common library.
 * [eclipse/](eclipse/) - Eclipse settings resources such as code style imports.
-* [features/](features/) - Eclipse features for plugin by Eclipse platform version.
-* [plugins/](plugins/) - Eclipse plugins.
+* [features/](features/) - Eclipse features for plug-in by Eclipse platform version.
+* [plugins/](plugins/) - Eclipse plug-ins.
 * [tools/](tools/) - Third party tools to for working on this project.
 
 
 ##Configuring the Eclipse Workspace
 This file contains instructions on how to setup the Eclipse environment to
-work with the source code for the Google Plugin for Eclipse.
+work with the source code for the Google Plug-in for Eclipse.
 
-Configuring the Eclipse workspace to develop on the Google Eclipse plugin is very
-much like getting set up to develop for GWT. The same style rules apply, and
+Configuring the Eclipse workspace to develop on the GPE is very
+much like getting set up to develop for GWT. Most of the same style rules apply, and
 Eclipse projects are provided for import. The "settings" directory
-mentioned below is under "eclipse", in your checkout of plugin.
+mentioned below is under "eclipse", in your checkout of google-plugin-for-eclipse.
 
 * *Macintosh users*: Note that on the Macintosh version of Eclipse, "Preferences"
 is under the "Eclipse" menu, not under "Window".
 
-##Dependent Plugins
+Default Eclipse settings will give you out of memory errors in many test and compile steps.
+Modify the eclipse.ini file in your root Eclipse directory in the following ways:
 
-* Restart Eclipse to detect the new plugins.
+* Change -Xmx512m to at least -Xmx1024m
 
-###Eclipse 3.3, 3.4:
+##Dependent Projects and SDKs
+These must be configured prior to the Google Plug-in for Eclipse.
 
-* Copy the plugin JARs from `tools/swtbot/3.3` into your Eclipse's `/dropins` 
-directory (on 3.4) or `/plugins` directory (on 3.3).  
+###Java 7
+Google App Engine requires Java 7.
+Install and configure the Java 7 SE JDK for your specific OS. [More details](http://java.sun.com/javase/downloads/index.jsp).
 
-###Eclipse 3.5+:
+###GWT
+The Google plug-in for Eclipse depends on the gwt-dev and gwt-user projects
+which must be imported into your workspace and successfully building.
+See the GWT [README.txt](https://gwt.googlesource.com/gwt/+/master/eclipse/README.txt) page for more details.
 
-* Copy the plugin JARs from `tools/swtbot/3.5` into your Eclipse's `/dropins` 
-directory. Do not copy these to 4.3.
-* The `com.google.gdt.eclipse.maven` plugin requires M2Eclipse (Maven support) 
-to be installed.
+###Google App Engine SDK
+The GAE SDK for Java must be downloaded and unzipped locally.
+Get the [latest version](https://developers.google.com/appengine/downloads).
+
+##Environment Variables
+Update your .bashrc (or equivalent) file with the following Environment Variables.
+For Eclipse to pick up these variables, it may be required to run it from a terminal
+window instead of from the launcher.
+
+* export GWT_TOOLS=`<local path>/gwt/tools`
+* export GWT_ROOT=`<local path>/gwt/trunk`
+* export GWT_VERSION=`<version number>` i.e. 2.6.1
+* export GWT_HOME=`<path to GWT SDK>` i.e. /opt/gwt-2.6.1
+* export GAE_HOME=`<path to GAE SDK>` i.e. /opt/appengine-java-sdk-1.9.6
+* export JDK_HOME=`<path to JDK>` i.e. /usr/lib/jvm/java-7-oracle
+* export JAVA_HOME=`<path to JDK>` i.e. /usr/lib/jvm/java-7-oracle
+
+##Eclipse Plug-in Development Settings
+
+* Open Window->Preferences->Plug-in Development
+* Verify that the Workspace location defaults are appropriate
+* For new Eclipse Applications, `${workspace_loc}/../runtime-` with "Append
+launch configuration name" should work.
+* For JUnit Plug-in Tests, `${workspace_loc}/../junit-workspace` with
+"Use as workspace location" should work.
+* Select Plug-in Development->API Baselines and verify that you have a default baseline.
+* If you do not, select "Add Baseline..." and select the location of the Eclipse installation
+that you want to be used in your launches. Give it an appropriate name.
+
+Some projects will not compile without an Eclipse API Baseline defined.
+
+##Dependent Plug-ins
+
+* Restart Eclipse to detect the new plug-ins.
+
+###All Eclipse versions
+
+* The `com.google.gdt.eclipse.maven` plug-in requires m2e (Maven Integration for Eclipse) to be installed. 
+Install m2e from your Eclipse version's default update site. i.e. http://download.eclipse.org/releases/kepler
 * The `com.google.gdt.eclipse.gph.hge` project requires MercurialEclipse to be 
-installed. You can either
-close the project, or install MercurialEclipse: http://cbes.javaforge.com/update.
+installed. You can either close the project, or install MercurialEclipse: http://cbes.javaforge.com/update
 * The `com.google.gdt.eclipse.gph.subclipse` project requires Subclipse to be 
-installed. You can either close the project, or install Subclipse: 
-http://subclipse.tigris.org/update_1.6.x.
+installed. You can either close the project, or install Subclipse: http://subclipse.tigris.org/update_1.6.x
 * The `com.google.gdt.eclipse.gph.subversive` project requires Subversive to 
-be installed. You can either close the project, or install Subversive: 
-http://download.eclipse.org/releases/helios (under Collaboration).
+be installed. You can either close the project, or install Subversive: http://download.eclipse.org/releases/helios
 
-###Eclipse 3.7:
+* Known Issue: MercurialEclipse, Subclipse, and Subversive can cause SWTBot and JUnit Plug-in Tests to fail
+due to their popups on launch of fresh Eclipse.
+
+###Eclipse 3.3, 3.4
+
+* Copy the plug-in JARs from `tools/swtbot/3.3` into your Eclipse's `/dropins` 
+directory (on 3.4) or `/plugins` directory (on 3.3).
+
+###Eclipse 3.5
+
+* Copy the plug-in JARs from `tools/swtbot/3.5` into your Eclipse's `/dropins` 
+directory.
+
+###Eclipse 3.7
 
 ####Mylyn
 
 1. Go to Help->Install New Software
-2. From the drop down list, select Google Internal for Eclipe 3.7
+2. From the drop down list, select Google Internal for Eclipse 3.7
+* If you are not using the internal version of Eclipse, install 
+Mylyn Commons from the Indigo Update site.
 3. Uncheck Group Items by Category
 4. Install Mylyn Commons
-5. If you are not using the internal version of Eclipse, please install 
-Mylyn Commons from the Indigo Update site.
 
 ###Eclipse 4.3
-For Eclipse Kepler version 4.3.
+For Eclipse version 4.3 (Kepler).
 
 ####SWTBot
 Install SWTBot for automated testing.
@@ -68,18 +119,11 @@ Install SWTBot for automated testing.
 3. Select all and install. Sources are optional.
 
 ####Dali
-Install Dali for the JPA persistence plugins.
+Install Dali for the JPA persistence plug-ins.
 
 1. Goto Install New Software.
 2. Filter `Dali`.
 3. Select all the `Dali Java Persistence Tools - *` and install them.
-
-####M2e
-Install the Maven Eclilpse Integration for the Maven plugin features.
-
-1. Goto Install New Software.
-2. Filter `m2e`.
-3. Select all `m2e - *` and install.
 
 
 ##Formatting Preferences
@@ -106,17 +150,11 @@ Install the Maven Eclilpse Integration for the Maven plugin features.
 
 ###Spelling
 1. Window->Preferences->General->Editors->Text Editors->Spelling
-2. Enable spell checking
+2. Enable spell checking.
 3. Use "settings/english.dictionary".
 
 
 ##Project Preferences
-
-###Classpath Variables
-1. For **GPE 2.3 and after, this step is no longer necessary**. See CL/20212038
-2. Window->Preferences->Java->Build Path->Classpath Variables
-3. Define the classpath variable "GAE_TOOLS_JAR" which points to the 
-appengine-api-tools.jar file that is part of an App Engine SDK.
 
 ###Output Filtering
 1. Window->Preferences->Java->Compiler->Building
@@ -160,7 +198,7 @@ appengine-api-tools.jar file that is part of an App Engine SDK.
 4. Enable "Organize Imports"
 5. Enable "Additional Actions"
 6. Click "Configure", and make sure that all actions are disabled except "Sort 
-Members Excluding fields, enum constants, and initializers"
+Members" and "Ignore fields and enum constants"
 
 ##Code style/formatting
 1. Window->Preferences->Java->Code Style->Formatter->Import...
@@ -201,70 +239,58 @@ alphabetically.
 
 ##Checkstyle
 Checkstyle is used to enforce good programming style.
+Currently Checkstyle configuring is being revisted and the new policies are TBA.
+The GWT team upgraded to Checkstyle 5.7 and modified their policies recently.
+Do not try to enable the Checkstyle plug-in at this time as the code base will
+fail about 700+ checks.
 
-###Download
-Install Checkstyle plugin v4.x.
-
-1. Download this from http://sourceforge.net/projects/eclipse-cs/files/Eclipse%20Checkstyle%20Plug-in/v4.4.2/com.atlassw.tools.eclipse.checkstyle_4.4.2-bin.zip/download  
-2. Copy `plugins/com.atlassw.tools.eclipse.checkstyle_4.4.2` from the 
-extraction of the above downloaded zip file into the dropins directory of 
-your eclipse installation.
-
-###Enable
-Enable Custom GWT Checkstyle checks.
-
-* Copy "settings/code-style/gwt-customchecks.jar" into: 
-`<eclipse>/plugins/com.atlassw.tools.eclipse.checkstyle_x.x.x/extension-libraries`
-
-###Import styles
-Import GWT Checks.
-
-1. Window->Preferences->Checkstyle->New...
-2. Set the Type to "External Configuration File"
-3. Set the Name to "GWT Checks" (important)
-4. Set the location to "settings/code-style/gwt-checkstyle.xml".
-5. Suggested: Check "Protect Checkstyle configuration file".
-6. Click "Ok".
-
-###Import test styles
-Import GWT Checks for Tests
-
-1. Repeat step 3, except:
-2. Set the Name to "GWT Checks for Tests" (important)
-3. Set the location to "settings/code-style/gwt-checkstyle-tests.xml".
-
-
-##Importing the Google Plugin projects
+##Importing the Google Plug-in projects
 
 Having set up your workspace appropriately, you can now import the appropriate
 projects.
 
 File -> Import -> General -> Existing Projects into Workspace
 
-Select your checkout of the trunk of Google Eclipse Plugin to see all of the
+Select your checkout of the trunk of google-plugin-for-eclipse to see all of the
 Eclipse projects for you to import. You should only import the projects that
-correspond to the version of Eclipse that you are using for development, and
-the platform you are running on. For example, if you have Eclipse 3.4, do not
-import a project that has "3.3" in its name. As another example, if you are
-running on Windows, do not import projects that have readme "win32" or "macosx"
-in their name. 
+correspond to the version of Eclipse that you are using for development and
+the platform you are running on. 
 
-##Launching the Plugin
+For example, if you have Eclipse 4.3, do not import a project that has "e33" in its name.
 
-Once your projects have been imported, go to the Package Explorer and
-right-click on the "`com.google.gdt.eclipse.suite`" project. Go to 
-"Run As" > "Eclipse Application".  Another instance of Eclipse should launch,
-running GPE!
+##Launching the Plug-in
 
-Note: Setting these two environment variables will cause the GWT and App Engine
-SDKs to be registered as GPE SDK Bundles. However, in development mode, this
-only happens when the workbench metadata is first created. To have the workbench
-pick up changes to these variables,  go to the Main tab in your launch
-configuration, and check 'Clear' under Workspace Data. Note that this will also
-remove any projects that you created in the runtime workbench.
+* Once your projects have been imported, go to the Package Explorer and
+right-click on the "`com.google.gdt.eclipse.suite`" project. 
+* Go to "Run As" -> "Eclipse Application".
+* Another instance of Eclipse should launch, running the GPE!
 
+##Running JUnit Tests
+The following packages are tested by Run As->JUnit Test:
+
+* com.google.gdt.eclipse.drive.test
+* com.google.gdt.googleapi.core.test
+* com.google.gwt.eclipse.oophm.test
 
 ##Running SWTBot Unit Tests
+The following packages are tested by Run As->SWTBot Test:
+
+* com.google.appengine.eclipse.core.test.swtbot
+* com.google.gdt.eclipse.login.test.swtbot
+* com.google.gdt.eclipse.suite.test.swtbot
+* com.google.gwt.eclipse.core.test.swtbot
+
 Running SWTBot unit tests individually can take more memory.
 
-* Use larger memory configurations: Debug Configurations -> Arguments -> Vm Arguments > `-Xmx1024M -XX:MaxPermSize=128m`
+Use larger memory configurations
+* Debug Configurations -> Arguments -> Vm Arguments > `-Xmx1024M -XX:MaxPermSize=128m`
+
+##Running JUnit Plug-in Tests
+The following packages are tested by Run As->JUnit Plug-in Test:
+
+* com.google.appengine.eclipse.core.test
+* com.google.gdt.eclipse.core.test
+* com.google.gdt.eclipse.managedapis.test
+* com.google.gdt.eclipse.suite.test
+* com.google.gwt.eclipse.core.test
+
