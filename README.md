@@ -47,21 +47,21 @@ Update your .bashrc (or equivalent) file with the following Environment Variable
 For Eclipse to pick up these variables, it may be required to run it from a terminal
 window instead of from the launcher.
 
-* export GWT_TOOLS=```<local path>/gwt/tools```
-* export GWT_ROOT=```<local path>/gwt/trunk```
-* export GWT_VERSION=```<version number>``` i.e. 2.6.1
-* export GWT_HOME=```<path to GWT SDK>``` i.e. /opt/gwt-2.6.1
-* export GAE_HOME=```<path to GAE SDK>``` i.e. /opt/appengine-java-sdk-1.9.6
-* export JDK_HOME=```<path to JDK>``` i.e. /usr/lib/jvm/java-7-oracle
-* export JAVA_HOME=```<path to JDK>``` i.e. /usr/lib/jvm/java-7-oracle
+* export GWT_TOOLS=`<local path>/gwt/tools`
+* export GWT_ROOT=`<local path>/gwt/trunk`
+* export GWT_VERSION=`<version number>` i.e. 2.6.1
+* export GWT_HOME=`<path to GWT SDK>` i.e. /opt/gwt-2.6.1
+* export GAE_HOME=`<path to GAE SDK>` i.e. /opt/appengine-java-sdk-1.9.6
+* export JDK_HOME=`<path to JDK>` i.e. /usr/lib/jvm/java-7-oracle
+* export JAVA_HOME=`<path to JDK>` i.e. /usr/lib/jvm/java-7-oracle
 
 ##Eclipse Plug-in Development Settings
 
 * Open Window->Preferences->Plug-in Development
 * Verify that the Workspace location defaults are appropriate
-* For new Eclipse Applications, ```${workspace_loc}/../runtime-``` with "Append
+* For new Eclipse Applications, `${workspace_loc}/../runtime-` with "Append
 launch configuration name" should work.
-* For JUnit Plug-in Tests, ```${workspace_loc}/../junit-workspace``` with
+* For JUnit Plug-in Tests, `${workspace_loc}/../junit-workspace` with
 "Use as workspace location" should work.
 * Select Plug-in Development->API Baselines and verify that you have a default baseline.
 * If you do not, select "Add Baseline..." and select the location of the Eclipse installation
