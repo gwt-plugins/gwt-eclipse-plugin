@@ -14,9 +14,9 @@ This file contains instructions on how to setup the Eclipse environment to
 work with the source code for the Google Plug-in for Eclipse.
 
 Configuring the Eclipse workspace to develop on the GPE is very
-much like getting set up to develop for GWT. Most of the same style rules apply, and
-Eclipse projects are provided for import. The "settings" directory
-mentioned below is under "eclipse", in your checkout of google-plugin-for-eclipse.
+much like getting set up to develop for [GWT](https://gwt.googlesource.com/gwt/+/master/eclipse/README.txt). 
+Most of the same style rules apply, and Eclipse projects are provided for import.
+The "settings" directory mentioned below is under "eclipse", in your checkout of google-plugin-for-eclipse.
 
 * *Macintosh users*: Note that on the Macintosh version of Eclipse, "Preferences"
 is under the "Eclipse" menu, not under "Window".
@@ -32,11 +32,6 @@ These must be configured prior to the Google Plug-in for Eclipse.
 ###Java 7
 Google App Engine requires Java 7.
 Install and configure the Java 7 SE JDK for your specific OS. [More details](http://java.sun.com/javase/downloads/index.jsp).
-
-###GWT
-The Google plug-in for Eclipse depends on the gwt-dev and gwt-user projects
-which must be imported into your workspace and successfully building.
-See the GWT [README.txt](https://gwt.googlesource.com/gwt/+/master/eclipse/README.txt) page for more details.
 
 ###Google App Engine SDK
 The GAE SDK for Java must be downloaded and unzipped locally.
@@ -94,8 +89,7 @@ directory (on 3.4) or `/plugins` directory (on 3.3).
 
 ###Eclipse 3.5
 
-* Copy the plug-in JARs from `tools/swtbot/3.5` into your Eclipse's `/dropins` 
-directory.
+* Copy the plug-in JARs from `tools/swtbot/3.5` into your Eclipse's `/dropins` directory.
 
 ###Eclipse 3.7
 
@@ -246,17 +240,18 @@ fail about 700+ checks.
 
 ##Importing the Google Plug-in projects
 
-Having set up your workspace appropriately, you can now import the appropriate
-projects.
+Having set up your workspace appropriately, you can now import the appropriate projects.
 
 File -> Import -> General -> Existing Projects into Workspace
 
-Select your checkout of the trunk of google-plugin-for-eclipse to see all of the
-Eclipse projects for you to import. You should only import the projects that
-correspond to the version of Eclipse that you are using for development and
-the platform you are running on. 
-
+* Select your checkout of the trunk of google-plugin-for-eclipse to see all of the
+Eclipse projects for you to import. 
+* Import the projects that correspond to the version of Eclipse that you are using for development.
 For example, if you have Eclipse 4.3, do not import a project that has "e33" in its name.
+Projects with 'e43' in their name should be imported in this case.
+* Do not import the 'gwt-dev-tools' or 'gwt-dev-tools-gen' projects as they are not needed and
+will introduce dependencies that you don't need to worry about.
+If you see errors about dependencies on gwt-user, this is the likely cause.
 
 ##Launching the Plug-in
 
