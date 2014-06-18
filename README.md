@@ -237,7 +237,7 @@ Second, members in the same category should be sorted by visibility.
 3. `Default`
 4. `Private`
 
-* Third, within a category/visibility combination, members should be sorted
+Third, within a category/visibility combination, members should be sorted
 alphabetically.
 
 
