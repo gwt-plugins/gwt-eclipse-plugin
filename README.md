@@ -40,12 +40,12 @@ Get the [latest version](https://developers.google.com/appengine/downloads).
 ###GWT
 The Google plug-in for Eclipse depends on the GWT SDK, GWT trunk, and GWT Tools.
 
-1. Checkout the GWT trunk (from git) and GWT Tools (from svn) using [these instructions](http://www.gwtproject.org/makinggwtbetter.html#checkingout).
+1. Checkout the GWT trunk (git) and GWT Tools (svn) using [these instructions](http://www.gwtproject.org/makinggwtbetter.html#checkingout).
 2. Download the [GWT SDK](http://www.gwtproject.org/download.html).
-3. Unzip the SDK to an appropriate location (i.e. /opt/gwt-2.6.1).
+3. Unzip the GWT SDK to an appropriate location (i.e. /opt/gwt-2.6.1).
 
-See the GWT [README.txt](https://gwt.googlesource.com/gwt/+/master/eclipse/README.txt)
-page for more details on configuring a GWT contributor environment (optional).
+Optional - See the GWT [README.txt](https://gwt.googlesource.com/gwt/+/master/eclipse/README.txt)
+for more details on configuring a GWT contributor environment.
 
 ##Environment Variables
 Update your .bashrc (or equivalent) file with the following Environment Variables.
@@ -245,6 +245,7 @@ alphabetically.
 Checkstyle is used to enforce good programming style.
 Currently Checkstyle configuring is being revisted and the new policies are TBA.
 The GWT team upgraded to Checkstyle 5.7 and modified their policies recently.
+
 Do not try to enable the Checkstyle plug-in at this time as the code base will
 fail about 700+ checks.
 
