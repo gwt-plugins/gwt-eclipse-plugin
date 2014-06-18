@@ -37,15 +37,25 @@ Install and configure the Java 7 SE JDK for your specific OS. [More details](htt
 The GAE SDK for Java must be downloaded and unzipped locally.
 Get the [latest version](https://developers.google.com/appengine/downloads).
 
+###GWT
+The Google plug-in for Eclipse depends on the GWT SDK, GWT trunk, and GWT Tools.
+
+1. Checkout the GWT trunk (from git) and GWT Tools (from svn) using [these instructions](http://www.gwtproject.org/makinggwtbetter.html#checkingout).
+2. Download the [GWT SDK](http://www.gwtproject.org/download.html).
+3. Unzip the SDK to an appropriate location (i.e. /opt/gwt-2.6.1).
+
+See the GWT [README.txt](https://gwt.googlesource.com/gwt/+/master/eclipse/README.txt)
+page for more details on configuring a GWT contributor environment (optional).
+
 ##Environment Variables
 Update your .bashrc (or equivalent) file with the following Environment Variables.
 For Eclipse to pick up these variables, it may be required to run it from a terminal
 window instead of from the launcher.
 
-* export GWT_TOOLS=`<local path>/gwt/tools`
-* export GWT_ROOT=`<local path>/gwt/trunk`
-* export GWT_VERSION=`<version number>` i.e. 2.6.1
 * export GWT_HOME=`<path to GWT SDK>` i.e. /opt/gwt-2.6.1
+* export GWT_VERSION=`<version number>` i.e. 2.6.1
+* export GWT_ROOT=`<local path>/gwt/trunk`
+* export GWT_TOOLS=`<local path>/gwt/tools`
 * export GAE_HOME=`<path to GAE SDK>` i.e. /opt/appengine-java-sdk-1.9.6
 * export JDK_HOME=`<path to JDK>` i.e. /usr/lib/jvm/java-7-oracle
 * export JAVA_HOME=`<path to JDK>` i.e. /usr/lib/jvm/java-7-oracle
@@ -109,7 +119,7 @@ For Eclipse version 4.3 (Kepler).
 Install SWTBot for automated testing.
 
 1. Goto [SWTBot for testing Eclipse Applications](http://www.vogella.com/tutorials/SWTBot/article.html)
-2. Goto Install new sofware: http://download.eclipse.org/technology/swtbot/releases/latest/
+2. Goto Install New Sofware: http://download.eclipse.org/technology/swtbot/releases/latest/
 3. Select all and install. Sources are optional.
 
 ####Dali
@@ -244,14 +254,14 @@ Having set up your workspace appropriately, you can now import the appropriate p
 
 File -> Import -> General -> Existing Projects into Workspace
 
-* Select your checkout of the trunk of google-plugin-for-eclipse to see all of the
-Eclipse projects for you to import. 
-* Import the projects that correspond to the version of Eclipse that you are using for development.
+1. Select your checkout of the trunk of google-plugin-for-eclipse to see all of the
+Eclipse projects. 
+2. Import the projects that correspond to the version of Eclipse that you are using for development.
 For example, if you have Eclipse 4.3, do not import a project that has "e33" in its name.
 Projects with 'e43' in their name should be imported in this case.
-* Do not import the 'gwt-dev-tools' or 'gwt-dev-tools-gen' projects as they are not needed and
+3. Do not import the 'gwt-dev-tools' or 'gwt-dev-tools-gen' projects as they are not needed and
 will introduce dependencies that you don't need to worry about.
-If you see errors about dependencies on gwt-user, this is the likely cause.
+If you see Eclipse errors about dependencies on gwt-user, this is the likely cause.
 
 ##Launching the Plug-in
 
