@@ -14,9 +14,9 @@ This file contains instructions on how to setup the Eclipse environment to
 work with the source code for the Google Plug-in for Eclipse.
 
 Configuring the Eclipse workspace to develop on the GPE is very
-much like getting set up to develop for GWT. Most of the same style rules apply, and
-Eclipse projects are provided for import. The "settings" directory
-mentioned below is under "eclipse", in your checkout of google-plugin-for-eclipse.
+much like getting set up to develop for [GWT](https://gwt.googlesource.com/gwt/+/master/eclipse/README.txt). 
+Most of the same style rules apply, and Eclipse projects are provided for import.
+The "settings" directory mentioned below is under "eclipse", in your checkout of google-plugin-for-eclipse.
 
 * *Macintosh users*: Note that on the Macintosh version of Eclipse, "Preferences"
 is under the "Eclipse" menu, not under "Window".
@@ -33,24 +33,29 @@ These must be configured prior to the Google Plug-in for Eclipse.
 Google App Engine requires Java 7.
 Install and configure the Java 7 SE JDK for your specific OS. [More details](http://java.sun.com/javase/downloads/index.jsp).
 
-###GWT
-The Google plug-in for Eclipse depends on the gwt-dev and gwt-user projects
-which must be imported into your workspace and successfully building.
-See the GWT [README.txt](https://gwt.googlesource.com/gwt/+/master/eclipse/README.txt) page for more details.
-
 ###Google App Engine SDK
 The GAE SDK for Java must be downloaded and unzipped locally.
 Get the [latest version](https://developers.google.com/appengine/downloads).
+
+###GWT
+The Google plug-in for Eclipse depends on the GWT SDK, GWT trunk, and GWT Tools.
+
+1. Checkout the GWT trunk (git) and GWT Tools (svn) using [these instructions](http://www.gwtproject.org/makinggwtbetter.html#checkingout).
+2. Download the [GWT SDK](http://www.gwtproject.org/download.html).
+3. Unzip the GWT SDK to an appropriate location (i.e. /opt/gwt-2.6.1).
+
+Optional - See the GWT [README.txt](https://gwt.googlesource.com/gwt/+/master/eclipse/README.txt)
+for more details on configuring a GWT contributor environment.
 
 ##Environment Variables
 Update your .bashrc (or equivalent) file with the following Environment Variables.
 For Eclipse to pick up these variables, it may be required to run it from a terminal
 window instead of from the launcher.
 
-* export GWT_TOOLS=`<local path>/gwt/tools`
-* export GWT_ROOT=`<local path>/gwt/trunk`
-* export GWT_VERSION=`<version number>` i.e. 2.6.1
 * export GWT_HOME=`<path to GWT SDK>` i.e. /opt/gwt-2.6.1
+* export GWT_VERSION=`<version number>` i.e. 2.6.1
+* export GWT_ROOT=`<local path>/gwt/trunk`
+* export GWT_TOOLS=`<local path>/gwt/tools`
 * export GAE_HOME=`<path to GAE SDK>` i.e. /opt/appengine-java-sdk-1.9.6
 * export JDK_HOME=`<path to JDK>` i.e. /usr/lib/jvm/java-7-oracle
 * export JAVA_HOME=`<path to JDK>` i.e. /usr/lib/jvm/java-7-oracle
@@ -94,8 +99,7 @@ directory (on 3.4) or `/plugins` directory (on 3.3).
 
 ###Eclipse 3.5
 
-* Copy the plug-in JARs from `tools/swtbot/3.5` into your Eclipse's `/dropins` 
-directory.
+* Copy the plug-in JARs from `tools/swtbot/3.5` into your Eclipse's `/dropins` directory.
 
 ###Eclipse 3.7
 
@@ -115,7 +119,7 @@ For Eclipse version 4.3 (Kepler).
 Install SWTBot for automated testing.
 
 1. Goto [SWTBot for testing Eclipse Applications](http://www.vogella.com/tutorials/SWTBot/article.html)
-2. Goto Install new sofware: http://download.eclipse.org/technology/swtbot/releases/latest/
+2. Goto Install New Sofware: http://download.eclipse.org/technology/swtbot/releases/latest/
 3. Select all and install. Sources are optional.
 
 ####Dali
@@ -233,7 +237,7 @@ Second, members in the same category should be sorted by visibility.
 3. `Default`
 4. `Private`
 
-* Third, within a category/visibility combination, members should be sorted
+Third, within a category/visibility combination, members should be sorted
 alphabetically.
 
 
@@ -241,22 +245,24 @@ alphabetically.
 Checkstyle is used to enforce good programming style.
 Currently Checkstyle configuring is being revisted and the new policies are TBA.
 The GWT team upgraded to Checkstyle 5.7 and modified their policies recently.
+
 Do not try to enable the Checkstyle plug-in at this time as the code base will
 fail about 700+ checks.
 
 ##Importing the Google Plug-in projects
 
-Having set up your workspace appropriately, you can now import the appropriate
-projects.
+Having set up your workspace appropriately, you can now import the appropriate projects.
 
 File -> Import -> General -> Existing Projects into Workspace
 
-Select your checkout of the trunk of google-plugin-for-eclipse to see all of the
-Eclipse projects for you to import. You should only import the projects that
-correspond to the version of Eclipse that you are using for development and
-the platform you are running on. 
-
+1. Select your checkout of the trunk of google-plugin-for-eclipse to see all of the
+Eclipse projects. 
+2. Import the projects that correspond to the version of Eclipse that you are using for development.
 For example, if you have Eclipse 4.3, do not import a project that has "e33" in its name.
+Projects with 'e43' in their name should be imported in this case.
+3. Do not import the 'gwt-dev-tools' or 'gwt-dev-tools-gen' projects as they are not needed and
+will introduce dependencies that you don't need to worry about.
+If you see Eclipse errors about dependencies on gwt-user, this is the likely cause.
 
 ##Launching the Plug-in
 
