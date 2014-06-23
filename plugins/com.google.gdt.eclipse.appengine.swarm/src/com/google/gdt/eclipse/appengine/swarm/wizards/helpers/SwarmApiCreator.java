@@ -55,8 +55,10 @@ public class SwarmApiCreator {
   private ApiDependencies apiDependencies;
 
   private static final String DISCOVERY_API_ROOT = "https://webapis-discovery.appspot.com/_ah/api";
-  private static final String CLIENT_LIB_GENERATOR = "https://developers.google.com/resources/api-libraries/endpoints/genlib";
-  private static final String STAGING_CLIENT_LIB_GENERATOR = "https://codegen-staging.appspot.com/resources/api-libraries/endpoints/genlib";
+  private static final String CLIENT_LIB_GENERATOR =
+      "https://developers.google.com/resources/api-libraries/endpoints/genlib";
+  private static final String STAGING_CLIENT_LIB_GENERATOR =
+      "https://codegen-staging.appspot.com/resources/api-libraries/endpoints/genlib";
   // This is used for creating a temp zip file, which can be extracted into the
   // ApiLibs directory of the App Engine project.
   private static final String TMP_ZIP_FILE_PREFIX = "tmp";
@@ -100,26 +102,35 @@ public class SwarmApiCreator {
       SubMonitor monitor, ApiPlatformType platformType, String serviceClassName, ClassLoader loader)
       throws Exception {
     generateAndWriteDiscovery(project, apiConfig, serviceClassName, RPC, loader);
-    String discoveryDocRest = generateAndWriteDiscovery(project, apiConfig, serviceClassName, REST,
-        loader);
+    String discoveryDocRest =
+        generateAndWriteDiscovery(project, apiConfig, serviceClassName, REST, loader);
     monitor.worked(20);
     File tempFile = File.createTempFile(TMP_ZIP_FILE_PREFIX, TMP_ZIP_FILE_SUFFIX);
 
     monitor.subTask("Generating Client Libraries. This may take a few minutes.");
 
-    Class<?> clientLibGenerator = loader.loadClass("com.google.api.server.spi.tools.CloudClientLibGenerator");
-    Object clientLibGeneratorInstance = clientLibGenerator.getMethod("using", String.class).invoke(
-        null, clientLibGenApiUrl);
+    Class<?> clientLibGenerator =
+        loader.loadClass("com.google.api.server.spi.tools.CloudClientLibGenerator");
+    Object clientLibGeneratorInstance =
+        clientLibGenerator.getMethod("using", String.class).invoke(null, clientLibGenApiUrl);
 
     ArrayList<Object> methodArgs = new ArrayList<Object>();
     Method clientLibGeneratorMethod = null;
 
     /*
+     * TODO: instead of implicitly guessing at App Engine versions via method lookup, we should be
+     * looking at App Engine SDK version strings, and using version range checking. However, this
+     * part of the App Engine interface is supposed to remain stable, so the hope would be that we
+     * don't have to add any more cases here.
+     */
+
+    /*
      * App Engine 1.9.4+. Language parameter is now a string value instead of an Enum.
      */
     try {
-      clientLibGeneratorMethod = clientLibGenerator.getMethod("generateClientLib", String.class,
-          String.class, String.class, String.class, File.class);
+      clientLibGeneratorMethod =
+          clientLibGenerator.getMethod("generateClientLib", String.class, String.class,
+              String.class, String.class, File.class);
       methodArgs.add(discoveryDocRest);
       methodArgs.add(JAVA);
       methodArgs.add(ManagedApiPlugin.API_CLIENT_LANG_VERSION);
@@ -136,10 +147,12 @@ public class SwarmApiCreator {
        */
       try {
         @SuppressWarnings("rawtypes")
-        Class<Enum> langEnumClass = (Class<Enum>) loader.loadClass("com.google.api.server.spi.tools.ClientLibGenerator$Language");
-        
-        clientLibGeneratorMethod = clientLibGenerator.getMethod("generateClientLib", String.class,
-            langEnumClass, String.class, String.class, File.class);
+        Class<Enum> langEnumClass =
+            (Class<Enum>) loader.loadClass("com.google.api.server.spi.tools.ClientLibGenerator$Language");
+
+        clientLibGeneratorMethod =
+            clientLibGenerator.getMethod("generateClientLib", String.class, langEnumClass,
+                String.class, String.class, File.class);
         methodArgs.add(discoveryDocRest);
         methodArgs.add(Enum.valueOf(langEnumClass, JAVA));
         methodArgs.add(ManagedApiPlugin.API_CLIENT_LANG_VERSION);
@@ -153,17 +166,18 @@ public class SwarmApiCreator {
     }
 
     if (clientLibGeneratorMethod == null) {
-      
-       /*
+
+      /*
        * App Engine 1.7.7 - App Engine 1.8.3. Safe to remove this case in August 2014.
        */
       try {
 
         @SuppressWarnings("rawtypes")
-        Class<Enum> langEnumClass = (Class<Enum>) loader.loadClass("com.google.api.server.spi.tools.ClientLibGenerator$Language");
+        Class<Enum> langEnumClass =
+            (Class<Enum>) loader.loadClass("com.google.api.server.spi.tools.ClientLibGenerator$Language");
 
-        clientLibGeneratorMethod = clientLibGenerator.getMethod("generateClientLib", String.class,
-            langEnumClass, String.class, File.class);
+        clientLibGeneratorMethod =
+            clientLibGenerator.getMethod("c", String.class, langEnumClass, String.class, File.class);
         methodArgs.add(discoveryDocRest);
         methodArgs.add(Enum.valueOf(langEnumClass, JAVA));
         methodArgs.add(ManagedApiPlugin.API_CLIENT_LANG_VERSION);
@@ -173,6 +187,12 @@ public class SwarmApiCreator {
       } catch (ClassNotFoundException cnfe) {
         throw new SwarmGenerationException(cnfe);
       }
+    }
+
+    if (clientLibGeneratorMethod == null) {
+      throw new SwarmGenerationException("Unable to invoke client library generation method in "
+          + " the App Engine SDK. Please make sure you're using an App Engine SDK at "
+          + " version 1.9.4 or later.");
     }
 
     try {
@@ -251,20 +271,23 @@ public class SwarmApiCreator {
     methodArgs.add(appId);
     methodArgs.add(DEFAULT_API_NAME);
 
-    Method serviceContextCreateMethod = serviceContext.getMethod("create", String.class,
-        String.class);
+    Method serviceContextCreateMethod =
+        serviceContext.getMethod("create", String.class, String.class);
 
     Object serviceContextInstance = serviceContextCreateMethod.invoke(null, methodArgs.toArray());
 
-    Class<?> annotationApiConfigGenerator = loader.loadClass("com.google.api.server.spi.tools.AnnotationApiConfigGenerator");
-    Method generateConfigMethod = annotationApiConfigGenerator.getMethod("generateConfig",
-        serviceContext, serviceClassList.toArray(new Class<?>[0]).getClass());
+    Class<?> annotationApiConfigGenerator =
+        loader.loadClass("com.google.api.server.spi.tools.AnnotationApiConfigGenerator");
+    Method generateConfigMethod =
+        annotationApiConfigGenerator.getMethod("generateConfig", serviceContext,
+            serviceClassList.toArray(new Class<?>[0]).getClass());
 
     Map<String, String> apiString;
     try {
-      apiString = (Map<String, String>) generateConfigMethod.invoke(
-          annotationApiConfigGenerator.newInstance(), new Object[] {
-              serviceContextInstance, serviceClassList.toArray(new Class<?>[0])});
+      apiString =
+          (Map<String, String>) generateConfigMethod.invoke(
+              annotationApiConfigGenerator.newInstance(), new Object[] {serviceContextInstance,
+                  serviceClassList.toArray(new Class<?>[0])});
     } catch (InvocationTargetException e) {
       throw new SwarmGenerationException(e);
     }
@@ -272,12 +295,13 @@ public class SwarmApiCreator {
     File apiConfigFile = null;
     for (String apiConfigKey : apiString.keySet()) {
       String apiConfig = apiString.get(apiConfigKey);
-      String apiConfigName = apiConfigKey.substring(0,
-          apiConfigKey.indexOf(SwarmServiceCreator.API_FILE_EXTENSION));
-      apiConfigFile = SwarmServiceCreator.createConfigFile(
-          project,
-          WebAppUtilities.getWebInfFolder(project).getFile(apiConfigKey).getProjectRelativePath().toString(),
-          new NullProgressMonitor());
+      String apiConfigName =
+          apiConfigKey.substring(0, apiConfigKey.indexOf(SwarmServiceCreator.API_FILE_EXTENSION));
+      apiConfigFile =
+          SwarmServiceCreator.createConfigFile(
+              project,
+              WebAppUtilities.getWebInfFolder(project).getFile(apiConfigKey).getProjectRelativePath().toString(),
+              new NullProgressMonitor());
       ResourceUtils.writeToFile(apiConfigFile, apiConfig);
       if (!generateLibs) {
         continue;
@@ -288,8 +312,9 @@ public class SwarmApiCreator {
       }
 
       monitor.worked(1);
-      String clientLibPath = outputFolder.getAbsolutePath() + File.separator
-          + SwarmServiceCreator.SWARM_LIB_NAME_PREFIX + apiConfigName;
+      String clientLibPath =
+          outputFolder.getAbsolutePath() + File.separator
+              + SwarmServiceCreator.SWARM_LIB_NAME_PREFIX + apiConfigName;
       File clientLibFolder = new File(clientLibPath);
       clientLibFolder.mkdir();
       createClientLibFromApiConfig(project, apiConfig, clientLibFolder, monitor.newChild(1),
@@ -304,8 +329,8 @@ public class SwarmApiCreator {
     // TODO: Should look for this via the descriptor file.
     filesToRemoveList.add("pom.xml");
 
-    List<String> unneededDeps = ManagedApiUtils.computeDependenciesToRemove(apiDependencies,
-        platformType);
+    List<String> unneededDeps =
+        ManagedApiUtils.computeDependenciesToRemove(apiDependencies, platformType);
     filesToRemoveList.addAll(unneededDeps);
     ResourceUtils.deleteFiles(targetFolder, filesToRemoveList);
   }
@@ -324,8 +349,9 @@ public class SwarmApiCreator {
       if (!resource.getName().equals(fileName)) {
         continue;
       }
-      File sourceFolder = new File(folder.getAbsolutePath(), sourceFolderName + "-"
-          + SwarmServiceCreator.GENERATED_SOURCE_NAME_SUBSTRING);
+      File sourceFolder =
+          new File(folder.getAbsolutePath(), sourceFolderName + "-"
+              + SwarmServiceCreator.GENERATED_SOURCE_NAME_SUBSTRING);
       sourceFolder.mkdir();
       new UnzipRunnable(resource, sourceFolder).run(new NullProgressMonitor());
       return true;
@@ -337,24 +363,29 @@ public class SwarmApiCreator {
   private String generateAndWriteDiscovery(IProject project, String apiConfig,
       String fileNamePrefix, String format, ClassLoader loader) throws Exception {
     @SuppressWarnings({"rawtypes"})
-    Class<Enum> formatEnum = (Class<Enum>) loader.loadClass("com.google.api.server.spi.tools.DiscoveryDocGenerator$Format");
-    Class<?> discoveryDocGenerator = loader.loadClass("com.google.api.server.spi.tools.CloudDiscoveryDocGenerator");
+    Class<Enum> formatEnum =
+        (Class<Enum>) loader.loadClass("com.google.api.server.spi.tools.DiscoveryDocGenerator$Format");
+    Class<?> discoveryDocGenerator =
+        loader.loadClass("com.google.api.server.spi.tools.CloudDiscoveryDocGenerator");
     Method usingMethod = discoveryDocGenerator.getMethod("using", String.class);
-    Method generateDiscoveryDocMethod = discoveryDocGenerator.getMethod("generateDiscoveryDoc",
-        String.class, formatEnum);
+    Method generateDiscoveryDocMethod =
+        discoveryDocGenerator.getMethod("generateDiscoveryDoc", String.class, formatEnum);
     String discoveryDoc = "";
     try {
-      discoveryDoc = (String) generateDiscoveryDocMethod.invoke(
-          usingMethod.invoke(null, DISCOVERY_API_ROOT), apiConfig, Enum.valueOf(formatEnum, format));
+      discoveryDoc =
+          (String) generateDiscoveryDocMethod.invoke(usingMethod.invoke(null, DISCOVERY_API_ROOT),
+              apiConfig, Enum.valueOf(formatEnum, format));
     } catch (InvocationTargetException e) {
       throw new SwarmGenerationException(e);
     }
-    String discoveryFileName = fileNamePrefix + (format.equals(REST) ? REST_SUFFIX : RPC_SUFFIX)
-        + SwarmServiceCreator.DISCOVERY_FILE_EXTENSION;
-    File discoveryFile = SwarmServiceCreator.createConfigFile(
-        project,
-        WebAppUtilities.getWebInfFolder(project).getFile(discoveryFileName).getProjectRelativePath().toString(),
-        new NullProgressMonitor());
+    String discoveryFileName =
+        fileNamePrefix + (format.equals(REST) ? REST_SUFFIX : RPC_SUFFIX)
+            + SwarmServiceCreator.DISCOVERY_FILE_EXTENSION;
+    File discoveryFile =
+        SwarmServiceCreator.createConfigFile(
+            project,
+            WebAppUtilities.getWebInfFolder(project).getFile(discoveryFileName).getProjectRelativePath().toString(),
+            new NullProgressMonitor());
     ResourceUtils.writeToFile(discoveryFile, discoveryDoc);
     return discoveryDoc;
   }
