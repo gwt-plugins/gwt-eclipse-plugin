@@ -67,9 +67,6 @@ public class ManagedApiPlugin extends AbstractGooglePlugin {
   public static final String STAGING_MANAGED_API_DIRECTORY_HREF =
       "https://codegen-staging.appspot.com/resources/api-libraries/5935";
 
-  public static final
-      String DEFAULT_MANAGED_API_ICON_PREFETCH_HREF = "http://api-directory.googleapis.com/icons";
-
   public static final String ICON_KEY_CLASSPATH_CONTAINER = "x16";
 
   public static final String ICON_KEY_API_IMPORT = "x32";
@@ -89,8 +86,8 @@ public class ManagedApiPlugin extends AbstractGooglePlugin {
       MANAGED_API_SESSION_KEY_QNAME = new QualifiedName(
           PLUGIN_ID, "MANAGED_API_SESSION_KEY");
   
-  // Latest in the 1.14 series
-  public static final String API_CLIENT_LANG_VERSION = "1.16.x";
+  // Latest in the 1.18 series
+  public static final String API_CLIENT_LANG_VERSION = "1.18.x";
 
   public static final long API_DIRECTORY_CACHE_TTL = 4 * 60 * 60 * 1000; // 4HRS
 
@@ -127,15 +124,6 @@ public class ManagedApiPlugin extends AbstractGooglePlugin {
     String overrideHref = System.getenv("MANAGED_API_DIRECTORY_HREF");
     if (overrideHref == null) {
       return defaultManagedApiDirectoryInUse;
-    } else {
-      return overrideHref;
-    }
-  }
-
-  public static String getManagedApiIconBundleHref() {
-    String overrideHref = System.getenv("MANAGED_API_ICON_PREFETCH_HREF");
-    if (overrideHref == null) {
-      return DEFAULT_MANAGED_API_ICON_PREFETCH_HREF;
     } else {
       return overrideHref;
     }
