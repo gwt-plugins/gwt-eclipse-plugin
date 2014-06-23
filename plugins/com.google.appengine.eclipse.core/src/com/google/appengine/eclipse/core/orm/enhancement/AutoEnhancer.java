@@ -14,10 +14,11 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.core.orm.enhancement;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.google.appengine.eclipse.core.AppEngineCoreConstants;
+import com.google.appengine.eclipse.core.AppEngineCorePluginLog;
+import com.google.appengine.eclipse.core.properties.GaeProjectProperties;
+import com.google.appengine.eclipse.core.sdk.GaeSdk;
+import com.google.gdt.eclipse.core.JavaUtilities;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -43,11 +44,10 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import org.eclipse.wst.server.core.IRuntime;
 import org.eclipse.wst.server.core.ServerCore;
 
-import com.google.appengine.eclipse.core.AppEngineCoreConstants;
-import com.google.appengine.eclipse.core.AppEngineCorePluginLog;
-import com.google.appengine.eclipse.core.properties.GaeProjectProperties;
-import com.google.appengine.eclipse.core.sdk.GaeSdk;
-import com.google.gdt.eclipse.core.JavaUtilities;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Performs enhancement of classes in response to build events. This builder
@@ -170,7 +170,6 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
   private boolean hasValidSdk(IJavaProject javaProject) {
     try {
       IProject eclipseProject = javaProject.getProject();
-      IFacetedProject facetedProject = ProjectFacetsManager.create(eclipseProject);
       
       // Identify the facet that we are looking for, if any.
       IProjectFacet gaeFacet = null;
@@ -184,7 +183,8 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
       // Check whether the project has that facet, and if so, whether its primary runtime is one of
       // the installed runtimes. If so, set the variable sdk to that runtime's SDK.
       GaeSdk sdk = null;
-      if (gaeFacet != null && facetedProject.hasProjectFacet(gaeFacet)) {
+      IFacetedProject facetedProject = ProjectFacetsManager.create(eclipseProject);
+      if (gaeFacet != null && facetedProject != null && facetedProject.hasProjectFacet(gaeFacet)) {
         String facetedProjectRuntimeName = facetedProject.getPrimaryRuntime().getName();
         IRuntime[] runtimes = ServerCore.getRuntimes();
         for (IRuntime runtime : runtimes) {

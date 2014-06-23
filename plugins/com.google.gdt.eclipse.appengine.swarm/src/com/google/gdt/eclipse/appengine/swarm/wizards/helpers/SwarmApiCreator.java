@@ -55,10 +55,8 @@ public class SwarmApiCreator {
   private ApiDependencies apiDependencies;
 
   private static final String DISCOVERY_API_ROOT = "https://webapis-discovery.appspot.com/_ah/api";
-  private static final String CLIENT_LIB_GENERATOR =
-      "https://developers.google.com/resources/api-libraries/endpoints/genlib";
-  private static final String STAGING_CLIENT_LIB_GENERATOR =
-      "https://codegen-staging.appspot.com/resources/api-libraries/endpoints/genlib";
+  private static final String CLIENT_LIB_GENERATOR = "https://developers.google.com/resources/api-libraries/endpoints/genlib";
+  private static final String STAGING_CLIENT_LIB_GENERATOR = "https://codegen-staging.appspot.com/resources/api-libraries/endpoints/genlib";
   // This is used for creating a temp zip file, which can be extracted into the
   // ApiLibs directory of the App Engine project.
   private static final String TMP_ZIP_FILE_PREFIX = "tmp";
@@ -109,34 +107,73 @@ public class SwarmApiCreator {
 
     monitor.subTask("Generating Client Libraries. This may take a few minutes.");
 
-    @SuppressWarnings({"rawtypes"})
-    Class<Enum> languageEnum = (Class<Enum>) loader.loadClass("com.google.api.server.spi.tools.ClientLibGenerator$Language");
     Class<?> clientLibGenerator = loader.loadClass("com.google.api.server.spi.tools.CloudClientLibGenerator");
     Object clientLibGeneratorInstance = clientLibGenerator.getMethod("using", String.class).invoke(
         null, clientLibGenApiUrl);
 
     ArrayList<Object> methodArgs = new ArrayList<Object>();
-    methodArgs.add(discoveryDocRest);
-    methodArgs.add(Enum.valueOf(languageEnum, JAVA));
-    methodArgs.add(ManagedApiPlugin.API_CLIENT_LANG_VERSION);
-
     Method clientLibGeneratorMethod = null;
 
+    /*
+     * App Engine 1.9.4+. Language parameter is now a string value instead of an Enum.
+     */
     try {
-      // App Engine 1.7.7 - App Engine 1.8.3
       clientLibGeneratorMethod = clientLibGenerator.getMethod("generateClientLib", String.class,
-          languageEnum, String.class, File.class);
-    } catch (NoSuchMethodException nme) {
-      /*
-       * App Engine 1.8.4+. The last String parameter represents the build layout. Accepted types
-       * are maven, and default (null).
-       */
-      clientLibGeneratorMethod = clientLibGenerator.getMethod("generateClientLib", String.class,
-          languageEnum, String.class, String.class, File.class);
+          String.class, String.class, String.class, File.class);
+      methodArgs.add(discoveryDocRest);
+      methodArgs.add(JAVA);
+      methodArgs.add(ManagedApiPlugin.API_CLIENT_LANG_VERSION);
       methodArgs.add(null);
+      methodArgs.add(tempFile);
+    } catch (NoSuchMethodException nme) {
+      // Ignore
     }
 
-    methodArgs.add(tempFile);
+    if (clientLibGeneratorMethod == null) {
+      /*
+       * App Engine 1.8.4 - 1.9.3. The last String parameter represents the build layout. Accepted
+       * types are maven, and default (null). Safe to remove this case in March 2015.
+       */
+      try {
+        @SuppressWarnings("rawtypes")
+        Class<Enum> langEnumClass = (Class<Enum>) loader.loadClass("com.google.api.server.spi.tools.ClientLibGenerator$Language");
+        
+        clientLibGeneratorMethod = clientLibGenerator.getMethod("generateClientLib", String.class,
+            langEnumClass, String.class, String.class, File.class);
+        methodArgs.add(discoveryDocRest);
+        methodArgs.add(Enum.valueOf(langEnumClass, JAVA));
+        methodArgs.add(ManagedApiPlugin.API_CLIENT_LANG_VERSION);
+        methodArgs.add(null);
+        methodArgs.add(tempFile);
+      } catch (NoSuchMethodException nme) {
+        // Ignore
+      } catch (ClassNotFoundException cnfe) {
+        throw new SwarmGenerationException(cnfe);
+      }
+    }
+
+    if (clientLibGeneratorMethod == null) {
+      
+       /*
+       * App Engine 1.7.7 - App Engine 1.8.3. Safe to remove this case in August 2014.
+       */
+      try {
+
+        @SuppressWarnings("rawtypes")
+        Class<Enum> langEnumClass = (Class<Enum>) loader.loadClass("com.google.api.server.spi.tools.ClientLibGenerator$Language");
+
+        clientLibGeneratorMethod = clientLibGenerator.getMethod("generateClientLib", String.class,
+            langEnumClass, String.class, File.class);
+        methodArgs.add(discoveryDocRest);
+        methodArgs.add(Enum.valueOf(langEnumClass, JAVA));
+        methodArgs.add(ManagedApiPlugin.API_CLIENT_LANG_VERSION);
+        methodArgs.add(tempFile);
+      } catch (NoSuchMethodException nme) {
+        throw new SwarmGenerationException(nme);
+      } catch (ClassNotFoundException cnfe) {
+        throw new SwarmGenerationException(cnfe);
+      }
+    }
 
     try {
       clientLibGeneratorMethod.invoke(clientLibGeneratorInstance, methodArgs.toArray());
