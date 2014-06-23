@@ -39,6 +39,9 @@ import java.io.IOException;
  * the App Engine API. User should be logged in before opening this dialog. If user is not logged in
  * before opening this dialog, user will be prompted to log in when they attempt to create a new app
  * id.
+ * 
+ * NOTE: This class is unused, because we've disabled the ability to create App Ids on the
+ * service side. We'll re-enable this once an updated project creation API exists.
  */
 public class CreateAppIdDialog extends TitleAreaDialog {
 
@@ -50,13 +53,16 @@ public class CreateAppIdDialog extends TitleAreaDialog {
   private static final String CREATE_APP_ID_MESSAGE = "Create a new app id";
   private static final String APP_ID_FORMAT_MESSAGE = "Note:\n"
       + "App Id must be between 6 and 30 characters.\n"
-          + "Lowercase letters, digits, and hyphens are acceptable characters.\n"
-          + "Leading and trailing hyphens are prohibited.";
+      + "Lowercase letters, digits, and hyphens are acceptable characters.\n"
+      + "Leading and trailing hyphens are prohibited.";
 
   /**
-   * Constructor
+   * Constructor.
+   * 
+   * NOTE: This constructor is private, because we've disabled the ability to create App Ids on the
+   * service side. We'll re-enable this once an updated project creation API exists.
    */
-  public CreateAppIdDialog(Shell parentShell) {
+  private CreateAppIdDialog(Shell parentShell) {
     super(parentShell);
   }
 
@@ -156,9 +162,9 @@ public class CreateAppIdDialog extends TitleAreaDialog {
     } else if (!newAppIdText.getText().matches(APP_ID_RE_STRING)) {
       setMessage(CREATE_APP_ID_MESSAGE);
       createBtn.setEnabled(false);
-   } else {
+    } else {
       setMessage(CREATE_APP_ID_MESSAGE);
       createBtn.setEnabled(true);
-   }
+    }
   }
 }

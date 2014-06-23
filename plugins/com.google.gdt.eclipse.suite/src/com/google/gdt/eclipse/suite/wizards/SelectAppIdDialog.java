@@ -27,13 +27,9 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -53,7 +49,6 @@ public class SelectAppIdDialog extends TitleAreaDialog {
 
   private ListViewer appIdViewer;
   private String selectedAppId;
-  private Button createButton;
   private Link loginLink;
 
   /**
@@ -71,11 +66,11 @@ public class SelectAppIdDialog extends TitleAreaDialog {
   }
 
   @Override
-   protected void configureShell(Shell newShell) {
-   super.configureShell(newShell);
-   newShell.setText("Select App Id");
-   setHelpAvailable(false);
-   }
+  protected void configureShell(Shell newShell) {
+    super.configureShell(newShell);
+    newShell.setText("Select App Id");
+    setHelpAvailable(false);
+  }
 
   @Override
   protected void createButtonsForButtonBar(Composite parent) {
@@ -86,7 +81,7 @@ public class SelectAppIdDialog extends TitleAreaDialog {
   @Override
   protected Control createDialogArea(Composite parent) {
     parent = (Composite) super.createDialogArea(parent);
-    
+
     // Create group control
     Group listComposite = new Group(parent, SWT.NONE);
     listComposite.setText("App Ids");
@@ -100,7 +95,7 @@ public class SelectAppIdDialog extends TitleAreaDialog {
 
     listComposite.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL
         | GridData.FILL_BOTH));
-    
+
     // Create list of existing app ids
     appIdViewer =
         new ListViewer(listComposite, SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL | SWT.BORDER);
@@ -132,23 +127,24 @@ public class SelectAppIdDialog extends TitleAreaDialog {
     });
     GridDataFactory.fillDefaults().grab(true, true).applyTo(appIdViewer.getControl());
 
+    // NOTE: Disabled for now. See comment in CreateAppIdDialog.
     // Create "Create" button
-    createButton = new Button(listComposite, SWT.PUSH);
-    createButton.setText("Create App Id");
-    final GridData gd1 = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-    createButton.setLayoutData(gd1);
-    createButton.setToolTipText("Create a new App Id");
-    createButton.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-        CreateAppIdDialog dialog = new CreateAppIdDialog(getShell());
-        if (dialog.open() == Window.OK) {
-          String newAppId = dialog.getAppId();
-          addNewAppID(newAppId);
-        }
-      }
-    });
-    
+    // createButton = new Button(listComposite, SWT.PUSH);
+    // createButton.setText("Create App Id");
+    // final GridData gd1 = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+    // createButton.setLayoutData(gd1);
+    // createButton.setToolTipText("Create a new App Id");
+    // createButton.addSelectionListener(new SelectionAdapter() {
+    // @Override
+    // public void widgetSelected(SelectionEvent e) {
+    // CreateAppIdDialog dialog = new CreateAppIdDialog(getShell());
+    // if (dialog.open() == Window.OK) {
+    // String newAppId = dialog.getAppId();
+    // addNewAppID(newAppId);
+    // }
+    // }
+    // });
+
     loginLink = new Link(parent, SWT.NONE);
     final GridData loginLinkLayout = new GridData();
     loginLinkLayout.horizontalAlignment = GridData.BEGINNING;
@@ -168,16 +164,17 @@ public class SelectAppIdDialog extends TitleAreaDialog {
     return parent;
   }
 
-  private void addNewAppID(String newAppId) {
-    appIdViewer.add(newAppId);
-
-    // Select last element
-    Object element = appIdViewer.getElementAt(appIdViewer.getList().getItemCount() - 1);
-    if (element != null) {
-      appIdViewer.setSelection(new StructuredSelection(element), true);
-    }
-    setCompletionStatus();
-  }
+  // NOTE: Disabled for now. See comment in CreateAppIdDialog.
+  // private void addNewAppID(String newAppId) {
+  // appIdViewer.add(newAppId);
+  //
+  // // Select last element
+  // Object element = appIdViewer.getElementAt(appIdViewer.getList().getItemCount() - 1);
+  // if (element != null) {
+  // appIdViewer.setSelection(new StructuredSelection(element), true);
+  // }
+  // setCompletionStatus();
+  // }
 
   private String[] getAppIds() {
     String[] appIds = {};
@@ -217,17 +214,16 @@ public class SelectAppIdDialog extends TitleAreaDialog {
 
   private void updateUserAccessControls() {
     if (GoogleLogin.getInstance().isLoggedIn()) {
-      createButton.setEnabled(true);
+      // createButton.setEnabled(true);
       if (appIdViewer.getList().getItemCount() == 0) {
-        setMessage("You currently have no existing app ids.\n"
-            + " Click the \"Create App Id\" button to create a new app id.");
+        setMessage("You currently have no existing app ids.");
       } else {
         setMessage("Select an app id for a new web application project.");
       }
 
     } else {
-      setMessage("Click the link below to log in to view and/or create app ids.");
-      createButton.setEnabled(false);
+      setMessage("Click the link below to log in to view app ids.");
+      // createButton.setEnabled(false);
     }
   }
 

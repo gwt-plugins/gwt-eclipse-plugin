@@ -475,7 +475,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     gd61.grabExcessHorizontalSpace = true;
     gd61.horizontalSpan = 1;
     useAppIdText.setLayoutData(gd61);
-    useAppIdText.setEditable(false);
+    useAppIdText.setEditable(true);
     useAppIdText.addModifyListener(new ModifyListener() {
       public void modifyText(ModifyEvent e) {
         validatePageAndSetCompletionStatus();
