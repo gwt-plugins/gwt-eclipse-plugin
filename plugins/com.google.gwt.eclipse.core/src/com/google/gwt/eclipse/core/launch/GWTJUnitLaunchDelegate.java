@@ -145,16 +145,13 @@ public class GWTJUnitLaunchDelegate extends JUnitLaunchConfigurationDelegate {
 
     if (getStandardsMode(config)) {
       try {
-        if (isGwtSdkVersionAtLeast("2.0.1", config)) {
+        if (!isGwtSdkVersionAtLeast("2.5.0", config)) {
           argsBuilder.append(" -standardsMode");
-        } else {
-          argsBuilder.append(" -XstandardsMode");
         }
       } catch (CoreException e) {
         GWTPluginLog.logWarning(
             e,
-            "Could not determine whether to use -XstandardsMode or -standardsMode, assuming latter");
-        argsBuilder.append(" -standardsMode");
+            "Could not determine whether to use -standardsMode, skipping");
       }
     }
 
