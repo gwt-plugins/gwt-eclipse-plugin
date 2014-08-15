@@ -37,7 +37,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.osgi.framework.internal.core.Constants;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWindowListener;
@@ -57,10 +56,17 @@ import java.util.List;
 /**
  * Activator for the com.google.eclipse.gdt plugin.
  */
-@SuppressWarnings({"deprecation", "restriction"})
+@SuppressWarnings("restriction")
+// org.eclipse.ui.internal.Workbench, org.eclipse.ui.internal.WorkbenchPage
 public class GdtPlugin extends AbstractGooglePlugin {
 
   public static final String PLUGIN_ID = GdtPlugin.class.getPackage().getName();
+  
+  // The following constant is defined in org.eclipse.osgi.framework.internal.core.Constants through
+  // Eclipse 4.3(Kepler), and in org.eclipse.osgi.framework.Constants starting in Eclipse 4.4(Luna).
+  // TODO(nhcohen): Import this constant once all supported platforms define it in the same place.
+  public static final String BUNDLE_VERSION = "Bundle-Version";
+
 
   private static Logger logger;
   /**
@@ -73,20 +79,22 @@ public class GdtPlugin extends AbstractGooglePlugin {
 
   private static GdtPlugin plugin;
 
-  /**
-   * Wizards that we add to perspectives.
-   * 
-   * TODO: If we add more wizards, this list should grow. Alternatively, we
-   * could query the extension registry and add all GDT contributed wizards.
-   */
-  private static final List<String> WIZARDS_TO_ADD_TO_PERSPECTIVES = new ArrayList<String>(
-      Arrays.asList(new String[] {
-          "com.google.gdt.eclipse.suite.wizards.newProjectWizard",
-          "com.google.gwt.eclipse.core.newModuleWizard",
-          "com.google.gwt.eclipse.core.newHostPageWizard",
-          "com.google.gwt.eclipse.core.newEntryPointWizard",
-          "com.google.gwt.eclipse.core.newClientBundleWizard",
-          "com.google.gwt.eclipse.core.newUiBinderWizard"}));
+  // The following constant is referenced only in commented-out lines of the method
+  // maybeAddNewWizardActionsToPerspective:
+//  /**
+//   * Wizards that we add to perspectives.
+//   * 
+//   * TODO: If we add more wizards, this list should grow. Alternatively, we
+//   * could query the extension registry and add all GDT contributed wizards.
+//   */
+//  private static final List<String> WIZARDS_TO_ADD_TO_PERSPECTIVES = new ArrayList<String>(
+//      Arrays.asList(new String[] {
+//          "com.google.gdt.eclipse.suite.wizards.newProjectWizard",
+//          "com.google.gwt.eclipse.core.newModuleWizard",
+//          "com.google.gwt.eclipse.core.newHostPageWizard",
+//          "com.google.gwt.eclipse.core.newEntryPointWizard",
+//          "com.google.gwt.eclipse.core.newClientBundleWizard",
+//          "com.google.gwt.eclipse.core.newUiBinderWizard"}));
 
   public static GdtPlugin getDefault() {
     return plugin;
@@ -98,8 +106,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
    * @return current eclipse version as a string.
    */
   public static String getEclipseVersion() {
-    return (String) ResourcesPlugin.getPlugin().getBundle().getHeaders().get(
-        Constants.BUNDLE_VERSION);
+    return (String) ResourcesPlugin.getPlugin().getBundle().getHeaders().get(BUNDLE_VERSION);
   }
 
   public static String getInstallationId() {
@@ -119,7 +126,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
   }
 
   public static Version getVersion() {
-    return new Version((String) getDefault().getBundle().getHeaders().get(Constants.BUNDLE_VERSION));
+    return new Version((String) getDefault().getBundle().getHeaders().get(BUNDLE_VERSION));
   }
 
   private static void rebuildGoogleProjectIfPluginVersionChanged(IProject project) {
