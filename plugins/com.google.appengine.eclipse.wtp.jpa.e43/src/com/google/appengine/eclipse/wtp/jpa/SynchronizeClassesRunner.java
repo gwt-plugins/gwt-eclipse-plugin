@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright 2013 Google Inc. All Rights Reserved.
- *
+ * 
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -22,11 +22,10 @@ import org.eclipse.jpt.jpa.core.JpaProject;
 import org.eclipse.jpt.jpa.core.JpaProjectManager;
 import org.eclipse.jpt.jpa.core.context.persistence.Persistence;
 import org.eclipse.jpt.jpa.core.context.persistence.PersistenceUnit;
-import org.eclipse.jpt.jpa.core.context.persistence.PersistenceXml;
 
 /**
  * Invokes the JPA class synchronization (with persistence.xml) action on the Eclipse 4.3 platform.
- *
+ * 
  * The name and package of this class must match that declared in the Eclipse 4.2 version of the JPA
  * plugin.
  */
@@ -36,12 +35,12 @@ public class SynchronizeClassesRunner implements ISynchronizeClassesRunner {
   public void synchronizeClasses(JpaProject jpaProject, final IProgressMonitor monitor) {
     final IWorkspace workspace = ResourcesPlugin.getWorkspace();
     JptXmlResource resource = jpaProject.getPersistenceXmlResource();
-    PersistenceXml persistenceXml = jpaProject.getContextModelRoot().getPersistenceXml();
-    Persistence persistence = persistenceXml.getRoot();
+    Persistence persistence = GaeJpaPlatformFactory.getPersistence(jpaProject);
     if (persistence.getPersistenceUnitsSize() != 0) {
       final PersistenceUnit unit = persistence.getPersistenceUnits().iterator().next();
       try {
-        JpaProjectManager jpaProjectManager = (JpaProjectManager) workspace.getAdapter(JpaProjectManager.class);
+        JpaProjectManager jpaProjectManager =
+            (JpaProjectManager) workspace.getAdapter(JpaProjectManager.class);
         jpaProjectManager.execute(new Command() {
           @Override
           public void execute() {

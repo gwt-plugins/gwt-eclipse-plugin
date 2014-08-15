@@ -14,5 +14,6 @@ Require-Bundle: org.eclipse.core.resources,
  com.google.appengine.eclipse.core
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
-Export-Package: com.google.appengine.eclipse.webtools.facet,
+Export-Package: com.google.appengine.eclipse.webtools,
+ com.google.appengine.eclipse.webtools.facet,
  com.google.appengine.eclipse.webtools.facet.listeners

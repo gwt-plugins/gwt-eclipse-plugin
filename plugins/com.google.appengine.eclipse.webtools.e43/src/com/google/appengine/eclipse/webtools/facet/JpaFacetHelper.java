@@ -1,18 +1,18 @@
 /*******************************************************************************
  * Copyright 2012 Google Inc. All Rights Reserved.
  * 
- *  All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
- *  Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
 package com.google.appengine.eclipse.webtools.facet;
+
+import com.google.appengine.eclipse.webtools.AppEngineWtpPlugin;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
@@ -26,6 +26,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 
 // This helper is used by the JPA projects listener.
@@ -38,8 +40,7 @@ public class JpaFacetHelper extends AbstractJpaFacetHelper {
 
   public static class Updater implements PersistenceXmlUpdater {
     public void updateConnection(IJavaProject javaProject) throws IOException {
-      JpaProject jpaProject = (JpaProject) javaProject.getProject()
-          .getAdapter(JpaProject.class);
+      JpaProject jpaProject = (JpaProject) javaProject.getProject().getAdapter(JpaProject.class);
       if (jpaProject == null) {
         return;
       }
@@ -49,7 +50,7 @@ public class JpaFacetHelper extends AbstractJpaFacetHelper {
         return;
       }
       JptXmlResource resource = jpaProject.getPersistenceXmlResource();
-      Persistence persistence = jpaProject.getContextModelRoot().getPersistenceXml().getRoot();
+      Persistence persistence = getPersistence(jpaProject);
       PersistenceUnit pUnit;
       // Create a persistence unit if there isn't one
       if (persistence.getPersistenceUnitsSize() == 0) {
@@ -65,11 +66,9 @@ public class JpaFacetHelper extends AbstractJpaFacetHelper {
       if (pUnit.getProvider() != null) {
         pUnit.setProvider("");
       }
-      pUnit.setSpecifiedTransactionType(
-          PersistenceUnitTransactionType.RESOURCE_LOCAL);
+      pUnit.setSpecifiedTransactionType(PersistenceUnitTransactionType.RESOURCE_LOCAL);
       if (conn.getDriverClassName() != null) {
-        pUnit.setProperty(JDBC_DRIVER, getFixedDriverClassName(
-            conn.getDriverClassName()));
+        pUnit.setProperty(JDBC_DRIVER, getFixedDriverClassName(conn.getDriverClassName()));
       }
       if (conn.getURL() != null) {
         pUnit.setProperty(JDBC_URL, getFixedUrl(conn.getURL()));
@@ -85,6 +84,41 @@ public class JpaFacetHelper extends AbstractJpaFacetHelper {
     }
   }
 
+  private static Persistence getPersistence(JpaProject jpaProject) {
+    Method m = null;
+    try {
+      // Method name on Eclipse 4.3
+      m = JpaProject.class.getDeclaredMethod("getContextModelRoot");
+    } catch (NoSuchMethodException e) {
+      // Ignore
+    }
+
+    if (m == null) {
+      try {
+        // Method name on Eclipse 4.4+
+        m = JpaProject.class.getDeclaredMethod("getContextRoot");
+      } catch (NoSuchMethodException e) {
+        AppEngineWtpPlugin.getLogger().logError(e);
+      }
+    }
+
+    try {
+      return (Persistence) m.invoke(jpaProject);
+    } catch (IllegalAccessException e) {
+      // Should never happen.
+      AppEngineWtpPlugin.getLogger().logError(e);
+    } catch (IllegalArgumentException e) {
+      // Should never happen.
+      AppEngineWtpPlugin.getLogger().logError(e);
+    } catch (InvocationTargetException e) {
+      // Should never happen.
+      AppEngineWtpPlugin.getLogger().logError(e);
+    }
+
+    // Should never reach this point
+    return null;
+  }
+
   // Check if all the optional dependencies required for the JPA
   // functionality are available.
   public static boolean areJpaDepsAvailable() {
@@ -95,19 +129,17 @@ public class JpaFacetHelper extends AbstractJpaFacetHelper {
         && Platform.getBundle("org.eclipse.wst.common.emf") != null) {
 
       /*
-       * On Eclipse 3.7, the o.e.jpt.jpa.core plugin won't activate if
-       * o.e.jst.j2ee.web is not present, even though this plugin is not
-       * mentioned in the dependencies of o.e.jpt.jpa.core
+       * On Eclipse 3.7, the o.e.jpt.jpa.core plugin won't activate if o.e.jst.j2ee.web is not
+       * present, even though this plugin is not mentioned in the dependencies of o.e.jpt.jpa.core
        * 
-       * This is because o.e.jpt.jpa.core activation requires that facet
-       * "jst.web" be available -- and this facet is contributed by
-       * o.e.jst.j2ee.web
+       * This is because o.e.jpt.jpa.core activation requires that facet "jst.web" be available --
+       * and this facet is contributed by o.e.jst.j2ee.web
        * 
-       * So in addition to checking if o.e.jpt.jpa.core is present, also check
-       * if it can be successfully activated.
+       * So in addition to checking if o.e.jpt.jpa.core is present, also check if it can be
+       * successfully activated.
        * 
-       * [The above scenario: o.e.jpt.jpa.core present and o.e.jst.j2ee.web
-       * absent, happens on e37 classic edition.]
+       * [The above scenario: o.e.jpt.jpa.core present and o.e.jst.j2ee.web absent, happens on e37
+       * classic edition.]
        */
       Bundle jptJpaCore = Platform.getBundle("org.eclipse.jpt.jpa.core");
       if (jptJpaCore.getState() != Bundle.ACTIVE) {
