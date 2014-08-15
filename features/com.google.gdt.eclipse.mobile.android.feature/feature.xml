@@ -24,7 +24,7 @@
    </url>
 
    <requires>
-      <import feature="com.android.ide.eclipse.adt" version="22.0.0" match="greaterOrEqual"/>
+      <import feature="com.android.ide.eclipse.adt.feature" version="23.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.jface"/>
