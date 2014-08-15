@@ -24,6 +24,14 @@ import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RepositoryPolicy;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -31,13 +39,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.embedder.IMaven;
 import org.eclipse.m2e.core.internal.embedder.MavenImpl;
-import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.RepositorySystemSession;
-import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.repository.RepositoryPolicy;
-import org.sonatype.aether.resolution.ArtifactRequest;
-import org.sonatype.aether.resolution.ArtifactResolutionException;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 import com.google.appengine.eclipse.core.preferences.GaePreferences;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
@@ -217,13 +218,13 @@ public class GaeSdkInstaller {
   /**
    * Converts a list of remote-repository specifications from their representation in the
    * {@code org.apache.maven} framework (as reported by {@link IMaven.getArtifactRepositories()})
-   * to their representation in the {@code org.sonatype.aether} framework (as used in an
+   * to their representation in the {@code org.eclipse.aether} framework (as used in an
    * {@link ArtifactRequest} submitted to
    * {@link RepositorySystem.resolveArtifact(RepositorySystemSession, ArtifactRequest)}.
    * 
    * @param allRepositories
    *     a list of {@code org.apache.maven.artifact.repository.ArtifactRepository} objects
-   * @return a list of corresponding {@code org.sonatype.aether.repository.RemoteRepository} objects
+   * @return a list of corresponding {@code org.eclipse.aether.repository.RemoteRepository} objects
    */
   private static List<RemoteRepository> toAetherRepositoryList(
       List<ArtifactRepository> allRepositories) {
@@ -235,17 +236,16 @@ public class GaeSdkInstaller {
   }
   
   private static RemoteRepository toAetherRepository(ArtifactRepository repository) {
-    RemoteRepository result = new RemoteRepository();
-    result.setId(repository.getId());
-    result.setContentType("default");
-    result.setUrl(repository.getUrl());
-    result.setPolicy(true, toAetherRepositoryPolicy(repository.getSnapshots()));
-    result.setPolicy(false, toAetherRepositoryPolicy(repository.getReleases()));
-    result.setProxy(toAetherProxy(repository.getProxy()));
-    result.setAuthentication(toAetherAuthentication(repository.getAuthentication()));
-    result.setMirroredRepositories(toAetherRepositoryList(repository.getMirroredRepositories()));
-    result.setRepositoryManager(false);
-    return result;
+    RemoteRepository.Builder resultBuilder =
+        new RemoteRepository.Builder(repository.getId(), "default", repository.getUrl());
+    resultBuilder.setSnapshotPolicy(toAetherRepositoryPolicy(repository.getSnapshots()));
+    resultBuilder.setReleasePolicy(toAetherRepositoryPolicy(repository.getReleases()));
+    resultBuilder.setProxy(toAetherProxy(repository.getProxy()));
+    resultBuilder.setAuthentication(toAetherAuthentication(repository.getAuthentication()));
+    resultBuilder.setMirroredRepositories(
+        toAetherRepositoryList(repository.getMirroredRepositories()));
+    resultBuilder.setRepositoryManager(false);
+    return resultBuilder.build();
   }
   
   private static RepositoryPolicy toAetherRepositoryPolicy(ArtifactRepositoryPolicy policy) {
@@ -256,29 +256,31 @@ public class GaeSdkInstaller {
                 policy.isEnabled(), policy.getUpdatePolicy(), policy.getChecksumPolicy());
   }
   
-  private static org.sonatype.aether.repository.Proxy toAetherProxy(
+  private static org.eclipse.aether.repository.Proxy toAetherProxy(
       org.apache.maven.repository.Proxy mavenProxy) {
     return
         mavenProxy == null ?
             null
-            : new org.sonatype.aether.repository.Proxy(
+            : new org.eclipse.aether.repository.Proxy(
                 mavenProxy.getProtocol(),
                 mavenProxy.getHost(),
                 mavenProxy.getPort(),
-                new org.sonatype.aether.repository.Authentication(
-                    mavenProxy.getUserName(), mavenProxy.getPassword()));
+                new AuthenticationBuilder()
+                    .addUsername(mavenProxy.getUserName())
+                    .addPassword(mavenProxy.getPassword())
+                    .build());
   }
   
-  private static org.sonatype.aether.repository.Authentication toAetherAuthentication(
+  private static org.eclipse.aether.repository.Authentication toAetherAuthentication(
       org.apache.maven.artifact.repository.Authentication authentication) {
     return
         authentication == null ?
             null
-            : new org.sonatype.aether.repository.Authentication(
-                authentication.getUsername(),
-                authentication.getPassword(),
-                authentication.getPrivateKey(),
-                authentication.getPassphrase());
+            : new AuthenticationBuilder()
+                  .addUsername(authentication.getUsername())
+                  .addPassword(authentication.getPassword())
+                  .addPrivateKey(authentication.getPrivateKey(), authentication.getPassphrase())
+                  .build();
   }
   
   private static void unzip(String sdkVersionPath, String version) {

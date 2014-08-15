@@ -20,6 +20,8 @@ import org.osgi.framework.BundleContext;
 /**
  * Google App Engine WTP Maven support plug-in life-cycle.
  */
+// TODO(nhcohen): Rename this class to something that does not invite confusion with the
+// maven-plugin of the same name.
 public final class AppEngineMavenPlugin extends AbstractUIPlugin {
 
   public static final String PLUGIN_ID = "com.google.appengine.eclipse.wtp.maven";
