@@ -8,6 +8,8 @@ Bundle-Activator: com.google.appengine.eclipse.wtp.maven.AppEngineMavenPlugin
 Bundle-Vendor: %providerName
 Require-Bundle: com.google.appengine.eclipse.wtp,
  com.google.appengine.eclipse.wtp.jpa,
+ com.google.appengine.eclipse.wtp.jpa.e43;resolution:=optional,
+ com.google.appengine.eclipse.wtp.jpa.e42;resolution:=optional,
  org.eclipse.equinox.common,
  org.eclipse.m2e.core.ui,
  org.eclipse.m2e.core,

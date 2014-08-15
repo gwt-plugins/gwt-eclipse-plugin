@@ -14,7 +14,6 @@ package com.google.appengine.eclipse.wtp.maven;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jpt.jpa.core.JpaPreferences;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IFacetedProjectWorkingCopy;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
@@ -23,6 +22,7 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.gdt.eclipse.core.BuilderUtilities;
+import com.google.appengine.eclipse.wtp.jpa.JpaPlatformIdSetter;
 
 /**
  * Provides a method to configure a faceted project's JPA facet for App Engine.
@@ -49,7 +49,7 @@ public class JpaFacetManager {
     IProjectFacetVersion installedVersion =
         ensureLatestJpaFacetVersionInstalled(facetedProject, monitor);
     if (installedVersion != null) {
-      JpaPreferences.setJpaPlatformID(facetedProject.getProject(), APP_ENGINE_JPA_PLATFORM_ID);
+      JpaPlatformIdSetter.setJpaPlatformId(facetedProject.getProject(), APP_ENGINE_JPA_PLATFORM_ID);
       BuilderUtilities.addBuilderToProject(
           facetedProject.getProject(), AppEnginePlugin.PLUGIN_ID + ".enhancerbuilder");
     }
