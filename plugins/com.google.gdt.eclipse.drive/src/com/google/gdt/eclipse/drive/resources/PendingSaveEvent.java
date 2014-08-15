@@ -14,8 +14,8 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.drive.resources;
 
+import com.google.common.base.Objects;
 
-import java.util.Objects;
 import org.eclipse.core.resources.IFile;
 
 /**
@@ -44,7 +44,7 @@ public class PendingSaveEvent {
   
   @Override
   public int hashCode() {
-    return Objects.hash(file, unsaved);
+    return Objects.hashCode(file, unsaved);
   }
   
   @Override

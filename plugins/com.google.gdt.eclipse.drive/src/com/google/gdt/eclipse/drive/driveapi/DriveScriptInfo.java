@@ -14,8 +14,8 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.drive.driveapi;
 
+import com.google.common.base.Objects;
 
-import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 
@@ -75,10 +75,10 @@ public final class DriveScriptInfo {
     if (obj instanceof DriveScriptInfo) {
       DriveScriptInfo that = (DriveScriptInfo) obj;
       return
-          Objects.equals(this.importName, that.importName)
-            && Objects.equals(this.documentId, that.documentId)
-            && Objects.equals(this.type, that.type)
-            && Objects.equals(this.contents, that.contents);
+          Objects.equal(this.importName, that.importName)
+            && Objects.equal(this.documentId, that.documentId)
+            && Objects.equal(this.type, that.type)
+            && Objects.equal(this.contents, that.contents);
     } else {
       return false;
     }
@@ -86,7 +86,7 @@ public final class DriveScriptInfo {
   
   @Override
   public int hashCode() {
-    return Objects.hash(importName, documentId, type, contents);
+    return Objects.hashCode(importName, documentId, type, contents);
   }
   
   @Override

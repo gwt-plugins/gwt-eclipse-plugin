@@ -16,6 +16,7 @@ package com.google.gdt.eclipse.drive.editors.webautocomplete;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CharMatcher;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
@@ -28,7 +29,6 @@ import com.google.gdt.eclipse.drive.editors.JavaScriptIdentifierNames;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.SortedSet;
 
 import javax.annotation.Nullable;
@@ -398,7 +398,7 @@ public final class Autocompleter {
     }
 
     @Override public int hashCode() {
-      return Objects.hash(replacementStartPos, entries);
+      return Objects.hashCode(replacementStartPos, entries);
     }
   }
 }
