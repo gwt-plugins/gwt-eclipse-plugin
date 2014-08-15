@@ -11,7 +11,7 @@
    </description>
 
    <copyright>
-      Copyright 2009 - 2013
+      Copyright 2009 - 2014
    </copyright>
 
    <license>
@@ -34,8 +34,11 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.wst.common.project.facet.core"/>
       <import plugin="org.eclipse.wst.sse.core"/>
       <import plugin="org.eclipse.wst.xml.core"/>
+      <import plugin="org.eclipse.core.variables"/>
+      <import plugin="org.eclipse.wst.server.core"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.jdt.core.manipulation"/>
       <import plugin="org.eclipse.jdt.debug.ui"/>
@@ -45,7 +48,6 @@
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.wst.sse.ui"/>
-      <import plugin="org.eclipse.core.variables"/>
       <import plugin="org.eclipse.wst.validation"/>
       <import plugin="org.eclipse.wst.xml.ui"/>
       <import plugin="org.eclipse.core.filesystem"/>
@@ -58,10 +60,8 @@
       <import plugin="org.eclipse.wst.jsdt.ui"/>
       <import plugin="org.eclipse.wst.jsdt.manipulation"/>
       <import plugin="org.apache.ant"/>
-      <import plugin="org.eclipse.wst.common.project.facet.core"/>
       <import plugin="org.eclipse.wst.common.modulecore"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
-      <import plugin="org.eclipse.wst.server.core"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.mylyn.commons.ui"/>
       <import plugin="org.eclipse.update.configurator"/>
@@ -69,7 +69,6 @@
       <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.jst.server.core"/>
       <import plugin="org.eclipse.jdt.debug"/>
-      <import plugin="org.eclipse.equinox.common"/>
       <import plugin="org.eclipse.equinox.p2.ui"/>
       <import plugin="org.eclipse.equinox.p2.ui.sdk"/>
       <import plugin="org.eclipse.equinox.p2.metadata"/>
@@ -81,6 +80,8 @@
       <import plugin="org.eclipse.jetty.util"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.ui.views.properties.tabbed"/>
+      <import plugin="org.eclipse.m2e.core"/>
+      <import plugin="org.eclipse.m2e.maven.runtime"/>
       <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.equinox.p2.repository"/>
       <import plugin="org.eclipse.equinox.p2.engine"/>
@@ -107,14 +108,14 @@
       <import plugin="org.eclipse.wst.server.ui"/>
       <import plugin="org.eclipse.wst.common.project.facet.ui"/>
       <import plugin="org.eclipse.core.runtime" version="3.9.0" match="greaterOrEqual"/>
-      <import feature="org.eclipse.platform" version="4.3" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.m2e.core"/>
-      <import plugin="org.eclipse.m2e.core.discovery"/>
-      <import plugin="org.eclipse.m2e.core.jdt"/>
-      <import plugin="org.eclipse.m2e.core.launching"/>
+      <import plugin="org.eclipse.equinox.common"/>
       <import plugin="org.eclipse.m2e.core.ui"/>
-      <import plugin="org.eclipse.m2e.core.wtp"/>
-      <import plugin="org.eclipse.m2e.maven.runtime"/>
+      <import feature="org.eclipse.platform" version="4.3" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt"/>
+      <import plugin="org.eclipse.m2e.discovery"/>
+      <import plugin="org.eclipse.m2e.launching"/>
+      <import plugin="org.eclipse.m2e.jdt"/>
+      <import plugin="org.eclipse.m2e.wtp"/>
    </requires>
 
    <plugin

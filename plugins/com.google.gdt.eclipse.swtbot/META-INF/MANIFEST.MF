@@ -2,10 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Google SWTBot Core Plugin
 Bundle-SymbolicName: com.google.gdt.eclipse.swtbot;singleton:=true
-Bundle-Version: 0.0.0.qualifier
+Bundle-Version: 0.0.0
 Bundle-Vendor: Google, Inc.
-Require-Bundle: com.google.gdt.eclipse.core,
- org.eclipse.swt,
+Require-Bundle: org.eclipse.swt,
  org.eclipse.swtbot.swt.finder,
  org.eclipse.swtbot.eclipse.finder,
  org.eclipse.ui,

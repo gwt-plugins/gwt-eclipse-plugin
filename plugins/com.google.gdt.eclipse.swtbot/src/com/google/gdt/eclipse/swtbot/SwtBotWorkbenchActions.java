@@ -14,8 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.swtbot;
 
-import com.google.gdt.eclipse.core.EclipseUtilities;
-
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -127,9 +125,7 @@ public final class SwtBotWorkbenchActions {
           openPreferencesDialogViaEvents(bot);
         } else {
           SWTBotMenu windowMenu = bot.menu("Window");
-          String preferencesMenuLabel = (EclipseUtilities.inEclipse33()
-              ? "Preferences..." : "Preferences");
-          windowMenu.menu(preferencesMenuLabel).click();
+          windowMenu.menu("Preferences").click();
         }
       }
     });
