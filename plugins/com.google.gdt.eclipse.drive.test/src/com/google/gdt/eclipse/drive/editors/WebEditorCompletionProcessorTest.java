@@ -21,7 +21,6 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import com.google.api.client.util.Sets;
-import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -30,6 +29,7 @@ import com.google.gdt.eclipse.drive.editors.ApiDocumentationService.AttributeDoc
 import com.google.gdt.eclipse.drive.editors.ApiDocumentationService.BeanDocumentation;
 import com.google.gdt.eclipse.drive.editors.ApiDocumentationService.ClassDocumentation;
 
+import java.util.Objects;
 import org.eclipse.jface.text.AbstractDocument;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.TextViewer;
@@ -529,7 +529,7 @@ public class WebEditorCompletionProcessorTest {
     
     @Override
     public int hashCode() {
-      return Objects.hashCode(proposalClass, displayString, additionalInfo, replacementString);
+      return Objects.hash(proposalClass, displayString, additionalInfo, replacementString);
     }
     
     @Override

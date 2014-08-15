@@ -15,7 +15,7 @@
 package com.google.gdt.eclipse.drive.editors.webautocomplete;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 /**
 * A segment is a self-contained section of a statement.  Only sections that are in the same block
@@ -178,6 +178,6 @@ final class Segment {
   
   @Override
   public int hashCode() {
-   return Objects.hashCode(text);
+   return Objects.hash(text);
   }
 }
