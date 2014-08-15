@@ -122,12 +122,13 @@ public class GWTLaunchConfiguration {
         ((Boolean) launchAttribute.getDefaultValue()).booleanValue());
   }
 
+  // Unchecked warning is necessary for Eclipse 4.2 and below
   @SuppressWarnings("unchecked")
   private static List<String> getListAttribute(
       ILaunchConfiguration launchConfiguration,
       GWTLaunchAttributes launchAttribute) throws CoreException {
     return launchConfiguration.getAttribute(launchAttribute.getQualifiedName(),
-        Collections.emptyList());
+        Collections.<String>emptyList());
   }
 
   private static String getStringAttribute(
