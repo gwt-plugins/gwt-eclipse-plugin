@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.managedapis.ui;
 
-import com.google.gdt.eclipse.core.EclipseUtilities;
 import com.google.gdt.eclipse.core.ui.controls.SelectableControlList;
 import com.google.gdt.eclipse.core.ui.controls.SelectionChangeListener;
 import com.google.gdt.eclipse.core.ui.viewers.BaseSelectableControlListControlFactory;
@@ -112,11 +111,7 @@ public class ApiViewer {
     container = new Composite(parent, SWT.NONE);
     GridLayoutFactory.fillDefaults().margins(0, 0).applyTo(container);
     
-    int textFlags = SWT.SEARCH;
-    
-    if (EclipseUtilities.isAtLeastEclipse35()) {
-      textFlags |= ICON_CANCEL;
-    }
+    int textFlags = SWT.SEARCH | ICON_CANCEL;
     
     final Text filterText = new Text(container, textFlags);
     filterText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
