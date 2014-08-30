@@ -10,7 +10,7 @@ Export-Package: com.google.gdt.eclipse.managedapis,
  com.google.gdt.googleapi.core
 Bundle-Vendor: %providerName
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jdt.ui,
  org.eclipse.jdt.core,

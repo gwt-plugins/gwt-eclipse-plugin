@@ -5,5 +5,5 @@ Bundle-SymbolicName: com.google.gdt.eclipse.suite.test;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Vendor: Google Inc.
 Fragment-Host: com.google.gdt.eclipse.suite
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit

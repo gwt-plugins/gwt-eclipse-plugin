@@ -1,21 +1,34 @@
 Manifest-Version: 1.0
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: com.google.gdt.eclipse.suite.GdtPlugin
+Bundle-Localization: plugin
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: com.google.gdt.eclipse.suite;singleton:=true
-Bundle-Version: 0.0.0.qualifier
-Bundle-Activator: com.google.gdt.eclipse.suite.GdtPlugin
 Bundle-Vendor: %providerName
+Bundle-Version: 0.0.0.qualifier
+Export-Package: com.google.gdt.eclipse.suite,
+ com.google.gdt.eclipse.suite.actions,
+ com.google.gdt.eclipse.suite.launch,
+ com.google.gdt.eclipse.suite.launch.processors,
+ com.google.gdt.eclipse.suite.launch.ui,
+ com.google.gdt.eclipse.suite.preferences,
+ com.google.gdt.eclipse.suite.propertytesters,
+ com.google.gdt.eclipse.suite.resources,
+ com.google.gdt.eclipse.suite.wizards
 Require-Bundle: com.google.appengine.eclipse.core;visibility:=reexport,
+ com.google.gdt.eclipse.appengine.api,
  com.google.gdt.eclipse.login,
  com.google.gdt.eclipse.managedapis,
  com.google.gwt.eclipse.core;visibility:=reexport,
  com.google.gwt.eclipse.oophm;visibility:=reexport,
- com.google.gdt.eclipse.appengine.api,
  org.eclipse.core.expressions,
  org.eclipse.core.filesystem,
  org.eclipse.core.runtime.compatibility,
  org.eclipse.core.variables,
  org.eclipse.debug.ui,
+ org.eclipse.e4.ui.workbench,
  org.eclipse.jdt.core,
  org.eclipse.jdt.debug.ui,
  org.eclipse.jdt.launching,
@@ -26,17 +39,4 @@ Require-Bundle: com.google.appengine.eclipse.core;visibility:=reexport,
  org.eclipse.ui.forms,
  org.eclipse.ui.ide,
  org.eclipse.wst.server.core,
- org.eclipse.wst.common.project.facet.core,
- org.eclipse.e4.ui.workbench
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-ActivationPolicy: lazy
-Export-Package: com.google.gdt.eclipse.suite,
- com.google.gdt.eclipse.suite.actions,
- com.google.gdt.eclipse.suite.launch,
- com.google.gdt.eclipse.suite.launch.processors,
- com.google.gdt.eclipse.suite.launch.ui,
- com.google.gdt.eclipse.suite.preferences,
- com.google.gdt.eclipse.suite.propertytesters,
- com.google.gdt.eclipse.suite.resources,
- com.google.gdt.eclipse.suite.wizards
-Bundle-Localization: plugin
+ org.eclipse.wst.common.project.facet.core

@@ -11,6 +11,6 @@ Require-Bundle: org.eclipse.swt,
  org.apache.log4j,
  org.eclipse.core.runtime,
  org.hamcrest.core
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: com.google.gdt.eclipse.swtbot

@@ -5,7 +5,7 @@ Bundle-SymbolicName: com.google.gdt.eclipse.apiclientlib;singleton:=true
 Bundle-Version: 0.0.0.qualifier
 Bundle-Vendor: %providerName
 Require-Bundle: org.eclipse.core.runtime
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: com.google.api.client.auth.oauth2,
  com.google.api.client.googleapis,

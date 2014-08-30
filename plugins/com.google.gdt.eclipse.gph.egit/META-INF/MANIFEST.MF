@@ -4,7 +4,7 @@ Bundle-Name: Google EGit Support Plugin
 Bundle-SymbolicName: com.google.gdt.eclipse.gph.egit;singleton:=true
 Bundle-Version: 0.0.0.qualifier
 Bundle-Vendor: Google, Inc.
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,

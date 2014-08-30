@@ -32,4 +32,4 @@ Require-Bundle: com.google.appengine.eclipse.core,
  org.eclipse.wst.common.project.facet.ui,
  org.eclipse.wst.server.ui,
  org.eclipse.wst.server.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

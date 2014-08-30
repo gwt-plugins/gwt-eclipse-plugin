@@ -52,7 +52,7 @@ Import-Package: org.eclipse.core.expressions,
  org.eclipse.jdt.launching,
  org.eclipse.jdt.ui.wizards,
  org.eclipse.wst.common.project.facet.ui
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 
 
 
