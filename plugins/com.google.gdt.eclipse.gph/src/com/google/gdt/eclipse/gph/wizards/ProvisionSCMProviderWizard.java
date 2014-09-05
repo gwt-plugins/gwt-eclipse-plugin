@@ -15,7 +15,6 @@
 package com.google.gdt.eclipse.gph.wizards;
 
 import com.google.gdt.eclipse.gph.ProjectHostingUIPlugin;
-import com.google.gdt.eclipse.gph.install.P2InstallManagerFactory;
 import com.google.gdt.eclipse.gph.install.P2InstallerWizardPage;
 import com.google.gdt.eclipse.gph.model.GPHProject;
 import com.google.gdt.eclipse.gph.providers.ScmProvider;
@@ -34,7 +33,8 @@ public class ProvisionSCMProviderWizard extends Wizard {
     this.provider = provider;
     this.project = project;
 
-    setDefaultPageImageDescriptor(ProjectHostingUIPlugin.getImageDescriptor("wizban/projecthosting_wiz.png")); //$NON-NLS-1$    
+    setDefaultPageImageDescriptor(ProjectHostingUIPlugin
+        .getImageDescriptor("wizban/projecthosting_wiz.png")); //$NON-NLS-1$
     setWindowTitle("Import Hosted Projects");
     setNeedsProgressMonitor(true);
   }
@@ -42,11 +42,8 @@ public class ProvisionSCMProviderWizard extends Wizard {
   @Override
   public void addPages() {
     if (provider == null) {
-      addPage(new ShowErrorPage(this,
-          "No team support provider found for source control type: "
-              + project.getScmTypeLabel() + "."));
-    } else if (!P2InstallManagerFactory.isInstallManagerAvailable()) {
-      addPage(new ManualInstallWizardPage(provider, project));
+      addPage(new ShowErrorPage(this, "No team support provider found for source control type: "
+          + project.getScmTypeLabel() + "."));
     } else {
       addPage(new P2InstallerWizardPage(provider));
     }
@@ -55,12 +52,10 @@ public class ProvisionSCMProviderWizard extends Wizard {
   @Override
   public boolean performFinish() {
     IWizardPage page = getContainer().getCurrentPage();
-    
+
     if (page instanceof IFinishablePage) {
-      return ((IFinishablePage)page).performFinish();
+      return ((IFinishablePage) page).performFinish();
     }
-    
     return true;
   }
-
 }

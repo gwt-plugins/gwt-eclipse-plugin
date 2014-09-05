@@ -18,38 +18,38 @@ import java.util.regex.Pattern;
 
 /*
  * Wiki markup help
- * 
+ *
  * =Heading1= ==Heading2== ===Heading3===
- * 
+ *
  * bold* _italic_ `inline code` escape: `*`
- * 
+ *
  * Indent lists 2 spaces: bullet item # numbered list
- * 
+ *
  * {{{ verbatim code block }}}
- * 
+ *
  * Horizontal rule ----
- * 
+ *
  * WikiWordLink [http://domain/page label] http://domain/page
- * 
+ *
  * || table || cells ||
  */
 
 /**
  * A utility class for dealing with the GPH wiki syntax.
- * 
- * @see http://code.google.com/p/support/wiki/WikiSyntax
+ *
+ * @see <a href="http://code.google.com/p/support/wiki/WikiSyntax">
+ *      http://code.google.com/p/support/wiki/WikiSyntax</a>
  */
 public class WikiUtils {
-
   private static Pattern HEADERS_PATTERN = Pattern.compile("=+");
   private static Pattern LINK_PATTERN = Pattern.compile("[\\{\\}]*");
   private static Pattern PRAGMA_PATTERN = Pattern.compile("=+");
   private static Pattern XMLTAGS_PATTERN = Pattern.compile("<.*?>");
 
   /**
-   * Convert the given string from wiki format to html. We convert the simple
-   * stuff and strip out the complicated stuff.
-   * 
+   * Convert the given string from wiki format to html. We convert the simple stuff and strip out
+   * the complicated stuff.
+   *
    * @param text wiki formatted text
    * @return the equivalent html
    */
@@ -77,7 +77,7 @@ public class WikiUtils {
     // Converts multiple empty lines to one newline.
     text = text.replaceAll("\r\n", "\n");
     text = text.replaceAll("\n\n\n+", "\n\n");
-    
+
     // Remove any single leading space from the text.
     if (text.startsWith(" ")) {
       text = text.substring(1);
@@ -101,20 +101,4 @@ public class WikiUtils {
 
     return text;
   }
-
-  // private static String bracket(String input, Pattern pattern, String left,
-  // String right) {
-  // StringBuffer buffer = new StringBuffer();
-  //
-  // Matcher matcher = pattern.matcher(input);
-  //
-  // while (matcher.matches()) {
-  // matcher.appendReplacement(buffer, left + matcher.group(1) + right);
-  // }
-  //
-  // matcher.appendTail(buffer);
-  //
-  // return buffer.toString();
-  // }
-
 }

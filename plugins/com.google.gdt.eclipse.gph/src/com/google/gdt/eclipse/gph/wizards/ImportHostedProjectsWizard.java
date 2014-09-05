@@ -38,14 +38,14 @@ public class ImportHostedProjectsWizard extends Wizard implements IImportWizard 
 
   private SelectHostedProjectWizardPage projectSelectionPage;
 
-  public ImportHostedProjectsWizard() {
-  }
+  public ImportHostedProjectsWizard() {}
 
   @Override
   public void addPages() {
     addPage(projectSelectionPage);
   }
 
+  @Override
   public void init(IWorkbench workbench, IStructuredSelection selection) {
     setNeedsProgressMonitor(true);
     setForcePreviousAndNextButtons(true);
@@ -53,15 +53,15 @@ public class ImportHostedProjectsWizard extends Wizard implements IImportWizard 
     setDefaultPageImageDescriptor(getDefaultPageImageDescriptor());
     setWindowTitle(getDefaultPageTitle());
 
-    projectSelectionPage = new SelectHostedProjectWizardPage(
-        "Select Google Hosted Project", selection);
+    projectSelectionPage =
+        new SelectHostedProjectWizardPage("Select Google Hosted Project", selection);
   }
 
   @Override
   public boolean performFinish() {
-
-    ExtensionQuery<IImportCallback> extensionQuery = new ExtensionQuery<IImportCallback>(
-        ProjectHostingUIPlugin.PLUGIN_ID, "importcallback", "class");
+    ExtensionQuery<IImportCallback> extensionQuery =
+        new ExtensionQuery<IImportCallback>(ProjectHostingUIPlugin.PLUGIN_ID, "importcallback",
+            "class");
 
     for (ExtensionQuery.Data<IImportCallback> extensionData : extensionQuery.getData()) {
       extensionData.getExtensionPointData().onFinish();
@@ -69,5 +69,4 @@ public class ImportHostedProjectsWizard extends Wizard implements IImportWizard 
 
     return true;
   }
-
 }

@@ -3,7 +3,6 @@
 <plugin>
 
    <extension-point id="com.google.gdt.eclipse.gph.checkoutProviders" name="CheckoutProvider" schema="schema/checkoutProviders.exsd"/>
-   <extension-point id="com.google.gdt.eclipse.gph.installManagerProvider" name="Install Manager Provider" schema="schema/installManagerProvider.exsd"/>
    <extension-point id="com.google.gdt.eclipse.gph.importcallback" name="Import Callback" schema="schema/importcallback.exsd"/>
 
    <!-- NOTE: The action set ID is not prefixed with this plugin's ID as 

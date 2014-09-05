@@ -23,23 +23,24 @@ import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.ui.IWorkbenchWizard;
 
 /**
- * An {@link ICheckoutProvider} for subversive.
+ * An {@link ICheckoutProvider} for Subversive.
  */
 public class SubversiveCheckoutProvider implements ICheckoutProvider {
 
   private static final String SUBVERSIVE_UI_PLUGIN_ID = "org.eclipse.team.svn.ui";
 
-  public IWorkbenchWizard createWizard(IShellProvider shellProvider,
-      GPHProject project) {
+  @Override
+  public IWorkbenchWizard createWizard(IShellProvider shellProvider, GPHProject project) {
     return new SubversiveCheckoutWizard(project);
   }
 
+  @Override
   public P2InstallationUnit getP2InstallationUnit() {
     return null;
   }
 
+  @Override
   public boolean isFullyInstalled() {
     return BundleUtilities.isBundleInstalled(SUBVERSIVE_UI_PLUGIN_ID);
   }
-
 }

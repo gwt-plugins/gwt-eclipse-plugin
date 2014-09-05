@@ -49,8 +49,8 @@ public class EGitCheckoutProvider implements ICheckoutProvider {
 
   }
 
-  public IWorkbenchWizard createWizard(IShellProvider shellProvider,
-      GPHProject project) {
+  @Override
+  public IWorkbenchWizard createWizard(IShellProvider shellProvider, GPHProject project) {
     try {
       return new EGitCheckoutWizard(shellProvider, project);
     } catch (Throwable e) {
@@ -59,19 +59,18 @@ public class EGitCheckoutProvider implements ICheckoutProvider {
     }
   }
 
+  @Override
   public P2InstallationUnit getP2InstallationUnit() {
     List<P2InstallationFeature> features = new ArrayList<P2InstallationFeature>();
 
-    features.add(new P2InstallationFeature("Eclipse Git Team Provider",
-        "org.eclipse.egit"));
+    features.add(new P2InstallationFeature("Eclipse Git Team Provider", "org.eclipse.egit"));
     features.add(new P2InstallationFeature("JGit Library", "org.eclipse.jgit"));
 
-    return new P2InstallationUnit("EGit",
-        "http://download.eclipse.org/egit/updates", features);
+    return new P2InstallationUnit("EGit", "http://download.eclipse.org/egit/updates", features);
   }
 
+  @Override
   public boolean isFullyInstalled() {
     return BundleUtilities.areBundlesInstalled(EGIT_BUNDLE_IDS);
   }
-
 }

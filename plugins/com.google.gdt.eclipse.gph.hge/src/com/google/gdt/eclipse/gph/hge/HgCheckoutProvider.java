@@ -31,8 +31,7 @@ import java.util.List;
 // that were created
 
 /**
- * This checkout provider supports the MercurialEclipse SCM provider. It enables
- * hg support for GPH.
+ * This checkout provider supports the MercurialEclipse SCM provider. It enables hg support for GPH.
  */
 public class HgCheckoutProvider implements ICheckoutProvider {
   public static final String PLUGIN_ID = "com.google.gdt.eclipse.gph.hge";
@@ -47,14 +46,14 @@ public class HgCheckoutProvider implements ICheckoutProvider {
   /**
    * Create a new MercurialEclipseCheckoutProvider.
    */
-  public HgCheckoutProvider() {
-  }
+  public HgCheckoutProvider() {}
 
-  public IWorkbenchWizard createWizard(IShellProvider shellProvider,
-      GPHProject project) {
+  @Override
+  public IWorkbenchWizard createWizard(IShellProvider shellProvider, GPHProject project) {
     return new HgImportWizard(project);
   }
 
+  @Override
   public P2InstallationUnit getP2InstallationUnit() {
     // TODO: when MercurialEclipse 1.8 comes out, it will require Eclipse 3.5.
     // We need to return the URL for MercurialEclipse 1.7.1 if running on
@@ -71,8 +70,8 @@ public class HgCheckoutProvider implements ICheckoutProvider {
     return new P2InstallationUnit(MAIN_FEATURE_NAME, UPDATE_SITE, features);
   }
 
+  @Override
   public boolean isFullyInstalled() {
     return BundleUtilities.areBundlesDependenciesSatisfied(PLUGIN_ID);
   }
-
 }

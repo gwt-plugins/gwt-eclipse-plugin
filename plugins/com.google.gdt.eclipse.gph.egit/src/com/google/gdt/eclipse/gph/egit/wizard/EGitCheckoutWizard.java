@@ -38,7 +38,7 @@ public class EGitCheckoutWizard extends Wizard implements IWorkbenchWizard {
 
   /**
    * Create a new EGitCheckoutWizard.
-   * 
+   *
    * @param shellProvider
    * @param project
    */
@@ -60,6 +60,7 @@ public class EGitCheckoutWizard extends Wizard implements IWorkbenchWizard {
     addPage(importProjectsPage);
   }
 
+  @Override
   public void init(IWorkbench workbench, IStructuredSelection selection) {
 
   }

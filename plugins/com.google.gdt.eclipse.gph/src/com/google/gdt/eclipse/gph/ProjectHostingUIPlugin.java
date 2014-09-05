@@ -31,23 +31,17 @@ import java.util.List;
  * Project hosting UI plugin.
  */
 public class ProjectHostingUIPlugin extends AbstractUIPlugin {
-
-  private static final String ICONS_PATH = "icons/"; //$NON-NLS-1$
-
   /**
-   * The id of the Project Hosting UI plug-in (value
-   * <code>"com.google.gdt.eclipse.gph"</code>).
+   * The id of the Project Hosting UI plug-in (value <code>"com.google.gdt.eclipse.gph"</code>).
    */
   public static final String PLUGIN_ID = ProjectHostingUIPlugin.class.getPackage().getName();
+
+  private static final String ICONS_PATH = "icons/"; //$NON-NLS-1$
 
   private static ProjectHostingUIPlugin PLUGIN;
 
   /**
-   * Create and cache an image from the given ImageDescriptor.
-   * 
-   * @param key
-   * @param imageDescriptor
-   * @return
+   * Creates and caches an image from the given ImageDescriptor.
    */
   public static Image createImage(String key, ImageDescriptor imageDescriptor) {
     ImageRegistry registry = getPlugin().getImageRegistry();
@@ -60,50 +54,36 @@ public class ProjectHostingUIPlugin extends AbstractUIPlugin {
   }
 
   /**
-   * Create and return a new Status object given a message.
-   * 
-   * @param message the message
-   * @return a status object
+   * Creates a new error status object from the given message.
    */
-  public static IStatus createStatus(String message) {
-    return createStatus(message, null);
+  public static IStatus createErrorStatus(String message) {
+    return createErrorStatus(message, null);
   }
 
   /**
-   * Create and return a new Status object given a message and an exception.
-   * 
-   * @param message the message
-   * @param exception an exception
-   * @return a status object
+   * Creates a new error status object from the given message and exception.
    */
-  public static IStatus createStatus(String message, Throwable exception) {
+  public static IStatus createErrorStatus(String message, Throwable exception) {
     return new Status(IStatus.ERROR, PLUGIN_ID, message, exception);
   }
 
   /**
-   * Create and return a new Status object given an exception.
-   * 
-   * @param exception an exception
-   * @return a status object
+   * Creates a new error status object from the given exception.
    */
-  public static IStatus createStatus(Throwable exception) {
-    return createStatus(exception.toString(), exception);
+  public static IStatus createErrorStatus(Throwable exception) {
+    return createErrorStatus(exception.getMessage(), exception);
   }
 
   /**
-   * Returns the bundle context for this plugin.
-   * 
-   * @return the bundle context
+   * Returns the bundle context for this plug-in.
    */
   public static BundleContext getBundleContext() {
     return getPlugin().getBundle().getBundleContext();
   }
 
   /**
-   * Get an image given a path relative to this PLUGIN.
-   * 
-   * @param path
-   * @return an image
+   * Returns an {@link Image} given a relative path within this plug-in, or {@code null} if there is
+   * no image.
    */
   public static Image getImage(String path) {
     if (getPlugin().getImageRegistry().get(path) != null) {
@@ -111,22 +91,16 @@ public class ProjectHostingUIPlugin extends AbstractUIPlugin {
     }
 
     ImageDescriptor descriptor = getImageDescriptor(path);
-
     if (descriptor != null) {
       getPlugin().getImageRegistry().put(path, descriptor);
-
       return getPlugin().getImageRegistry().get(path);
     }
-
     return null;
   }
 
   /**
-   * Get the workbench image with the given path relative to {@link #ICONS_PATH}
-   * .
-   * 
-   * @param relativePath relative path to the image
-   * @return an image descriptor, or <code>null</code> if none could be found
+   * Returns an {@link ImageDescriptor} given a relative path within this plug-in's
+   * {@link #ICONS_PATH} folder, or {@code null} if there is no image.
    */
   public static ImageDescriptor getImageDescriptor(String relativePath) {
     return imageDescriptorFromPlugin(PLUGIN_ID, ICONS_PATH + relativePath);
@@ -137,18 +111,13 @@ public class ProjectHostingUIPlugin extends AbstractUIPlugin {
   }
 
   /**
-   * Get a SCM provider for the given scm type.
-   * 
-   * @param scmType the SCM type (legal values include <code>"hg"</code> and
-   *          <code>"svn"</code>)
-   * @param onlyInstalledProviders only return providers that are fully
-   *          installed
-   * @return an associated SCM provider, or <code>null</code> if none is
-   *         registered
+   * Returns a Software Configuration Management provider for the given SCM type.
+   *
+   * @param scmType the SCM type (legal values include {@code "hg"} and {@code "svn"}
+   * @returns an associated SCM provider, or {@code null} if none is registered
    */
   public static ScmProvider getScmProvider(String scmType) {
-    List<ScmProvider> providers = ScmProviderRegistry.getRegistry().getScmProviders(
-        scmType);
+    List<ScmProvider> providers = ScmProviderRegistry.getRegistry().getScmProviders(scmType);
 
     if (providers.isEmpty()) {
       return null;
@@ -161,23 +130,18 @@ public class ProjectHostingUIPlugin extends AbstractUIPlugin {
   }
 
   /**
-   * Log the given throwable in this bundle's error log.
-   * 
-   * @param t the throwable to log
-   * @see ILog#log(IStatus)
+   * Logs the given {@link Throwable} in the error log.
    */
   public static void logError(Throwable t) {
     try {
-      logStatus(new Status(IStatus.ERROR, PLUGIN_ID, t.getMessage(), t));
+      logStatus(createErrorStatus(t));
     } catch (Throwable e) {
       e.printStackTrace();
     }
   }
 
   /**
-   * Log the given status object to this plugin's log.
-   * 
-   * @param status
+   * Logs the given {@link IStatus} in the error log.
    */
   public static void logStatus(IStatus status) {
     getPlugin().getLog().log(status);
@@ -186,15 +150,12 @@ public class ProjectHostingUIPlugin extends AbstractUIPlugin {
   @Override
   public void start(BundleContext context) throws Exception {
     super.start(context);
-
     PLUGIN = this;
   }
 
   @Override
   public void stop(BundleContext context) throws Exception {
     PLUGIN = null;
-
     super.stop(context);
   }
-
 }

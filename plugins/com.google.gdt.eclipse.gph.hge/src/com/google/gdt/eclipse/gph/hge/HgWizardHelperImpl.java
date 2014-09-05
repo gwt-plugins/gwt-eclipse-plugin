@@ -28,8 +28,8 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 
 /**
- * An implementation of the IHgWizardHelper interface. This class is created via reflection
- * from the {@link HgImportWizard} class.
+ * An implementation of the IHgWizardHelper interface. This class is created via reflection from the
+ * {@link HgImportWizard} class.
  */
 public class HgWizardHelperImpl implements IHgWizardHelper {
 
@@ -39,9 +39,9 @@ public class HgWizardHelperImpl implements IHgWizardHelper {
   /**
    * Create a new HgWizardHelperImpl.
    */
-  public HgWizardHelperImpl() {
-  }
+  public HgWizardHelperImpl() {}
 
+  @Override
   public void addMercurialPages(Wizard wizard, GPHProject project) {
     clonePage = new ClonePage(null, "CreateRepoPage", "Clone repository", null);
     clonePage.setDescription("Create a clone from another hg repository (local or remote).");
@@ -52,17 +52,16 @@ public class HgWizardHelperImpl implements IHgWizardHelper {
 
     try {
       // TODO: hardcoded to the first repo url
-      IHgRepositoryLocation location = locationManager.getRepoLocation(
-          project.getRepoUrls().get(0), project.getUser().getUserName(),
-          project.getUser().getRepoPassword());
+      IHgRepositoryLocation location =
+          locationManager.getRepoLocation(project.getRepoUrls().get(0), project.getUser()
+              .getUserName(), project.getUser().getRepoPassword());
 
       (clonePage).setInitialRepo(location);
     } catch (Exception hge) {
       wizard.addPage(new ShowErrorPage(wizard, hge));
     }
 
-    IWizardPage selectRevisionPage = new SelectRevisionPage(
-        "SelectRevisionPage");
+    IWizardPage selectRevisionPage = new SelectRevisionPage("SelectRevisionPage");
 
     importPage = new ProjectsImportPage("ProjectsImportPage");
 
@@ -71,12 +70,14 @@ public class HgWizardHelperImpl implements IHgWizardHelper {
     wizard.addPage(importPage);
   }
 
+  @Override
   public void performCancel() {
     if (clonePage != null) {
       clonePage.performCleanup();
     }
   }
 
+  @Override
   public boolean performFinish() {
     if (importPage != null) {
       return importPage.createProjects();

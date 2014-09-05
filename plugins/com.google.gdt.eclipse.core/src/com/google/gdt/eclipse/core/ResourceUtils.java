@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -72,7 +72,7 @@ public class ResourceUtils {
   /**
    * @return true if both files have the same contents, false if not or if a
    *         file does not exist
-   * 
+   *
    * @throws IOException
    */
   public static boolean areFileContentsEqual(File f1, File f2)
@@ -159,7 +159,7 @@ public class ResourceUtils {
    * Copies the source file into the destination file. The destination file's
    * parent directories will be created (if they do not exist already). The
    * destination file will be overwritten if it already exists.
-   * 
+   *
    * @throws IOException
    */
   public static void copyFile(File sourceFile, File destFile)
@@ -257,7 +257,7 @@ public class ResourceUtils {
   /**
    * Creates the folder specified by projectRelativeFolderPath, and all parent
    * folders, if they do not already exist.
-   * 
+   *
    * @param project
    * @param projectRelativeFolderPath
    * @throws CoreException
@@ -309,7 +309,7 @@ public class ResourceUtils {
 
   /**
    * Deletes from the folder tree any file present in filesToRemoveList.
-   * 
+   *
    * @throws CoreException
    */
   public static void deleteFiles(IFolder folder, List<String> filesToRemoveList)
@@ -320,7 +320,7 @@ public class ResourceUtils {
 
   /**
    * Deletes files from targetFolder that are not in fileList.
-   * 
+   *
    * @param folder The folder files would be deleted from.
    * @param dependecyFiles List of files that should not be removed from targetFolder.
    */
@@ -364,7 +364,7 @@ public class ResourceUtils {
   /**
    * Given an absolute workspace path to a resource, returns a handle to the
    * first resource which contains this resource, and exists.
-   * 
+   *
    * @return null if no resource that could be found which exists and contains
    *         the resource described by the path
    */
@@ -385,7 +385,7 @@ public class ResourceUtils {
 
   /**
    * Checks if the given file exists, is a directory, and has something in it.
-   * 
+   *
    * @param folder The folder to check
    * @return True if the file exists, is a directory, and has something in it.
    */
@@ -441,10 +441,11 @@ public class ResourceUtils {
    * If the path has a device (e.g. c:\ on Windows), it will be tried as an
    * absolute path. Otherwise, it is first tried as a workspace-relative path,
    * and failing that an absolute path.
-   * 
+   *
    * @param path the absolute or workspace-relative path to a resource
    * @return the resource, or null
    */
+  // TODO(tparker): Check against the internal implementation, which was tricky to get right.
   public static IResource getResource(IPath path) {
     IResource res = null;
     if (path != null) {
@@ -523,7 +524,7 @@ public class ResourceUtils {
 
   /**
    * Loads a text resource via a particular class's class loader.
-   * 
+   *
    * The resource may be a template containing place-holder tokens which this
    * method will replace with real values. See
    * {@link ResourceUtils#getResourceAsStreamAndFilterContents(Class, Map, String)}
@@ -555,7 +556,7 @@ public class ResourceUtils {
   /**
    * Returns true if the resource has an extension of <code>jsp</code> or <code>
    * html</code> .
-   * 
+   *
    * Note that the resource need not be an IFile.
    */
   public static boolean hasJspOrHtmlExtension(IResource resource) {
@@ -597,7 +598,7 @@ public class ResourceUtils {
 
   /**
    * Opens the file in the default editor for the file's type.
-   * 
+   *
    * @param shell
    * @param file
    * @param activate whether this editor should be the active (selected) editor
@@ -607,6 +608,7 @@ public class ResourceUtils {
     assert (file != null);
 
     shell.getDisplay().asyncExec(new Runnable() {
+      @Override
       public void run() {
         try {
           IWorkbenchPage page = CorePlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
@@ -620,7 +622,7 @@ public class ResourceUtils {
 
   /**
    * Reads the contents of a file.
-   * 
+   *
    * @param file A file object
    * @return the contents of the file
    * @throws IOException
@@ -644,7 +646,7 @@ public class ResourceUtils {
 
   /**
    * Reads the contents of a file.
-   * 
+   *
    * @param path the absolute filesystem path to the file
    * @return the contents of the file
    * @throws IOException
@@ -653,7 +655,7 @@ public class ResourceUtils {
     File file = new File(path.toOSString());
     return readFileContents(file);
   }
- 
+
   /**
    * Resolves a linked resource to its target resource, or returns the given
    * resource if it is not linked or the target resource cannot be resolved.
@@ -692,7 +694,7 @@ public class ResourceUtils {
   /**
    * Writes the contents to the file at the given location (this creates the
    * file or deletes its existing contents.)
-   * 
+   *
    * @throws IOException
    */
   public static void writeToFile(File file, String contents) throws IOException {

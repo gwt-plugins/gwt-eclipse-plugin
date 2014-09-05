@@ -24,13 +24,11 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 /**
- * 
- * 
+ * A menu handler to import Google-hosted projects.
  */
 public class ImportHostedProjectsHandler extends AbstractHandler {
-
+  @Override
   public Object execute(ExecutionEvent event) {
-
     IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 
     ImportHostedProjectsWizard wizard = new ImportHostedProjectsWizard();
@@ -42,5 +40,4 @@ public class ImportHostedProjectsHandler extends AbstractHandler {
 
     return null;
   }
-
 }

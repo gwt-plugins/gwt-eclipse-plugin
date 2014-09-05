@@ -66,15 +66,15 @@ public class HgImportWizard extends Wizard implements IWorkbenchWizard {
     return super.getNextPage(currentPage);
   }
 
-  public void init(IWorkbench workbench, IStructuredSelection selection) {
-  }
+  @Override
+  public void init(IWorkbench workbench, IStructuredSelection selection) {}
 
   @Override
   public boolean performCancel() {
     if (wizardHelper != null) {
       getWizardHelper().performCancel();
     }
-    
+
     return super.performCancel();
   }
 

@@ -90,7 +90,7 @@ public class CloneRepositoryWizardPage extends AbstractWizardPage {
 
   /**
    * Create a new SelectRepositoryPage.
-   * 
+   *
    * @param wizard
    */
   public CloneRepositoryWizardPage(EGitCheckoutWizard wizard) {
@@ -99,7 +99,8 @@ public class CloneRepositoryWizardPage extends AbstractWizardPage {
     this.wizard = wizard;
 
     setTitle("Clone the remote Git repository");
-    setDescription("Select a remote repository URL, select the local destination directory, and clone the repository");
+    setDescription("Select a remote repository URL, select the local destination directory, "
+        + "and clone the repository");
     setImageDescriptor(ImageDescriptor.createFromImage(wizard.getDefaultPageImage()));
   }
 
@@ -108,8 +109,9 @@ public class CloneRepositoryWizardPage extends AbstractWizardPage {
     final File parentDir = getDestinationDirectory();
 
     return new IRunnableWithProgress() {
-      public void run(IProgressMonitor monitor)
-          throws InvocationTargetException, InterruptedException {
+      @Override
+      public void run(IProgressMonitor monitor) throws InvocationTargetException,
+          InterruptedException {
 
         URIish urlish = null;
 
@@ -119,18 +121,26 @@ public class CloneRepositoryWizardPage extends AbstractWizardPage {
           throw new InvocationTargetException(exception);
         }
 
-        int timeout = org.eclipse.egit.ui.Activator.getDefault().getPreferenceStore().getInt(
-            UIPreferences.REMOTE_CONNECTION_TIMEOUT);
+        int timeout =
+            org.eclipse.egit.ui.Activator.getDefault().getPreferenceStore()
+                .getInt(UIPreferences.REMOTE_CONNECTION_TIMEOUT);
 
-        CloneOperation cloneOperation = new CloneOperation(urlish, true, null,
-            parentDir, null, // "refs/heads/trunk", "refs/heads/master"?
-            "origin", timeout);
+        // @formatter:off
+        CloneOperation cloneOperation = new CloneOperation(
+            urlish,
+            true,
+            null,
+            parentDir,
+            null, // "refs/heads/trunk", "refs/heads/master"?
+            "origin",
+            timeout);
+        // @formatter:on
 
-        UserPasswordCredentials credentials = new UserPasswordCredentials(
-            wizard.getGPHProject().getUser().getUserName(),
-            wizard.getGPHProject().getUser().getRepoPassword());
-        cloneOperation.setCredentialsProvider(new UsernamePasswordCredentialsProvider(
-            credentials.getUser(), credentials.getPassword()));
+        UserPasswordCredentials credentials =
+            new UserPasswordCredentials(wizard.getGPHProject().getUser().getUserName(), wizard
+                .getGPHProject().getUser().getRepoPassword());
+        cloneOperation.setCredentialsProvider(new UsernamePasswordCredentialsProvider(credentials
+            .getUser(), credentials.getPassword()));
 
         cloneOperation.run(monitor);
 
@@ -161,12 +171,13 @@ public class CloneRepositoryWizardPage extends AbstractWizardPage {
       repoList.setSelection(new StructuredSelection(firstElement));
     }
     repoList.addSelectionChangedListener(new ISelectionChangedListener() {
+      @Override
       public void selectionChanged(SelectionChangedEvent event) {
         handleRepoSelectionChanged();
       }
     });
-    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).hint(
-        SWT.DEFAULT, 80).applyTo(repoList.getTable());
+    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).grab(true, false).hint(SWT.DEFAULT, 80)
+        .applyTo(repoList.getTable());
 
     Group selectLocalDirGroup = new Group(composite, SWT.NONE);
     selectLocalDirGroup.setText("Select local destination directory");
@@ -178,12 +189,13 @@ public class CloneRepositoryWizardPage extends AbstractWizardPage {
 
     destinationText = new Text(selectLocalDirGroup, SWT.BORDER | SWT.SINGLE);
     destinationText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         updateButtons();
       }
     });
-    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(
-        destinationText);
+    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+        .applyTo(destinationText);
 
     Button button = new Button(selectLocalDirGroup, SWT.PUSH);
     button.setText("Browse...");
@@ -203,8 +215,8 @@ public class CloneRepositoryWizardPage extends AbstractWizardPage {
     GridLayoutFactory.swtDefaults().numColumns(3).applyTo(cloneRepoGroup);
 
     cloneFeedbackLabel = new CLabel(cloneRepoGroup, SWT.NONE);
-    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(
-        cloneFeedbackLabel);
+    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+        .applyTo(cloneFeedbackLabel);
 
     cloneButton = new Button(cloneRepoGroup, SWT.PUSH);
     cloneButton.setText("Clone");
@@ -259,12 +271,9 @@ public class CloneRepositoryWizardPage extends AbstractWizardPage {
       } else {
         EGitCheckoutProviderPlugin.logError("Error during egit clone", ex);
 
-        ErrorDialog.openError(
-            getShell(),
-            "Error Performing Git Clone",
+        ErrorDialog.openError(getShell(), "Error Performing Git Clone",
             "Unable to clone the repository: " + ex.toString(),
-            EGitCheckoutProviderPlugin.createStatus(IStatus.ERROR,
-                ex.getMessage(), ex));
+            EGitCheckoutProviderPlugin.createStatus(IStatus.ERROR, ex.getMessage(), ex));
       }
     } catch (InterruptedException exception) {
       // ignore
@@ -304,12 +313,11 @@ public class CloneRepositoryWizardPage extends AbstractWizardPage {
       try {
         File repoFile = new File(configuredRepo);
 
-        Repository repository = Activator.getDefault().getRepositoryCache().lookupRepository(
-            repoFile);
+        Repository repository =
+            Activator.getDefault().getRepositoryCache().lookupRepository(repoFile);
 
         try {
-          RemoteConfig originConfig = new RemoteConfig(repository.getConfig(),
-              "origin");
+          RemoteConfig originConfig = new RemoteConfig(repository.getConfig(), "origin");
 
           for (URIish uri : originConfig.getURIs()) {
             String uriStr = uri.toString();
@@ -352,16 +360,14 @@ public class CloneRepositoryWizardPage extends AbstractWizardPage {
         canTransition = true;
 
         cloneFeedbackLabel.setImage(EGitCheckoutProviderPlugin.getImage("repository_valid.gif"));
-        cloneFeedbackLabel.setText(destDir.getName()
-            + " is a valid cloned repository");
+        cloneFeedbackLabel.setText(destDir.getName() + " is a valid cloned repository");
       } else {
         if (destDir.exists() && destDir.isDirectory()) {
           needsClone = true;
         }
 
         cloneFeedbackLabel.setImage(null);
-        cloneFeedbackLabel.setText("Clone repository into "
-            + destinationText.getText());
+        cloneFeedbackLabel.setText("Clone repository into " + destinationText.getText());
       }
     } else {
       cloneFeedbackLabel.setText("");
@@ -373,21 +379,18 @@ public class CloneRepositoryWizardPage extends AbstractWizardPage {
   }
 
   private boolean isValidClone(File destDir) {
-    if (destDir.exists() && destDir.isDirectory()
-        && GIT_DIRECTORY_NAME.equals(destDir.getName())) {
+    if (destDir.exists() && destDir.isDirectory() && GIT_DIRECTORY_NAME.equals(destDir.getName())) {
       return true;
     } else {
       File child = new File(destDir, ".git");
 
-      if (child.exists() && child.isDirectory()
-          && GIT_DIRECTORY_NAME.equals(child.getName())) {
+      if (child.exists() && child.isDirectory() && GIT_DIRECTORY_NAME.equals(child.getName())) {
         return true;
       } else {
         return false;
       }
 
       // TODO: look for the repo last dir, + .git?
-
     }
   }
 }

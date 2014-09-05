@@ -20,18 +20,16 @@ import java.util.Comparator;
  * A comparator for P2 {@link P2LicenseInfo}s.
  */
 public class LicenseInfoComparator implements Comparator<P2LicenseInfo> {
-
   /**
    * Create a new LicenseInfoComparator.
    */
-  public LicenseInfoComparator() {
-  }
-  
+  public LicenseInfoComparator() {}
+
+  @Override
   public int compare(P2LicenseInfo arg0, P2LicenseInfo arg1) {
     String name0 = arg0.getFeatureName();
     String name1 = arg1.getFeatureName();
-    
+
     return name0.compareToIgnoreCase(name1);
   }
-
 }

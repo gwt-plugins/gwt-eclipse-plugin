@@ -36,14 +36,16 @@ public class ProvisionSCMProviderNode implements IWizardNode {
     this.project = project;
   }
 
-  public void dispose() {
-  }
+  @Override
+  public void dispose() {}
 
+  @Override
   public Point getExtent() {
     // unknown
     return new Point(-1, -1);
   }
 
+  @Override
   public IWizard getWizard() {
     if (wizard == null) {
       wizard = new ProvisionSCMProviderWizard(provider, project);
@@ -52,8 +54,8 @@ public class ProvisionSCMProviderNode implements IWizardNode {
     return wizard;
   }
 
+  @Override
   public boolean isContentCreated() {
     return wizard != null;
   }
-
 }

@@ -24,18 +24,13 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 
 /**
- * 
- * 
- * 
+ * Provides nice decorations for the project viewer widget.
  */
-public class ModelLabelProvider extends DelegatingStyledCellLabelProvider
-    implements ILabelProvider {
+public class ModelLabelProvider extends DelegatingStyledCellLabelProvider implements ILabelProvider {
 
   private static class StyledLabelProvider extends LabelProvider implements
       DelegatingStyledCellLabelProvider.IStyledLabelProvider {
-
-    public StyledLabelProvider() {
-    }
+    public StyledLabelProvider() {}
 
     @Override
     public Image getImage(Object element) {
@@ -46,6 +41,7 @@ public class ModelLabelProvider extends DelegatingStyledCellLabelProvider
       return super.getImage(element);
     }
 
+    @Override
     public StyledString getStyledText(Object element) {
       String mainText = getMainText(element);
       String secondaryText = getSecondaryText(element);
@@ -76,8 +72,7 @@ public class ModelLabelProvider extends DelegatingStyledCellLabelProvider
         GPHProject project = (GPHProject) element;
 
         if (project.getDomain() != null) {
-          return " [" + project.getScmType() + " - " + project.getDomain()
-              + "]";
+          return " [" + project.getScmType() + " - " + project.getDomain() + "]";
         } else {
           return " [" + project.getScmType() + "]";
         }
@@ -98,10 +93,10 @@ public class ModelLabelProvider extends DelegatingStyledCellLabelProvider
     return styledProvider.getImage(element);
   }
 
+  @Override
   public String getText(Object element) {
     StyledLabelProvider styledProvider = (StyledLabelProvider) getStyledStringProvider();
 
     return styledProvider.getMainText(element);
   }
-
 }

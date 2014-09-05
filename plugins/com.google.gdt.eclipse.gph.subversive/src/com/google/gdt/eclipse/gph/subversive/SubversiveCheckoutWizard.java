@@ -25,10 +25,9 @@ import org.eclipse.team.svn.ui.wizard.shareproject.AddRepositoryLocationPage;
 import org.eclipse.team.svn.ui.wizard.shareproject.SelectRepositoryLocationPage;
 
 /**
- * TODO: doc me.
+ * A checkout wizard for Subversive.
  */
 public class SubversiveCheckoutWizard extends ImportFromSVNWizard {
-
   private final IRepositoryLocation location;
 
   public SubversiveCheckoutWizard(GPHProject project) {
@@ -41,11 +40,12 @@ public class SubversiveCheckoutWizard extends ImportFromSVNWizard {
     location.setUrl(url);
     SVNRemoteStorage.instance().addRepositoryLocation(location);
   }
-  
+
+  @Override
   public void addPages() {
-    this.addPage(this.selectLocation = new SelectRepositoryLocationPage(new IRepositoryLocation[]{location}));
+    this.addPage(this.selectLocation =
+        new SelectRepositoryLocationPage(new IRepositoryLocation[] {location}));
     this.addPage(this.addLocation = new AddRepositoryLocationPage());
     this.addPage(this.selectResource = new SelectCheckoutResourcePage());
   }
-  
 }

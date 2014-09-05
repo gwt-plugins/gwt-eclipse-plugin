@@ -58,8 +58,7 @@ public class ShowErrorPage extends AbstractWizardPage {
   }
 
   public ShowErrorPage(IWizard wizard, String message) {
-    this(wizard, new Status(IStatus.ERROR, ProjectHostingUIPlugin.PLUGIN_ID,
-        message));
+    this(wizard, new Status(IStatus.ERROR, ProjectHostingUIPlugin.PLUGIN_ID, message));
   }
 
   public ShowErrorPage(IWizard wizard, Throwable exception) {
@@ -70,8 +69,7 @@ public class ShowErrorPage extends AbstractWizardPage {
   @Override
   protected Control createPageContents(Composite parent) {
     Composite composite = new Composite(parent, SWT.NONE);
-    GridLayoutFactory.swtDefaults().margins(10, 10).numColumns(2).applyTo(
-        composite);
+    GridLayoutFactory.swtDefaults().margins(10, 10).numColumns(2).applyTo(composite);
 
     Label iconLabel = new Label(composite, SWT.NONE);
     iconLabel.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_ERROR));
@@ -95,7 +93,7 @@ public class ShowErrorPage extends AbstractWizardPage {
       });
       GridDataFactory.fillDefaults().grab(true, true).applyTo(link);
     }
-    
+
     return composite;
   }
 
@@ -105,8 +103,8 @@ public class ShowErrorPage extends AbstractWizardPage {
     control.setVisible(false);
     GridDataFactory.swtDefaults().exclude(true).applyTo(control);
 
-    TextViewer viewer = new TextViewer(parent, SWT.READ_ONLY | SWT.WRAP
-        | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
+    TextViewer viewer =
+        new TextViewer(parent, SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
     viewer.setDocument(new Document(getDetailsText()));
     viewer.getControl().setBackground(parent.getBackground());
     GridDataFactory.fillDefaults().grab(true, true).applyTo(viewer.getControl());
@@ -118,8 +116,9 @@ public class ShowErrorPage extends AbstractWizardPage {
     if (BOLD_FONT == null) {
       FontData fontData = templateFont.getFontData()[0];
 
-      BOLD_FONT = new Font(templateFont.getDevice(), new FontData(
-          fontData.getName(), fontData.getHeight(), SWT.BOLD));
+      BOLD_FONT =
+          new Font(templateFont.getDevice(), new FontData(fontData.getName(), fontData.getHeight(),
+              SWT.BOLD));
     }
 
     return BOLD_FONT;
@@ -161,5 +160,4 @@ public class ShowErrorPage extends AbstractWizardPage {
       }
     }
   }
-
 }

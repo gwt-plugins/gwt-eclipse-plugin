@@ -121,14 +121,51 @@
          unpack="false"/>
 
    <plugin
-         id="com.google.gwt.eclipse.core"
+         id="com.google.appengine.eclipse.datatools"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+
+    <plugin
+         id="com.google.appengine.eclipse.webtools"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <!-- Remove with cl/74368983 -->
+   <plugin
+         id="com.google.appengine.eclipse.webtools.e42"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.core"
+         id="com.google.appengine.eclipse.wtp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.appengine.eclipse.wtp.jpa"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.appengine.eclipse.wtp.jpa.e42"
+         download-size="0"
+         install-size="0"
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.appengine.eclipse.wtp.swarm"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
@@ -142,56 +179,35 @@
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.suite"
+         id="com.google.gdt.eclipse.apiclientlib"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.suite.ext"
+         id="com.google.gdt.eclipse.appengine.swarm"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.platform.shared"
+         id="com.google.gdt.eclipse.appengine.swarm_backend"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.platform.e42"
+         id="com.google.gdt.eclipse.core"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.platform"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.gwt.eclipse.oophm"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.gdt.eclipse.maven"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.gdt.eclipse.managedapis"
+         id="com.google.gdt.eclipse.drive"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
@@ -226,19 +242,27 @@
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.gph.e36"
+         id="com.google.gdt.eclipse.login"
+         download-size="0"
+         install-size="0" 
+         version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gdt.eclipse.managedapis"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.login"
+         id="com.google.gdt.eclipse.maven"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
+   <!-- Remove with cl74394038 -->
    <plugin
          id="com.google.gdt.eclipse.maven.e37"
          download-size="0"
@@ -247,54 +271,41 @@
          unpack="false"/>
 
    <plugin
-         id="com.google.appengine.eclipse.datatools"
+         id="com.google.gdt.eclipse.platform"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.appengine.eclipse.webtools"
+         id="com.google.gdt.eclipse.platform.e42"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.appengine.eclipse.webtools.e42"
+         id="com.google.gdt.eclipse.platform.shared"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.appengine.swarm"
+         id="com.google.gdt.eclipse.suite"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.appengine.swarm_backend"
+         id="com.google.gdt.eclipse.suite.ext"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
-   <plugin
-         id="com.google.appengine.eclipse.wtp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.gdt.eclipse.apiclientlib"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
+   <!-- this plugin is labelled .e38 but it will work in versions >= 3.8 -->
    <plugin
          id="com.google.gdt.eclipse.suite.ext.e38"
          download-size="0"
@@ -303,28 +314,14 @@
          unpack="false"/>
 
    <plugin
-         id="com.google.appengine.eclipse.wtp.jpa"
+         id="com.google.gwt.eclipse.core"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.appengine.eclipse.wtp.jpa.e42"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.appengine.eclipse.wtp.swarm"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.gdt.eclipse.drive"
+         id="com.google.gwt.eclipse.oophm"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"

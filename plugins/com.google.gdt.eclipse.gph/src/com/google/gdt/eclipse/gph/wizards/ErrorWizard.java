@@ -24,12 +24,11 @@ import org.eclipse.ui.IWorkbenchWizard;
  * A wizard for displaying errors to the user (suitable for nesting).
  */
 public class ErrorWizard extends Wizard implements IWorkbenchWizard {
-
   private final IStatus error;
 
   /**
    * Create an instance.
-   * 
+   *
    * @param error the error
    */
   public ErrorWizard(IStatus error) {
@@ -44,6 +43,7 @@ public class ErrorWizard extends Wizard implements IWorkbenchWizard {
     addPage(new ShowErrorPage(this, error));
   }
 
+  @Override
   public void init(IWorkbench workbench, IStructuredSelection selection) {
     // ignored
   }
@@ -52,5 +52,4 @@ public class ErrorWizard extends Wizard implements IWorkbenchWizard {
   public boolean performFinish() {
     return true;
   }
-
 }

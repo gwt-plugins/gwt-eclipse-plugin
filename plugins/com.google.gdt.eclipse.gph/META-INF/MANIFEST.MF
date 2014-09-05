@@ -8,10 +8,13 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: com.google.gdt.eclipse.gph;singleton:=true
 Bundle-Vendor: %providerName
 Bundle-Version: 0.0.0.qualifier
-Export-Package: com.google.gdt.eclipse.gph.extensions,
+Export-Package: com.google.gdt.eclipse.gph,
+ com.google.gdt.eclipse.gph.actions,
+ com.google.gdt.eclipse.gph.extensions,
  com.google.gdt.eclipse.gph.install,
  com.google.gdt.eclipse.gph.model,
  com.google.gdt.eclipse.gph.providers,
+ com.google.gdt.eclipse.gph.util,
  com.google.gdt.eclipse.gph.wizards
 Require-Bundle: com.google.gdt.eclipse.login,
  com.google.gdt.eclipse.suite;visibility:=reexport,

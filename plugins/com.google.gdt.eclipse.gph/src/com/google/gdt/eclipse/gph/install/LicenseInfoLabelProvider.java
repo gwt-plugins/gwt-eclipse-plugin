@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
+
 package com.google.gdt.eclipse.gph.install;
 
 import com.google.gdt.eclipse.gph.ProjectHostingUIPlugin;
@@ -25,14 +26,13 @@ import org.eclipse.swt.graphics.Image;
 /**
  * A styled label provider for P2 {@link P2LicenseInfo}s.
  */
-public class LicenseInfoLabelProvider extends
-    DelegatingStyledCellLabelProvider implements ILabelProvider {
+public class LicenseInfoLabelProvider extends DelegatingStyledCellLabelProvider implements
+    ILabelProvider {
 
   private static class StyledLabelProvider extends LabelProvider implements
       DelegatingStyledCellLabelProvider.IStyledLabelProvider {
 
-    public StyledLabelProvider() {
-    }
+    public StyledLabelProvider() {}
 
     @Override
     public Image getImage(Object element) {
@@ -43,6 +43,7 @@ public class LicenseInfoLabelProvider extends
       return super.getImage(element);
     }
 
+    @Override
     public StyledString getStyledText(Object element) {
       String mainText = getMainText(element);
       String secondaryText = getSecondaryText(element);
@@ -61,7 +62,7 @@ public class LicenseInfoLabelProvider extends
     private String getMainText(Object element) {
       if (element instanceof P2LicenseInfo) {
         P2LicenseInfo licenseInfo = (P2LicenseInfo) element;
-        
+
         return licenseInfo.getFeatureName();
       }
 
@@ -71,7 +72,7 @@ public class LicenseInfoLabelProvider extends
     private String getSecondaryText(Object element) {
       if (element instanceof P2LicenseInfo) {
         P2LicenseInfo licenseInfo = (P2LicenseInfo) element;
-        
+
         return licenseInfo.getVersion();
       }
 
@@ -93,10 +94,10 @@ public class LicenseInfoLabelProvider extends
     return styledProvider.getImage(element);
   }
 
+  @Override
   public String getText(Object element) {
     StyledLabelProvider styledProvider = (StyledLabelProvider) getStyledStringProvider();
 
     return styledProvider.getMainText(element);
   }
-
 }

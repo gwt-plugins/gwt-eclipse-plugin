@@ -1,4 +1,4 @@
-/*******************************************************************************
+/********************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
  *
  * All rights reserved. This program and the accompanying materials
@@ -34,7 +34,6 @@ import java.util.List;
  * An {@link ICheckoutProvider} for subclipse.
  */
 public class SubclipseCheckoutProvider implements ICheckoutProvider {
-
   /**
    * The id of the Project Hosting Subclipse plug-in (value
    * <code>"com.google.gdt.eclipse.gph.subclipse"</code>).
@@ -44,41 +43,37 @@ public class SubclipseCheckoutProvider implements ICheckoutProvider {
   /**
    * Bundle ids for required subclipse bundles.
    */
-  static final String[] SUBCLIPSE_BUNDLE_IDS = new String[] {
-      "org.tigris.subversion.clientadapter",
-      "org.tigris.subversion.clientadapter.svnkit",
-      "org.tigris.subversion.subclipse.core",
+  static final String[] SUBCLIPSE_BUNDLE_IDS = new String[] {"org.tigris.subversion.clientadapter",
+      "org.tigris.subversion.clientadapter.svnkit", "org.tigris.subversion.subclipse.core",
       "org.tigris.subversion.subclipse.ui", "org.tmatesoft.svnkit"};
 
   private static final String ERROR_MSG = "Unable to configure Subclipse.";
 
-  public IWorkbenchWizard createWizard(final IShellProvider shellProvider,
-      final GPHProject project) {
+  @Override
+  public IWorkbenchWizard createWizard(final IShellProvider shellProvider, GPHProject project) {
     try {
       configure();
-      return new SubclipseCheckoutWizard(shellProvider, project);
+      return new SubclipseCheckoutWizard(project);
     } catch (Throwable e) {
       return new ErrorWizard(new Status(IStatus.ERROR, PLUGIN_ID, ERROR_MSG, e));
     }
   }
 
+  @Override
   public P2InstallationUnit getP2InstallationUnit() {
     List<P2InstallationFeature> features = new ArrayList<P2InstallationFeature>();
 
-    features.add(new P2InstallationFeature("Subclipse",
-        "org.tigris.subversion.subclipse"));
-    features.add(new P2InstallationFeature(
-        "Subclipse client adapter framework",
+    features.add(new P2InstallationFeature("Subclipse", "org.tigris.subversion.subclipse"));
+    features.add(new P2InstallationFeature("Subclipse client adapter framework",
         "org.tigris.subversion.clientadapter.feature"));
     features.add(new P2InstallationFeature("Subclipse SVNKit client adapter",
         "org.tigris.subversion.clientadapter.svnkit.feature"));
-    features.add(new P2InstallationFeature("SVNKit library",
-        "org.tmatesoft.svnkit"));
+    features.add(new P2InstallationFeature("SVNKit library", "org.tmatesoft.svnkit"));
 
-    return new P2InstallationUnit("Subclipse",
-        "http://subclipse.tigris.org/update_1.6.x", features);
+    return new P2InstallationUnit("Subclipse", "http://subclipse.tigris.org/update_1.6.x", features);
   }
 
+  @Override
   public boolean isFullyInstalled() {
     return BundleUtilities.areBundlesInstalled(SUBCLIPSE_BUNDLE_IDS);
   }
@@ -88,5 +83,4 @@ public class SubclipseCheckoutProvider implements ICheckoutProvider {
       SubclipseProduct.configureSVNKit();
     }
   }
-
 }

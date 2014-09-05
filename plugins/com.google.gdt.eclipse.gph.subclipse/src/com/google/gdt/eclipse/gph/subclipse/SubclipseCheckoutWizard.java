@@ -17,7 +17,6 @@ package com.google.gdt.eclipse.gph.subclipse;
 import com.google.gdt.eclipse.gph.model.GPHProject;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.tigris.subversion.subclipse.core.ISVNRepositoryLocation;
 import org.tigris.subversion.subclipse.core.SVNProviderPlugin;
@@ -32,8 +31,8 @@ import java.util.Properties;
  */
 public class SubclipseCheckoutWizard extends CheckoutWizard {
 
-  private static ISVNRepositoryLocation getRepositoryLocation(
-      IShellProvider shellProvider, GPHProject project) throws CoreException {
+  private static ISVNRepositoryLocation getRepositoryLocation(GPHProject project)
+      throws CoreException {
 
     String url = project.getRepoUrls().get(0);
 
@@ -44,7 +43,7 @@ public class SubclipseCheckoutWizard extends CheckoutWizard {
 
     ISVNRepositoryLocation repo = SVNRepositoryLocation.fromProperties(properties);
 
-    SVNProviderPlugin provider = SVNProviderPlugin.getPlugin(); 
+    SVNProviderPlugin provider = SVNProviderPlugin.getPlugin();
     provider.getRepositories().addOrUpdateRepository(repo);
 
     return repo;
@@ -54,13 +53,11 @@ public class SubclipseCheckoutWizard extends CheckoutWizard {
 
   private final ISVNRepositoryLocation repositoryLocation;
 
-  public SubclipseCheckoutWizard(IShellProvider shellProvider,
-      GPHProject project) throws CoreException {
-    this(getRepositoryLocation(shellProvider, project));
+  public SubclipseCheckoutWizard(GPHProject project) throws CoreException {
+    this(getRepositoryLocation(project));
   }
 
-  public SubclipseCheckoutWizard(ISVNRepositoryLocation repositoryLocation)
-      throws CoreException {
+  public SubclipseCheckoutWizard(ISVNRepositoryLocation repositoryLocation) {
     this.repositoryLocation = repositoryLocation;
   }
 

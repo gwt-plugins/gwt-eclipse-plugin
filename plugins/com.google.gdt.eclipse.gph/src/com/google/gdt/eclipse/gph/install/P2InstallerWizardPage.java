@@ -38,20 +38,19 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * A wizard page to install a set of {@link P2InstallationUnit}s.
  */
 public class P2InstallerWizardPage extends AbstractWizardPage {
-
   private static Font BOLD_FONT;
 
   private P2InstallManager installManager;
 
   private ScmProvider provider;
-  
+
   private List<P2InstallationFeature> featuresToInstall;
 
   public P2InstallerWizardPage(ScmProvider provider) {
@@ -59,10 +58,9 @@ public class P2InstallerWizardPage extends AbstractWizardPage {
 
     this.provider = provider;
 
-    installManager = P2InstallManagerFactory.createInstallManager(Arrays.asList(provider.getInstallInfo()));
-
+    installManager = new P2InstallManager(Collections.singletonList(provider.getInstallInfo()));
     featuresToInstall = installManager.resolveInstalledStatus();
-    
+
     setTitle("Install " + provider.getProviderName());
     setMessage("It is necessary to install a " + provider.getScmTypeLabel()
         + " team provider in order to import this project.");
@@ -76,8 +74,9 @@ public class P2InstallerWizardPage extends AbstractWizardPage {
 
     try {
       getContainer().run(true, true, new IRunnableWithProgress() {
-        public void run(IProgressMonitor monitor)
-            throws InvocationTargetException, InterruptedException {
+        @Override
+        public void run(IProgressMonitor monitor) throws InvocationTargetException,
+            InterruptedException {
           status[0] = installManager.resolveP2Information(monitor);
         }
       });
@@ -86,7 +85,7 @@ public class P2InstallerWizardPage extends AbstractWizardPage {
         return false;
       } else {
         ProjectHostingUIPlugin.logError(e);
-        tellTheUserTheyreWedged(ProjectHostingUIPlugin.createStatus(
+        tellTheUserTheyreWedged(ProjectHostingUIPlugin.createErrorStatus(
             "Error during installation.", e));
         return false;
       }
@@ -110,53 +109,50 @@ public class P2InstallerWizardPage extends AbstractWizardPage {
 
     return true;
   }
-  
+
   @Override
   protected Control createPageContents(Composite parent) {
     Composite c1 = new Composite(parent, SWT.NONE);
-    GridLayoutFactory.fillDefaults().numColumns(2).margins(10, 10).applyTo(
-        c1);
+    GridLayoutFactory.fillDefaults().numColumns(2).margins(10, 10).applyTo(c1);
 
     Label iconLabel = new Label(c1, SWT.NONE);
     if (provider.getProviderImageDescriptor() != null) {
-      iconLabel.setImage(ProjectHostingUIPlugin.createImage(
-          "scm-" + provider.getProviderName(),
+      iconLabel.setImage(ProjectHostingUIPlugin.createImage("scm-" + provider.getProviderName(),
           provider.getProviderImageDescriptor()));
     }
     GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.BEGINNING).applyTo(iconLabel);
-    
+
     Composite composite = new Composite(c1, SWT.NONE);
     GridDataFactory.fillDefaults().grab(true, false).applyTo(composite);
     GridLayoutFactory.fillDefaults().applyTo(composite);
-    
+
     Label providerDescriptionLabel = new Label(composite, SWT.WRAP);
     providerDescriptionLabel.setText(provider.getProviderDescription());
-    GridDataFactory.fillDefaults().grab(true, false).hint(200, SWT.DEFAULT).applyTo(
-        providerDescriptionLabel);
+    GridDataFactory.fillDefaults().grab(true, false).hint(200, SWT.DEFAULT)
+        .applyTo(providerDescriptionLabel);
 
     Label instructionsLabel = new Label(composite, SWT.WRAP);
-    instructionsLabel.setText("Installing "
-        + provider.getProviderName()
+    instructionsLabel.setText("Installing " + provider.getProviderName()
         + " will require a restart of Eclipse. "
         + "After Eclipse restarts, you will need to run this wizard again to import your project.");
-    GridDataFactory.fillDefaults().grab(true, false).hint(200, SWT.DEFAULT).applyTo(
-        instructionsLabel);
-    
+    GridDataFactory.fillDefaults().grab(true, false).hint(200, SWT.DEFAULT)
+        .applyTo(instructionsLabel);
+
     Label separator = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
     GridDataFactory.fillDefaults().grab(true, false).applyTo(separator);
-    
+
     Label toBeInstalledLabel = new Label(composite, SWT.WRAP);
     toBeInstalledLabel.setText("Features to install:");
     toBeInstalledLabel.setFont(createBoldFont(toBeInstalledLabel.getFont()));
-    
+
     Composite featuresComposite = new Composite(composite, SWT.NONE);
     GridDataFactory.fillDefaults().indent(15, 0).applyTo(featuresComposite);
     GridLayoutFactory.fillDefaults().spacing(0, 2).applyTo(featuresComposite);
-    
+
     for (P2InstallationFeature feature : featuresToInstall) {
       CLabel label = new CLabel(featuresComposite, SWT.NONE);
       label.setText(feature.getFeatureLabel());
-      
+
       if (feature.isInstalled()) {
         label.setText(label.getText() + " (already installed)");
         label.setImage(ProjectHostingUIPlugin.getImage("feature_obj_d.gif"));
@@ -164,7 +160,7 @@ public class P2InstallerWizardPage extends AbstractWizardPage {
         label.setImage(ProjectHostingUIPlugin.getImage("feature_obj.gif"));
       }
     }
-    
+
     Button installButton = new Button(composite, SWT.PUSH);
     installButton.setText("Install " + provider.getProviderName());
     installButton.addSelectionListener(new SelectionAdapter() {
@@ -173,14 +169,15 @@ public class P2InstallerWizardPage extends AbstractWizardPage {
         performInstall();
       }
     });
-    GridDataFactory.fillDefaults().grab(true, false).align(SWT.END, SWT.BEGINNING).applyTo(installButton);
-    
+    GridDataFactory.fillDefaults().grab(true, false).align(SWT.END, SWT.BEGINNING)
+        .applyTo(installButton);
+
     separator = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
     GridDataFactory.fillDefaults().grab(true, false).applyTo(separator);
-    
+
     return composite;
   }
-  
+
   protected void performInstall() {
     if (performFinish()) {
       if (getContainer() instanceof WizardDialog) {
@@ -194,10 +191,10 @@ public class P2InstallerWizardPage extends AbstractWizardPage {
   private Font createBoldFont(Font font) {
     if (BOLD_FONT == null) {
       FontData data = font.getFontData()[0];
-      
+
       BOLD_FONT = new Font(font.getDevice(), data.getName(), data.getHeight(), SWT.BOLD);
     }
-    
+
     return BOLD_FONT;
   }
 
@@ -205,5 +202,4 @@ public class P2InstallerWizardPage extends AbstractWizardPage {
     ErrorDialog.openError(getShell(), "Error Installing Features",
         "The installation was unable to complete.", status);
   }
-
 }

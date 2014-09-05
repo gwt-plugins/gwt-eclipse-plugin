@@ -25,13 +25,13 @@ import org.eclipse.swt.widgets.Control;
 /**
  * A super class for wizard pages. It provides page enter and exit notifications.
  */
-public abstract class AbstractWizardPage extends WizardPage implements
-    IFinishablePage {
+public abstract class AbstractWizardPage extends WizardPage implements IFinishablePage {
 
   protected AbstractWizardPage(String pageName) {
     super(pageName);
   }
 
+  @Override
   public final void createControl(Composite parent) {
     Control contents = createPageContents(parent);
 
@@ -43,6 +43,7 @@ public abstract class AbstractWizardPage extends WizardPage implements
       WizardDialog dialog = (WizardDialog) container;
 
       dialog.addPageChangingListener(new IPageChangingListener() {
+        @Override
         public void handlePageChanging(PageChangingEvent event) {
           if (event.getCurrentPage() == AbstractWizardPage.this
               && event.getTargetPage() != getPreviousPage()) {
@@ -55,6 +56,7 @@ public abstract class AbstractWizardPage extends WizardPage implements
     }
   }
 
+  @Override
   public boolean performFinish() {
     return true;
   }
@@ -70,11 +72,9 @@ public abstract class AbstractWizardPage extends WizardPage implements
 
   protected abstract Control createPageContents(Composite parent);
 
-  protected void enteringPage() {
-  }
+  protected void enteringPage() {}
 
   protected boolean exitingPage() {
     return true;
   }
-
 }

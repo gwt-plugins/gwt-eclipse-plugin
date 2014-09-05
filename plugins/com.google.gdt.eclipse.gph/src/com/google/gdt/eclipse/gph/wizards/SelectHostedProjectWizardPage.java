@@ -55,26 +55,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A wizard page to browse and select GPH projects.
- * 
+ * A wizard page to browse and select Google Project Hosted projects.
+ *
  * @see ImportHostedProjectsWizard
  */
-public class SelectHostedProjectWizardPage extends WizardSelectionPage
-implements IShellProvider {
-
+public class SelectHostedProjectWizardPage extends WizardSelectionPage implements IShellProvider {
   private final ProjectHostingService hostingService = new ProjectHostingService();
 
   private ProjectViewer projectControl;
   private TableViewer projectViewer;
 
   /**
-   * Creates an instance.
-   * 
+   * Creates a SelectHostedProjectWizardPage instance.
+   *
    * @param pageName the page name.
    * @param selection the current workbench selection.
    */
-  public SelectHostedProjectWizardPage(String pageName,
-      IStructuredSelection selection) {
+  public SelectHostedProjectWizardPage(String pageName, IStructuredSelection selection) {
     super(pageName);
 
     setTitle(pageName);
@@ -87,6 +84,7 @@ implements IShellProvider {
     return !projectViewer.getSelection().isEmpty();
   }
 
+  @Override
   public void createControl(Composite parent) {
     Composite composite = new Composite(parent, SWT.NONE);
     GridLayout layout = new GridLayout(1, false);
@@ -100,18 +98,19 @@ implements IShellProvider {
     data.heightHint = 300;
     sash.setLayoutData(data);
 
-    projectViewer = new TableViewer(sash, SWT.SINGLE | SWT.V_SCROLL
-        | SWT.BORDER);
+    projectViewer = new TableViewer(sash, SWT.SINGLE | SWT.V_SCROLL | SWT.BORDER);
     projectViewer.setContentProvider(new ArrayContentProvider());
     projectViewer.setLabelProvider(new ModelLabelProvider());
     projectViewer.setComparator(new ViewerComparator());
     projectViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+      @Override
       public void selectionChanged(SelectionChangedEvent event) {
         updateProjectBrowser();
         getContainer().updateButtons();
       }
     });
     projectViewer.addDoubleClickListener(new IDoubleClickListener() {
+      @Override
       public void doubleClick(DoubleClickEvent event) {
         handleDoubleClick();
       }
@@ -147,6 +146,7 @@ implements IShellProvider {
 
     if (visible && projectViewer.getInput() == null) {
       Display.getDefault().asyncExec(new Runnable() {
+        @Override
         public void run() {
           populateProjectViewer();
         }
@@ -156,6 +156,7 @@ implements IShellProvider {
 
   private void displayProjects(final List<GPHProject> projects) {
     getShell().getDisplay().syncExec(new Runnable() {
+      @Override
       public void run() {
         projectViewer.setInput(projects);
 
@@ -172,9 +173,11 @@ implements IShellProvider {
     final HttpRequestFactory[] transport = new HttpRequestFactory[1];
 
     Display.getDefault().syncExec(new Runnable() {
+      @Override
       public void run() {
-        transport[0] = GoogleLogin.getInstance().createRequestFactory(
-            "Importing projects from Google Project Hosting requires authentication.");
+        transport[0] =
+            GoogleLogin.getInstance().createRequestFactory(
+                "Importing projects from Google Project Hosting requires authentication.");
       }
     });
 
@@ -183,7 +186,6 @@ implements IShellProvider {
 
   private GPHProject getSelectedProject() {
     IStructuredSelection selection = (IStructuredSelection) projectViewer.getSelection();
-
     return (GPHProject) selection.getFirstElement();
   }
 
@@ -210,9 +212,8 @@ implements IShellProvider {
     try {
       updateWizardNode();
     } catch (Throwable e) {
-      ErrorDialog.openError(getShell(), "Checkout Error",
-          "Unable to load SCM checkout provider.",
-          ProjectHostingUIPlugin.createStatus(e));
+      ErrorDialog.openError(getShell(), "Checkout Error", "Unable to load SCM checkout provider.",
+          ProjectHostingUIPlugin.createErrorStatus(e));
     }
   }
 
@@ -221,10 +222,10 @@ implements IShellProvider {
 
     try {
       getWizard().getContainer().run(true, false, new IRunnableWithProgress() {
-        public void run(IProgressMonitor monitor)
-            throws InvocationTargetException, InterruptedException {
-          monitor.beginTask("Connecting to Project Hosting...",
-              IProgressMonitor.UNKNOWN);
+        @Override
+        public void run(IProgressMonitor monitor) throws InvocationTargetException,
+            InterruptedException {
+          monitor.beginTask("Connecting to Project Hosting...", IProgressMonitor.UNKNOWN);
           try {
             retrieveProjects(projects);
           } catch (Exception e) {
@@ -245,19 +246,17 @@ implements IShellProvider {
       } else if (target instanceof CoreException) {
         ProjectHostingUIPlugin.logError(target);
         ErrorDialog.openError(getShell(), "Connection Error",
-            "Unable to connect to Project Hosting.",
-            ((CoreException) target).getStatus());
+            "Unable to connect to Project Hosting.", ((CoreException) target).getStatus());
       } else {
         ProjectHostingUIPlugin.logError(target);
         ErrorDialog.openError(getShell(), "Connection Error",
             "Unable to connect to Project Hosting.",
-            ProjectHostingUIPlugin.createStatus(target));
+            ProjectHostingUIPlugin.createErrorStatus(target));
       }
     }
   }
 
-  private void retrieveProjects(List<GPHProject> projects)
-      throws CoreException, IOException {
+  private void retrieveProjects(List<GPHProject> projects) throws IOException {
     // Fetch an authenticated transport object to pass to the GPH service API.
     // note: this will initiate the login process if there's no user logged in
     HttpRequestFactory requestFactory = getAuthenticatedRequestFactory();
@@ -289,8 +288,7 @@ implements IShellProvider {
       if (provider == null || !provider.isFullyInstalled()) {
         setSelectedNode(new ProvisionSCMProviderNode(provider, project));
       } else {
-        setSelectedNode(new CheckoutWizardNode(provider.getCheckoutProvider(),
-            project, this));
+        setSelectedNode(new CheckoutWizardNode(provider.getCheckoutProvider(), project, this));
       }
     }
   }

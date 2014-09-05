@@ -77,12 +77,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * The WizardProjectsImportPage is the page that allows the user to import
- * projects from a particular location.
+ * The WizardProjectsImportPage is the page that allows the user to import projects from a
+ * particular location.
  */
-public class ImportProjectsWizardPage extends AbstractWizardPage implements
-    IOverwriteQuery {
-
+public class ImportProjectsWizardPage extends AbstractWizardPage implements IOverwriteQuery {
   /**
    * Class declared public only for test suite.
    */
@@ -101,7 +99,7 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
 
     /**
      * Create a record for a project based on the info in the file.
-     * 
+     *
      * @param file
      */
     ProjectRecord(File file) {
@@ -122,13 +120,14 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
 
     /**
      * Gets the label to be used when rendering this project record in the UI.
-     * 
+     *
      * @return String the label
      * @since 3.4
      */
     public String getProjectLabel() {
-      if (description == null)
+      if (description == null) {
         return projectName;
+      }
 
       String path = projectSystemFile.getParent();
 
@@ -137,7 +136,7 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
 
     /**
      * Get the name of the project
-     * 
+     *
      * @return String
      */
     public String getProjectName() {
@@ -152,19 +151,19 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
     }
 
     /**
-     * Returns whether the given project description file path is in the default
-     * location for a project
-     * 
+     * Returns whether the given project description file path is in the default location for a
+     * project
+     *
      * @param path The path to examine
      * @return Whether the given path is the default location for a project
      */
     private boolean isDefaultLocation(IPath path) {
       // The project description file must at least be within the project,
       // which is within the workspace location
-      if (path.segmentCount() < 2)
+      if (path.segmentCount() < 2) {
         return false;
-      return path.removeLastSegments(2).toFile().equals(
-          Platform.getLocation().toFile());
+      }
+      return path.removeLastSegments(2).toFile().equals(Platform.getLocation().toFile());
     }
 
     /**
@@ -179,11 +178,9 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
           // name as the project name
           if (isDefaultLocation(path)) {
             projectName = path.segment(path.segmentCount() - 2);
-            description = ResourcesPlugin.getWorkspace().newProjectDescription(
-                projectName);
+            description = ResourcesPlugin.getWorkspace().newProjectDescription(projectName);
           } else {
-            description = ResourcesPlugin.getWorkspace().loadProjectDescription(
-                path);
+            description = ResourcesPlugin.getWorkspace().loadProjectDescription(path);
             projectName = description.getName();
           }
 
@@ -194,12 +191,13 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
     }
   }
 
-  private final class ProjectLabelProvider extends LabelProvider implements
-      IColorProvider {
+  private final class ProjectLabelProvider extends LabelProvider implements IColorProvider {
+    @Override
     public Color getBackground(Object element) {
       return null;
     }
 
+    @Override
     public Color getForeground(Object element) {
       ProjectRecord projectRecord = (ProjectRecord) element;
       if (projectRecord.hasConflicts)
@@ -227,7 +225,7 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
   private IProject[] wsProjects;
 
   // The initial path to set
-  //private String initialPath;
+  // private String initialPath;
 
   // The last selected path to minimize searches
   private File lastPath;
@@ -244,8 +242,6 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
 
   /**
    * Create a new instance of the receiver.
-   * 
-   * @param pageName
    */
   public ImportProjectsWizardPage(EGitCheckoutWizard wizard) {
     super("checkoutProjectPage");
@@ -261,7 +257,7 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
 
   /**
    * Create the selected projects
-   * 
+   *
    * @return boolean <code>true</code> if all project creations were successful.
    */
   public boolean createProjects() {
@@ -269,16 +265,15 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
     createdProjects = new ArrayList<IProject>();
     WorkspaceModifyOperation op = new WorkspaceModifyOperation() {
       @Override
-      protected void execute(IProgressMonitor monitor)
-          throws InvocationTargetException, InterruptedException {
+      protected void execute(IProgressMonitor monitor) throws InvocationTargetException,
+          InterruptedException {
         try {
           monitor.beginTask("", selected.length); //$NON-NLS-1$
           if (monitor.isCanceled()) {
             throw new OperationCanceledException();
           }
           for (int i = 0; i < selected.length; i++) {
-            createExistingProject((ProjectRecord) selected[i],
-                new SubProgressMonitor(monitor, 1));
+            createExistingProject((ProjectRecord) selected[i], new SubProgressMonitor(monitor, 1));
           }
         } finally {
           monitor.done();
@@ -299,8 +294,7 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
       if (t instanceof CoreException) {
         status = ((CoreException) t).getStatus();
       } else {
-        status = new Status(IStatus.ERROR,
-            EGitCheckoutProviderPlugin.PLUGIN_ID, 1, message, t);
+        status = new Status(IStatus.ERROR, EGitCheckoutProviderPlugin.PLUGIN_ID, 1, message, t);
       }
       ErrorDialog.openError(getShell(), message, null, status);
       return false;
@@ -313,14 +307,12 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
   }
 
   /**
-   * Get the array of project records that can be imported from the source
-   * workspace or archive, selected by the user. If a project with the same name
-   * exists in both the source workspace and the current workspace, then the
-   * hasConflicts flag would be set on that project record. Method declared
-   * public for test suite.
-   * 
-   * @return ProjectRecord[] array of projects that can be imported into the
-   *         workspace
+   * Get the array of project records that can be imported from the source workspace or archive,
+   * selected by the user. If a project with the same name exists in both the source workspace and
+   * the current workspace, then the hasConflicts flag would be set on that project record. Method
+   * declared public for test suite.
+   *
+   * @return ProjectRecord[] array of projects that can be imported into the workspace
    */
   public ProjectRecord[] getProjectRecords() {
     List<ProjectRecord> projectRecords = new ArrayList<ProjectRecord>();
@@ -335,7 +327,7 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
 
   /**
    * Method used for test suite.
-   * 
+   *
    * @return CheckboxTreeViewer the viewer containing all the projects found
    */
   public CheckboxTreeViewer getProjectsList() {
@@ -350,14 +342,14 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
   }
 
   /**
-   * The <code>WizardDataTransfer</code> implementation of this
-   * <code>IOverwriteQuery</code> method asks the user whether the existing
-   * resource at the given path should be overwritten.
-   * 
+   * The <code>WizardDataTransfer</code> implementation of this <code>IOverwriteQuery</code> method
+   * asks the user whether the existing resource at the given path should be overwritten.
+   *
    * @param pathString
-   * @return the user's reply: one of <code>"YES"</code>, <code>"NO"</code>,
-   *         <code>"ALL"</code>, or <code>"CANCEL"</code>
+   * @return the user's reply: one of <code>"YES"</code>, <code>"NO"</code>, <code>"ALL"</code>, or
+   *         <code>"CANCEL"</code>
    */
+  @Override
   public String queryOverwrite(String pathString) {
 
     Path path = new Path(pathString);
@@ -366,41 +358,38 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
     // Break the message up if there is a file name and a directory
     // and there are at least 2 segments.
     if (path.getFileExtension() == null || path.segmentCount() < 2) {
-      messageString = NLS.bind(
-          "''{0}'' already exists.  Would you like to overwrite it?",
-          pathString);
+      messageString =
+          NLS.bind("''{0}'' already exists.  Would you like to overwrite it?", pathString);
     } else {
-      messageString = NLS.bind("Overwrite ''{0}'' in folder ''{1}''?",
-          path.lastSegment(), path.removeLastSegments(1).toOSString());
+      messageString =
+          NLS.bind("Overwrite ''{0}'' in folder ''{1}''?", path.lastSegment(), path
+              .removeLastSegments(1).toOSString());
     }
 
-    final MessageDialog dialog = new MessageDialog(getContainer().getShell(),
-        "Question", null, messageString, MessageDialog.QUESTION, new String[] {
-            IDialogConstants.YES_LABEL, IDialogConstants.YES_TO_ALL_LABEL,
-            IDialogConstants.NO_LABEL, IDialogConstants.NO_TO_ALL_LABEL,
-            IDialogConstants.CANCEL_LABEL}, 0) {
-      @Override
-      protected int getShellStyle() {
-        return super.getShellStyle() | SWT.SHEET;
-      }
-    };
+    final MessageDialog dialog =
+        new MessageDialog(getContainer().getShell(), "Question", null, messageString,
+            MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL,
+                IDialogConstants.YES_TO_ALL_LABEL, IDialogConstants.NO_LABEL,
+                IDialogConstants.NO_TO_ALL_LABEL, IDialogConstants.CANCEL_LABEL}, 0) {
+          @Override
+          protected int getShellStyle() {
+            return super.getShellStyle() | SWT.SHEET;
+          }
+        };
     String[] response = new String[] {YES, ALL, NO, NO_ALL, CANCEL};
     // run in syncExec because callback is from an operation,
     // which is probably not running in the UI thread.
     getControl().getDisplay().syncExec(new Runnable() {
+      @Override
       public void run() {
         dialog.open();
       }
     });
-    return dialog.getReturnCode() < 0 ? CANCEL
-        : response[dialog.getReturnCode()];
+    return dialog.getReturnCode() < 0 ? CANCEL : response[dialog.getReturnCode()];
   }
 
   /**
-   * Update the list of projects based on path. Method declared public only for
-   * test suite.
-   * 
-   * @param path
+   * Update the list of projects based on path. Method declared public only for test suite.
    */
   public void updateProjectsList(final File directory) {
     // on an empty path empty selectedProjects
@@ -427,6 +416,7 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
 
     try {
       getContainer().run(true, true, new IRunnableWithProgress() {
+        @Override
         public void run(IProgressMonitor monitor) {
           monitor.beginTask("Searching for projects", 100);
           selectedProjects = new ProjectRecord[0];
@@ -434,8 +424,7 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
           monitor.worked(10);
           if (directory.isDirectory()) {
 
-            if (!collectProjectFilesFromDirectory(files, directory, null,
-                monitor)) {
+            if (!collectProjectFilesFromDirectory(files, directory, null, monitor)) {
               return;
             }
             Iterator<File> filesIterator = files.iterator();
@@ -474,8 +463,7 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
     }
 
     if (displayWarning) {
-      setMessage(
-          "Some projects cannot be imported because they already exist in the workspace",
+      setMessage("Some projects cannot be imported because they already exist in the workspace",
           WARNING);
     } else {
       setMessage("Select a directory to search for existing Eclipse projects.");
@@ -493,8 +481,8 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
     Composite workArea = new Composite(parent, SWT.NONE);
 
     workArea.setLayout(new GridLayout());
-    workArea.setLayoutData(new GridData(GridData.FILL_BOTH
-        | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+    workArea.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL
+        | GridData.GRAB_VERTICAL));
 
     createProjectsList(workArea);
     createWorkingSetGroup(workArea);
@@ -506,12 +494,12 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
 
   /**
    * Display an error dialog with the specified message.
-   * 
+   *
    * @param message the error message
    */
   protected void displayErrorDialog(String message) {
-    MessageDialog.open(MessageDialog.ERROR, getContainer().getShell(),
-        getErrorDialogTitle(), message, SWT.SHEET);
+    MessageDialog.open(MessageDialog.ERROR, getContainer().getShell(), getErrorDialogTitle(),
+        message, SWT.SHEET);
   }
 
   @Override
@@ -542,24 +530,22 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
 
   /**
    * Collect the list of .project files that are under directory into files.
-   * 
+   *
    * @param files
    * @param directory
-   * @param directoriesVisited Set of canonical paths of directories, used as
-   *          recursion guard
+   * @param directoriesVisited Set of canonical paths of directories, used as recursion guard
    * @param monitor The monitor to report to
    * @return boolean <code>true</code> if the operation was completed.
    */
-  private boolean collectProjectFilesFromDirectory(Collection<File> files,
-      File directory, Set<String> directoriesVisited, IProgressMonitor monitor) {
+  private boolean collectProjectFilesFromDirectory(Collection<File> files, File directory,
+      Set<String> directoriesVisited, IProgressMonitor monitor) {
 
     if (monitor.isCanceled()) {
       return false;
     }
     monitor.subTask(NLS.bind("Checking: {0}", directory.getPath()));
     File[] contents = directory.listFiles();
-    if (contents == null)
-      return false;
+    if (contents == null) return false;
 
     // Initialize recursion guard for recursive symbolic links
     if (directoriesVisited == null) {
@@ -568,8 +554,8 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
         directoriesVisited.add(directory.getCanonicalPath());
       } catch (IOException exception) {
         StatusManager.getManager().handle(
-            EGitCheckoutProviderPlugin.createStatus(IStatus.ERROR,
-                exception.getLocalizedMessage(), exception));
+            EGitCheckoutProviderPlugin.createStatus(IStatus.ERROR, exception.getLocalizedMessage(),
+                exception));
       }
     }
 
@@ -600,8 +586,7 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
                     exception.getLocalizedMessage(), exception));
 
           }
-          collectProjectFilesFromDirectory(files, contents[i],
-              directoriesVisited, monitor);
+          collectProjectFilesFromDirectory(files, contents[i], directoriesVisited, monitor);
         }
       }
     }
@@ -610,14 +595,13 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
 
   /**
    * Create the project described in record. If it is successful return true.
-   * 
+   *
    * @param record
    * @return boolean <code>true</code> if successful
    * @throws InterruptedException
    */
-  private boolean createExistingProject(final ProjectRecord record,
-      IProgressMonitor monitor) throws InvocationTargetException,
-      InterruptedException {
+  private boolean createExistingProject(final ProjectRecord record, IProgressMonitor monitor)
+      throws InvocationTargetException, InterruptedException {
     String projectName = record.getProjectName();
     final IWorkspace workspace = ResourcesPlugin.getWorkspace();
     final IProject project = workspace.getRoot().getProject(projectName);
@@ -636,61 +620,22 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
     } else {
       record.description.setName(projectName);
     }
-    // import from file system
-//		File importSource = null;
-//		if (copyFiles) {
-//			// import project from location copying files - use default project
-//			// location for this workspace
-//			URI locationURI = record.description.getLocationURI();
-//			// if location is null, project already exists in this location or
-//			// some error condition occured.
-//			if (locationURI != null) {
-//				importSource = new File(locationURI);
-//				IProjectDescription desc = workspace
-//						.newProjectDescription(projectName);
-//				desc.setBuildSpec(record.description.getBuildSpec());
-//				desc.setComment(record.description.getComment());
-//				desc.setDynamicReferences(record.description
-//						.getDynamicReferences());
-//				desc.setNatureIds(record.description.getNatureIds());
-//				desc.setReferencedProjects(record.description
-//						.getReferencedProjects());
-//				record.description = desc;
-//			}
-//		}
 
     try {
       monitor.beginTask("Creating Projects", 100);
       project.create(record.description, new SubProgressMonitor(monitor, 30));
-      project.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(
-          monitor, 70));
+      project.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(monitor, 70));
     } catch (CoreException e) {
       throw new InvocationTargetException(e);
     } finally {
       monitor.done();
     }
-
-    // import operation to import project files if copy checkbox is selected
-//		if (copyFiles && importSource != null) {
-//			List filesToImport = FileSystemStructureProvider.INSTANCE
-//					.getChildren(importSource);
-//			ImportOperation operation = new ImportOperation(project
-//					.getFullPath(), importSource,
-//					FileSystemStructureProvider.INSTANCE, this, filesToImport);
-//			operation.setContext(getShell());
-//			operation.setOverwriteResources(true); // need to overwrite
-//			// .project, .classpath
-//			// files
-//			operation.setCreateContainerStructure(false);
-//			operation.run(monitor);
-//		}
-
     return true;
   }
 
   /**
    * Create the checkbox list for the found projects.
-   * 
+   *
    * @param workArea
    */
   private void createProjectsList(Composite workArea) {
@@ -698,48 +643,56 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
     listComposite.setText("Projects to import");
     GridLayout layout = new GridLayout();
     layout.numColumns = 2;
-    //layout.marginWidth = 0;
+    // layout.marginWidth = 0;
     layout.makeColumnsEqualWidth = false;
     layout.marginHeight = 10;
     layout.marginWidth = 10;
     listComposite.setLayout(layout);
 
-    listComposite.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-        | GridData.GRAB_VERTICAL | GridData.FILL_BOTH));
+    listComposite.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL
+        | GridData.FILL_BOTH));
 
     projectsList = new CheckboxTreeViewer(listComposite, SWT.BORDER);
     GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-    gridData.widthHint = new PixelConverter(projectsList.getControl()).convertWidthInCharsToPixels(25);
-    gridData.heightHint = new PixelConverter(projectsList.getControl()).convertHeightInCharsToPixels(10);
+    gridData.widthHint =
+        new PixelConverter(projectsList.getControl()).convertWidthInCharsToPixels(25);
+    gridData.heightHint =
+        new PixelConverter(projectsList.getControl()).convertHeightInCharsToPixels(10);
     projectsList.getControl().setLayoutData(gridData);
     projectsList.setContentProvider(new ITreeContentProvider() {
+      @Override
       public void dispose() {
 
       }
 
+      @Override
       public Object[] getChildren(Object parentElement) {
         return null;
       }
 
+      @Override
       public Object[] getElements(Object inputElement) {
         return getProjectRecords();
       }
 
+      @Override
       public Object getParent(Object element) {
         return null;
       }
 
+      @Override
       public boolean hasChildren(Object element) {
         return false;
       }
 
-      public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-      }
+      @Override
+      public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
     });
 
     projectsList.setLabelProvider(new ProjectLabelProvider());
 
     projectsList.addCheckStateListener(new ICheckStateListener() {
+      @Override
       public void checkStateChanged(CheckStateChangedEvent event) {
         ProjectRecord element = (ProjectRecord) event.getElement();
         if (element.hasConflicts) {
@@ -756,7 +709,7 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
 
   /**
    * Create the selection buttons in the listComposite.
-   * 
+   *
    * @param listComposite
    */
   private void createSelectionButtons(Composite listComposite) {
@@ -766,8 +719,7 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
     layout.marginHeight = 0;
     buttonsComposite.setLayout(layout);
 
-    buttonsComposite.setLayoutData(new GridData(
-        GridData.VERTICAL_ALIGN_BEGINNING));
+    buttonsComposite.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
 
     Button selectAll = new Button(buttonsComposite, SWT.PUSH);
     selectAll.setText("&Select All");
@@ -775,10 +727,11 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
       @Override
       public void widgetSelected(SelectionEvent e) {
         for (int i = 0; i < selectedProjects.length; i++) {
-          if (selectedProjects[i].hasConflicts)
+          if (selectedProjects[i].hasConflicts) {
             projectsList.setChecked(selectedProjects[i], false);
-          else
+          } else {
             projectsList.setChecked(selectedProjects[i], true);
+          }
         }
         setPageComplete(projectsList.getCheckedElements().length > 0);
       }
@@ -804,16 +757,14 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
    * @param workArea
    */
   private void createWorkingSetGroup(Composite workArea) {
-    String[] workingSetIds = new String[] {
-        "org.eclipse.ui.resourceWorkingSetPage", //$NON-NLS-1$
+    String[] workingSetIds = new String[] {"org.eclipse.ui.resourceWorkingSetPage", //$NON-NLS-1$
         "org.eclipse.jdt.ui.JavaWorkingSetPage"}; //$NON-NLS-1$
-    workingSetGroup = new WorkingSetGroup(workArea, currentSelection,
-        workingSetIds);
+    workingSetGroup = new WorkingSetGroup(workArea, currentSelection, workingSetIds);
   }
 
   /**
    * Retrieve all the projects in the current workspace.
-   * 
+   *
    * @return IProject[] array of IProject in the current workspace
    */
   private IProject[] getProjectsInWorkspace() {
@@ -825,10 +776,9 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
 
   /**
    * Determine if the project with the given name is in the current workspace.
-   * 
+   *
    * @param projectName String the project name to check
-   * @return boolean true if the project with the given name is in this
-   *         workspace
+   * @return boolean true if the project with the given name is in this workspace
    */
   private boolean isProjectInWorkspace(String projectName) {
     if (projectName == null) {
@@ -842,5 +792,4 @@ public class ImportProjectsWizardPage extends AbstractWizardPage implements
     }
     return false;
   }
-
 }
