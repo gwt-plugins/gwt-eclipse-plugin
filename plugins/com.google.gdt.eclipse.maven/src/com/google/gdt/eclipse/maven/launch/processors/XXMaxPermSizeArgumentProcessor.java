@@ -28,31 +28,28 @@ import java.util.List;
 /**
  * Processes the "--XX:MaxPermSize" VM argument.
  */
-public class XXMaxPermSizeArgumentProcessor implements
-    ILaunchConfigurationProcessor {
-
+public class XXMaxPermSizeArgumentProcessor implements ILaunchConfigurationProcessor {
   private static final String DEFAULT_MEMORY = "256m";
   private static final String ARG_XMX_PREFIX = "-XX:MaxPermSize=";
 
-  public void update(ILaunchConfigurationWorkingCopy launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
-      throws CoreException {
+  @Override
+  public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject,
+      List<String> programArgs, List<String> vmArgs) throws CoreException {
 
     if (!MavenUtils.hasMavenNature(javaProject.getProject())
         || !MavenUtils.hasSpringNature(javaProject.getProject())) {
       return;
     }
 
-    int xmxArgIndex = StringUtilities.indexOfThatStartsWith(vmArgs,
-        ARG_XMX_PREFIX, 0);
+    int xmxArgIndex = StringUtilities.indexOfThatStartsWith(vmArgs, ARG_XMX_PREFIX, 0);
     if (xmxArgIndex == -1) {
       vmArgs.add(0, ARG_XMX_PREFIX + DEFAULT_MEMORY);
     }
   }
 
-  public String validate(ILaunchConfiguration launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
-      throws CoreException {
+  @Override
+  public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject,
+      List<String> programArgs, List<String> vmArgs) throws CoreException {
     return null;
   }
 }

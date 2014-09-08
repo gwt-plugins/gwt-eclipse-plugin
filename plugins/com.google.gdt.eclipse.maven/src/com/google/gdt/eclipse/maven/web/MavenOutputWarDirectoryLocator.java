@@ -26,30 +26,28 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 
 /**
- * Output war directory provider for Maven-based projects. Though right now this
- * is only true for Maven projects imported via STS, we expect that the property
+ * An output war directory provider for Maven-based projects. Although right now this is only true
+ * for Maven projects imported via STS (Sprint Tools Suite), we expect that the property
  * corresponding to
  * {@link WebAppProjectProperties#getLastUsedWarOutLocation(org.eclipse.core.resources.IProject)}
  * will have been set at import time.
- * 
- * Since we know that the property was set correctly (as it was done
- * automatically at import time), we'll use this extension point to avoid the
- * unnecessary confirmation at launch, GWT compilation, and deployment time.
+ * <p>
+ * Since we know that the property was set correctly (as it was done automatically at import time),
+ * we'll use this extension point to avoid the unnecessary confirmation at launch, GWT compilation,
+ * and deployment time.
  */
-public class MavenOutputWarDirectoryLocator implements
-    IOutputWarDirectoryLocator {
-
-  public IFolder getOutputWarDirectory(IProject project) {    
+public class MavenOutputWarDirectoryLocator implements IOutputWarDirectoryLocator {
+  @Override
+  public IFolder getOutputWarDirectory(IProject project) {
     if (!MavenUtils.hasMavenNature(project)) {
       return null;
     }
-    
+
     if (WebAppUtilities.isWebApp(project)) {
       IPath lastUsedWarOutLocation = WebAppProjectProperties.getLastUsedWarOutLocation(project);
       if (lastUsedWarOutLocation != null) {
         IResource lastUsedWarOutResource = ResourceUtils.getResource(lastUsedWarOutLocation);
-        if (lastUsedWarOutResource != null
-            && lastUsedWarOutResource.getType() == IResource.FOLDER) {
+        if (lastUsedWarOutResource != null && lastUsedWarOutResource.getType() == IResource.FOLDER) {
           return (IFolder) lastUsedWarOutResource;
         }
       }

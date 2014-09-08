@@ -24,13 +24,11 @@ import org.eclipse.jdt.core.IJavaProject;
  * A factory for creating project-bound, Maven-based GWT Runtimes.
  */
 public class GWTMavenSdkFactory implements IProjectBoundSdkFactory {
-
+  @Override
   public ProjectBoundSdk newInstance(IJavaProject javaProject) {
     if (!MavenUtils.hasMavenNature(javaProject.getProject())) {
       return null;
     }
-
     return new GWTMavenRuntime(javaProject);
   }
-
 }

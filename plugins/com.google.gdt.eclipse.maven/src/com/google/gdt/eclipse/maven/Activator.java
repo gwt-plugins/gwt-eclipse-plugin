@@ -21,7 +21,6 @@ import org.osgi.framework.BundleContext;
  * Activator class that controls the plugin lifecycle.
  */
 public class Activator extends AbstractUIPlugin {
-
   // The plug-in ID
   public static final String PLUGIN_ID = "com.google.gdt.eclipse.maven";
 
@@ -29,9 +28,7 @@ public class Activator extends AbstractUIPlugin {
   private static Activator plugin;
 
   /**
-   * Returns the shared instance
-   * 
-   * @return the shared instance
+   * Returns the shared instance.
    */
   public static Activator getDefault() {
     return plugin;
@@ -40,17 +37,17 @@ public class Activator extends AbstractUIPlugin {
   /**
    * The constructor
    */
-  public Activator() {
-  }
+  public Activator() {}
 
+  @Override
   public void start(BundleContext context) throws Exception {
     super.start(context);
     plugin = this;
   }
 
+  @Override
   public void stop(BundleContext context) throws Exception {
     plugin = null;
     super.stop(context);
   }
-
 }

@@ -262,14 +262,6 @@
          version="0.0.0.qualifier"
          unpack="false"/>
 
-   <!-- Remove with cl74394038 -->
-   <plugin
-         id="com.google.gdt.eclipse.maven.e37"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
    <plugin
          id="com.google.gdt.eclipse.platform"
          download-size="0"

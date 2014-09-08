@@ -1,16 +1,21 @@
-/*******************************************************************************
+/******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- * 
- * All rights reserved. This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *******************************************************************************/
-package com.google.gdt.eclipse.maven.e37.configurators;
+package com.google.gdt.eclipse.maven.configurators;
+
+import com.google.gdt.eclipse.core.natures.NatureUtils;
+import com.google.gwt.eclipse.core.nature.GWTNature;
 
 import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
@@ -21,52 +26,42 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 
-import com.google.gdt.eclipse.core.natures.NatureUtils;
-import com.google.gwt.eclipse.core.nature.GWTNature;
-
 /**
  * An abstract Maven project configurator that should be extended by configurators that wish to
  * configure a GWT project to work with a particular SDK.
- * 
+ * <p>
  * This configurator is used to perform general setup for any Maven project imported via m2Eclipse.
- * 
+ * <p>
  * NOTE: Do not access this class from outside of the configurators package. All classes in the
  * configurators package have dependencies on plugins that may or may not be present in the user's
  * installation. As long as these classes are only invoked through m2Eclipe's extension points,
  * other parts of this plugin can be used without requiring the m2Eclipse dependencies.
  */
 public abstract class AbstractGoogleProjectConfigurator extends AbstractProjectConfigurator {
-
   /**
    * Optional callback interface for callers to get notifications before or after adding natures to
-   * a project.
-   * <p>
-   * Useful in cases where callers want to execute code before applying the nature.
+   * a project. Useful in cases where callers want to execute code before or after applying the
+   * nature.
    */
-  public interface INatureCallback {
+  public class NatureCallback {
+    /**
+     * Invoked after the nature is added.
+     */
+    protected void afterAddingNature() {}
 
-    void afterAddingNature();
-
-    void beforeAddingNature();
+    /**
+     * Invoked before the nature is added.
+     */
+    protected void beforeAddingNature() {}
   }
-  /**
-   * Simple no-op adapter for {@link INatureCallback}.
-   */
-  public class NatureCallbackAdapter implements INatureCallback {
 
-    public void afterAddingNature() {
-    }
-
-    public void beforeAddingNature() {
-    }
-  }
-  protected static final String MAVEN_ECLIPSE_PLUGIN_ID = "org.apache.maven.plugins:maven-eclipse-plugin";
+  protected static final String MAVEN_ECLIPSE_PLUGIN_ID =
+      "org.apache.maven.plugins:maven-eclipse-plugin";
 
   protected static final String MAVEN_GWT_PLUGIN_ID = "org.codehaus.mojo:gwt-maven-plugin";
 
   /**
-   * {@inheritDoc}
-   * In the case of a non-GWT project, we do nothing.
+   * {@inheritDoc} In the case of a non-GWT project, we do nothing.
    */
   @Override
   public final void configure(ProjectConfigurationRequest request, IProgressMonitor monitor)
@@ -81,10 +76,24 @@ public abstract class AbstractGoogleProjectConfigurator extends AbstractProjectC
     }
   }
 
+  /**
+   * Adds or removes a given nature to the given Eclipse project, but only if that nature is defined
+   * in the Maven project. Invokes the {@link NatureCallback} methods before and after adding the
+   * nature.
+   *
+   * @param project the Eclipse project
+   * @param mavenProject the Maven project's description
+   * @param natureId the nature to be added
+   * @param addNature whether to add or remove the nature
+   * @param callback callback to invoke when installing the nature
+   * @param monitor a progress monitor
+   * @return {@code true} if the nature was added
+   * @throws CoreException on project update errors
+   */
   protected boolean configureNature(IProject project, MavenProject mavenProject, String natureId,
-      boolean addNature, final INatureCallback callback, IProgressMonitor monitor)
+      boolean addNature, final NatureCallback callback, IProgressMonitor monitor)
       throws CoreException {
-    if (hasProjectNature(mavenProject, project, natureId)) {
+    if (hasProjectNature(mavenProject, natureId)) {
       if (!NatureUtils.hasNature(project, natureId) && addNature) {
         if (callback != null) {
           callback.beforeAddingNature();
@@ -103,18 +112,26 @@ public abstract class AbstractGoogleProjectConfigurator extends AbstractProjectC
     return false;
   }
 
-  protected boolean configureNature(IProject project, MavenProject mavenProject, String natureId,
-      boolean addNature, IProgressMonitor monitor) throws CoreException {
-    return configureNature(project, mavenProject, natureId, addNature, null, monitor);
-  }
-
+  /**
+   * Configures a given Eclipse project from a Maven project description.
+   *
+   * @param project the Eclipse project
+   * @param mavenProject the Maven project's description
+   * @param request the project configuration request
+   * @param monitor a progress monitor
+   * @throws CoreException on project update errors
+   */
   protected abstract void doConfigure(MavenProject mavenProject, IProject project,
       ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException;
 
   /**
    * Searches the Maven pom.xml for the given project nature.
+   *
+   * @param mavenProject a description of the Maven project
+   * @param natureId the nature to check
+   * @return {@code true} if the project
    */
-  protected boolean hasProjectNature(MavenProject mavenProject, IProject project, String natureId) {
+  protected boolean hasProjectNature(MavenProject mavenProject, String natureId) {
     if ((natureId == GWTNature.NATURE_ID) && (getGwtMavenPlugin(mavenProject) != null)) {
       return true;
     }
@@ -144,5 +161,4 @@ public abstract class AbstractGoogleProjectConfigurator extends AbstractProjectC
   private Plugin getGwtMavenPlugin(MavenProject mavenProject) {
     return mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID);
   }
-
 }

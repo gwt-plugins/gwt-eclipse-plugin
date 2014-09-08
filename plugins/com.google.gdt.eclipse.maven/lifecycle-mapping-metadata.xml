@@ -12,7 +12,7 @@
           </pluginExecutionFilter>
           <action>
             <configurator>
-              <id>com.google.gdt.eclipse.maven.e37.googleProjectConfigurator</id>
+              <id>com.google.gdt.eclipse.maven.googleProjectConfigurator</id>
             </configurator>
           </action>
         </pluginExecution>

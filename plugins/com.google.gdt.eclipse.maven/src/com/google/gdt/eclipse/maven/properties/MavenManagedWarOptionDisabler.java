@@ -20,11 +20,11 @@ import com.google.gdt.eclipse.maven.MavenUtils;
 import org.eclipse.core.resources.IProject;
 
 /**
- * Disables the ability to change the setting for a managed war folder in the
- * case of a Maven project.
+ * Disables the ability to change the setting for a managed war folder in the case of a Maven
+ * project.
  */
 public class MavenManagedWarOptionDisabler implements ManagedWarOptionEnablementFinder {
-
+  @Override
   public String isManagedWarOptionEnabled(IProject project) {
     if (MavenUtils.hasMavenNature(project)) {
       return "disabled because this is a Maven project";

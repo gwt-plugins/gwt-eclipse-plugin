@@ -49,7 +49,6 @@ import java.util.Set;
  * A project-based GWT SDK for Maven-based project.
  */
 public class GWTMavenRuntime extends ProjectBoundSdk {
-
   public static final String MAVEN_GWT_GROUP_ID = "com.google.gwt";
 
   public static final String MAVEN_GWT_DEV_JAR_ARTIFACT_ID = "gwt-dev";
@@ -61,30 +60,27 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
   }
 
   @Override
-  public URLClassLoader createClassLoader() throws SdkException,
-      MalformedURLException {
+  public URLClassLoader createClassLoader() throws SdkException, MalformedURLException {
     if (!validate().isOK()) {
       return new URLClassLoader(new URL[0]);
     }
 
     try {
       ArrayList<URL> classloaderURLs = new ArrayList<URL>();
-      
+
       // getDevJar would throw an exception instead of returning null
-      classloaderURLs.add(getDevJar().toURL());
-      
+      classloaderURLs.add(getDevJar().toURI().toURL());
+
       // findGwtUserClasspathEntry won't be null, because validate passed
-      classloaderURLs.add(findGwtUserClasspathEntry().getPath().toFile().toURL());
+      classloaderURLs.add(findGwtUserClasspathEntry().getPath().toFile().toURI().toURL());
 
       IClasspathEntry javaxValidationJar = findJavaXValidationClasspathEntry();
       // could be null on older GWT projects
-      if (javaxValidationJar != null) {        
-        classloaderURLs.add(javaxValidationJar.getPath().toFile().toURL());
+      if (javaxValidationJar != null) {
+        classloaderURLs.add(javaxValidationJar.getPath().toFile().toURI().toURL());
       }
 
-      return new URLClassLoader(
-          classloaderURLs.toArray(new URL[classloaderURLs.size()]),
-          null);
+      return new URLClassLoader(classloaderURLs.toArray(new URL[classloaderURLs.size()]), null);
     } catch (JavaModelException jme) {
       return new URLClassLoader(new URL[0]);
     }
@@ -92,21 +88,19 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
 
   /**
    * This method's implementation breaks the general contract of
-   * {@link com.google.gwt.eclipse.core.runtime.GWTRuntime#getClasspathEntries()}
-   * .
-   * 
-   * The general contract states that the entries returned should be the raw
-   * entries on the build path that correspond to the SDK. This method returns
-   * the resolved entry on the build path that corresponds to the gwt-user
-   * library. It then returns the path to the gwt-dev library that's a peer of
-   * the gwt-user library in the Maven repository. This library may not be on
-   * the build classpath.
-   * 
+   * {@link com.google.gwt.eclipse.core.runtime.GWTRuntime#getClasspathEntries()} .
+   *
+   * The general contract states that the entries returned should be the raw entries on the build
+   * path that correspond to the SDK. This method returns the resolved entry on the build path that
+   * corresponds to the gwt-user library. It then returns the path to the gwt-dev library that's a
+   * peer of the gwt-user library in the Maven repository. This library may not be on the build
+   * classpath.
+   *
    * TODO: Reconsider the general contract of this method.
-   * 
-   * TODO: Get rid of this method; I don't think its used at all in the Maven
-   * case.
+   *
+   * TODO: Get rid of this method; I don't think its used at all in the Maven case.
    */
+  @Override
   public IClasspathEntry[] getClasspathEntries() {
     try {
       // If containers are being used, we avoid duplicates by using a set
@@ -129,28 +123,28 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
       // Sort the classpath entries so they match the declared order of the
       // raw classpath.
       IClasspathEntry[] classpathEntryArray = classpathEntries.toArray(NO_ICLASSPATH_ENTRIES);
-      Collections.sort(Arrays.asList(classpathEntryArray),
-          new Comparator<IClasspathEntry>() {
-            public int compare(IClasspathEntry o1, IClasspathEntry o2) {
-              return rawClasspath.indexOf(o1) - rawClasspath.indexOf(o2);
-            }
-          });
+      Collections.sort(Arrays.asList(classpathEntryArray), new Comparator<IClasspathEntry>() {
+        @Override
+        public int compare(IClasspathEntry o1, IClasspathEntry o2) {
+          return rawClasspath.indexOf(o1) - rawClasspath.indexOf(o2);
+        }
+      });
 
       return classpathEntryArray;
     } catch (JavaModelException e) {
-      Activator.getDefault().getLog().log(
-          new Status(
-              IStatus.ERROR,
-              Activator.PLUGIN_ID,
-              "Unable to generate classpath entries for the maven-based GWT runtime.",
-              e));
+      Activator
+          .getDefault()
+          .getLog()
+          .log(
+              new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                  "Unable to generate classpath entries for the maven-based GWT runtime.", e));
     } catch (SdkException sdke) {
-      Activator.getDefault().getLog().log(
-          new Status(
-              IStatus.ERROR,
-              Activator.PLUGIN_ID,
-              "Unable to generate classpath entries for the maven-based GWT runtime.",
-              sdke));
+      Activator
+          .getDefault()
+          .getLog()
+          .log(
+              new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                  "Unable to generate classpath entries for the maven-based GWT runtime.", sdke));
     }
 
     return AbstractSdk.NO_ICLASSPATH_ENTRIES;
@@ -164,9 +158,9 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
       throw new SdkException("Unable to locate gwt-user.jar");
     }
 
-    IPath path = MavenUtils.getArtifactPathForPeerMavenArtifact(
-        classpathEntry.getPath(), MAVEN_GWT_GROUP_ID,
-        MAVEN_GWT_DEV_JAR_ARTIFACT_ID);
+    IPath path =
+        MavenUtils.getArtifactPathForPeerMavenArtifact(classpathEntry.getPath(),
+            MAVEN_GWT_GROUP_ID, MAVEN_GWT_DEV_JAR_ARTIFACT_ID);
     if (path == null) {
       throw new SdkException("Unable to locate gwt-dev.jar");
     }
@@ -179,9 +173,8 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
   }
 
   /**
-   * Maven-based GWT SDKs do not have a clear installation path. So, we say that
-   * the installation path corresponds to:
-   * <code><repository path>/<group path></code>.
+   * Maven-based GWT SDKs do not have a clear installation path. So, we say that the installation
+   * path corresponds to: <code><repository path>/<group path></code>.
    */
   @Override
   public IPath getInstallationPath() {
@@ -198,12 +191,12 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
       }
       return p.removeLastSegments(3);
     } catch (JavaModelException e) {
-      Activator.getDefault().getLog().log(
-          new Status(
-              IStatus.ERROR,
-              Activator.PLUGIN_ID,
-              "Unable to determine installation path for the maven-based GWT runtime.",
-              e));
+      Activator
+          .getDefault()
+          .getLog()
+          .log(
+              new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                  "Unable to determine installation path for the maven-based GWT runtime.", e));
     }
 
     return null;
@@ -230,17 +223,14 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
 
   private IClasspathEntry findGwtUserClasspathEntry() throws JavaModelException {
     /*
-     * Note that the type that we're looking for to determine if we're part of
-     * the gwt-user library is different than the one that is used by the
-     * superclass. This is because the class that the superclass is querying
-     * for, "com.google.gwt.core.client.GWT", also exists in the gwt-servlet
-     * library, and for some reason, this sometimes ends up on the build path
-     * for Maven projects.
-     * 
+     * Note that the type that we're looking for to determine if we're part of the gwt-user library
+     * is different than the one that is used by the superclass. This is because the class that the
+     * superclass is querying for, "com.google.gwt.core.client.GWT", also exists in the gwt-servlet
+     * library, and for some reason, this sometimes ends up on the build path for Maven projects.
+     *
      * TODO: See why Maven is putting gwt-servlet on the build path.
-     * 
-     * TODO: Change the class query in the superclass to
-     * "com.google.gwt.junit.client.GWTTestCase"
+     *
+     * TODO: Change the class query in the superclass to "com.google.gwt.junit.client.GWTTestCase"
      */
     IType type = javaProject.findType("com.google.gwt.junit.client.GWTTestCase");
 
@@ -248,7 +238,8 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
       return null;
     }
 
-    IPackageFragmentRoot packageFragmentRoot = (IPackageFragmentRoot) type.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+    IPackageFragmentRoot packageFragmentRoot =
+        (IPackageFragmentRoot) type.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
     if (packageFragmentRoot.getKind() == IPackageFragmentRoot.K_BINARY) {
       // TODO: If the Maven javadoc and source libs for gwt-dev.jar are
       // available, attach them here.
@@ -258,15 +249,15 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
     return null;
   }
 
-  private IClasspathEntry findJavaXValidationClasspathEntry()
-      throws JavaModelException {
+  private IClasspathEntry findJavaXValidationClasspathEntry() throws JavaModelException {
     IType type = javaProject.findType("javax.validation.Constraint");
 
     if (type == null) {
       return null;
     }
 
-    IPackageFragmentRoot packageFragmentRoot = (IPackageFragmentRoot) type.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+    IPackageFragmentRoot packageFragmentRoot =
+        (IPackageFragmentRoot) type.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
     if (packageFragmentRoot.getKind() == IPackageFragmentRoot.K_BINARY) {
       return JavaCore.newLibraryEntry(packageFragmentRoot.getPath(), null, null);
     }
@@ -274,4 +265,3 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
     return null;
   }
 }
-
