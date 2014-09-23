@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: App Engine Api Wrapper
+Bundle-SymbolicName: com.google.gdt.eclipse.appengine.api;singleton:=true
+Bundle-Version: 0.0.0.qualifier
+Bundle-Activator: com.google.gdt.eclipse.appengine.api.AppEngineApiActivator
+Bundle-Vendor: Google, Inc.
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ com.google.gdt.eclipse.core,
+ com.google.gdt.eclipse.login
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ lib/google-api-services-appengine-v1beta-rev20130717-1.16.0-rc.jar
+Export-Package: com.google.gdt.eclipse.appengine.api
