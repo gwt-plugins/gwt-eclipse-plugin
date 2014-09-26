@@ -21,8 +21,11 @@ import org.eclipse.wst.common.project.facet.core.events.IFacetedProjectEvent;
 import org.eclipse.wst.common.project.facet.core.events.IFacetedProjectListener;
 import org.eclipse.wst.common.project.facet.core.events.IProjectFacetActionEvent;
 
+/**
+ * This class is registered via the "org.eclipse.wst.common.project.facet.core.listeners" extension
+ * point, and helps automate the conversion of AppEngine projects to use the Java Persistence API.
+ */
 public class FacetInstallListener implements IFacetedProjectListener {
-
   private static final String FACET_JPT_JPA = "jpt.jpa";
 
   @Override
