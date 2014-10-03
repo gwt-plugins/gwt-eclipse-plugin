@@ -36,10 +36,9 @@ public class RemoteUiArgumentProcessor implements ILaunchConfigurationProcessor 
 
   public static final String ARG_REMOTE_UI = "-remoteUI";
 
-  static boolean isUseRemoteUiEnvVarFalse(ILaunchConfiguration configuration)
-      throws CoreException {
-    String[] environmentVariables = DebugPlugin.getDefault().getLaunchManager().getEnvironment(
-        configuration);
+  static boolean isUseRemoteUiEnvVarFalse(ILaunchConfiguration configuration) throws CoreException {
+    String[] environmentVariables =
+        DebugPlugin.getDefault().getLaunchManager().getEnvironment(configuration);
     if (environmentVariables != null) {
       for (String environmentVariable : environmentVariables) {
         if (environmentVariable.matches("\\s*USE_REMOTE_UI\\s*=\\s*false\\s*")) {
@@ -51,31 +50,36 @@ public class RemoteUiArgumentProcessor implements ILaunchConfigurationProcessor 
     return false;
   }
 
-  private static boolean shouldUseRemoteUI(ILaunchConfiguration configuration)
-      throws CoreException {
+  private static boolean shouldUseRemoteUI(ILaunchConfiguration configuration) throws CoreException {
     return !isUseRemoteUiEnvVarFalse(configuration);
   }
 
   // Package-scoped for testing.
   GwtCapabilityChecker.Factory gwtCapabilityCheckerFactory = new GwtCapabilityChecker.Factory();
 
-  public void update(ILaunchConfigurationWorkingCopy launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
-      throws CoreException {
+  @Override
+  public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject,
+      List<String> programArgs, List<String> vmArgs) throws CoreException {
+    // GWT arg processor only
+    if (!GWTNature.isGWTProject(javaProject.getProject())) {
+      return;
+    }
 
-    int remoteUiArgIndex = programArgs.indexOf(ARG_REMOTE_UI);
+    int index = programArgs.indexOf(ARG_REMOTE_UI);
+
     // Prefer the existing value, fallback on the precanned one
     String remoteUiValue = null;
-    if (remoteUiArgIndex >= 0) {
-      remoteUiValue = LaunchConfigurationProcessorUtilities.getArgValue(
-          programArgs, remoteUiArgIndex + 1);
+    if (index >= 0) {
+      remoteUiValue = LaunchConfigurationProcessorUtilities.getArgValue(programArgs, index + 1);
     }
+
     if (StringUtilities.isEmpty(remoteUiValue)) {
       remoteUiValue = "${gwt_remote_ui_server_port}:${unique_id}";
     }
 
-    int insertionIndex = LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(
-        programArgs, remoteUiArgIndex, true);
+    int insertionIndex =
+        LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(programArgs, index,
+            true);
 
     IProject project = javaProject.getProject();
     if (GWTNature.isGWTProject(project) && shouldUseRemoteUI(launchConfig)) {
@@ -84,8 +88,10 @@ public class RemoteUiArgumentProcessor implements ILaunchConfigurationProcessor 
     }
   }
 
-  public String validate(ILaunchConfiguration launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs) {
+  @Override
+  public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject,
+      List<String> programArgs, List<String> vmArgs) {
     return null;
   }
+
 }

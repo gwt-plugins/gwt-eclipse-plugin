@@ -23,16 +23,15 @@ import java.util.Collections;
  * 
  */
 public enum GWTLaunchAttributes implements ILaunchConfigurationAttribute {
+
+  CODE_SERVER_PORT("9997"),
+
+  CODE_SERVER_PORT_AUTO(false),
+
   /**
    * Set of entry point modules to pass to GWT.
    */
   ENTRY_POINT_MODULES(Collections.emptyList()),
-
-  /**
-   * SDK container path, only necessary when the launch configuration is using a
-   * classpath other than the default for the project.
-   */
-  SDK_CONTAINER_PATH(""),
 
   /**
    * log level defaults to "info".
@@ -42,21 +41,28 @@ public enum GWTLaunchAttributes implements ILaunchConfigurationAttribute {
   OUTPUT_STYLE("OBFUSCATED"),
 
   /**
+   * SDK container path, only necessary when the launch configuration is using a
+   * classpath other than the default for the project.
+   */
+  SDK_CONTAINER_PATH(""),
+
+  SUPERDEVMODE_ENABLED(false),
+
+  SUPERDEVMODE_PORT("9876"),
+
+  /**
    * URL to launch.
    */
-  URL(""),
-  
-  CODE_SERVER_PORT("9997"),
-  
-  CODE_SERVER_PORT_AUTO(false);
-  
+  URL("");
+
+
   // TODO: these should be defined inside their own enum
   public static final String[] LOG_LEVELS = {
-      "ERROR", "WARN", "INFO", "TRACE", "DEBUG", "SPAM", "ALL"};
+    "ERROR", "WARN", "INFO", "TRACE", "DEBUG", "SPAM", "ALL"};
 
   // TODO: these should be defined inside their own enum
   public static final String[] OUTPUT_STYLES = {
-      "OBFUSCATED", "PRETTY", "DETAILED"};
+    "OBFUSCATED", "PRETTY", "DETAILED"};
 
   private final Object defaultValue;
 
@@ -76,4 +82,5 @@ public enum GWTLaunchAttributes implements ILaunchConfigurationAttribute {
   public String toString() {
     return getQualifiedName();
   }
+
 }

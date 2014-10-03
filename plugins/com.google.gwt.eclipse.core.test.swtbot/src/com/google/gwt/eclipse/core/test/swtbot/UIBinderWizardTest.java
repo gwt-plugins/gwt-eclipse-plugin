@@ -14,7 +14,7 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.test.swtbot;
 
-import com.google.gdt.eclipse.swtbot.SwtBotFileActions;
+import com.google.gdt.eclipse.swtbot.SwtBotMenuActions;
 import com.google.gdt.eclipse.swtbot.SwtBotProjectActions;
 import com.google.gwt.eclipse.core.test.swtbot.test.AbstractGWTPluginSwtBotTestCase;
 
@@ -26,7 +26,7 @@ import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 public class UIBinderWizardTest extends AbstractGWTPluginSwtBotTestCase {
 
   protected static final String PROJECT_NAME = "WebApp";
-  
+
   public void testUIBinderWizard() {
     SWTWorkbenchBot bot = getSwtWorkbenchBot();
 
@@ -35,7 +35,7 @@ public class UIBinderWizardTest extends AbstractGWTPluginSwtBotTestCase {
         true, true);
 
     // Then the editor will return these parts
-    String text = SwtBotFileActions.getEditorText(bot, "TestWithContent.java");
+    String text = SwtBotMenuActions.getEditorText(bot, "TestWithContent.java");
     assertTrue(text.contains("implements HasText"));
     assertTrue(text.contains("public TestWithContent()"));
     assertTrue(text.contains("public TestWithContent(String firstName)"));
@@ -47,24 +47,24 @@ public class UIBinderWizardTest extends AbstractGWTPluginSwtBotTestCase {
 
     // And then verify the creating another uibinder with out content
     // doesn't have content
-    String text2 = SwtBotFileActions.getEditorText(bot, "TestWithoutContent.java");
+    String text2 = SwtBotMenuActions.getEditorText(bot, "TestWithoutContent.java");
     assertFalse(text2.contains("implements HasText"));
     assertTrue(text2.contains("public TestWithoutContent()"));
     assertFalse(text2.contains("public TestWithoutContent(String firstName)"));
   }
-  
+
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    
+
     givenProjectIsCreated(PROJECT_NAME);
   }
 
   @Override
   protected void tearDown() throws Exception {
     thenTearDownProject(PROJECT_NAME);
-    
+
     super.tearDown();
   }
-  
+
 }

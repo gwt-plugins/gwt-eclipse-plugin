@@ -42,9 +42,9 @@ import java.util.Set;
 abstract class AbstractModule implements IModule {
 
   /**
-   * Ensures that all access to the module's underlying DOM model properly
-   * updates its internal reference count. Every access to the model should be
-   * make through the <code>readModel(IDOMModel)</code> method on a subclass.
+   * Ensures that all access to the module's underlying DOM model properly updates its internal
+   * reference count. Every access to the model should be make through the
+   * <code>readModel(IDOMModel)</code> method on a subclass.
    */
   // TODO: use XmlUtilities.ReadOperation instead
   protected abstract class ReadModelOperation {
@@ -68,19 +68,23 @@ abstract class AbstractModule implements IModule {
     protected abstract void readModel(IDOMModel model);
   }
 
+  protected static final String ADD_LINKER = "add-linker";
+
   protected static final String CLASS_ATTRIBUTE_NAME = "class";
 
   protected static final String ENTRY_POINT_TAG_NAME = "entry-point";
-  
+
   protected static final String INHERITS_TAG_NAME = "inherits";
 
   protected static final String NAME_ATTRIBUTE_NAME = "name";
-  
+
   protected static final String PATH_ATTRIBUTE_NAME = "path";
 
   protected static final String PUBLIC_PATH_TAG_NAME = "public";
 
   protected static final String RENAME_TO_ATTRIBUTE = "rename-to";
+
+  protected static final String SET_CONFIGURATION_PROPERTY = "set-configuration-property";
 
   protected static final String SOURCE_PATH_TAG_NAME = "source";
 
@@ -90,12 +94,12 @@ abstract class AbstractModule implements IModule {
    * @param doc the XML document
    * @param elementName the type of element to search
    * @param attrName the name of the attribute to get the value of
-   * @param defaultValue the default value, if there is no element of the
-   *          specified type (e.g., for <source> elements it is "client")
+   * @param defaultValue the default value, if there is no element of the specified type (e.g., for
+   *        <source> elements it is "client")
    * @return the list of attribute values
    */
-  private static List<String> getElementsAttributes(Document doc,
-      String elementName, String attrName, String defaultValue) {
+  private static List<String> getElementsAttributes(Document doc, String elementName,
+      String attrName, String defaultValue) {
     List<String> attrValues = new ArrayList<String>();
 
     NodeList elements = doc.getElementsByTagName(elementName);
@@ -144,6 +148,26 @@ abstract class AbstractModule implements IModule {
     return getQualifiedName().equals(((AbstractModule) o).getQualifiedName());
   }
 
+  /**
+   * returns a list of the <add-linker name="[return value]"/>
+   * 
+   * @return a list of the add linker names.
+   */
+  public List<String> getAddLinkers() {
+    final List<String> ret = new ArrayList<String>();
+
+    new ReadModelOperation() {
+      @Override
+      public void readModel(IDOMModel model) {
+        IDOMDocument doc = model.getDocument();
+
+        ret.addAll(getElementsAttributes(doc, ADD_LINKER, NAME_ATTRIBUTE_NAME, null));
+      }
+    }.run();
+
+    return ret;
+  }
+
   public String getCompiledName() {
     final String[] compiledName = new String[] {getQualifiedName()};
 
@@ -172,8 +196,7 @@ abstract class AbstractModule implements IModule {
         IDOMDocument doc = model.getDocument();
 
         // Extract the entry point classes
-        ret.addAll(getElementsAttributes(doc, ENTRY_POINT_TAG_NAME,
-            CLASS_ATTRIBUTE_NAME, null));
+        ret.addAll(getElementsAttributes(doc, ENTRY_POINT_TAG_NAME, CLASS_ATTRIBUTE_NAME, null));
       }
     }.run();
 
@@ -187,11 +210,11 @@ abstract class AbstractModule implements IModule {
       @Override
       protected void readModel(IDOMModel model) {
         IDOMDocument doc = model.getDocument();
-        for (String moduleName : getElementsAttributes(doc, INHERITS_TAG_NAME,
-            NAME_ATTRIBUTE_NAME, null)) {
+        for (String moduleName : getElementsAttributes(doc, INHERITS_TAG_NAME, NAME_ATTRIBUTE_NAME,
+            null)) {
           // don't look up any modules in jar files, because this is slllloow
-          AbstractModule module = (AbstractModule) ModuleUtils.findModule(
-              javaProject, moduleName, false);
+          AbstractModule module =
+              (AbstractModule) ModuleUtils.findModule(javaProject, moduleName, false);
           if (module != null) {
             modules.add(module);
           }
@@ -201,6 +224,7 @@ abstract class AbstractModule implements IModule {
 
     return modules;
   }
+
 
   public String getPackageName() {
     return Signature.getQualifier(getQualifiedName());
@@ -214,8 +238,8 @@ abstract class AbstractModule implements IModule {
       public void readModel(IDOMModel model) {
         IDOMDocument doc = model.getDocument();
 
-        List<String> publicPathNames = getElementsAttributes(doc,
-            PUBLIC_PATH_TAG_NAME, PATH_ATTRIBUTE_NAME, "public");
+        List<String> publicPathNames =
+            getElementsAttributes(doc, PUBLIC_PATH_TAG_NAME, PATH_ATTRIBUTE_NAME, "public");
 
         // TODO: if no path attribute, default to . (current directory)
 
@@ -243,6 +267,26 @@ abstract class AbstractModule implements IModule {
     return qualifiedName;
   }
 
+  /**
+   * Returns a list of the <set-configuration-property name="propertyName" value="[return value]"/>.
+   * 
+   * @return a list of the set configuration values for the property name.
+   */
+  public List<String> getSetConfigurationProperty(final String propertyName) {
+    final List<String> ret = new ArrayList<String>();
+
+    new ReadModelOperation() {
+      @Override
+      public void readModel(IDOMModel model) {
+        IDOMDocument doc = model.getDocument();
+
+        ret.addAll(getElementsAttributes(doc, SET_CONFIGURATION_PROPERTY, propertyName, null));
+      }
+    }.run();
+
+    return ret;
+  }
+
   public String getSimpleName() {
     return Signature.getSimpleName(getQualifiedName());
   }
@@ -255,8 +299,8 @@ abstract class AbstractModule implements IModule {
       public void readModel(IDOMModel model) {
         IDOMDocument doc = model.getDocument();
 
-        List<String> sourcePathNames = getElementsAttributes(doc,
-            SOURCE_PATH_TAG_NAME, PATH_ATTRIBUTE_NAME, "client");
+        List<String> sourcePathNames =
+            getElementsAttributes(doc, SOURCE_PATH_TAG_NAME, PATH_ATTRIBUTE_NAME, "client");
 
         // TODO: if no path attribute, default to . (current directory)
 
@@ -275,9 +319,8 @@ abstract class AbstractModule implements IModule {
     return getQualifiedName().hashCode();
   }
 
-  protected abstract IDOMModel doGetModelForRead() throws IOException,
-      CoreException;
+  protected abstract IDOMModel doGetModelForRead() throws IOException, CoreException;
 
   protected abstract String doGetPackageName();
-  
+
 }

@@ -50,12 +50,10 @@ public class GWTJarsRuntimeTest extends AbstractGWTPluginTestCase {
     }
 
     // There should be two GWT jars
-    assertEquals(2, numGwtJars);
+    assertEquals(3, numGwtJars);
   }
 
   public void testGetClasspathEntries() throws Exception {
-    IClasspathAttribute attribute = null;
-
     IClasspathEntry[] cpEntries = runtime.getClasspathEntries();
 
     // Look for the gwt-specific classpath entries
@@ -67,14 +65,12 @@ public class GWTJarsRuntimeTest extends AbstractGWTPluginTestCase {
     }
 
     // Make sure that there are two of them
-    assertEquals(2, gwtCpEntries.size());
+    assertEquals(3, gwtCpEntries.size());
 
     for (int i = 0; i < gwtCpEntries.size(); i++) {
       IClasspathEntry gwtClasspathEntry = gwtCpEntries.get(i);
-      assertEquals(IClasspathEntry.CPE_LIBRARY,
-          gwtClasspathEntry.getEntryKind());
-      assertEquals(IPackageFragmentRoot.K_BINARY,
-          gwtClasspathEntry.getContentKind());
+      assertEquals(IClasspathEntry.CPE_LIBRARY, gwtClasspathEntry.getEntryKind());
+      assertEquals(IPackageFragmentRoot.K_BINARY, gwtClasspathEntry.getContentKind());
 
       // Verify that our classpath entries point at the GWT javadoc.
       IClasspathAttribute[] extraAttributes = gwtClasspathEntry.getExtraAttributes();
@@ -83,16 +79,21 @@ public class GWTJarsRuntimeTest extends AbstractGWTPluginTestCase {
           extraAttributes[0].getName());
 
       /*
-       * Entries should have their javadoc location point at a directory with
-       * "index.html". Strangely, the values of these classpath attributes are
-       * specified as "file://" urls.
+       * Entries should have their javadoc location point at a directory with "index.html".
+       * Strangely, the values of these classpath attributes are specified as "file://" urls.
        */
-      File jdLocation = new File(
-          new URL(extraAttributes[0].getValue()).getFile());
+      File jdLocation = new File(new URL(extraAttributes[0].getValue()).getFile());
       assertTrue(jdLocation.exists());
       List<String> files1 = Arrays.asList(jdLocation.list());
       assertTrue(files1.contains("index.html"));
     }
+  }
+
+  public void testGetDevJar() throws Exception {
+    File devJar = runtime.getDevJar();
+    assertNotNull(devJar);
+    String devJarName = devJar.getName();
+    assertTrue(devJarName.equalsIgnoreCase(Util.getDevJarName(runtime.getInstallationPath())));
   }
 
   public void testGetValidationClasspathEntries() throws Exception {
@@ -101,8 +102,7 @@ public class GWTJarsRuntimeTest extends AbstractGWTPluginTestCase {
     // Look for the validation-specific classpath entries
     List<IClasspathEntry> validationCpEntries = new ArrayList<IClasspathEntry>();
     for (IClasspathEntry cpEntry : cpEntries) {
-      if (cpEntry.getPath().lastSegment().startsWith(
-          GWTRuntime.VALIDATION_API_JAR_PREFIX)) {
+      if (cpEntry.getPath().lastSegment().startsWith(GWTRuntime.VALIDATION_API_JAR_PREFIX)) {
         validationCpEntries.add(cpEntry);
       }
     }
@@ -128,10 +128,8 @@ public class GWTJarsRuntimeTest extends AbstractGWTPluginTestCase {
 
     for (IClasspathEntry validationClasspathEntry : validationCpEntries) {
       // Verify the entry types
-      assertEquals(IClasspathEntry.CPE_LIBRARY,
-          validationClasspathEntry.getEntryKind());
-      assertEquals(IPackageFragmentRoot.K_BINARY,
-          validationClasspathEntry.getContentKind());
+      assertEquals(IClasspathEntry.CPE_LIBRARY, validationClasspathEntry.getEntryKind());
+      assertEquals(IPackageFragmentRoot.K_BINARY, validationClasspathEntry.getContentKind());
 
       if (validationClasspathEntry.getPath().lastSegment().contains("sources")) {
         sourcesEntry = validationClasspathEntry;
@@ -146,27 +144,22 @@ public class GWTJarsRuntimeTest extends AbstractGWTPluginTestCase {
 
     // Verify that the source attachment path has been set for the binary
     // entry
-    assertTrue(binaryEntry.getSourceAttachmentPath().equals(
-        sourcesEntry.getPath()));
-  }
-
-  public void testGetDevJar() throws Exception {
-    File devJar = runtime.getDevJar();
-    assertNotNull(devJar);
-    String devJarName = devJar.getName();
-    assertTrue(devJarName.equalsIgnoreCase(Util.getDevJarName(runtime.getInstallationPath())));
+    assertTrue(binaryEntry.getSourceAttachmentPath().equals(sourcesEntry.getPath()));
   }
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
 
+    // add the default runtime
+    GwtRuntimeTestUtilities.addDefaultRuntime();
+
     // We know the default runtime is a GWTJarsRuntime
     runtime = GwtRuntimeTestUtilities.getDefaultRuntime();
   }
 
   private boolean isGWTJar(GWTJarsRuntime jarsRuntime, String jarName) {
-    return GWTRuntime.GWT_USER_JAR.equals(jarName)
+    return GWTRuntime.GWT_USER_JAR.equals(jarName) || GWTRuntime.GWT_CODESERVER_JAR.equals(jarName)
         || jarName.equalsIgnoreCase(Util.getDevJarName(jarsRuntime.getInstallationPath()))
         || "gwt-servlet.jar".equals(jarName);
   }

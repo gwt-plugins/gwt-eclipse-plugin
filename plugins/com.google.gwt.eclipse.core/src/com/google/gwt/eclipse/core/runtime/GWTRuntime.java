@@ -23,6 +23,7 @@ import com.google.gdt.eclipse.core.sdk.SdkFactory;
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
 import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.GWTPluginLog;
+import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.util.Util;
 
@@ -56,28 +57,27 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Represents a GWT runtime and provides a URLClassLoader that can be used to
- * load the gwt-user and gwt-dev classes.
+ * Represents a GWT runtime and provides a URLClassLoader that can be used to load the gwt-user and
+ * gwt-dev classes.
  * 
  * TODO: Move this and subtypes into the sdk package.
  */
 public abstract class GWTRuntime extends AbstractSdk {
 
   /**
-   * A factory that returns a project-bound GWT SDK. Extension points can
-   * implement this interface to return an externally-computed project-bound GWT
-   * SDK in response to calls to {@link GWTRuntime#findSdkFor(IJavaProject)}.
+   * A factory that returns a project-bound GWT SDK. Extension points can implement this interface
+   * to return an externally-computed project-bound GWT SDK in response to calls to
+   * {@link GWTRuntime#findSdkFor(IJavaProject)}.
    */
   public interface IProjectBoundSdkFactory {
     ProjectBoundSdk newInstance(IJavaProject javaProject);
   }
   /**
-   * Models an {@link com.google.gdt.eclipse.core.sdk.Sdk} that was detected on
-   * a project's classpath.
+   * Models an {@link com.google.gdt.eclipse.core.sdk.Sdk} that was detected on a project's
+   * classpath.
    */
   public static class ProjectBoundSdk extends GWTRuntime {
-    private static IPath getAbsoluteLocation(IPath workspaceRelativePath,
-        IProject project) {
+    private static IPath getAbsoluteLocation(IPath workspaceRelativePath, IProject project) {
       IPath relativeSourcePath = workspaceRelativePath.removeFirstSegments(1);
       return project.getFolder(relativeSourcePath).getLocation();
     }
@@ -90,24 +90,20 @@ public abstract class GWTRuntime extends AbstractSdk {
     }
 
     /**
-     * Returns a {@link ClassLoader} that is backed by the project's runtime
-     * classpath.
+     * Returns a {@link ClassLoader} that is backed by the project's runtime classpath.
      * 
-     * TODO: This returns a classloader which contains ALL
-     * of the jars of the project. Lookups on this thing are going to be SLOW.
-     * Can we optimize this? We could create a classloader that just contains
-     * the jars that GWT requires. Maybe caching is the right solution here.
+     * TODO: This returns a classloader which contains ALL of the jars of the project. Lookups on
+     * this thing are going to be SLOW. Can we optimize this? We could create a classloader that
+     * just contains the jars that GWT requires. Maybe caching is the right solution here.
      * 
-     * TODO: Why can't we just delegate to
-     * {@link #getClasspathEntries()} when generating the classloader URLs? Why
-     * do we have to add every URL that is part of the project? That would
-     * certainly speed up lookups on this classloader. Maybe we cannot do this
-     * because project-bound sdks handle the case of source-based runtimes, and
-     * in that case, we need all of the dependencies as part of the classloader.
+     * TODO: Why can't we just delegate to {@link #getClasspathEntries()} when generating the
+     * classloader URLs? Why do we have to add every URL that is part of the project? That would
+     * certainly speed up lookups on this classloader. Maybe we cannot do this because project-bound
+     * sdks handle the case of source-based runtimes, and in that case, we need all of the
+     * dependencies as part of the classloader.
      */
     @Override
-    public URLClassLoader createClassLoader() throws SdkException,
-        MalformedURLException {
+    public URLClassLoader createClassLoader() throws SdkException, MalformedURLException {
       try {
         String[] defaultRuntimeClasspath = JavaRuntime.computeDefaultRuntimeClassPath(javaProject);
         URL[] urls = new URL[defaultRuntimeClasspath.length];
@@ -122,17 +118,15 @@ public abstract class GWTRuntime extends AbstractSdk {
     }
 
     /**
-     * Returns the classpath entries from the {@link IJavaProject}'s raw
-     * classpath that make up the {@link com.google.gdt.eclipse.core.sdk.Sdk}.
+     * Returns the classpath entries from the {@link IJavaProject}'s raw classpath that make up the
+     * {@link com.google.gdt.eclipse.core.sdk.Sdk}.
      * 
-     * TODO: Can we clean up uses of this method? It
-     * really only seems to be useful in the case where you want to derive a
-     * classpath container from an SDK. I'm not sure if this should be a
+     * TODO: Can we clean up uses of this method? It really only seems to be useful in the case
+     * where you want to derive a classpath container from an SDK. I'm not sure if this should be a
      * first-class method on an SDK.
      * 
-     * TODO: Get rid of this method. It's only needed when a classpath container
-     * needs to be initialized, and classpath containers are never initialized
-     * from ProjectBoundSdks.
+     * TODO: Get rid of this method. It's only needed when a classpath container needs to be
+     * initialized, and classpath containers are never initialized from ProjectBoundSdks.
      */
     public IClasspathEntry[] getClasspathEntries() {
       try {
@@ -149,17 +143,21 @@ public abstract class GWTRuntime extends AbstractSdk {
           classpathEntries.add(gwtUser);
         }
 
+        IClasspathEntry gwtCodeServer = findGwtCodeServerClasspathEntry();
+        if (gwtCodeServer != null) {
+          classpathEntries.add(gwtCodeServer);
+        }
+
         final List<IClasspathEntry> rawClasspath = Arrays.asList(javaProject.getRawClasspath());
 
         // Sort the classpath entries so they match the declared order of the
         // raw classpath.
         IClasspathEntry[] classpathEntryArray = classpathEntries.toArray(NO_ICLASSPATH_ENTRIES);
-        Collections.sort(Arrays.asList(classpathEntryArray),
-            new Comparator<IClasspathEntry>() {
-              public int compare(IClasspathEntry o1, IClasspathEntry o2) {
-                return rawClasspath.indexOf(o1) - rawClasspath.indexOf(o2);
-              }
-            });
+        Collections.sort(Arrays.asList(classpathEntryArray), new Comparator<IClasspathEntry>() {
+          public int compare(IClasspathEntry o1, IClasspathEntry o2) {
+            return rawClasspath.indexOf(o1) - rawClasspath.indexOf(o2);
+          }
+        });
 
         return classpathEntryArray;
       } catch (JavaModelException e) {
@@ -245,11 +243,12 @@ public abstract class GWTRuntime extends AbstractSdk {
     }
 
     /**
-     * Returns the value of the gwt_devjar variable or <code>null</code> if the
-     * variable is not defined.
+     * Returns the value of the gwt_devjar variable or <code>null</code> if the variable is not
+     * defined.
      */
     private IPath computeGwtDevJarVariableValue() {
-      IStringVariableManager variableManager = VariablesPlugin.getDefault().getStringVariableManager();
+      IStringVariableManager variableManager =
+          VariablesPlugin.getDefault().getStringVariableManager();
       IValueVariable valueVariable = variableManager.getValueVariable("gwt_devjar");
       if (valueVariable != null) {
         String value = valueVariable.getValue();
@@ -281,13 +280,11 @@ public abstract class GWTRuntime extends AbstractSdk {
       return null;
     }
 
-    private IPath computeInstallPath(IClasspathEntry classpathEntry)
-        throws JavaModelException {
+    private IPath computeInstallPath(IClasspathEntry classpathEntry) throws JavaModelException {
       IPath installPath = null;
       switch (classpathEntry.getEntryKind()) {
         case IClasspathEntry.CPE_CONTAINER:
-          GWTRuntime sdk = GWTPreferences.getSdkManager().findSdkForPath(
-              classpathEntry.getPath());
+          GWTRuntime sdk = GWTPreferences.getSdkManager().findSdkForPath(classpathEntry.getPath());
           if (sdk != null) {
             IClasspathEntry[] classpathEntries = sdk.getClasspathEntries();
             if (classpathEntries.length > 0) {
@@ -313,21 +310,22 @@ public abstract class GWTRuntime extends AbstractSdk {
       return installPath;
     }
 
-    private IPath computeInstallPathFromProject(IJavaProject jProject)
-        throws JavaModelException {
+    private IPath computeInstallPathFromProject(IJavaProject jProject) throws JavaModelException {
       IPath buildStagingDirectory = null;
       for (IClasspathEntry rawClasspath : jProject.getRawClasspath()) {
         if (rawClasspath.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-          IPath sourcePathLocation = getAbsoluteLocation(
-              rawClasspath.getPath(), jProject.getProject());
+          IPath sourcePathLocation =
+              getAbsoluteLocation(rawClasspath.getPath(), jProject.getProject());
 
           // Project could be gwt-user or gwt-dev and their source paths vary
           // from 2 to 3 segments - Hack.
-          IPath outputLocation = sourcePathLocation.removeLastSegments(3).append(
-              GWTProjectsRuntime.STAGING_FOLDER_RELATIVE_LOCATION);
+          IPath outputLocation =
+              sourcePathLocation.removeLastSegments(3).append(
+                  GWTProjectsRuntime.STAGING_FOLDER_RELATIVE_LOCATION);
           if (!outputLocation.toFile().exists()) {
-            outputLocation = sourcePathLocation.removeLastSegments(2).append(
-                GWTProjectsRuntime.STAGING_FOLDER_RELATIVE_LOCATION);
+            outputLocation =
+                sourcePathLocation.removeLastSegments(2).append(
+                    GWTProjectsRuntime.STAGING_FOLDER_RELATIVE_LOCATION);
           }
 
           if (outputLocation.toFile().exists()) {
@@ -344,33 +342,40 @@ public abstract class GWTRuntime extends AbstractSdk {
       return null;
     }
 
-    private IPath computeInstallPathFromProjectOrSourceClasspathEntry(
-        IClasspathEntry classpathEntry) throws JavaModelException {
+    private IPath computeInstallPathFromProjectOrSourceClasspathEntry(IClasspathEntry classpathEntry)
+        throws JavaModelException {
       IPath installPath;
       IPath entryPath = classpathEntry.getPath();
       // First segment should be project name
       String projectName = entryPath.segment(0);
-      IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
-          projectName);
+      IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
       IJavaProject jProject = JavaCore.create(project);
       installPath = computeInstallPathFromProject(jProject);
       return installPath;
     }
 
-    private IClasspathEntry findGwtDevClasspathEntry()
-        throws JavaModelException {
-      IClasspathEntry gwtDev = ClasspathUtilities.findRawClasspathEntryFor(
-          javaProject, "com.google.gwt.dev.About");
+    private IClasspathEntry findGwtCodeServerClasspathEntry() throws JavaModelException {
+      IClasspathEntry entry =
+          ClasspathUtilities.findRawClasspathEntryFor(javaProject,
+              GwtLaunchConfigurationProcessorUtilities.SUPERDEVMODE_MODE_MAIN_TYPE);
+      return entry;
+    }
+
+    private IClasspathEntry findGwtDevClasspathEntry() throws JavaModelException {
+      IClasspathEntry gwtDev =
+          ClasspathUtilities.findRawClasspathEntryFor(javaProject, "com.google.gwt.dev.About");
       return gwtDev;
     }
 
-    private IClasspathEntry findGwtUserClasspathEntry()
-        throws JavaModelException {
-      IClasspathEntry gwtUser = ClasspathUtilities.findRawClasspathEntryFor(
-          javaProject, "com.google.gwt.core.client.GWT");
+    private IClasspathEntry findGwtUserClasspathEntry() throws JavaModelException {
+      IClasspathEntry gwtUser =
+          ClasspathUtilities
+              .findRawClasspathEntryFor(javaProject, "com.google.gwt.core.client.GWT");
       return gwtUser;
     }
   }
+
+  public static final String GWT_CODESERVER_JAR = "gwt-codeserver.jar";
 
   public static final String GWT_DEV_NO_PLATFORM_JAR = "gwt-dev.jar";
 
@@ -391,18 +396,18 @@ public abstract class GWTRuntime extends AbstractSdk {
   private static final File[] NO_FILES = new File[0];
 
   /**
-   * Finds the {@link GWTRuntime} used by the specified project. Note that the
-   * SDK need not have been registered.
+   * Finds the {@link GWTRuntime} used by the specified project. Note that the SDK need not have
+   * been registered.
    */
   public static GWTRuntime findSdkFor(IJavaProject javaProject) {
 
-    ExtensionQuery<GWTRuntime.IProjectBoundSdkFactory> extQuery = new ExtensionQuery<GWTRuntime.IProjectBoundSdkFactory>(
-        GWTPlugin.PLUGIN_ID, "gwtProjectBoundSdkFactory", "class");
+    ExtensionQuery<GWTRuntime.IProjectBoundSdkFactory> extQuery =
+        new ExtensionQuery<GWTRuntime.IProjectBoundSdkFactory>(GWTPlugin.PLUGIN_ID,
+            "gwtProjectBoundSdkFactory", "class");
     List<ExtensionQuery.Data<GWTRuntime.IProjectBoundSdkFactory>> sdkFactories = extQuery.getData();
     for (ExtensionQuery.Data<GWTRuntime.IProjectBoundSdkFactory> sdkFactory : sdkFactories) {
 
-      GWTRuntime externalGWTRuntime = sdkFactory.getExtensionPointData().newInstance(
-          javaProject);
+      GWTRuntime externalGWTRuntime = sdkFactory.getExtensionPointData().newInstance(javaProject);
       if (externalGWTRuntime != null && externalGWTRuntime.validate().isOK()) {
         return externalGWTRuntime;
       }
@@ -452,21 +457,21 @@ public abstract class GWTRuntime extends AbstractSdk {
   }
 
   // FIXME: Why is this returning URLClassLoader instead of ClassLoader
-  public abstract URLClassLoader createClassLoader() throws SdkException,
-      MalformedURLException;
+  public abstract URLClassLoader createClassLoader() throws SdkException, MalformedURLException;
 
   public abstract File getDevJar() throws SdkException, JavaModelException;
 
+  @Override
   public String getVersion() {
     URLClassLoader cl;
-    final String exceptionMessage = "Cannot get version of GWT SDK \""
-        + getName() + "\", ensure it is configured properly";
+    final String exceptionMessage =
+        "Cannot get version of GWT SDK \"" + getName() + "\", ensure it is configured properly";
     try {
       cl = createClassLoader();
       // Extract version from gwt-dev-<platform>
       Class<?> about = cl.loadClass("com.google.gwt.dev.About");
       Method method = about.getMethod("getGwtVersionNum");
-      String versionStr = (String) method.invoke(null);            
+      String versionStr = (String) method.invoke(null);
       return SdkUtils.cleanupVersion(versionStr);
     } catch (MalformedURLException e) {
       GWTPluginLog.logError(e, exceptionMessage);
@@ -490,14 +495,13 @@ public abstract class GWTRuntime extends AbstractSdk {
   }
 
   /**
-   * Returns <code>true</code> if the {@link GWTRuntime} references the gwt-dev
-   * project.
+   * Returns <code>true</code> if the {@link GWTRuntime} references the gwt-dev project.
    */
   public boolean usesGwtDevProject() {
     // Overridden in subclasses.
     return false;
   }
 
+  @Override
   public abstract IStatus validate();
 }
-

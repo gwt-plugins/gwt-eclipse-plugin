@@ -33,11 +33,11 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 
+ * GWT Launch configuration
  */
 public class GWTLaunchConfiguration {
-  public static List<String> computeCompileDynamicVMArgsAsList(IJavaProject javaProject) {
 
+  public static List<String> computeCompileDynamicVMArgsAsList(IJavaProject javaProject) {
     return computeDynamicVMArgs(javaProject);
   }
 
@@ -54,48 +54,53 @@ public class GWTLaunchConfiguration {
     return StringUtilities.join(computeJunitDynamicVMArgsAsList(javaProject), " ");
   }
 
-  public static String getCodeServerPort(ILaunchConfiguration launchConfiguration) 
+  public static String getCodeServerPort(ILaunchConfiguration launchConfiguration)
       throws CoreException {
     return getStringAttribute(launchConfiguration, GWTLaunchAttributes.CODE_SERVER_PORT);
   }
-  
+
   public static boolean getCodeServerPortAuto(ILaunchConfiguration launchConfiguration)
       throws CoreException {
     return getBooleanAttribute(launchConfiguration, GWTLaunchAttributes.CODE_SERVER_PORT_AUTO);
   }
-  
+
   /**
-   * @return the persisted entry point modules, or an empty list if the default
-   *         modules should be used
-   * @see com.google.gwt.eclipse.core.launch.processors.ModuleArgumentProcessor#getDefaultModules(org.eclipse.core.resources.IProject project, ILaunchConfiguration configuration)
+   * @return the persisted entry point modules, or an empty list if the default modules should be
+   *         used
+   * @see com.google.gwt.eclipse.core.launch.processors.ModuleArgumentProcessor#getDefaultModules(org.eclipse.core.resources.IProject
+   *      project, ILaunchConfiguration configuration)
    */
-  public static List<String> getEntryPointModules(
-      ILaunchConfiguration launchConfiguration) throws CoreException {
-    return getListAttribute(launchConfiguration,
-        GWTLaunchAttributes.ENTRY_POINT_MODULES);
+  public static List<String> getEntryPointModules(ILaunchConfiguration launchConfiguration)
+      throws CoreException {
+    return getListAttribute(launchConfiguration, GWTLaunchAttributes.ENTRY_POINT_MODULES);
   }
 
-  public static String getLogLevel(ILaunchConfiguration launchConfiguration)
-      throws CoreException {
-    return getStringAttribute(launchConfiguration,
-        GWTLaunchAttributes.LOG_LEVEL);
+  public static String getLogLevel(ILaunchConfiguration launchConfiguration) throws CoreException {
+    return getStringAttribute(launchConfiguration, GWTLaunchAttributes.LOG_LEVEL);
   }
 
   public static String getOutputStyle(ILaunchConfiguration launchConfiguration)
       throws CoreException {
-    return getStringAttribute(launchConfiguration,
-        GWTLaunchAttributes.OUTPUT_STYLE);
+    return getStringAttribute(launchConfiguration, GWTLaunchAttributes.OUTPUT_STYLE);
   }
 
-  public static IPath getSdkContainerPath(
-      ILaunchConfiguration launchConfiguration) throws CoreException {
-    String pathAsString = getStringAttribute(launchConfiguration,
-        GWTLaunchAttributes.SDK_CONTAINER_PATH);
+  public static IPath getSdkContainerPath(ILaunchConfiguration launchConfiguration)
+      throws CoreException {
+    String pathAsString =
+        getStringAttribute(launchConfiguration, GWTLaunchAttributes.SDK_CONTAINER_PATH);
     return new Path(pathAsString);
   }
 
-  public static String getStartupUrl(ILaunchConfiguration launchConfiguration)
+  public static boolean getSuperDevModeEnabled(ILaunchConfiguration launchConfiguration)
       throws CoreException {
+    return getBooleanAttribute(launchConfiguration, GWTLaunchAttributes.SUPERDEVMODE_ENABLED);
+  }
+
+  public static String getSdmPort(ILaunchConfiguration launchConfiguration) throws CoreException {
+    return getStringAttribute(launchConfiguration, GWTLaunchAttributes.SUPERDEVMODE_PORT);
+  }
+
+  public static String getStartupUrl(ILaunchConfiguration launchConfiguration) throws CoreException {
     return getStringAttribute(launchConfiguration, GWTLaunchAttributes.URL);
   }
 
@@ -103,8 +108,7 @@ public class GWTLaunchConfiguration {
    * Dynamic VM args common to both computeJUnitDynamicVMArgsAsList and
    * computeCompileDynamicVMArgsAsList.
    */
-  private static List<String> computeDynamicVMArgs(
-      IJavaProject javaProject) {
+  private static List<String> computeDynamicVMArgs(IJavaProject javaProject) {
     ArrayList<String> out = new ArrayList<String>();
 
     String devJarPath = maybeGetDevJarPath(javaProject);
@@ -115,8 +119,7 @@ public class GWTLaunchConfiguration {
     return out;
   }
 
-  private static boolean getBooleanAttribute(
-      ILaunchConfiguration launchConfiguration,
+  private static boolean getBooleanAttribute(ILaunchConfiguration launchConfiguration,
       GWTLaunchAttributes launchAttribute) throws CoreException {
     return launchConfiguration.getAttribute(launchAttribute.getQualifiedName(),
         ((Boolean) launchAttribute.getDefaultValue()).booleanValue());
@@ -124,15 +127,13 @@ public class GWTLaunchConfiguration {
 
   // Unchecked warning is necessary for Eclipse 4.2 and below
   @SuppressWarnings("unchecked")
-  private static List<String> getListAttribute(
-      ILaunchConfiguration launchConfiguration,
+  private static List<String> getListAttribute(ILaunchConfiguration launchConfiguration,
       GWTLaunchAttributes launchAttribute) throws CoreException {
     return launchConfiguration.getAttribute(launchAttribute.getQualifiedName(),
         Collections.<String>emptyList());
   }
 
-  private static String getStringAttribute(
-      ILaunchConfiguration launchConfiguration,
+  private static String getStringAttribute(ILaunchConfiguration launchConfiguration,
       GWTLaunchAttributes launchAttribute) throws CoreException {
     // TODO: Unify this method which is duped in GaeLaunchConfiguration,
     // WebAppLaunchConfiguration and GWTLaunchConfiguration
@@ -141,18 +142,16 @@ public class GWTLaunchConfiguration {
   }
 
   /**
-   * Returns the path to the gwt-dev-xxx.jar in the event that the launch
-   * configuration depends on a GWT Contributor Runtime. Otherwise, returns the
-   * empty string.
+   * Returns the path to the gwt-dev-xxx.jar in the event that the launch configuration depends on a
+   * GWT Contributor Runtime. Otherwise, returns the empty string.
    */
   private static String maybeGetDevJarPath(IJavaProject project) {
 
     /*
-     * In order to figure out whether or not to add the -Dgwt.devjar argument to
-     * the list of VM args, we have to figure out the runtime that this launch
-     * configuration depends on. If the project is one of the GWT Runtime
-     * projects, then we'll definitely have to add the -Dgwt.devjar argument to
-     * the launch configuration.
+     * In order to figure out whether or not to add the -Dgwt.devjar argument to the list of VM
+     * args, we have to figure out the runtime that this launch configuration depends on. If the
+     * project is one of the GWT Runtime projects, then we'll definitely have to add the
+     * -Dgwt.devjar argument to the launch configuration.
      */
     try {
       if (GWTProjectsRuntime.isGWTRuntimeProject(project)) {
@@ -173,11 +172,9 @@ public class GWTLaunchConfiguration {
         return gwtDevJarFile.getAbsolutePath();
       }
     } catch (SdkException sdke) {
-      GWTPluginLog.logError(sdke,
-          "Unable to extract gwt dev jar argument from GWTProjectsRuntime");
+      GWTPluginLog.logError(sdke, "Unable to extract gwt dev jar argument from GWTProjectsRuntime");
     } catch (JavaModelException jme) {
-      GWTPluginLog.logError(jme,
-          "Unable to extract gwt dev jar argument from GWTProjectsRuntime");
+      GWTPluginLog.logError(jme, "Unable to extract gwt dev jar argument from GWTProjectsRuntime");
     }
     return "";
   }

@@ -1,29 +1,26 @@
 /*******************************************************************************
- * Copyright 2011 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google Inc. All Rights Reserved.
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License v1.0 which
+ * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  *******************************************************************************/
-package com.google.gdt.eclipse.suite.launch.processors;
+package com.google.gwt.eclipse.core.launch.processors;
 
-import com.google.appengine.eclipse.core.nature.GaeNature;
 import com.google.gdt.eclipse.core.ClasspathUtilities;
 import com.google.gdt.eclipse.core.ClasspathUtilities.ClassFinder;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.StringUtilities;
-import com.google.gdt.eclipse.core.WebAppUtilities;
-import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
-import com.google.gdt.eclipse.suite.GdtPlugin;
+import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 
 import org.eclipse.core.resources.IProject;
@@ -36,30 +33,17 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import java.util.List;
 
 /**
- * Sets the main type for a launch configuration. The policy is to set a relevant main type, unless
- * the user has manually changed the main type since we last set it. We detect this by storing our
- * previously set main type and comparing it to the current value. If equal, we try to update to the
- * main type applicable to the current project configuration.
+ * Main type(s) for GWT when super dev mode is enabled.
+ * 
+ * This is similar to the web app main types, although this is pulled out so its not cyclic.
  */
-public class MainTypeProcessor implements ILaunchConfigurationProcessor {
+public class SuperDevModeCodeServerMainTypeProcessor implements ILaunchConfigurationProcessor {
 
   /**
-   * Possible main types for a launch configuration.
+   * Possible main types for a launch.
    */
   public enum MainType {
-    GAE_APP_SERVER("com.google.appengine.tools.development.DevAppServerMain"),
-    /**
-     * GWT 2.0+
-     */
-    GWT_DEV_MODE("com.google.gwt.dev.DevMode"),
-    /**
-     * GWT 1.6+ (Jetty with War layout)
-     */
-    GWT_HOSTED_MODE("com.google.gwt.dev.HostedMode"),
-    /**
-     * GWT < 1.6 (servlets in gwt.xml)
-     */
-    GWT_SHELL("com.google.gwt.dev.GWTShell");
+    GWT_SUPERDEVMODE(GwtLaunchConfigurationProcessorUtilities.SUPERDEVMODE_MODE_MAIN_TYPE);
 
     public final String mainTypeName;
 
@@ -75,7 +59,7 @@ public class MainTypeProcessor implements ILaunchConfigurationProcessor {
     String findMainType(IJavaProject javaProject);
   }
 
-  private static final String ATTR_PREVIOUSLY_SET_MAIN_TYPE_NAME = GdtPlugin.PLUGIN_ID
+  private static final String ATTR_PREVIOUSLY_SET_MAIN_TYPE_NAME = GWTPlugin.PLUGIN_ID
       + "MainTypeProcessor.PREVIOUSLY_SET_MAIN_TYPE_NAME";
 
   /**
@@ -95,45 +79,12 @@ public class MainTypeProcessor implements ILaunchConfigurationProcessor {
 
   private static String computeMainTypeName(ILaunchConfigurationWorkingCopy config,
       IJavaProject javaProject, ClassFinder classFinder) throws CoreException {
-
     IProject project = javaProject.getProject();
 
-    ExtensionQuery<MainTypeProcessor.MainTypeFinder> extQuery =
-        new ExtensionQuery<MainTypeProcessor.MainTypeFinder>(GdtPlugin.PLUGIN_ID, "mainTypeFinder",
-            "class");
-    List<ExtensionQuery.Data<MainTypeProcessor.MainTypeFinder>> mainTypeFinders =
-        extQuery.getData();
-    for (ExtensionQuery.Data<MainTypeProcessor.MainTypeFinder> mainTypeFinder : mainTypeFinders) {
-      String mainTypeFromExtension =
-          mainTypeFinder.getExtensionPointData().findMainType(javaProject);
-      if (mainTypeFromExtension != null) {
-        return mainTypeFromExtension;
-      }
-    }
-
+    // If there are multiple Super Dev mode entry points, the logic would
+    // go here, like DevMode.
     if (GWTNature.isGWTProject(project)) {
-
-      if (!WebAppUtilities.isWebApp(project)) {
-        // We can use GWT shell for non-WAR projects (typically these are GWT
-        // 1.5 and older projects)
-
-        return MainType.GWT_SHELL.mainTypeName;
-      }
-
-      ClassLoader classLoader = LaunchConfigurationProcessorUtilities.getClassLoaderFor(config);
-      if (classFinder.exists(classLoader, MainType.GWT_DEV_MODE.mainTypeName)) {
-        return MainType.GWT_DEV_MODE.mainTypeName;
-      }
-
-      if (classFinder.exists(classLoader, MainType.GWT_HOSTED_MODE.mainTypeName)) {
-        return MainType.GWT_HOSTED_MODE.mainTypeName;
-      }
-
-      // Fallback
-      return MainType.GWT_SHELL.mainTypeName;
-
-    } else if (GaeNature.isGaeProject(project)) {
-      return MainType.GAE_APP_SERVER.mainTypeName;
+      return MainType.GWT_SUPERDEVMODE.mainTypeName;
     } else {
       return null;
     }
@@ -155,13 +106,16 @@ public class MainTypeProcessor implements ILaunchConfigurationProcessor {
 
   private final ClassFinder classFinder;
 
-  public MainTypeProcessor(ClasspathUtilities.ClassFinder classFinder) {
+  public SuperDevModeCodeServerMainTypeProcessor(ClasspathUtilities.ClassFinder classFinder) {
     this.classFinder = classFinder;
   }
 
-  @Override
   public void update(ILaunchConfigurationWorkingCopy config, IJavaProject javaProject,
       List<String> programArgs, List<String> vmArgs) throws CoreException {
+    if (!GWTNature.isGWTProject(javaProject.getProject())) {
+      return;
+    }
+
     String currentMainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
     String previouslySetMainTypeName = getPreviouslySetMainTypeName(config);
 
@@ -180,9 +134,9 @@ public class MainTypeProcessor implements ILaunchConfigurationProcessor {
     setMainTypeName(config, newMainTypeName);
   }
 
-  @Override
   public String validate(ILaunchConfiguration config, IJavaProject javaProject,
       List<String> programArgs, List<String> vmArgs) {
     return null;
   }
+
 }

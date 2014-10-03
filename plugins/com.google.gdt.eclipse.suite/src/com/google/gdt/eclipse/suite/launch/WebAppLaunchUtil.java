@@ -30,6 +30,7 @@ import com.google.gwt.eclipse.core.launch.ILaunchShortcutStrategyProvider;
 import com.google.gwt.eclipse.core.launch.LegacyGWTLaunchShortcutStrategy;
 import com.google.gwt.eclipse.core.launch.ModuleClasspathProvider;
 import com.google.gwt.eclipse.core.launch.WebAppLaunchShortcutStrategy;
+import com.google.gwt.eclipse.core.launch.processors.SuperDevModeArgumentProcessor;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 
 import org.eclipse.core.resources.IProject;
@@ -53,20 +54,24 @@ import java.util.List;
 public class WebAppLaunchUtil {
 
   /**
+   * Create a launch new configuration working copy.
+   * 
+   * @param isGwtSuperDevModeEnabled will turn on GWT super dev mode.
+   * @return ILaunchConfigurationWorkingCopy
    * @throws CoreException
    * @throws OperationCanceledException
    */
   public static ILaunchConfigurationWorkingCopy createLaunchConfigWorkingCopy(
-      String launchConfigName, final IProject project, String url,
-      boolean isExternal) throws CoreException, OperationCanceledException {
+      String launchConfigName, final IProject project, String url, boolean isExternal,
+      boolean isGwtSuperDevModeEnabled) throws CoreException, OperationCanceledException {
 
     assert (url != null);
 
     ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-    ILaunchConfigurationType type = manager.getLaunchConfigurationType(WebAppLaunchConfiguration.TYPE_ID);
+    ILaunchConfigurationType type =
+        manager.getLaunchConfigurationType(WebAppLaunchConfiguration.TYPE_ID);
 
-    final ILaunchConfigurationWorkingCopy wc = type.newInstance(null,
-        launchConfigName);
+    final ILaunchConfigurationWorkingCopy wc = type.newInstance(null, launchConfigName);
 
     setDefaults(wc, project);
     LaunchConfigurationUtilities.setProjectName(wc, project.getName());
@@ -85,36 +90,37 @@ public class WebAppLaunchUtil {
       // project nature(s)
       WarArgumentProcessor warArgProcessor = new WarArgumentProcessor();
       warArgProcessor.setWarDirFromLaunchConfigCreation(warDir.toOSString());
-      LaunchConfigurationProcessorUtilities.updateViaProcessor(warArgProcessor,
-          wc);
+      LaunchConfigurationProcessorUtilities.updateViaProcessor(warArgProcessor, wc);
     }
     // Link the launch configuration to the project. This will cause the
     // launch config to be deleted automatically if the project is deleted.
     wc.setMappedResources(new IResource[] {project});
 
+    // GWT SDM
+    GWTLaunchConfigurationWorkingCopy.setSuperDevModeEnabled(wc, isGwtSuperDevModeEnabled);
+    SuperDevModeArgumentProcessor sdmArgsProcessor = new SuperDevModeArgumentProcessor();
+    LaunchConfigurationProcessorUtilities.updateViaProcessor(sdmArgsProcessor, wc);
+
     return wc;
   }
 
   /**
-   * Given a resource, figure out what the target URL should be for a launch
-   * configuration corresponding to this resource. If the resource has several
-   * possible URLs that correspond to it, this method will cause a dialog to pop
-   * up, asking the user to choose one. If the resource's project uses GAE but
-   * not GWT, return empty string; GAE-only projects have no startup url. If the
-   * resource's project uses GWT 2.0+, return empty string since no URL is
-   * started in dev mode.
-   * 
-   * @param resource
-   * @throws CoreException
+   * Given a resource, figure out what the target URL should be for a launch configuration
+   * corresponding to this resource. If the resource has several possible URLs that correspond to
+   * it, this method will cause a dialog to pop up, asking the user to choose one. If the resource's
+   * project uses GAE but not GWT, return empty string; GAE-only projects have no startup url. If
+   * the resource's project uses GWT 2.0+, return empty string since no URL is started in dev mode.
    */
-  public static String determineStartupURL(IResource resource,
-      boolean isExternalLaunch) throws CoreException {
+  public static String determineStartupURL(IResource resource, boolean isExternalLaunch)
+      throws CoreException {
     ILaunchShortcutStrategy strategy = null;
     IProject project = resource.getProject();
 
-    ExtensionQuery<ILaunchShortcutStrategyProvider> extQuery = new ExtensionQuery<ILaunchShortcutStrategyProvider>(
-        GWTPlugin.PLUGIN_ID, "launchShortcutStrategy", "class");
-    List<ExtensionQuery.Data<ILaunchShortcutStrategyProvider>> strategyProviderInfos = extQuery.getData();
+    ExtensionQuery<ILaunchShortcutStrategyProvider> extQuery =
+        new ExtensionQuery<ILaunchShortcutStrategyProvider>(GWTPlugin.PLUGIN_ID,
+            "launchShortcutStrategy", "class");
+    List<ExtensionQuery.Data<ILaunchShortcutStrategyProvider>> strategyProviderInfos =
+        extQuery.getData();
 
     for (ExtensionQuery.Data<ILaunchShortcutStrategyProvider> data : strategyProviderInfos) {
       strategy = data.getExtensionPointData().getStrategy(project);
@@ -158,18 +164,15 @@ public class WebAppLaunchUtil {
 
   /**
    * Returns the project associated with this launch configuration, or <code>
-   * null</code>
-   * if there is no project assigned or if the project does not exist.
+   * null</code> if there is no project assigned or if the project does not exist.
    */
-  public static IProject getProject(ILaunchConfiguration configuration)
-      throws CoreException {
+  public static IProject getProject(ILaunchConfiguration configuration) throws CoreException {
     String projectName = LaunchConfigurationUtilities.getProjectName(configuration);
     if (projectName.length() == 0) {
       return null;
     }
 
-    IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
-        projectName);
+    IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
     return project.exists() ? project : null;
   }
 
@@ -177,10 +180,8 @@ public class WebAppLaunchUtil {
     return GaeNature.isGaeProject(project) && !GWTNature.isGWTProject(project);
   }
 
-  public static void setDefaults(ILaunchConfigurationWorkingCopy configuration,
-      IProject project) {
-    configuration.setAttribute(
-        IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
+  public static void setDefaults(ILaunchConfigurationWorkingCopy configuration, IProject project) {
+    configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
         ModuleClasspathProvider.computeProviderId(project));
   }
 }
