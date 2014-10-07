@@ -53,8 +53,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Represents a GWT runtime that is based on the Eclipse projects containing the
- * GWT trunk.
+ * Represents a GWT runtime that is based on the Eclipse projects containing the GWT trunk.
  */
 public class GWTProjectsRuntime extends GWTRuntime {
 
@@ -65,8 +64,8 @@ public class GWTProjectsRuntime extends GWTRuntime {
   static final String GWT_DEV_FALLBACK_PROJECT_NAME = "gwt-dev";
 
   /*
-   * This location (path on disk) is relative to the folder that is the
-   * grandparent of a source folder in either the gwt-user or gwt-dev projects.
+   * This location (path on disk) is relative to the folder that is the grandparent of a source
+   * folder in either the gwt-user or gwt-dev projects.
    */
   static final String STAGING_FOLDER_RELATIVE_LOCATION = "build/staging";
 
@@ -83,13 +82,11 @@ public class GWTProjectsRuntime extends GWTRuntime {
   private static final String TEST_SUPER_SOURCE_FOLDER_NAME = "test-super";
 
   /**
-   * FIXME - Were it not for the super source stuff, we would need this method.
-   * Can't we provide a way for users to state which folders are super-source,
-   * etc?
+   * FIXME - Were it not for the super source stuff, we would need this method. Can't we provide a
+   * way for users to state which folders are super-source, etc?
    */
   public static List<IRuntimeClasspathEntry> getGWTRuntimeProjectSourceEntries(
-      IJavaProject project, boolean includeTestSourceEntries)
-      throws SdkException {
+      IJavaProject project, boolean includeTestSourceEntries) throws SdkException {
 
     assert (isGWTRuntimeProject(project) && project.exists());
 
@@ -101,8 +98,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
     try {
       gwtUserJavaProjClasspathEntries = project.getRawClasspath();
     } catch (JavaModelException e) {
-      throw new SdkException("Cannot extract raw classpath from " + projectName
-          + " project.");
+      throw new SdkException("Cannot extract raw classpath from " + projectName + " project.");
     }
 
     Set<IPath> absoluteSuperSourcePaths = new HashSet<IPath>();
@@ -116,8 +112,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
           continue;
         }
 
-        if (GWTProjectUtilities.isTestPath(sourcePath)
-            && !includeTestSourceEntries) {
+        if (GWTProjectUtilities.isTestPath(sourcePath) && !includeTestSourceEntries) {
           // Ignore test paths, unless it is specified explicitly that we should
           // include them.
           continue;
@@ -127,8 +122,8 @@ public class GWTProjectsRuntime extends GWTRuntime {
 
         // Figure out the location of the super source path.
 
-        IPath absoluteSuperSourcePath = sourcePath.removeLastSegments(1).append(
-            SUPER_SOURCE_FOLDER_NAME);
+        IPath absoluteSuperSourcePath =
+            sourcePath.removeLastSegments(1).append(SUPER_SOURCE_FOLDER_NAME);
         IPath relativeSuperSourcePath = absoluteSuperSourcePath.removeFirstSegments(1);
 
         if (absoluteSuperSourcePaths.contains(absoluteSuperSourcePath)) {
@@ -138,16 +133,16 @@ public class GWTProjectsRuntime extends GWTRuntime {
 
         if (project.getProject().getFolder(relativeSuperSourcePath).exists()) {
           /*
-           * We've found the super source path, and we've not added it already.
-           * The existence test uses a relative path, but the creation of a
-           * runtime classpath entry requires an absolute path.
+           * We've found the super source path, and we've not added it already. The existence test
+           * uses a relative path, but the creation of a runtime classpath entry requires an
+           * absolute path.
            */
           sourceEntries.add(JavaRuntime.newArchiveRuntimeClasspathEntry(absoluteSuperSourcePath));
           absoluteSuperSourcePaths.add(absoluteSuperSourcePath);
         }
 
-        IPath absoluteTestSuperSourcePath = sourcePath.removeLastSegments(1).append(
-            TEST_SUPER_SOURCE_FOLDER_NAME);
+        IPath absoluteTestSuperSourcePath =
+            sourcePath.removeLastSegments(1).append(TEST_SUPER_SOURCE_FOLDER_NAME);
         IPath relativeTestSuperSourcePath = absoluteTestSuperSourcePath.removeFirstSegments(1);
         if (absoluteSuperSourcePaths.contains(absoluteTestSuperSourcePath)) {
           // I've already included this path.
@@ -157,19 +152,19 @@ public class GWTProjectsRuntime extends GWTRuntime {
         if (includeTestSourceEntries
             && project.getProject().getFolder(relativeTestSuperSourcePath).exists()) {
           /*
-           * We've found the super source path, and we've not added it already.
-           * The existence test uses a relative path, but the creation of a
-           * runtime classpath entry requires an absolute path.
+           * We've found the super source path, and we've not added it already. The existence test
+           * uses a relative path, but the creation of a runtime classpath entry requires an
+           * absolute path.
            */
-          sourceEntries.add(JavaRuntime.newArchiveRuntimeClasspathEntry(absoluteTestSuperSourcePath));
+          sourceEntries.add(JavaRuntime
+              .newArchiveRuntimeClasspathEntry(absoluteTestSuperSourcePath));
           absoluteSuperSourcePaths.add(absoluteTestSuperSourcePath);
         }
       }
     }
 
     if (absoluteSuperSourcePaths.isEmpty()) {
-      GWTPluginLog.logError(
-          "There were no super source folders found for the project '{0}'",
+      GWTPluginLog.logError("There were no super source folders found for the project '{0}'",
           project.getProject().getName());
     }
 
@@ -179,34 +174,30 @@ public class GWTProjectsRuntime extends GWTRuntime {
   public static boolean isGWTRuntimeProject(IJavaProject project) {
     String projectName = project.getProject().getName();
     return (GWT_USER_PROJECT_NAME.equals(projectName)
-        || projectName.equals(GWT_DEV_FALLBACK_PROJECT_NAME)
-        || projectName.equals(getPlatformSpecificDevProjectName()));
+        || projectName.equals(GWT_DEV_FALLBACK_PROJECT_NAME) || projectName
+          .equals(getPlatformSpecificDevProjectName()));
   }
 
   /**
-   * Convenience method to synthesize a GWT Contributor Runtime. The runtime is
-   * not actually persisted to the user's set of SDKs.
+   * Convenience method to synthesize a GWT Contributor Runtime. The runtime is not actually
+   * persisted to the user's set of SDKs.
    * 
-   * This method can be useful when working with the GWT Runtime projects (as
-   * they do not have an SDK themselves).
+   * This method can be useful when working with the GWT Runtime projects (as they do not have an
+   * SDK themselves).
    */
   public static GWTProjectsRuntime syntheziseContributorRuntime() {
-    return (GWTProjectsRuntime) GWTRuntime.getFactory().newInstance(
-        "temp contributor SDK",
+    return (GWTProjectsRuntime) GWTRuntime.getFactory().newInstance("temp contributor SDK",
         ResourcesPlugin.getWorkspace().getRoot().getLocation());
   }
 
   /**
-   * @return a status with error severity if the JAR does not exist, otherwise
-   *         OK severity (in the case of a JavaModelException, it is logged and
-   *         OK is returned)
+   * @return a status with error severity if the JAR does not exist, otherwise OK severity (in the
+   *         case of a JavaModelException, it is logged and OK is returned)
    */
   static IStatus getGwtDevJarStatus(GWTRuntime sdk) {
     try {
       if (sdk.getDevJar() == null) {
-        return new Status(
-            IStatus.ERROR,
-            GWTPlugin.PLUGIN_ID,
+        return new Status(IStatus.ERROR, GWTPlugin.PLUGIN_ID,
             "The gwt-dev JAR is missing, ensure your GWT trunk has been built from the command line.");
       }
     } catch (SdkException e) {
@@ -226,8 +217,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
     return VERSION;
   }
 
-  private static IPath getAbsoluteLocation(IPath workspaceRelativePath,
-      IProject project) {
+  private static IPath getAbsoluteLocation(IPath workspaceRelativePath, IProject project) {
     IPath relativeSourcePath = workspaceRelativePath.removeFirstSegments(1);
     return project.getFolder(relativeSourcePath).getLocation();
   }
@@ -241,14 +231,13 @@ public class GWTProjectsRuntime extends GWTRuntime {
   }
 
   @Override
-  public URLClassLoader createClassLoader() throws SdkException,
-      MalformedURLException {
+  public URLClassLoader createClassLoader() throws SdkException, MalformedURLException {
     IJavaProject userProject = findUserProject();
     if (userProject != null) {
       IRuntimeClasspathEntry outputEntry = JavaRuntime.newDefaultProjectClasspathEntry(userProject);
       try {
-        IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry = JavaRuntime.resolveRuntimeClasspathEntry(
-            outputEntry, userProject);
+        IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry =
+            JavaRuntime.resolveRuntimeClasspathEntry(outputEntry, userProject);
         List<URL> urls = new ArrayList<URL>();
         for (IRuntimeClasspathEntry entry : resolveRuntimeClasspathEntry) {
           urls.add(new File(entry.getLocation()).toURI().toURL());
@@ -270,8 +259,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
     IJavaProject devProject = findDevProject();
     IJavaProject userProject = findUserProject();
     if (devProject != null && userProject != null) {
-      return new IClasspathEntry[] {
-          JavaCore.newProjectEntry(devProject.getPath()),
+      return new IClasspathEntry[] {JavaCore.newProjectEntry(devProject.getPath()),
           JavaCore.newProjectEntry(userProject.getPath())};
     }
 
@@ -279,8 +267,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
   }
 
   @Override
-  public File getDevJar() throws SdkException /* throws Exception */,
-      JavaModelException {
+  public File getDevJar() throws SdkException /* throws Exception */, JavaModelException {
 
     IStringVariableManager variableManager = getVariableManager();
     IValueVariable valueVariable = variableManager.getValueVariable("gwt_devjar");
@@ -290,9 +277,8 @@ public class GWTProjectsRuntime extends GWTRuntime {
         IPath path = new Path(value);
         File file = path.toFile();
         if (!file.exists()) {
-          throw new SdkException(
-              "gwt_devjar Run/Debug variable points to a non-existent jar: "
-                  + value);
+          throw new SdkException("gwt_devjar Run/Debug variable points to a non-existent jar: "
+              + value);
         }
 
         return file;
@@ -304,8 +290,8 @@ public class GWTProjectsRuntime extends GWTRuntime {
 
     // TODO: can we remove the check for gwt.devjar from applicationCreator?
 
-    IProject userProject = ResourcesPlugin.getWorkspace().getRoot().getProject(
-        GWT_USER_PROJECT_NAME);
+    IProject userProject =
+        ResourcesPlugin.getWorkspace().getRoot().getProject(GWT_USER_PROJECT_NAME);
     if (!userProject.exists()) {
       throw new SdkException("The project ' " + userProject.getName()
           + "' does not exist in the workspace.");
@@ -314,8 +300,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
     IJavaProject javaUserProject = JavaCore.create(userProject);
 
     if (!javaUserProject.exists()) {
-      throw new SdkException("The project ' " + userProject.getName()
-          + "' is not a Java project.");
+      throw new SdkException("The project ' " + userProject.getName() + "' is not a Java project.");
     }
 
     IClasspathEntry[] rawClasspaths = javaUserProject.getRawClasspath();
@@ -326,10 +311,9 @@ public class GWTProjectsRuntime extends GWTRuntime {
     for (IClasspathEntry rawClasspath : rawClasspaths) {
       if (rawClasspath.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
 
-        IPath sourcePathLocation = getAbsoluteLocation(rawClasspath.getPath(),
-            userProject);
-        stagingPathLocation = sourcePathLocation.removeLastSegments(2).append(
-            STAGING_FOLDER_RELATIVE_LOCATION);
+        IPath sourcePathLocation = getAbsoluteLocation(rawClasspath.getPath(), userProject);
+        stagingPathLocation =
+            sourcePathLocation.removeLastSegments(2).append(STAGING_FOLDER_RELATIVE_LOCATION);
 
         stagingDir = stagingPathLocation.toFile();
         if (stagingDir.exists()) {
@@ -339,15 +323,13 @@ public class GWTProjectsRuntime extends GWTRuntime {
     }
 
     if (stagingPathLocation == null) {
-      throw new SdkException(
-          "Contributor SDK build directory not found; Project '"
-              + userProject.getName() + "' does not have any source folders.");
+      throw new SdkException("Contributor SDK build directory not found; Project '"
+          + userProject.getName() + "' does not have any source folders.");
     }
 
     if (stagingDir == null || !stagingDir.exists()) {
-      throw new SdkException(
-          "Contributor SDK build directory not found (expected at "
-              + stagingPathLocation.toString() + ")");
+      throw new SdkException("Contributor SDK build directory not found (expected at "
+          + stagingPathLocation.toString() + ")");
     }
 
     // Find the staging output directory: gwt-<platform>-<version>
@@ -357,10 +339,8 @@ public class GWTProjectsRuntime extends GWTRuntime {
       }
     });
     if (buildDirs.length == 0) {
-      throw new SdkException(
-          "Contributor SDK build directory not found (expected at "
-              + stagingDir.toString() + File.separator
-              + "gwt-<platform>-<version>)");
+      throw new SdkException("Contributor SDK build directory not found (expected at "
+          + stagingDir.toString() + File.separator + "gwt-<platform>-<version>)");
     }
 
     // Find the gwt-dev .jar
@@ -372,8 +352,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
       }
     });
     if (gwtDevJars.length == 0) {
-      throw new SdkException(
-          "Contributor SDK build directory missing required JAR files");
+      throw new SdkException("Contributor SDK build directory missing required JAR files");
     }
 
     return gwtDevJars[0];
@@ -425,20 +404,19 @@ public class GWTProjectsRuntime extends GWTRuntime {
     }
 
     if (findDevProject() == null) {
-      return new Status(IStatus.ERROR, GWTPlugin.PLUGIN_ID,
-          "Could not find and gwt-dev-* project");
+      return new Status(IStatus.ERROR, GWTPlugin.PLUGIN_ID, "Could not find and gwt-dev-* project");
     }
 
     if (findUserProject() == null) {
-      return new Status(IStatus.ERROR, GWTPlugin.PLUGIN_ID,
-          "Could not find the gwt-user project");
+      return new Status(IStatus.ERROR, GWTPlugin.PLUGIN_ID, "Could not find the gwt-user project");
     }
 
     return getGwtDevJarStatus(this);
   }
 
   private IJavaProject findDevProject() {
-    IJavaProject devProject = JavaProjectUtilities.findJavaProject(getPlatformSpecificDevProjectName());
+    IJavaProject devProject =
+        JavaProjectUtilities.findJavaProject(getPlatformSpecificDevProjectName());
     if (devProject == null) {
       devProject = JavaProjectUtilities.findJavaProject(GWT_DEV_FALLBACK_PROJECT_NAME);
     }
@@ -453,4 +431,3 @@ public class GWTProjectsRuntime extends GWTRuntime {
     return VariablesPlugin.getDefault().getStringVariableManager();
   }
 }
-

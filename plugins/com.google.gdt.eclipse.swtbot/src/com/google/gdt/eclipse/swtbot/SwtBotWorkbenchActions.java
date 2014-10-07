@@ -18,12 +18,18 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.eclipse.finder.matchers.WidgetMatcherFactory;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
+import org.eclipse.swtbot.swt.finder.waits.ICondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
+import org.hamcrest.Matcher;
+
+import java.util.List;
 
 /**
  * SWTBot utility methods that perform general workbench actions.
@@ -35,10 +41,10 @@ public final class SwtBotWorkbenchActions {
   /**
    * Given a tree that contains an entry with <code>itemName</code> and a direct
    * child with a name matching <code>subchildName</code>, return its tree item.
-   * 
+   *
    * This method is useful when there is the possibility of a tree having two
    * similarly-named top-level nodes.
-   * 
+   *
    * @param mainTree the tree
    * @param itemName the name of a top-level node in the tree
    * @param subchildName the name of a direct child of the top-level node (used
@@ -49,7 +55,7 @@ public final class SwtBotWorkbenchActions {
    *         <code>subchildName</code>. If there are multiple tree items that
    *         satisfy this criteria, then the first one (in the UI) will be
    *         returned
-   * 
+   *
    * @throws IllegalStateException if no such node can be found
    */
   public static SWTBotTreeItem getUniqueTreeItem(final SWTBot bot,
@@ -76,10 +82,10 @@ public final class SwtBotWorkbenchActions {
    * Given a tree that contains an entry with one of <code>itemNames</code> and
    * a direct child with a name matching <code>subchildName</code>, return its
    * tree item.
-   * 
+   *
    * This method is useful when the top-level names are ambiguous and/or
    * variable.
-   * 
+   *
    * @param mainTree the tree
    * @param itemNames possible names of a top-level node in the tree
    * @param subchildName the name of a direct child of the top-level node (used
@@ -90,7 +96,7 @@ public final class SwtBotWorkbenchActions {
    *         <code>subchildName</code>. If there are multiple tree items that
    *         satisfy this criteria, then the first one (in the UI) will be
    *         returned
-   * 
+   *
    * @throws IllegalStateException if no such node can be found
    */
   public static SWTBotTreeItem getUniqueTreeItem(final SWTBot bot, final SWTBotTree mainTree,
@@ -116,6 +122,7 @@ public final class SwtBotWorkbenchActions {
    */
   public static void openPreferencesDialog(final SWTWorkbenchBot bot) {
     SwtBotTestingUtilities.performAndWaitForWindowChange(bot, new Runnable() {
+      @Override
       public void run() {
         if (SwtBotTestingUtilities.isMac()) {
           // TODO: Mac has "Preferences..." under the "Eclipse" menu item.
@@ -138,6 +145,49 @@ public final class SwtBotWorkbenchActions {
     while (!Job.getJobManager().isIdle()) {
       bot.sleep(1000);
     }
+  }
+
+  /**
+   * Wait for the main shell progress bar to get removed.
+   */
+  public static void waitForMainShellProgressBarToFinish(final SWTWorkbenchBot bot) {
+    // wait for progress bar
+    bot.waitUntil(new ICondition() {
+      @Override
+      public boolean test() throws Exception {
+        // First lower the amount of timeout, otherwise waiting for widget not to be found exception
+        // is a long time
+        SwtBotTimeoutManager.setTimeout(3000);
+        try {
+          // Find the progress bar in the main shell and wait for it to be removed
+          @SuppressWarnings("unchecked")
+          Matcher<ProgressBar> matcher =
+              org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory
+                  .allOf(WidgetMatcherFactory.widgetOfType(ProgressBar.class));
+          List<? extends ProgressBar> bars = bot.widgets(matcher);
+          if (bars == null || bars.isEmpty()) {
+            // Restore the original timeout
+            SwtBotTimeoutManager.setTimeout();
+            return true;
+          }
+        } catch (Exception e) {
+          // Restore the original timeout
+          SwtBotTimeoutManager.setTimeout();
+          return true;
+        }
+
+        // found the progress bar so keep polling for its removal
+        return false;
+      }
+
+      @Override
+      public void init(SWTBot bot) {}
+
+      @Override
+      public String getFailureMessage() {
+        return "waitForMainShellProgressBarToFinish() error.";
+      }
+    });
   }
 
   private static void openPreferencesDialogViaEvents(SWTBot bot) {

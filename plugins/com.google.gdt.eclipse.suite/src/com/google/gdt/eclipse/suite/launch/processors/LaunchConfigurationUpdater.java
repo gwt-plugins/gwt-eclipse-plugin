@@ -14,9 +14,9 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.launch.processors;
 
+import com.google.appengine.eclipse.core.launch.processors.GoogleCloudSqlArgumentProcessor;
 import com.google.appengine.eclipse.core.launch.processors.HrdArgumentProcessor;
 import com.google.appengine.eclipse.core.launch.processors.JavaAgentArgumentProcessor;
-import com.google.appengine.eclipse.core.launch.processors.GoogleCloudSqlArgumentProcessor;
 import com.google.appengine.eclipse.core.launch.processors.XBootclasspathArgumentProcessor;
 import com.google.gdt.eclipse.core.ClasspathUtilities;
 import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
@@ -25,12 +25,13 @@ import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.core.launch.WebAppLaunchConfiguration;
 import com.google.gdt.eclipse.suite.GdtPlugin;
-import com.google.gwt.eclipse.core.launch.processors.CodeServerPortArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.DGwtDevJarArgumentProcessor;
+import com.google.gwt.eclipse.core.launch.processors.DevModeCodeServerPortArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.LogLevelArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.ModuleArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.NoServerArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.RemoteUiArgumentProcessor;
+import com.google.gwt.eclipse.core.launch.processors.SuperDevModeArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.StartupUrlArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.XStartOnFirstThreadArgumentProcessor;
 import com.google.gwt.eclipse.core.speedtracer.SpeedTracerLaunchConfiguration;
@@ -52,21 +53,20 @@ import java.util.Set;
  * and SpeedTracerLaunchConfigurationUpdater.
  */
 /**
- * Updates launch configurations by delegating to the many
- * {@link ILaunchConfigurationProcessor}s.
+ * Updates launch configurations by delegating to the many {@link ILaunchConfigurationProcessor}s.
  */
 public class LaunchConfigurationUpdater {
 
   /**
-   * The types of launch configurations that the processors are capable of
-   * handling.
+   * The types of launch configurations that the processors are capable of handling.
    */
   public static final Set<String> APPLICABLE_LAUNCH_CONFIGURATION_TYPE_IDS = new HashSet<String>(
-      Arrays.asList(new String[] {
-          WebAppLaunchConfiguration.TYPE_ID,
-          SpeedTracerLaunchConfiguration.TYPE_ID}));
+      Arrays.asList(new String[] {WebAppLaunchConfiguration.TYPE_ID,
+          SpeedTracerLaunchConfiguration.TYPE_ID // TODO consider removing SpeedTracerLaunchConfig
+          }));
 
-  private static final List<ILaunchConfigurationProcessor> PROCESSORS = new ArrayList<ILaunchConfigurationProcessor>();
+  private static final List<ILaunchConfigurationProcessor> PROCESSORS =
+      new ArrayList<ILaunchConfigurationProcessor>();
 
   static {
     // Ordering matters! E.g. startup URL depends on main type, so it must
@@ -78,7 +78,7 @@ public class LaunchConfigurationUpdater {
     PROCESSORS.add(new ServerArgumentProcessor());
     PROCESSORS.add(new WarArgumentProcessor());
     PROCESSORS.add(new PortArgumentProcessor());
-    PROCESSORS.add(new CodeServerPortArgumentProcessor());
+    PROCESSORS.add(new DevModeCodeServerPortArgumentProcessor());
     PROCESSORS.add(new NoServerArgumentProcessor());
     PROCESSORS.add(new LogLevelArgumentProcessor());
     PROCESSORS.add(new ModuleArgumentProcessor());
@@ -91,10 +91,11 @@ public class LaunchConfigurationUpdater {
     PROCESSORS.add(new XmxArgumentProcessor());
     PROCESSORS.add(new HrdArgumentProcessor());
     PROCESSORS.add(new GoogleCloudSqlArgumentProcessor());
+    PROCESSORS.add(new SuperDevModeArgumentProcessor());
     addExternalProcessors();
 
-    ExtensionQueryStringAttr extQuery = new ExtensionQueryStringAttr(
-        GdtPlugin.PLUGIN_ID, "launchConfigurationType", "launchId");
+    ExtensionQueryStringAttr extQuery =
+        new ExtensionQueryStringAttr(GdtPlugin.PLUGIN_ID, "launchConfigurationType", "launchId");
     List<ExtensionQuery.Data<String>> launchIds = extQuery.getData();
     for (ExtensionQuery.Data<String> launchId : launchIds) {
       APPLICABLE_LAUNCH_CONFIGURATION_TYPE_IDS.add(launchId.getExtensionPointData().trim());
@@ -102,14 +103,18 @@ public class LaunchConfigurationUpdater {
   }
 
   private static void addExternalProcessors() {
-    ExtensionQuery<ILaunchConfigurationProcessor> extQuery = new ExtensionQuery<ILaunchConfigurationProcessor>(
-        GdtPlugin.PLUGIN_ID, "launchConfigVmArgProcessor", "class");
+    ExtensionQuery<ILaunchConfigurationProcessor> extQuery =
+        new ExtensionQuery<ILaunchConfigurationProcessor>(GdtPlugin.PLUGIN_ID,
+            "launchConfigVmArgProcessor", "class");
 
-    List<ExtensionQuery.Data<ILaunchConfigurationProcessor>> launchConfigProcessors = extQuery.getData();
+    List<ExtensionQuery.Data<ILaunchConfigurationProcessor>> launchConfigProcessors =
+        extQuery.getData();
     for (ExtensionQuery.Data<ILaunchConfigurationProcessor> processor : launchConfigProcessors) {
       PROCESSORS.add(processor.getExtensionPointData());
     }
   }
+
+  private final IJavaProject javaProject;
 
   private final ILaunchConfiguration launchConfig;
 
@@ -117,10 +122,8 @@ public class LaunchConfigurationUpdater {
 
   private final List<String> vmArgs;
 
-  private final IJavaProject javaProject;
-
-  public LaunchConfigurationUpdater(ILaunchConfiguration launchConfig,
-      IJavaProject javaProject) throws CoreException {
+  public LaunchConfigurationUpdater(ILaunchConfiguration launchConfig, IJavaProject javaProject)
+      throws CoreException {
     this.launchConfig = launchConfig;
     this.javaProject = javaProject;
 
@@ -136,8 +139,7 @@ public class LaunchConfigurationUpdater {
   }
 
   /**
-   * Updates the launch configuration by delegating to each
-   * {@link ILaunchConfigurationProcessor}.
+   * Updates the launch configuration by delegating to each {@link ILaunchConfigurationProcessor}.
    * <p>
    * This method saves the launch configuration's working copy.
    * 
@@ -150,16 +152,13 @@ public class LaunchConfigurationUpdater {
       try {
         processor.update(launchConfigWc, javaProject, programArgs, vmArgs);
       } catch (Throwable e) {
-        GdtPlugin.getLogger().logError(e,
-            "Launch configuration processor failed to run");
+        GdtPlugin.getLogger().logError(e, "Launch configuration processor failed to run");
       }
     }
 
-    launchConfigWc.setAttribute(
-        IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
+    launchConfigWc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
         LaunchConfigurationProcessorUtilities.createArgsString(programArgs));
-    launchConfigWc.setAttribute(
-        IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
+    launchConfigWc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
         LaunchConfigurationProcessorUtilities.createArgsString(vmArgs));
 
     launchConfigWc.doSave();
@@ -174,12 +173,10 @@ public class LaunchConfigurationUpdater {
           return msg;
         }
       } catch (CoreException e) {
-        GdtPlugin.getLogger().logError(e,
-            "Launch configuration processor failed to validate");
+        GdtPlugin.getLogger().logError(e, "Launch configuration processor failed to validate");
       }
     }
 
     return null;
   }
 }
-

@@ -100,6 +100,8 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     }
   };
 
+  private static final String FACET_JST_JAVA = "jst.java";
+
   /**
    * FilenameFilter that matches files that have a ".java" extension.
    */
@@ -215,9 +217,13 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     return sanitized;
   }
 
+  private String appId;
+
   private List<IPath> containerPaths = new ArrayList<IPath>();
 
   private final List<FileInfo> fileInfos = new ArrayList<FileInfo>();
+
+  private boolean isGenerateEmptyProject;
 
   private URI locationURI;
 
@@ -227,15 +233,9 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
 
   private String projectName;
 
-  private String appId;
-
   private String[] templates = new String[] {"sample"};
 
   private String[] templateSources;
-
-  private boolean isGenerateEmptyProject;
-
-  private static final String FACET_JST_JAVA = "jst.java";
 
   protected WebAppProjectCreator() {
     // Always a java project
@@ -526,7 +526,8 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
         addFile(new Path("src/log4j.properties"), new FileInputStream(log4jPropertiesFile));
       }
 
-      File loggingPropertiesFile = installationPath.append("config/user/logging.properties").toFile();
+      File loggingPropertiesFile =
+          installationPath.append("config/user/logging.properties").toFile();
       if (loggingPropertiesFile.exists()) {
         // Add the logging.properties file
         addFile(new Path(WebAppUtilities.DEFAULT_WAR_DIR_NAME + "/WEB-INF/logging.properties"),
@@ -554,8 +555,8 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
       addFile(new Path(WebAppUtilities.DEFAULT_WAR_DIR_NAME + "/WEB-INF/web.xml"),
           ProjectResources.createWebXmlSource(servletName, servletPath, servletQualifiedClassName));
       // Add servlet source
-      IPath servletClassSourcePath = new Path("src/" + servletQualifiedClassName.replace('.', '/')
-          + ".java");
+      IPath servletClassSourcePath =
+          new Path("src/" + servletQualifiedClassName.replace('.', '/') + ".java");
       addFile(servletClassSourcePath,
           GaeProjectResources.createSampleServletSource(servletPackageName, servletSimpleClassName));
 
@@ -566,8 +567,9 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
   }
 
   protected void createLaunchConfig(IProject project) throws CoreException {
-    ILaunchConfigurationWorkingCopy wc = WebAppLaunchUtil.createLaunchConfigWorkingCopy(
-        project.getName(), project, WebAppLaunchUtil.determineStartupURL(project, false), false);
+    ILaunchConfigurationWorkingCopy wc =
+        WebAppLaunchUtil.createLaunchConfigWorkingCopy(project.getName(), project,
+            WebAppLaunchUtil.determineStartupURL(project, false), false, false);
     ILaunchGroup[] groups = DebugUITools.getLaunchGroups();
 
     ArrayList<String> groupsNames = new ArrayList<String>();
@@ -628,8 +630,8 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     IProject project = javaProject.getProject();
     IFolder testFolder = project.getFolder("test");
     if (testFolder.exists()) {
-      classpathEntries.add(JavaCore.newSourceEntry(testFolder.getFullPath(), new IPath[0],
-          project.getFullPath().append("test-classes")));
+      classpathEntries.add(JavaCore.newSourceEntry(testFolder.getFullPath(), new IPath[0], project
+          .getFullPath().append("test-classes")));
     }
 
     // Add our container entries to the path
@@ -638,9 +640,8 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     }
 
     classpathEntries.addAll(Arrays.asList(PreferenceConstants.getDefaultJRELibrary()));
-    
-    javaProject.setRawClasspath(
-        classpathEntries.toArray(new IClasspathEntry[0]), monitor);
+
+    javaProject.setRawClasspath(classpathEntries.toArray(new IClasspathEntry[0]), monitor);
   }
 
   private void createGWTProject(IProgressMonitor monitor, String packageName, String outDirPath)

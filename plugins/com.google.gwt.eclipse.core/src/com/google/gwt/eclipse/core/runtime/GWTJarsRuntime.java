@@ -47,8 +47,7 @@ public class GWTJarsRuntime extends GWTRuntime {
   }
 
   @Override
-  public URLClassLoader createClassLoader() throws SdkException,
-      MalformedURLException {
+  public URLClassLoader createClassLoader() throws SdkException, MalformedURLException {
     URL[] urls;
     if (validate().isOK()) {
       urls = getBuildClasspathUrls().toArray(new URL[0]);
@@ -64,14 +63,14 @@ public class GWTJarsRuntime extends GWTRuntime {
   public IClasspathEntry[] getClasspathEntries() {
     // Note that the GWT SDK puts the javadoc in "doc/javadoc", whereas GAE uses
     // "docs/javadoc".
-    IPath gwtJavadocLocation = getInstallationPath().append(
-        new Path("doc/javadoc"));
+    IPath gwtJavadocLocation = getInstallationPath().append(new Path("doc/javadoc"));
     IClasspathAttribute[] extraAttributes = new IClasspathAttribute[0];
 
     if (gwtJavadocLocation.toFile().exists()) {
-      extraAttributes = new IClasspathAttribute[] {JavaCore.newClasspathAttribute(
-          IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME,
-          gwtJavadocLocation.toFile().toURI().toString())};
+      extraAttributes =
+          new IClasspathAttribute[] {JavaCore.newClasspathAttribute(
+              IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, gwtJavadocLocation.toFile()
+                  .toURI().toString())};
     }
 
     List<IClasspathEntry> buildClasspathEntries = new ArrayList<IClasspathEntry>();
@@ -79,12 +78,12 @@ public class GWTJarsRuntime extends GWTRuntime {
       List<IPath> buildClasspaths = getBuildClasspaths();
       for (IPath buildClasspath : buildClasspaths) {
         if (buildClasspath.lastSegment().startsWith("gwt-")) {
-          buildClasspathEntries.add(JavaCore.newLibraryEntry(buildClasspath,
-              null, null, new IAccessRule[0], extraAttributes, false));
+          buildClasspathEntries.add(JavaCore.newLibraryEntry(buildClasspath, null, null,
+              new IAccessRule[0], extraAttributes, false));
         } else {
           buildClasspathEntries.add(JavaCore.newLibraryEntry(buildClasspath,
-              Util.findSourcesJarForClassesJar(buildClasspath), null,
-              new IAccessRule[0], new IClasspathAttribute[0], false));
+              Util.findSourcesJarForClassesJar(buildClasspath), null, new IAccessRule[0],
+              new IClasspathAttribute[0], false));
         }
       }
     }
@@ -94,8 +93,7 @@ public class GWTJarsRuntime extends GWTRuntime {
 
   @Override
   public File getDevJar() {
-    File devJar = getInstallationPath().append(
-        Util.getDevJarName(getInstallationPath())).toFile();
+    File devJar = getInstallationPath().append(Util.getDevJarName(getInstallationPath())).toFile();
     if (devJar.exists()) {
       return devJar;
     }
@@ -116,13 +114,17 @@ public class GWTJarsRuntime extends GWTRuntime {
     IPath sdkLocation = getInstallationPath();
     File sdkDir = sdkLocation.toFile();
     if (!sdkDir.exists()) {
-      return Util.newErrorStatus("SDK path '" + sdkLocation.toOSString()
-          + "' does not exist");
+      return Util.newErrorStatus("SDK path '" + sdkLocation.toOSString() + "' does not exist");
     }
 
     IPath gwtUserPath = sdkLocation.append(GWT_USER_JAR);
     if (!gwtUserPath.toFile().exists()) {
       return Util.newErrorStatus(gwtUserPath.toOSString() + " is missing");
+    }
+
+    IPath gwtCodeServerPath = sdkLocation.append(GWT_CODESERVER_JAR);
+    if (!gwtCodeServerPath.toFile().exists()) {
+      return Util.newErrorStatus(gwtCodeServerPath.toOSString() + " is missing");
     }
 
     IPath gwtDevPath = sdkLocation.append(Util.getDevJarName(sdkLocation));
@@ -142,8 +144,8 @@ public class GWTJarsRuntime extends GWTRuntime {
     ArrayList<IPath> classpathEntries = new ArrayList<IPath>();
 
     classpathEntries.add(getInstallationPath().append(GWT_USER_JAR));
-    classpathEntries.add(getInstallationPath().append(
-        Util.getDevJarName(getInstallationPath())));
+    classpathEntries.add(getInstallationPath().append(GWT_CODESERVER_JAR));
+    classpathEntries.add(getInstallationPath().append(Util.getDevJarName(getInstallationPath())));
 
     for (String validationJarName : Util.getValidationJarNames(getInstallationPath())) {
       classpathEntries.add(getInstallationPath().append(validationJarName));
@@ -164,5 +166,5 @@ public class GWTJarsRuntime extends GWTRuntime {
     }
     return buildClasspathUrls;
   }
-}
 
+}

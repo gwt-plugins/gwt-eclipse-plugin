@@ -15,6 +15,7 @@
 package com.google.gdt.eclipse.swtbot;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 
 /**
@@ -49,8 +50,7 @@ public final class SwtBotSdkActions {
     bot.table().select(0);
     bot.button("Remove").click();
 
-    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot,
-        bot.button("OK"));
+    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, bot.button("OK"));
   }
 
   private static void setupSdk(final SWTWorkbenchBot bot, String treeItemText,
@@ -62,21 +62,23 @@ public final class SwtBotSdkActions {
             SwtBotProjectActions.GOOGLE_MENU_LABELS, "Web Toolkit").expand();
     SwtBotTestingUtilities.selectTreeItem(bot, prefGoogleTreeItem, treeItemText);
 
-    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot,
-        bot.button("Add..."));
+    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, bot.button("Add..."));
 
     bot.textWithLabel("Installation directory:").setText(System.getenv(sdkDirEnvVariableName));
     bot.textWithLabel("Display name:").setText(sdkDisplayName);
 
-    // Close add SDK dialog
-    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot,
-        bot.button("OK"));
+    SWTBotButton okButton = bot.button("OK");
+    if (okButton.isEnabled()) {
+      // Close add SDK dialog
+      SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, okButton);
+    } else {
+      // Already setup, in the case of running multiple tests together
+      SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, bot.button("Cancel"));
+    }
 
     // Close Preferences dialog
-    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot,
-        bot.button("OK"));
+    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, bot.button("OK"));
   }
 
-  private SwtBotSdkActions() {
-  }
+  private SwtBotSdkActions() {}
 }

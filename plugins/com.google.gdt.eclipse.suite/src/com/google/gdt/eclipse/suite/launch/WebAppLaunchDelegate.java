@@ -27,6 +27,7 @@ import com.google.gdt.eclipse.suite.launch.processors.WarArgumentProcessor.WarPa
 import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.launch.processors.NoServerArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.RemoteUiArgumentProcessor;
+import com.google.gwt.eclipse.core.launch.processors.SuperDevModeArgumentProcessor;
 import com.google.gwt.eclipse.oophm.model.WebAppDebugModel;
 
 import org.eclipse.core.resources.IMarker;
@@ -59,7 +60,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class WebAppLaunchDelegate extends JavaLaunchDelegate {
 
   private static final String ARG_RDBMS_EXTRA_PROPERTIES = "-Drdbms.extra.properties=";
-  private static final String ARG_RDBMS_EXTRA_PROPERTIES_VALUE_FORMAT = "\"oauth2RefreshToken=%s,oauth2AccessToken=%s,oauth2ClientId=%s,oauth2ClientSecret=%s\"";
+  private static final String ARG_RDBMS_EXTRA_PROPERTIES_VALUE_FORMAT =
+      "\"oauth2RefreshToken=%s,oauth2AccessToken=%s,oauth2ClientId=%s,oauth2ClientSecret=%s\"";
 
   /**
    * Publish any {@link IModule}s that the project has if it is not using a managed war directory
@@ -100,10 +102,12 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
   @Override
   public boolean buildForLaunch(ILaunchConfiguration configuration, String mode,
       IProgressMonitor monitor) throws CoreException {
-    ExtensionQuery<IBuildForLaunchCallback> extQuery = new ExtensionQuery<IBuildForLaunchCallback>(
-        GdtPlugin.PLUGIN_ID, "buildForLaunchCallback", "class");
+    ExtensionQuery<IBuildForLaunchCallback> extQuery =
+        new ExtensionQuery<IBuildForLaunchCallback>(GdtPlugin.PLUGIN_ID, "buildForLaunchCallback",
+            "class");
 
-    List<ExtensionQuery.Data<IBuildForLaunchCallback>> buildBeforeLaunchCallbacks = extQuery.getData();
+    List<ExtensionQuery.Data<IBuildForLaunchCallback>> buildBeforeLaunchCallbacks =
+        extQuery.getData();
     for (ExtensionQuery.Data<IBuildForLaunchCallback> callback : buildBeforeLaunchCallbacks) {
       callback.getExtensionPointData().buildForLaunch(configuration, mode, monitor);
     }
@@ -135,21 +139,20 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
       return;
     }
 
-    // check if this launch uses -remoteUI. If not, then don't add this launch
-    // to the devmode view
-    boolean addLaunch = true;
+    // all of the program args attributes
+    List<String> args = null;
     if (launch != null) {
       try {
-        List<String> args = LaunchConfigurationProcessorUtilities.parseProgramArgs(launch.getLaunchConfiguration());
-        if (!args.contains(RemoteUiArgumentProcessor.ARG_REMOTE_UI)) {
-          addLaunch = false;
-        }
-      } catch (CoreException e1) {
-        GWTPluginLog.logError(e1);
+        args =
+            LaunchConfigurationProcessorUtilities.parseProgramArgs(launch.getLaunchConfiguration());
+      } catch (CoreException e) {
+        GWTPluginLog.logError(e);
       }
     }
 
-    if (addLaunch) {
+    // Do not start dev mode hooks if using -superDevMode arg
+    if (args != null && args.contains(RemoteUiArgumentProcessor.ARG_REMOTE_UI)
+        && !args.contains(SuperDevModeArgumentProcessor.SUPERDEVMODE_ENABLED_ARG)) {
       /*
        * Add the launch to the DevMode view. This is tightly coupled because at the time of
        * ILaunchListener's changed callback, the launch's process does not have a command-line set.
@@ -167,8 +170,9 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
 
     IJavaProject javaProject = getJavaProject(configuration);
     if (javaProject != null && WarArgumentProcessor.doesMainTypeTakeWarArgument(configuration)) {
-      WarParser warParser = WarArgumentProcessor.WarParser.parse(
-          LaunchConfigurationProcessorUtilities.parseProgramArgs(configuration), javaProject);
+      WarParser warParser =
+          WarArgumentProcessor.WarParser.parse(
+              LaunchConfigurationProcessorUtilities.parseProgramArgs(configuration), javaProject);
       if (warParser.isWarDirValid || warParser.isSpecifiedWithWarArg) {
         return new File(warParser.resolvedUnverifiedWarDir);
       }
@@ -238,8 +242,8 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
       return true;
     }
     ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
-    String vmArgs = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
-        "");
+    String vmArgs =
+        configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");
     // The regex is -Drdbms\.extra\.properties="\S+" which matches
     // -Drdbms.extra.properties="<non-whitespace chars>".
     String[] vmArgList = vmArgs.split("-Drdbms\\.extra\\.properties=\"\\S+\"");
@@ -274,8 +278,9 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
     if (refreshToken == null || accessToken == null || clientId == null || clientSecret == null) {
       return false;
     }
-    String rdbmsExtraPropertiesValue = String.format(ARG_RDBMS_EXTRA_PROPERTIES_VALUE_FORMAT,
-        refreshToken, accessToken, clientId, clientSecret);
+    String rdbmsExtraPropertiesValue =
+        String.format(ARG_RDBMS_EXTRA_PROPERTIES_VALUE_FORMAT, refreshToken, accessToken, clientId,
+            clientSecret);
     vmArgs += " " + ARG_RDBMS_EXTRA_PROPERTIES + rdbmsExtraPropertiesValue;
     workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArgs);
     ILaunchConfiguration config = workingCopy.doSave();

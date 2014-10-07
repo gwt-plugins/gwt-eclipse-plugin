@@ -83,6 +83,7 @@
       </launchConfigurationTabGroup>
    </extension>
       
+   <!-- Web Application shortcut -->
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
@@ -115,7 +116,9 @@
          <configurationType
                id="com.google.gdt.eclipse.suite.webapp"/>
       </shortcut>
-       <shortcut
+      
+      <!-- Web Application No Server shortcut -->
+      <shortcut
             class="com.google.gdt.eclipse.suite.launch.ui.WebAppNoServerLaunchShortcut"
             description="Launch a Web Application using an External Server"
             icon="icons/gdt_16x16.png"
@@ -148,6 +151,61 @@
          <configurationType
                id="com.google.gdt.eclipse.suite.webapp">
          </configurationType>
+      </shortcut>
+      
+      <!-- GWT Super Dev Mode Launch shortcut when using GWT -->
+      <shortcut
+            class="com.google.gdt.eclipse.suite.launch.ui.WebAppGWTSuperDevModeLaunchShortcut"
+            description="Launch a Web Application using GWT super dev mode"
+            icon="icons/gdt_16x16.png"
+            id="com.google.gdt.eclipse.suite.launch.ui.webappLaunchShortcutGwtSuperDevMode"
+            label="Web Application (GWT Super Dev Mode)"
+            modes="run, debug">
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <count value= "1"/>
+                     <iterate>
+                        <test property="com.google.gdt.eclipse.suite.isGwtLaunchTarget"/>
+                     </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
+         <description
+               description="Run a Web Application (GWT Super Dev Mode)"
+               mode="run" />
+         <description
+               description="Debug a Web Application (GWT Super Dev Mode)"
+               mode="debug" />
+         <configurationType
+               id="com.google.gdt.eclipse.suite.webapp"/>
+      </shortcut>
+      <!-- GWT Classic Dev Mode Launch shortcut when using GWT -->
+      <shortcut
+            class="com.google.gdt.eclipse.suite.launch.ui.WebAppGWTClassicDevModeLaunchShortcut"
+            description="Launch a Web Application using GWT classic dev mode"
+            icon="icons/gdt_16x16.png"
+            id="com.google.gdt.eclipse.suite.launch.ui.webappLaunchShortcutGwtClassicDevMode"
+            label="Web Application (GWT Classic Dev Mode)"
+            modes="run, debug">
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <count value= "1"/>
+                     <iterate>
+                        <test property="com.google.gdt.eclipse.suite.isGwtLaunchTarget"/>
+                     </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
+         <description
+               description="Run a Web Application (GWT Classic Dev Mode)"
+               mode="run" />
+         <description
+               description="Debug a Web Application (GWT Classic Dev Mode)"
+               mode="debug" />
+         <configurationType
+               id="com.google.gdt.eclipse.suite.webapp"/>
       </shortcut>
    </extension>  
    <extension  
@@ -269,6 +327,13 @@
          properties="isNoServerLaunchTarget"
          type="org.eclipse.core.runtime.IAdaptable"
          class="com.google.gdt.eclipse.suite.propertytesters.NoServerLaunchTargetTester">
+      </propertyTester>
+      <propertyTester
+            class="com.google.gdt.eclipse.suite.propertytesters.GwtLaunchTargetTester"
+            id="com.google.gdt.eclipse.suite.propertytesters.gwtLaunchTargetTester"
+            namespace="com.google.gdt.eclipse.suite"
+            properties="isGwtLaunchTarget"
+            type="org.eclipse.core.runtime.IAdaptable">
       </propertyTester>      
    </extension>
    <extension

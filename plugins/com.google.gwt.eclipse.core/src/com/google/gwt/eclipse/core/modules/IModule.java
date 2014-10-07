@@ -24,28 +24,36 @@ import java.util.Set;
  * Represents a GWT module.
  */
 public interface IModule {
+
   /**
-   * Returns the compiled name of this module. This will be fully-qualified
-   * name, unless a rename-to attribute specifies another.
+   * Returns a list of <add-linker name="[returnedValue]"/>
+   * 
+   * @return a list of the linker names
+   */
+  List<String> getAddLinkers();
+
+  /**
+   * Returns the compiled name of this module. This will be fully-qualified name, unless a rename-to
+   * attribute specifies another.
    * 
    * @return this module's compiled name
    */
   String getCompiledName();
 
   /**
-   * Returns the names of all classes declared as entry points of this module.
-   * These classes are returned exactly as they are defined in the module XML,
-   * therefore, they may not exist, or even be valid class names.
+   * Returns the names of all classes declared as entry points of this module. These classes are
+   * returned exactly as they are defined in the module XML, therefore, they may not exist, or even
+   * be valid class names.
    * 
    * @return names of all declared entry point classes
    */
   List<String> getEntryPoints();
-  
+
   /**
    * @return The list of directly inherited modules not in jar files
    */
   Set<IModule> getInheritedModules(IJavaProject javaProject);
-    
+
   /**
    * Returns the name of the package containing this module.
    * 
@@ -54,34 +62,39 @@ public interface IModule {
   String getPackageName();
 
   /**
-   * Returns all of the public paths declared by this module. The paths are
-   * module-relative. The paths returned may or may not correspond to actual
-   * resources in the file system.
+   * Returns all of the public paths declared by this module. The paths are module-relative. The
+   * paths returned may or may not correspond to actual resources in the file system.
    * 
    * @return paths of all declared public paths
    */
   List<IPath> getPublicPaths();
 
   /**
-   * Returns the fully-qualified name of the module. This is its Java package,
-   * followed by the name of the module XML, without the .gwt.xml extension.
+   * Returns the fully-qualified name of the module. This is its Java package, followed by the name
+   * of the module XML, without the .gwt.xml extension.
    * 
    * @return module's qualified name
    */
   String getQualifiedName();
 
   /**
-   * Returns the simple name of this module. This is its filename without the
-   * .gwt.xml extension.
+   * Returns a list of the <set-configuration-property name="propertyName" value="[returnedValue]"/>
+   * 
+   * @param propertyName name of the configuration property to return value for.
+   * @return value of the configuration property.
+   */
+  List<String> getSetConfigurationProperty(final String propertyName);
+
+  /**
+   * Returns the simple name of this module. This is its filename without the .gwt.xml extension.
    * 
    * @return module's simple name
    */
   String getSimpleName();
 
   /**
-   * Returns all of the client source paths declared by this module. The paths
-   * are module-relative. The paths returned may or may not correspond to actual
-   * resources in the file system.
+   * Returns all of the client source paths declared by this module. The paths are module-relative.
+   * The paths returned may or may not correspond to actual resources in the file system.
    * 
    * @return paths of all declared client source paths
    */
@@ -90,9 +103,8 @@ public interface IModule {
   /**
    * Returns whether this module is contained in a JAR archive.
    * 
-   * @return <code>true</code> if this module is contained in a JAR, and
-   *         <code>false</code> if it is contained in a .gwt.xml file on disk
+   * @return <code>true</code> if this module is contained in a JAR, and <code>false</code> if it is
+   *         contained in a .gwt.xml file on disk
    */
   boolean isBinary();
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 Google Inc. All Rights Reserved.
+ * Copyright 2014 Google Inc. All Rights Reserved.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -28,14 +28,15 @@ import java.util.List;
 
 /**
  * Handles the -codeServerPort [auto | <port>] arg.
- *
+ * 
  */
-public class CodeServerPortArgumentProcessor implements ILaunchConfigurationProcessor {
+public class DevModeCodeServerPortArgumentProcessor implements ILaunchConfigurationProcessor {
 
   public static final String CODE_SERVER_PORT_ARG = "-codeServerPort";
-  
-  private static final String CODE_SERVER_PORT_ERROR = "-codeServerPort must specify a valid port number or 'auto'"; 
-  
+
+  private static final String CODE_SERVER_PORT_ERROR =
+      "-codeServerPort must specify a valid port number or 'auto'";
+
   /**
    * Return either the default port or an override value.
    * 
@@ -43,19 +44,19 @@ public class CodeServerPortArgumentProcessor implements ILaunchConfigurationProc
    * @return The port.
    */
   public static String getPort(List<String> args) {
-    
+
     int index = getArgIndex(args);
-    
+
     // not in or last arg (and hence no value)
     if (index < 0 || index == args.size() - 1) {
       return (String) GWTLaunchAttributes.CODE_SERVER_PORT.getDefaultValue();
     }
-    
+
     String port = args.get(index + 1);
     if (!validatePort(port)) {
       return (String) GWTLaunchAttributes.CODE_SERVER_PORT.getDefaultValue();
     }
-    
+
     return port;
   }
 
@@ -67,7 +68,7 @@ public class CodeServerPortArgumentProcessor implements ILaunchConfigurationProc
     if ("auto".equalsIgnoreCase(port)) {
       return true;
     }
-    
+
     try {
       int valueNum = Integer.parseInt(port);
       if (valueNum < 0 || valueNum > 65535) {
@@ -79,24 +80,23 @@ public class CodeServerPortArgumentProcessor implements ILaunchConfigurationProc
     return true;
   }
 
-  public void update(ILaunchConfigurationWorkingCopy launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
-      throws CoreException {
-    
+  public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject,
+      List<String> programArgs, List<String> vmArgs) throws CoreException {
+
     // only gwt projects use -codeServerPort
     if (!GWTNature.isGWTProject(javaProject.getProject())) {
       return;
     }
-    
+
     int index = getArgIndex(programArgs);
-    
+
     String port = GWTLaunchConfigurationWorkingCopy.getCodeServerPort(launchConfig);
     boolean auto = GWTLaunchConfigurationWorkingCopy.getCodeServerPortAuto(launchConfig);
-    
+
     if (auto || !validatePort(port)) {
       port = "auto";
     }
-    
+
     if (index < 0) {
       programArgs.add(0, CODE_SERVER_PORT_ARG);
       programArgs.add(1, port);
@@ -113,34 +113,33 @@ public class CodeServerPortArgumentProcessor implements ILaunchConfigurationProc
       }
     }
   }
-  
-  public String validate(ILaunchConfiguration launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
-      throws CoreException {
-    
+
+  public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject,
+      List<String> programArgs, List<String> vmArgs) throws CoreException {
+
     int index = getArgIndex(programArgs);
-    
+
     if (index < 0) {
       return null;
     }
-    
+
     // last thing on the list, and hence can't have a value
     if (index == programArgs.size() - 1) {
       return CODE_SERVER_PORT_ERROR;
     }
-    
+
     String value = programArgs.get(index + 1);
-    
+
     if (value.equals("auto")) {
       return null;
     }
-    
-    
+
+
     if (!validatePort(value)) {
       return CODE_SERVER_PORT_ERROR;
     }
-    
+
     return null;
   }
-  
+
 }

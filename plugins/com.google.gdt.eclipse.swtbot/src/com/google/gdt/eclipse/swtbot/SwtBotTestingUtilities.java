@@ -26,6 +26,7 @@ import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotCheckBox;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
@@ -79,6 +80,17 @@ public class SwtBotTestingUtilities {
         button.click();
       }
     });
+  }
+
+  public static void clickOnTableCellValue(SWTBotTable table, int col, String value) {
+    String column = table.columns().get(col);
+    for (int row = 0; row < table.rowCount(); row++) {
+      String cellValue = table.cell(row, column);
+      if (cellValue.equals(value)) {
+        table.click(row, col);
+        break;
+      }
+    }
   }
 
   /**
@@ -147,9 +159,10 @@ public class SwtBotTestingUtilities {
     waitUntilShellIsNotActive(bot, shell);
   }
 
-  public static void selectTreeItem(SWTBot bot, SWTBotTreeItem tree, String itemText) {
+  public static SWTBotTreeItem selectTreeItem(SWTBot bot, SWTBotTreeItem tree, String itemText) {
     waitUntilTreeItemHasItem(bot, tree, itemText);
-    tree.select(itemText);
+    SWTBotTreeItem item = tree.select(itemText);
+    return item;
   }
 
   /**
@@ -225,7 +238,7 @@ public class SwtBotTestingUtilities {
    * 
    * @param tree the tree to search
    * @throws TimeoutException if all of the direct children of the tree do not have text within the
-   *           timeout period
+   *         timeout period
    */
   public static void waitUntilTreeHasText(SWTBot bot, final SWTBotTreeItem tree)
       throws TimeoutException {
@@ -330,7 +343,7 @@ public class SwtBotTestingUtilities {
    * @param tree the tree item to search
    * @param nodeText the item text to look for
    * @throws org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException if the item could not
-   *           be found within the timeout period
+   *         be found within the timeout period
    */
   private static void waitUntilTreeItemHasItem(SWTBot bot, final SWTBotTreeItem tree,
       final String nodeText) {
@@ -356,4 +369,5 @@ public class SwtBotTestingUtilities {
       }
     }
   }
+
 }
