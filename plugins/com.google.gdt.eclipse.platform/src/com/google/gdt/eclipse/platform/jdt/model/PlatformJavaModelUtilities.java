@@ -35,7 +35,7 @@ public class PlatformJavaModelUtilities {
 
   /**
    * Gets the corresponding IAnnotation.
-   * 
+   *
    * @param qualifiedAnnotationName the fully qualified annotation type name
    * @param annotatable the IAnnotatable java element which contains the
    *          annotation
@@ -44,8 +44,7 @@ public class PlatformJavaModelUtilities {
    * @throws JavaModelException
    */
   public static Object getAnnotation(String qualifiedAnnotationName,
-      Object annotatable, IType contextType) throws JavaModelException,
-      IAnnotationNotAvailableException {
+      Object annotatable, IType contextType) throws JavaModelException {
     for (IAnnotation annotation : ((IAnnotatable) annotatable).getAnnotations()) {
       if (qualifiedAnnotationName.equals(resolveTypeName(contextType,
           annotation.getElementName()))) {
@@ -58,7 +57,7 @@ public class PlatformJavaModelUtilities {
 
   /**
    * Gets the value of an annotation, if the value is of the given type.
-   * 
+   *
    * @param annotation the IAnnotation from which the value will be returned
    * @param type the type of value expected (if the type does not match this,
    *          null will be returned)
@@ -67,7 +66,7 @@ public class PlatformJavaModelUtilities {
    */
   @SuppressWarnings("unchecked")
   public static <T> T getSingleMemberAnnotationValue(Object annotation, Class<T> type)
-      throws JavaModelException, IAnnotationNotAvailableException {
+      throws JavaModelException {
     IMemberValuePair[] pairs = ((IAnnotation) annotation).getMemberValuePairs();
     if (pairs.length == 0) {
       return null;

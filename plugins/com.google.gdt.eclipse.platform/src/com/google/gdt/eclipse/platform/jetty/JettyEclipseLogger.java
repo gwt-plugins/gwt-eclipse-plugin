@@ -51,18 +51,21 @@ public class JettyEclipseLogger implements Logger {
     }
   }
 
+  @Override
   public void debug(String msg, Object... args) {
     if (debug) {
       log(IStatus.OK, format(msg, args), null);
     }
   }
 
+  @Override
   public void debug(String msg, Throwable th) {
     if (debug) {
       log(IStatus.OK, msg, th);
     }
   }
 
+  @Override
   public void debug(Throwable thrown) {
     debug("", thrown);
   }
@@ -89,31 +92,38 @@ public class JettyEclipseLogger implements Logger {
     return builder.toString();
   }
 
+  @Override
   public Logger getLogger(String name) {
     return this;
   }
 
+  @Override
   public String getName() {
     return LOGGER_NAME;
   }
 
+  @Override
   public void ignore(Throwable ignored) {
   }
 
+  @Override
   public void info(String msg, Object... args) {
     if (info) {
       log(IStatus.INFO, format(msg, args), null);
     }
   }
 
+  @Override
   public void info(String msg, Throwable thrown) {
     log(IStatus.WARNING, msg, thrown);
   }
 
+  @Override
   public void info(Throwable thrown) {
     info("", thrown);
   }
 
+  @Override
   public boolean isDebugEnabled() {
     return debug;
   }
@@ -125,18 +135,22 @@ public class JettyEclipseLogger implements Logger {
     platformLog.log(status);
   }
 
+  @Override
   public void setDebugEnabled(boolean enabled) {
     debug = enabled;
   }
 
+  @Override
   public void warn(String msg, Object... args) {
     log(IStatus.WARNING, format(msg, args), null);
   }
 
+  @Override
   public void warn(String msg, Throwable th) {
     log(IStatus.WARNING, msg, th);
   }
 
+  @Override
   public void warn(Throwable thrown) {
     warn("", thrown);
   }
