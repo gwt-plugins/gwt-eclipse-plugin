@@ -1,0 +1,43 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: com.google.gwt.eclipse.wtp;singleton:=true
+Bundle-Version: 0.0.0.qualifier
+Bundle-Localization: plugin
+Bundle-Activator: com.google.gwt.eclipse.wtp.GwtPlugin
+Bundle-Vendor: %providerName
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.eclipse.core.resources,
+ org.eclipse.core.runtime;version="3.4.0",
+ org.eclipse.jst.server.core,
+ org.eclipse.ui.plugin,
+ org.eclipse.wst.common.project.facet.core,
+ org.eclipse.wst.common.project.facet.core.runtime,
+ org.osgi.framework;version="1.7.0"
+Require-Bundle: org.eclipse.wst.server.core,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.launching,
+ com.google.gdt.eclipse.core,
+ org.eclipse.wst.common.project.facet.core,
+ org.eclipse.wst.common.modulecore,
+ org.eclipse.jst.j2ee,
+ org.eclipse.jst.common.project.facet.core,
+ org.eclipse.wst.common.frameworks,
+ org.eclipse.wst.xml.core,
+ com.google.gwt.eclipse.core,
+ com.google.appengine.eclipse.wtp,
+ org.eclipse.swt,
+ org.eclipse.jface,
+ org.eclipse.wst.server.ui,
+ org.eclipse.osgi,
+ org.eclipse.jdt.debug.ui,
+ com.google.gdt.eclipse.suite,
+ org.eclipse.wst.common.frameworks.ui,
+ org.eclipse.wst.common.project.facet.ui,
+ org.eclipse.debug.ui;bundle-version="3.10.1"
+
+
+
+
+

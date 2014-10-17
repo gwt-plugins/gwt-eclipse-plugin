@@ -18,7 +18,7 @@ Export-Package: com.google.gdt.eclipse.suite,
  com.google.gdt.eclipse.suite.resources,
  com.google.gdt.eclipse.suite.wizards
 Require-Bundle: com.google.appengine.eclipse.core;visibility:=reexport,
- com.google.gdt.eclipse.appengine.api,
+ 
  com.google.gdt.eclipse.login,
  com.google.gdt.eclipse.managedapis,
  com.google.gwt.eclipse.core;visibility:=reexport,
