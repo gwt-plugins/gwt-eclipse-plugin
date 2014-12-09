@@ -22,6 +22,7 @@ import com.google.gwt.eclipse.core.modules.IModule;
 import com.google.gwt.eclipse.core.modules.ModuleUtils;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.util.GwtVersionUtil;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -34,7 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Handles the -superDevMode arg.
+ * Handles the -superDevMode and -noSuperDevMode args.
+ *
+ * TODO validate argument capitalization -noSuperDevMode which is wrong.
  */
 public class SuperDevModeArgumentProcessor implements ILaunchConfigurationProcessor {
 
@@ -64,44 +67,21 @@ public class SuperDevModeArgumentProcessor implements ILaunchConfigurationProces
       return;
     }
 
+    String gwtVersion = GwtVersionUtil.getProjectGwtVersion(javaProject);
     boolean superDevModeEnabled =
         GWTLaunchConfigurationWorkingCopy.getSuperDevModeEnabled(launchConfig);
+    int indexEnabled = programArgs.indexOf(SUPERDEVMODE_ENABLED_ARG); // -superDevMode index
+    int indexDisabled = programArgs.indexOf(SUPERDEVMODE_DISABLED_ARG); // -nosuperDevMode index
 
-    String gwtVersion = getGwtVersion(javaProject);
+    // Update according to GWT version
+    if (GwtVersionUtil.isGwtVersionlessThan25(javaProject)) {
+      updateLessThanGwt25(programArgs, indexDisabled, indexEnabled);
 
-    boolean legacySuperDevModePossibleForGwtVersion =
-        GWTLaunchConstants.SUPERDEVMODE_LAUNCH_LEGACY_VERSIONS.contains(gwtVersion);
-
-    // -superDevMode index
-    int indexEnabled = programArgs.indexOf(SUPERDEVMODE_ENABLED_ARG);
-
-    // -nosuperDevMode index
-    int indexDisabled = programArgs.indexOf(SUPERDEVMODE_DISABLED_ARG);
-
-    // Remove enabled arg (changing back in forth between dev mode or super dev mode)
-    if (!superDevModeEnabled && indexEnabled > -1) {
-      programArgs.remove(indexEnabled);
-    }
-
-    // Remove disabled arg (changing back in forth between dev mode or super dev mode)
-    if (superDevModeEnabled && indexDisabled > -1) {
-      programArgs.remove(indexDisabled);
-    }
-
-    if (legacySuperDevModePossibleForGwtVersion) {
-      // Super dev mode is on by default, on: -superDevmode off: nothing
-      if (superDevModeEnabled && indexEnabled < 0) {
-        programArgs.add(0, SUPERDEVMODE_ENABLED_ARG);
-      }
+    } else if (GWTLaunchConstants.SUPERDEVMODE_LAUNCH_LEGACY_VERSIONS.contains(gwtVersion)) {
+      updateGwt25toLessThan27(programArgs, indexDisabled, indexEnabled, superDevModeEnabled);
 
     } else {
-      // TODO in the future set nothing for Super Dev Mode
-      // Super dev mode is on by default, on: -superDevmode (TODO nothing) off: -nosuperDevMode
-      if (superDevModeEnabled && indexEnabled < 0) {
-        programArgs.add(0, SUPERDEVMODE_ENABLED_ARG);
-      } else if (!superDevModeEnabled && indexDisabled < 0) {
-        programArgs.add(0, SUPERDEVMODE_DISABLED_ARG);
-      }
+      updateGwt27On(javaProject, programArgs, indexDisabled, indexEnabled, superDevModeEnabled);
     }
   }
 
@@ -112,29 +92,33 @@ public class SuperDevModeArgumentProcessor implements ILaunchConfigurationProces
   @Override
   public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject,
       List<String> programArgs, List<String> vmArgs) throws CoreException {
-    // skip this if its not enabled
-    boolean superDevModeEnabled =
-        GWTLaunchConfigurationWorkingCopy.getSuperDevModeEnabled(launchConfig);
-    if (!superDevModeEnabled) {
-      return null;
-    }
+    String gwtVersion = GwtVersionUtil.getProjectGwtVersion(javaProject);
 
     List<String> errors = new ArrayList<String>();
+    // Validate specifically to version
+    if (GwtVersionUtil.isGwtVersionlessThan25(javaProject)) {
+      // No validation is needed for anything less than GWT 2.5
+      return null;
 
-    // validate gwt-codeserver.jar exists
-    String error = validateCodeServer(javaProject);
+    } else if (GWTLaunchConstants.SUPERDEVMODE_LAUNCH_LEGACY_VERSIONS.contains(gwtVersion)) {
+      // Validate for GWT >= 2.5 and GWT < 2.7
+      // Validate Super Dev Mode linker exists in project.gwt.xml
+      String error = validateSuperDevModeLinkerExists(javaProject, launchConfig);
+      if (error != null) {
+        errors.add(error);
+      }
+    }
+
+    // Validate gwt-codeserver.jar exists
+    // TODO this could be removed possibly in GWT >= 2.7, check with contributor team
+    // because the source may be in the gwt-dev.jar
+    String error = validateSuperDevModeCodeServer(javaProject);
     if (error != null) {
       errors.add(error);
     }
 
-    // validate gwt-dev[.*].jar exists
+    // Validate gwt-dev[.*].jar exists
     error = validateGwtDev(javaProject);
-    if (error != null) {
-      errors.add(error);
-    }
-
-    // validate super dev mode linker exists in project.gwt.xml
-    error = validateLinkerExists(javaProject, launchConfig);
     if (error != null) {
       errors.add(error);
     }
@@ -147,12 +131,71 @@ public class SuperDevModeArgumentProcessor implements ILaunchConfigurationProces
     return null;
   }
 
-  private String getGwtVersion(IJavaProject javaProject) {
-    GWTRuntime sdk = GWTRuntime.findSdkFor(javaProject);
-    return sdk.getVersion();
+  /**
+   * Update program args for projects GWT < 2.5 that can't support Super Dev Mode, be sure that the
+   * arguments don't get used ever.
+   */
+  private void updateLessThanGwt25(List<String> programArgs, int indexDisabled, int indexEnabled) {
+    // Always remove args, this prevents changing version issues
+    if (indexDisabled > -1) {
+      programArgs.remove(indexDisabled);
+    }
+
+    if (indexEnabled > -1) {
+      programArgs.remove(indexEnabled);
+    }
   }
 
-  private String validateCodeServer(IJavaProject javaProject) {
+  /**
+   * Update program args for project GWT >= 2.5 and GWT < 2.7, use -superDevMode or nothing at all.
+   */
+  private void updateGwt25toLessThan27(List<String> programArgs, int indexDisabled,
+      int indexEnabled, boolean superDevModeEnabled) {
+    // Remove enabled arg
+    if (indexEnabled > -1) {
+      programArgs.remove(indexEnabled);
+    }
+
+    // Remove disabled arg
+    if (indexDisabled > -1) {
+      programArgs.remove(indexDisabled);
+    }
+
+    // Super dev mode is on by default, on: nothing off: -nosuperDevMode
+    if (superDevModeEnabled) {
+      programArgs.add(0, SUPERDEVMODE_ENABLED_ARG);
+    }
+  }
+
+  /**
+   * Update program args for project GWT >= 2.7 use this for Dev Mode -nosuperDevMode and nothing
+   * for super dev mode.
+   */
+  private void updateGwt27On(IJavaProject javaProject, List<String> programArgs, int indexDisabled,
+      int indexEnabled, boolean superDevModeEnabled) {
+    // Remove enabled arg
+    if (indexEnabled > -1) {
+      programArgs.remove(indexEnabled);
+    }
+
+    // Remove disabled arg
+    if (indexDisabled > -1) {
+      programArgs.remove(indexDisabled);
+    }
+
+    // Verify its a GWT > 2.7, just in case another version snuck in.
+    if (!GwtVersionUtil.isGwtVersionGreaterOrEqualTo27(javaProject)) {
+      // Previously created in GWT 2.7, but switched to GWT 2.4 will do this
+      return;
+    }
+
+    // Super dev mode is on by default, on: nothing off: -nosuperDevMode
+    if (!superDevModeEnabled) {
+      programArgs.add(0, SUPERDEVMODE_DISABLED_ARG);
+    }
+  }
+
+  private String validateSuperDevModeCodeServer(IJavaProject javaProject) {
     boolean alreadyExists = false;
     try {
       IType type =
@@ -182,12 +225,21 @@ public class SuperDevModeArgumentProcessor implements ILaunchConfigurationProces
     return null;
   }
 
-  private String validateLinkerExists(IJavaProject javaProject, ILaunchConfiguration configuration) {
+  /**
+   * Validate if the Super Dev Mode Linker exists, for GWT <2.7.
+   *
+   * TODO verify this walks up parents and grandparents to verify flag exists.
+   */
+  private String validateSuperDevModeLinkerExists(IJavaProject javaProject,
+      ILaunchConfiguration configuration) {
     try {
       List<String> modules = GWTLaunchConfigurationWorkingCopy.getEntryPointModules(configuration);
       if (modules == null || modules.isEmpty()) {
+        // TODO probably should not throw this error, and be more specific.
+        // This error is a symptom of another issue, project setup/config
         return ERROR_NO_LINKER;
       }
+
       List<String> errors = new ArrayList<String>();
       for (String module : modules) {
         IModule imodule = ModuleUtils.findModule(javaProject, module, false);
@@ -227,7 +279,7 @@ public class SuperDevModeArgumentProcessor implements ILaunchConfigurationProces
     List<String> redirects = imodule.getSetConfigurationProperty("devModeRedirectEnabled");
     List<String> useSourceMaps = imodule.getSetConfigurationProperty("compiler.useSourceMaps");
 
-    String gwtVersion = getGwtVersion(javaProject);
+    String gwtVersion = GwtVersionUtil.getProjectGwtVersion(javaProject);
     boolean legacySuperDevModePossibleForGwtVersion =
         GWTLaunchConstants.SUPERDEVMODE_LAUNCH_LEGACY_VERSIONS.contains(gwtVersion);
 
@@ -242,6 +294,7 @@ public class SuperDevModeArgumentProcessor implements ILaunchConfigurationProces
     // check for additional properties in 2.5.0 to < 2.6.0
     if (gwtVersion.contains("2.5") && redirects == null) {
       errors.add(ERROR_NO_LINKER_REDIRECT);
+
     } else if (gwtVersion.contains("2.5") && redirects != null) {
       for (String redirect : redirects) {
         // could be more than one, so this may need to be more specific

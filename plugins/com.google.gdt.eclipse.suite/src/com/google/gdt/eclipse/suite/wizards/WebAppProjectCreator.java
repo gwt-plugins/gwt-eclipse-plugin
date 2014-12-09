@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -43,6 +43,7 @@ import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
 import com.google.gwt.eclipse.core.runtime.tools.WebAppProjectCreatorRunner;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateWebInfFolderCommand;
+import com.google.gwt.eclipse.core.util.GwtVersionUtil;
 
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFolder;
@@ -95,6 +96,7 @@ import javax.management.ReflectionException;
 public class WebAppProjectCreator implements IWebAppProjectCreator {
 
   public static final IWebAppProjectCreator.Factory FACTORY = new IWebAppProjectCreator.Factory() {
+    @Override
     public IWebAppProjectCreator create() {
       return new WebAppProjectCreator();
     }
@@ -106,6 +108,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
    * FilenameFilter that matches files that have a ".java" extension.
    */
   private static final FilenameFilter javaSourceFilter = new FilenameFilter() {
+    @Override
     public boolean accept(File dir, String name) {
       return name.endsWith(".java");
     }
@@ -132,6 +135,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
    */
   private static void deleteAllLaunchConfigurations(File dir) {
     File[] launchConfigurationFiles = dir.listFiles(new FilenameFilter() {
+      @Override
       public boolean accept(File dir, String name) {
         return name.endsWith(".launch");
       }
@@ -145,6 +149,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
   private static void deleteAllShellScripts(String projectName, File dir) {
     final String shellScriptPrefix = projectName + "-";
     File[] launchConfigurationFiles = dir.listFiles(new FilenameFilter() {
+      @Override
       public boolean accept(File dir, String name) {
         return name.startsWith(shellScriptPrefix);
       }
@@ -171,7 +176,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
 
   /**
    * Recursively find the .java files in the output directory and reformat them.
-   * 
+   *
    * @throws CoreException
    */
   private static void reformatJavaFiles(File outDir) throws CoreException {
@@ -248,18 +253,22 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     }
   }
 
+  @Override
   public void addContainerPath(IPath containerPath) {
     containerPaths.add(containerPath);
   }
 
+  @Override
   public void addFile(IPath path, InputStream inputStream) {
     fileInfos.add(new FileInfo(path, inputStream));
   }
 
+  @Override
   public void addFile(IPath path, String content) throws UnsupportedEncodingException {
     fileInfos.add(new FileInfo(path, new ByteArrayInputStream(content.getBytes("UTF-8"))));
   }
 
+  @Override
   public void addNature(String natureId) {
     natureIds.add(natureId);
   }
@@ -267,10 +276,11 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
   /**
    * Creates the project per the current configuration. Note that the caller must have a workspace
    * lock in order to successfully execute this method.
-   * 
+   *
    * @throws BackingStoreException
    * @throws IOException
    */
+  @Override
   public void create(IProgressMonitor monitor) throws CoreException, SdkException,
       ClassNotFoundException, BackingStoreException, IOException {
 
@@ -432,6 +442,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     return result;
   }
 
+  @Override
   public void setAppId(String appId) {
     this.appId = appId;
   }
@@ -440,10 +451,12 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     this.containerPaths = containerPaths;
   }
 
+  @Override
   public void setGenerateEmptyProject(boolean generateEmptyProject) {
     this.isGenerateEmptyProject = generateEmptyProject;
   }
 
+  @Override
   public void setLocationURI(URI locationURI) {
     this.locationURI = locationURI;
   }
@@ -452,14 +465,17 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     this.natureIds = natureIds;
   }
 
+  @Override
   public void setPackageName(String packageName) {
     this.packageName = packageName;
   }
 
+  @Override
   public void setProjectName(String projectName) {
     this.projectName = projectName;
   }
 
+  @Override
   public void setTemplates(String... templates) {
     if (templates == null) {
       this.templates = null;
@@ -469,6 +485,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     }
   }
 
+  @Override
   public void setTemplateSources(String... templateSources) {
     if (templateSources == null) {
       this.templateSources = null;
@@ -567,9 +584,13 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
   }
 
   protected void createLaunchConfig(IProject project) throws CoreException {
+    // If the default SDK is GWT 2.7 or greater, turn on GWT super dev mode by default.
+    boolean turnOnGwtSuperDevMode =
+        GwtVersionUtil.isGwtVersionGreaterOrEqualTo27(JavaCore.create(project));
+
     ILaunchConfigurationWorkingCopy wc =
         WebAppLaunchUtil.createLaunchConfigWorkingCopy(project.getName(), project,
-            WebAppLaunchUtil.determineStartupURL(project, false), false, false);
+            WebAppLaunchUtil.determineStartupURL(project, false), false, turnOnGwtSuperDevMode);
     ILaunchGroup[] groups = DebugUITools.getLaunchGroups();
 
     ArrayList<String> groupsNames = new ArrayList<String>();
@@ -652,13 +673,13 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
      * entry point name will be passed in as the last component in the module name. The
      * WebAppCreator will use the last component of the module name as the generated Eclipse project
      * name, which gives us the desired effect.
-     * 
+     *
      * FIXME: The project name may not be a valid entry point name. We need to scan the project name
      * token-by-token, and translate its tokens into a valid Java identifier name. Some examples:
-     * 
+     *
      * If the first token in the project name is a lower-case letter, then the translated character
      * should be made upper case.
-     * 
+     *
      * If the first token in the project name is a non-alpha character it should be deleted in the
      * translation.
      */
