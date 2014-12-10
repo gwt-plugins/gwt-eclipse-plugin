@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright 2013 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -30,7 +30,7 @@ public class AppEngineApiActivator extends AbstractGooglePlugin {
 
   /**
    * Returns the shared instance
-   * 
+   *
    * @return the shared instance
    */
   public static AppEngineApiActivator getDefault() {
@@ -39,7 +39,7 @@ public class AppEngineApiActivator extends AbstractGooglePlugin {
 
   /**
    * Logs a message to the plugin logger.
-   * 
+   *
    * @param severity severity from Status class
    * @param msg the message for the log
    * @param t the exception, or null
@@ -50,7 +50,7 @@ public class AppEngineApiActivator extends AbstractGooglePlugin {
 
   /**
    * Logs an error message to the plugin logger.
-   * 
+   *
    * @param msg the message for the log
    * @param t the exception, or null
    */
@@ -66,9 +66,10 @@ public class AppEngineApiActivator extends AbstractGooglePlugin {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
    */
+  @Override
   public void start(BundleContext context) throws Exception {
     super.start(context);
     plugin = this;
@@ -76,9 +77,10 @@ public class AppEngineApiActivator extends AbstractGooglePlugin {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
    */
+  @Override
   public void stop(BundleContext context) throws Exception {
     plugin = null;
     super.stop(context);

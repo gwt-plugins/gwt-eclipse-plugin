@@ -14,12 +14,12 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.platform.jetty;
 
-import javax.servlet.Servlet;
-
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+
+import javax.servlet.Servlet;
 
 /**
  * Helper to set up the server which listens for viewSource HTTP requests.
@@ -46,18 +46,26 @@ public class JettyServer implements IJettyServer {
 
   private final ServletHandler servletHandler = new ServletHandler();
 
+  /**
+   * Creates a JettyServer instance.
+   *
+   * @param classLoader unused
+   */
   public JettyServer(ClassLoader classLoader) {
     // This implementation does not require the class loader
   }
 
+  @Override
   public void addServlet(String path, Servlet servlet) {
     servletHandler.addServletWithMapping(new ServletHolder(servlet), path);
   }
 
+  @Override
   public int getPort() {
     return port;
   }
 
+  @Override
   public void setPort(int port) {
     this.port = port;
   }

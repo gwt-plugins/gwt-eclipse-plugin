@@ -62,7 +62,8 @@ Export-Package: com.google.common.annotations,
  com.google.gson.internal,
  com.google.gson.internal.bind,
  com.google.gson.reflect,
- com.google.gson.stream
+ com.google.gson.stream,
+ javax.annotation
 Require-Bundle: com.google.gdt.eclipse.platform;visibility:=reexport,
  org.apache.ant,
  org.eclipse.core.filesystem,

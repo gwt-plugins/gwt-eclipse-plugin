@@ -159,25 +159,40 @@ public class JpaFacetHelper {
    * WTP-JPA releases requires the use of reflection (blech!).
    */
   private static Persistence getPersistence(JpaProject jpaProject) throws CoreException {
-    // On Eclipse 4.4+ retrieve the Persistence object via JpaProject.getContextRoot()
-    Persistence persistence = (Persistence) invokeMethodSafe(jpaProject, "getContextRoot");
-    if (persistence != null) {
-      return persistence;
+    // On Eclipse 4.4+ retrieve the Persistence object via 
+    // JpaProject.getContextRoot().getPersistenceXml().getRoot()
+    // On Eclipse 4.3 retrieve the Persistence object via 
+    // JpaProject.getContextModelRoot().getPersistenceXml().getRoot()
+    // JpaProject.getContextRoot()/JpaProject.getContextModelRoot() never return null so 
+    // invokeMethodSafe() only fails if we are not running the correct Eclipse version.
+    Object contextRoot = invokeMethodSafe(JpaProject.class, jpaProject, "getContextRoot");
+    if (contextRoot == null) {
+      contextRoot = invokeMethodSafe(JpaProject.class, jpaProject, "getContextModelRoot");
     }
-
-    // On Eclipse 4.3 retrieve the Persistence object via JpaProject.getContextModelRoot()
-    persistence = (Persistence) invokeMethodSafe(jpaProject, "getContextModelRoot");
-    if (persistence != null) {
-      return persistence;
+    if (contextRoot != null) {
+      Object persistenceXml =
+          invokeMethod(contextRoot.getClass(), contextRoot, "getPersistenceXml");
+      if (persistenceXml != null) {
+        Object persistence = invokeMethod(persistenceXml.getClass(), persistenceXml, "getRoot");
+        if (persistence != null) {
+          return (Persistence) persistence;    
+        }
+      }
+      // At this point we saw the API for retrieving a persistence object for Eclipse 4.3+, but it
+      // was not hooked up to an actual persistence object, so report the failure to retrieve it.
+      throw new CoreException(AppEngineWtpPlugin.createErrorStatus(
+          "Unable to retrieve a JPA project persistence object.", null));
     }
-
+    
     // On Eclipse 4.2, retrieve the Persistence object via
     // JpaProject.getRootContextNode().getPersistenceXml().getPersistence()
     // Any failures to invoke this method chain will result in a CoreException being thrown.
-    Object rootContextNode = invokeMethod(jpaProject, "getRootContextNode");
-    Object persistenceXml = invokeMethod(rootContextNode, "getPersistenceXml");
+    Object rootContextNode = invokeMethod(JpaProject.class, jpaProject, "getRootContextNode");
+    Object persistenceXml =
+        invokeMethod(rootContextNode.getClass(), rootContextNode, "getPersistenceXml");
     if (persistenceXml != null) {
-      persistence = (Persistence) invokeMethod(persistenceXml, "getPersistence");
+      Persistence persistence =
+          (Persistence) invokeMethod(persistenceXml.getClass(), persistenceXml, "getPersistence");
       if (persistence != null) {
         return persistence;
       }
@@ -189,9 +204,10 @@ public class JpaFacetHelper {
         "Unable to retrieve a JPA project persistence object.", null));
   }
 
-  private static Object invokeMethodSafe(Object object, String methodName) {
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  private static Object invokeMethodSafe(Class clazz, Object object, String methodName) {
     try {
-      Method method = object.getClass().getDeclaredMethod(methodName);
+      Method method = clazz.getDeclaredMethod(methodName);
       if (method != null) {
         return method.invoke(object);
       }
@@ -202,9 +218,11 @@ public class JpaFacetHelper {
     return null;
   }
 
-  private static Object invokeMethod(Object object, String methodName) throws CoreException {
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  private static Object invokeMethod(Class clazz, Object object, String methodName)
+      throws CoreException {
     try {
-      Method method = object.getClass().getDeclaredMethod(methodName);
+      Method method = clazz.getDeclaredMethod(methodName);
       if (method != null) {
         return method.invoke(object);
       }
