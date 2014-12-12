@@ -1,15 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GWT Plugin Test Fragment
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: com.google.gwt.eclipse.core.test;singleton:=true
 Bundle-Version: 0.0.0
 Fragment-Host: com.google.gwt.eclipse.core;bundle-version="0.0.0"
-Require-Bundle: org.junit,
- com.google.gdt.eclipse.maven,
+Require-Bundle: org.eclipse.jst.common.project.facet.core,
  org.eclipse.m2e.core,
- org.eclipse.jst.common.project.facet.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: com.google.gdt.eclipse.suite.wizards,
- org.apache.maven.archetype.catalog,
- org.eclipse.m2e.core,
- org.eclipse.m2e.core.project
+ org.junit

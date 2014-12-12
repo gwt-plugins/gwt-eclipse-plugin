@@ -15,6 +15,7 @@
 package com.google.gwt.eclipse.core.util;
 
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
+import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 
 import org.eclipse.jdt.core.IJavaProject;
@@ -55,6 +56,8 @@ public class GwtVersionUtil {
     String version = "999.999.999";
     if (sdk != null) {
       version = sdk.getVersion();
+    } else {
+      GWTPluginLog.logWarning("GWT SDK not found");
     }
 
     return version;
