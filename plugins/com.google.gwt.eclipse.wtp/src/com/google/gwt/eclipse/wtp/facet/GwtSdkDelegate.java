@@ -12,33 +12,35 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.wtp.facet;
 
+import com.google.gwt.eclipse.core.properties.ui.GWTProjectPropertyPage;
+import com.google.gwt.eclipse.core.runtime.GWTJarsRuntime;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IDelegate;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
-public final class GwtSdkDelegate implements IDelegate {
+public final class GwtSdkDelegate implements IDelegate, IGwtFacetConstants {
+
+  private IProject project;
+  private GWTJarsRuntime runtime;
 
   @Override
-  public void execute(final IProject pj, final IProjectFacetVersion fv,
+  public void execute(final IProject project, final IProjectFacetVersion version,
       final Object config, final IProgressMonitor monitor) throws CoreException {
-    monitor.beginTask("", 2);
-    try {
-      // final IFolder webInfLib = Utils.getWebInfLibDir(pj);
-      //
-      // Utils.copyFromPlugin(new Path("libs/formgen-core.jar"),
-      // webInfLib.getFile("formgen-core.jar"));
-      //
-      // monitor.worked(1);
-      //
-      // Utils.registerFormGenServlet(pj);
-      //
-      // monitor.worked(1);
+    this.project = project;
 
-    } finally {
-      monitor.done();
-    }
+    IDataModel dataModel = (IDataModel) config;
+
+    runtime = (GWTJarsRuntime) dataModel.getProperty(GWT_SDK);
+
+    System.out.println("runtime version=" + runtime.getVersion());
+
+
+    GWTProjectPropertyPage projectProperty = new GWTProjectPropertyPage();
+    projectProperty.test(project, runtime);
   }
 
 }

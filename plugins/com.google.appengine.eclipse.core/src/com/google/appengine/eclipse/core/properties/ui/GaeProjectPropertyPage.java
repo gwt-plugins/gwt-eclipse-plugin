@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -372,7 +372,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
          */
         setDatanucleusVersionAndUpdateClasspath(getDatanucleusVersion(),
             useDatanucleusCheckbox.getSelection());
-      }      
+      }
     }
 
     GoogleCloudSqlProperties.jobSetGoogleCloudSqlEnabled(getProject(),
@@ -426,11 +426,13 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
       }
     });
     appIdText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         fieldChanged();
       }
     });
     versionText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         fieldChanged();
       }
@@ -451,21 +453,25 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
       }
     });
     useGoogleCloudSqlLink.addListener(SWT.Selection, new Listener() {
+      @Override
       public void handleEvent(Event ev) {
         BrowserUtilities.launchBrowserAndHandleExceptions(ev.text);
       }
     });
     apisConsoleLink.addListener(SWT.Selection, new Listener() {
+      @Override
       public void handleEvent(Event ev) {
         BrowserUtilities.launchBrowserAndHandleExceptions(ev.text);
       }
     });
     useGoogleCloudSqlCheckbox.addListener(SWT.Selection, new Listener() {
+      @Override
       public void handleEvent(Event event) {
         fieldChanged();
       }
     });
     appengineCloudSqlConfigureLink.addListener(SWT.Selection, new Listener() {
+      @Override
       public void handleEvent(Event event) {
         GoogleCloudSqlConfigure googleSqlConfigure = new GoogleCloudSqlConfigure(getShell(),
             getJavaProject(), true);
@@ -478,6 +484,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
       }
     });
     mySqlConfigureLink.addListener(SWT.Selection, new Listener() {
+      @Override
       public void handleEvent(Event event) {
         MySqlConfigure mySqlConfigure = new MySqlConfigure(getShell(), getJavaProject());
         mySqlConfigure.create();
@@ -501,6 +508,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
       }
     });
     testGoogleCloudSqlConfigureLink.addListener(SWT.Selection, new Listener() {
+      @Override
       public void handleEvent(Event event) {
         GoogleCloudSqlConfigure googleSqlConfigure = new GoogleCloudSqlConfigure(getShell(),
             getJavaProject(), false);
@@ -528,20 +536,20 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     IProject project = getProject();
     /*
      * Set the appropriate web app project properties if this is a J2EE project.
-     * 
+     *
      * There can be a collision between different property pages manipulating
      * the same web app properties, but the collision actually works itself out.
-     * 
+     *
      * Both the GWT and GAE property pages make a call to this method. So, there
      * are no conflicting/differing settings of the web app project properties
      * in this case.
-     * 
+     *
      * In the event that the GAE/GWT natures are enabled and the Web App
      * property page does not have the "This Project Has a War Directory"
      * setting selected, and that setting is enabled, then the settings on the
      * Web App project page will take precedence (over those settings that are
      * set by this method call).
-     * 
+     *
      * The gory details as to why have to do with the order of application of
      * the properties for each page (App Engine, Web App, then GWT), and the
      * fact that this method will not make any changes to Web App properties if
@@ -626,6 +634,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     useHrdLink.setText("Enable local <a href=\"" + APPENGINE_LOCAL_HRD_URL + "\">HRD</a> support");
     useHrdLink.setToolTipText(APPENGINE_LOCAL_HRD_URL);
     useHrdLink.addListener(SWT.Selection, new Listener() {
+      @Override
       public void handleEvent(Event ev) {
         BrowserUtilities.launchBrowserAndHandleExceptions(ev.text);
       }
@@ -637,6 +646,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     hrdLink.setToolTipText("Runtime HRD parameters can be adjusted per run configuration, in the "
         + "App Engine options tab.");
     hrdLink.addListener(SWT.Selection, new Listener() {
+      @Override
       public void handleEvent(Event event) {
         // Open the run configurations dialog and select the WebApp type.
         ILaunchConfigurationType webAppLaunchType = DebugPlugin.getDefault()
@@ -756,6 +766,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     };
 
     sdkSelectionBlock.addSdkSelectionListener(new SdkSelectionListener() {
+      @Override
       public void onSdkSelection(SdkSelectionEvent ev) {
         validateFields();
         updateControls();
@@ -842,7 +853,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
       return false;
     }
 
-    IConfigurationElement[] extensions = 
+    IConfigurationElement[] extensions =
         Platform.getExtensionRegistry().getConfigurationElementsFor(
             "com.google.appengine.eclipse.core.appengineWebXml");
     if (extensions.length > 0) {
@@ -886,7 +897,9 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
 
   private void saveChangesToAppEngineWebXml() throws IOException, CoreException {
     GaeProject gaeProject = GaeProject.create(getProject());
-
+    if (appId == null) {
+      appId = "ChangeMe";
+    }
     if (!appId.equals(initialAppId)) {
       gaeProject.setAppId(appId, true);
     }
@@ -916,7 +929,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
         getJavaProject().getRawClasspath(), GaeSdkContainer.CONTAINER_ID);
 
     if (containerEntry != null) {
-      ClasspathContainerInitializer classpathContainerInitializer = 
+      ClasspathContainerInitializer classpathContainerInitializer =
           JavaCore.getClasspathContainerInitializer(GaeSdkContainer.CONTAINER_ID);
       classpathContainerInitializer.initialize(containerEntry.getPath(), getJavaProject());
 
@@ -935,12 +948,12 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
   private void updateControls() {
 
     boolean shouldBeEnabled = useGae;
-    ExtensionQuery<GaeProjectPropertyPage.GaeSdkSelectionEnablementFinder> extQuery = 
+    ExtensionQuery<GaeProjectPropertyPage.GaeSdkSelectionEnablementFinder> extQuery =
         new ExtensionQuery<GaeProjectPropertyPage.GaeSdkSelectionEnablementFinder>(
             AppEngineCorePlugin.PLUGIN_ID, "gaeSdkSelectionEnablementFinder", "class");
-    List<ExtensionQuery.Data<GaeProjectPropertyPage.GaeSdkSelectionEnablementFinder>> 
+    List<ExtensionQuery.Data<GaeProjectPropertyPage.GaeSdkSelectionEnablementFinder>>
       enablementFinders = extQuery.getData();
-    for (ExtensionQuery.Data<GaeProjectPropertyPage.GaeSdkSelectionEnablementFinder> 
+    for (ExtensionQuery.Data<GaeProjectPropertyPage.GaeSdkSelectionEnablementFinder>
       enablementFinder : enablementFinders) {
         shouldBeEnabled = shouldBeEnabled
           && enablementFinder.getExtensionPointData().shouldEnableGaeSdkSelection(
@@ -1009,7 +1022,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
 
   private void updateJdoConfig(String datanucleusVersion) {
     try {
-      // TODO(rdayal): Don't hardcode this value. Look through the project's source paths. 
+      // TODO(rdayal): Don't hardcode this value. Look through the project's source paths.
       String jdoconfigPath = getProject()
           .getLocation().append("src/META-INF/jdoconfig.xml").toOSString();
       Document document = parseXML(jdoconfigPath);
@@ -1058,7 +1071,7 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
 
   private void updatePersistenceXml(String datanucleusVersion) {
     try {
-      // TODO(rdayal): Don't hardcode this value. Look through the project's source paths. 
+      // TODO(rdayal): Don't hardcode this value. Look through the project's source paths.
       String persistenceXmlPath = getProject()
           .getLocation().append("src/META-INF/persistence.xml").toOSString();
       Document document = parseXML(persistenceXmlPath);

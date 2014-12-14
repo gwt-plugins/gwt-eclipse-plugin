@@ -12,18 +12,30 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.wtp.facet;
 
+import com.google.gwt.eclipse.core.properties.ui.GWTProjectPropertyPage;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.common.project.facet.core.IDelegate;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
+import org.osgi.service.prefs.BackingStoreException;
 
 public final class GwtFacetUninstallDelegate implements IDelegate {
 
   @Override
   public void execute(IProject project, IProjectFacetVersion fv, Object config,
       IProgressMonitor monitor) throws CoreException {
-    // do nothing for now.
+
+    GWTProjectPropertyPage projectProperty = new GWTProjectPropertyPage();
+    try {
+      projectProperty.removeGWT(project);
+    } catch (BackingStoreException e) {
+      // TODO(${user}): Auto-generated catch block
+      e.printStackTrace();
+    }
+
+
   }
 
 }

@@ -355,7 +355,7 @@
       </propertyTester>            
    </extension>
    
-      <extension
+   <extension
          point="org.eclipse.jdt.launching.classpathProviders">
       <classpathProvider
             class="com.google.gwt.eclipse.core.launch.ModuleClasspathProvider"
@@ -377,6 +377,8 @@
             name="Google Web Toolkit">
       </classpathContainerPage>
    </extension>
+   
+   
    <extension
          point="org.eclipse.jdt.core.compilationParticipant">
       <compilationParticipant

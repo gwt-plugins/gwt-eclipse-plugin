@@ -12,10 +12,10 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.wtp.facet.datamodel;
 
+import com.google.gwt.eclipse.core.preferences.GWTPreferences;
+import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 import com.google.gwt.eclipse.wtp.facet.IGwtFacetConstants;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.common.componentcore.datamodel.FacetInstallDataModelProvider;
 
 import java.util.Set;
@@ -38,15 +38,20 @@ public class GwtFacetInstallDataModelProvider extends FacetInstallDataModelProvi
   @SuppressWarnings({"rawtypes", "unchecked"})
   public Set getPropertyNames() {
     Set propertyNames = super.getPropertyNames();
-    // propertyNames.add(GAE_PROPERTY_APP_ID);
-    // propertyNames.add(GAE_PROPERTY_ENABLE_JAR_SPLITTING);
-    // propertyNames.add(GAE_PROPERTY_DO_JAR_CLASSES);
-    // propertyNames.add(GAE_PROPERTY_RETAIN_STAGING_DIR);
+    propertyNames.add(GWT_SDK);
+
     return propertyNames;
   }
 
-  protected IStatus validateAppId(String propertyName) {
-    return Status.OK_STATUS;
-  }
+  @Override
+  public Object create() {
+    Object object = super.create();
 
+    GWTRuntime sdk = GWTPreferences.getDefaultRuntime();
+    if (sdk != null) {
+      model.setProperty(GWT_SDK, sdk);
+    }
+
+    return object;
+  }
 }
