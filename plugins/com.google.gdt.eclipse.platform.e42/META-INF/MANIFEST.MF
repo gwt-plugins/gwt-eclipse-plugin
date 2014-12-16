@@ -1,34 +1,34 @@
+Comment: TODO(tparker): thin out required bundles, remove Activator
 Manifest-Version: 1.0
+Bundle-ActivationPolicy: lazy
 Bundle-ManifestVersion: 2
 Bundle-Name: Google Eclipse 4.2 Platform Plugin
-Bundle-SymbolicName: com.google.gdt.eclipse.platform.e42;singleton:=true
-Bundle-Version: 0.0.0.qualifier
-Bundle-Vendor: Google, Inc.
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: com.google.gdt.eclipse.platform.e42;singleton:=true
+Bundle-Vendor: Google, Inc.
+Bundle-Version: 0.0.0.qualifier
+Export-Package: com.google.gdt.eclipse.platform.debug.ui,
+ com.google.gdt.eclipse.platform.jdt.text.correction.proposals,
+ com.google.gdt.eclipse.platform.jetty,
+ com.google.gdt.eclipse.platform.update,
+ org.eclipse.jdt.internal.debug.ui
 Require-Bundle: com.google.gdt.eclipse.platform.shared;visibility:=reexport,
- org.eclipse.jface,
- org.eclipse.jdt.core,
- org.eclipse.jdt.ui,
- org.eclipse.ui.workbench,
- org.eclipse.core.runtime;bundle-version="[3.8.0,3.11.0)",
+ javax.servlet,
+ org.eclipse.core.runtime,
+ org.eclipse.debug.core,
+ org.eclipse.debug.ui,
  org.eclipse.equinox.p2.ui,
  org.eclipse.equinox.p2.ui.sdk,
  org.eclipse.equinox.p2.metadata,
  org.eclipse.equinox.p2.core,
  org.eclipse.equinox.p2.operations,
+ org.eclipse.jdt.core,
  org.eclipse.jdt.debug.ui,
- org.eclipse.debug.core,
+ org.eclipse.jdt.ui,
  org.eclipse.jetty.servlet,
  org.eclipse.jetty.server,
  org.eclipse.jetty.util,
- javax.servlet,
- org.eclipse.debug.ui,
- javax.servlet,
+ org.eclipse.jface,
  org.eclipse.jface.text,
- org.eclipse.ltk.core.refactoring
-Export-Package: com.google.gdt.eclipse.platform.jetty,
- com.google.gdt.eclipse.platform.debug.ui,
- com.google.gdt.eclipse.platform.update,
- org.eclipse.jdt.internal.debug.ui,
- com.google.gdt.eclipse.platform.jdt.text.correction.proposals
-Bundle-ActivationPolicy: lazy
+ org.eclipse.ltk.core.refactoring,
+ org.eclipse.ui.workbench

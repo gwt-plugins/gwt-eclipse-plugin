@@ -1,11 +1,15 @@
 Manifest-Version: 1.0
+Bundle-ActivationPolicy: lazy
+Bundle-Localization: plugin
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: com.google.appengine.eclipse.wtp.jpa.e43;singleton:=true
-Bundle-Version: 0.0.0.qualifier
-Bundle-Localization: plugin
 Bundle-Vendor: %providerName
-Require-Bundle: com.google.appengine.eclipse.wtp,
+Bundle-Version: 0.0.0.qualifier
+Export-Package: com.google.appengine.eclipse.wtp.jpa
+Require-Bundle: com.google.appengine.eclipse.webtools,
+ com.google.appengine.eclipse.wtp,
  com.google.appengine.eclipse.wtp.jpa,
  org.eclipse.core.runtime;bundle-version="3.9.0",
  org.eclipse.debug.ui,
@@ -19,11 +23,3 @@ Require-Bundle: com.google.appengine.eclipse.wtp,
  org.eclipse.jst.common.project.facet.ui,
  org.eclipse.persistence.jpa.jpql,
  org.eclipse.wst.common.project.facet.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ActivationPolicy: lazy
-Export-Package: com.google.appengine.eclipse.wtp.jpa
-
-
-
-
-

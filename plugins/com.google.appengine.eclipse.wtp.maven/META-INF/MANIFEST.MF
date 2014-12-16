@@ -1,11 +1,14 @@
 Manifest-Version: 1.0
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: com.google.appengine.eclipse.wtp.maven.AppEngineMavenPlugin
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-SymbolicName: com.google.appengine.eclipse.wtp.maven;singleton:=true
-Bundle-Version: 0.0.0.qualifier
 Bundle-Localization: plugin
-Bundle-Activator: com.google.appengine.eclipse.wtp.maven.AppEngineMavenPlugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: com.google.appengine.eclipse.wtp.maven;singleton:=true
 Bundle-Vendor: %providerName
+Bundle-Version: 0.0.0.qualifier
+Export-Package: com.google.appengine.eclipse.wtp.maven
 Require-Bundle: com.google.appengine.eclipse.core,
  com.google.appengine.eclipse.wtp,
  com.google.appengine.eclipse.wtp.jpa,
@@ -32,4 +35,3 @@ Require-Bundle: com.google.appengine.eclipse.core,
  org.eclipse.wst.common.project.facet.ui,
  org.eclipse.wst.server.ui,
  org.eclipse.wst.server.core
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7

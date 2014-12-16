@@ -3,8 +3,8 @@ Bundle-ClassPath: lib/mockito-all-1.9.5.jar,
  .
 Bundle-ManifestVersion: 2
 Bundle-Name: Test for the App Engine Api Wrapper
-Bundle-SymbolicName: com.google.gdt.eclipse.appengine.api.test;singleton:=true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: com.google.gdt.eclipse.appengine.api.test
 Bundle-Vendor: Google Inc.
 Bundle-Version: 0.0.0
 Fragment-Host: com.google.gdt.eclipse.appengine.api

@@ -1,29 +1,14 @@
 Manifest-Version: 1.0
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: com.google.appengine.eclipse.core.AppEngineCorePlugin
+Bundle-ClassPath: .
+Bundle-Localization: plugin
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: com.google.appengine.eclipse.core;singleton:=true
-Bundle-Version: 0.0.0.qualifier
-Bundle-Activator: com.google.appengine.eclipse.core.AppEngineCorePlugin
 Bundle-Vendor: %providerName
-Require-Bundle: com.google.gdt.eclipse.core;visibility:=reexport,
- com.google.gdt.eclipse.login,
- com.google.gdt.eclipse.maven,
- org.eclipse.core.runtime,
- org.eclipse.debug.ui,
- org.eclipse.jdt.core,
- org.eclipse.jdt.launching,
- org.eclipse.jdt.ui,
- org.eclipse.jface.text,
- org.eclipse.ui,
- org.eclipse.ui.console,
- org.eclipse.ui.ide,
- org.eclipse.wst.common.project.facet.core,
- org.eclipse.wst.sse.core,
- org.eclipse.wst.xml.core,
- org.eclipse.core.variables,
- org.eclipse.wst.server.core
-Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .
+Bundle-Version: 0.0.0.qualifier
 Export-Package: com.google.appengine.eclipse.core,
  com.google.appengine.eclipse.core.datatools,
  com.google.appengine.eclipse.core.launch,
@@ -42,7 +27,20 @@ Export-Package: com.google.appengine.eclipse.core,
  com.google.appengine.eclipse.core.sql,
  com.google.appengine.eclipse.core.validators,
  com.google.appengine.eclipse.core.validators.java
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-Localization: plugin
- 
-
+Require-Bundle: com.google.gdt.eclipse.core;visibility:=reexport,
+ com.google.gdt.eclipse.login,
+ com.google.gdt.eclipse.maven,
+ org.eclipse.core.runtime,
+ org.eclipse.core.variables,
+ org.eclipse.debug.ui,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.launching,
+ org.eclipse.jdt.ui,
+ org.eclipse.jface.text,
+ org.eclipse.ui,
+ org.eclipse.ui.console,
+ org.eclipse.ui.ide,
+ org.eclipse.wst.common.project.facet.core,
+ org.eclipse.wst.server.core,
+ org.eclipse.wst.sse.core,
+ org.eclipse.wst.xml.core
