@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright 2013 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -15,9 +15,9 @@ package com.google.gdt.eclipse.appengine.api;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson.JacksonFactory;
-import com.google.api.services.appengine.Appengine;
-import com.google.api.services.appengine.model.App;
-import com.google.api.services.appengine.model.ListAppResponse;
+import com.google.api.services.appengine.v1beta2.Appengine;
+import com.google.api.services.appengine.v1beta2.model.App;
+import com.google.api.services.appengine.v1beta2.model.AppsListResponse;
 import com.google.gdt.eclipse.core.browser.BrowserUtilities;
 import com.google.gdt.eclipse.login.GoogleLogin;
 import com.google.gson.Gson;
@@ -99,7 +99,7 @@ public class AppengineApiWrapper {
   /**
    * When the user is logged in, this function returns an updated list of App Engine applications.
    * If the user is not logged in and forceLogin is true, the user is prompted to login in.
-   * 
+   *
    * @param forceLogin If true, the user is prompted to login if the user is not yet logged in.
    * @return An array of available App Engine applications if applications exist, an empty array is
    *         no application exists or null if the API call failed.
@@ -118,11 +118,11 @@ public class AppengineApiWrapper {
   }
 
   /**
-   * 
+   *
    * When the user is logged in, this function creates an App Engine application (with only the App
    * ID set and domain if it is a domain application) and inserts it into the logged in user's
    * account. If the user is not logged in and forceLogin is true, the user is prompted to login in.
-   * 
+   *
    * @param appId The new application's ID.
    * @param forceLogin If true, the user is prompted to login if the user is not yet logged in.
    * @throws IOException
@@ -141,7 +141,7 @@ public class AppengineApiWrapper {
 
   /**
    * Opens a browser to the Google App Engine Admin Console of the selected application.
-   * 
+   *
    * @param appId The new application's ID.
    */
   public void viewConsole(String appId) {
@@ -152,7 +152,7 @@ public class AppengineApiWrapper {
   /**
    * When the user is logged in, this function initializes the App Engine API. If the user is not
    * logged in and forceLogin is true, the user is prompted to login in.
-   * 
+   *
    * @param forceLogin If true, the user is prompted to login if the user is not yet logged in.
    * @return true is the user is logged in and the App Engine API is initialized. False otherwise.
    */
@@ -189,10 +189,10 @@ public class AppengineApiWrapper {
   /**
    * This function creates an App Engine application with only the App Id and the domain, if it is a
    * domain application, and inserts it into the logged in user's account.
-   * 
+   *
    * NOTE: The ability to insert app ids no longer exists. See comment in CreateAppIdDialog for
    * more information.
-   * 
+   *
    * @param appId The application id
    * @throws IOException
    */
@@ -215,12 +215,12 @@ public class AppengineApiWrapper {
 
   /**
    * This function returns a list of all the apps belonging to the authenticated user.
-   * 
+   *
    * @throws IOException
    */
   private String[] listApps() throws IOException {
     Appengine.Apps.List appsDotList = appengine.apps().list();
-    ListAppResponse resp = null;
+    AppsListResponse resp = null;
 
     try {
       resp = appsDotList.execute();
