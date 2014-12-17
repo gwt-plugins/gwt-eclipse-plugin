@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * Special RuntimeClasspathEntryResolver for GWT projects that mangles the classpath for OOPHM to
  * work if the appropriate launch settings are set.
- * 
+ *
  * TODO(rdayal): Investigate the removal of this class. Now that we've removed the old
  * "transitional OOPHM" code, it's not clear that this is needed anymore. It seems to be used by the
  * ModuleClasspathProvider, but I'm not sure if this needs to be a separate class.
@@ -42,6 +42,7 @@ public class RuntimeClasspathEntryResolver implements IRuntimeClasspathEntryReso
 
   private static final IRuntimeClasspathEntry[] NO_ENTRIES = new IRuntimeClasspathEntry[0];
 
+  @Override
   public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry,
       IJavaProject project) throws CoreException {
     GWTRuntime gwtSdk = findGWTSdk(entry);
@@ -54,6 +55,7 @@ public class RuntimeClasspathEntryResolver implements IRuntimeClasspathEntryReso
     return resolveClasspathEntries(Arrays.asList(classpathEntries));
   }
 
+  @Override
   public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry,
       ILaunchConfiguration configuration) throws CoreException {
     GWTRuntime gwtSdk = findGWTSdk(entry);
@@ -67,6 +69,7 @@ public class RuntimeClasspathEntryResolver implements IRuntimeClasspathEntryReso
     return resolveClasspathEntries(classpathEntries);
   }
 
+  @Override
   public IVMInstall resolveVMInstall(IClasspathEntry entry) {
     return null;
   }

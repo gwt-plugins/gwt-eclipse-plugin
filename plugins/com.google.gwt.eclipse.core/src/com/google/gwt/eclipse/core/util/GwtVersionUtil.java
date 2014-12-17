@@ -21,6 +21,16 @@ import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 import org.eclipse.jdt.core.IJavaProject;
 
 public class GwtVersionUtil {
+  /**
+   * Returns if the version-containing directory name is >= GWT 2.5.
+   */
+  public static boolean isGwtVersionKnownAndAtLeast25(String directoryName) {
+    // The convention for GWT installation directories is "gwt-<major>.<minor>.<micro>".
+    if (!directoryName.startsWith("gwt-")) {
+      return false;
+    }
+    return SdkUtils.compareVersionStrings(directoryName.substring(4), "2.5.0") >= 0;
+  }
 
   /**
    * Returns if the project is < GWT 2.5.

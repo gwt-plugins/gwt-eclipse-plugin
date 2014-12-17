@@ -23,7 +23,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
  */
 public abstract class AbstractSdk implements Sdk {
   protected static final IClasspathEntry[] NO_ICLASSPATH_ENTRIES = new IClasspathEntry[0];
-  
+
   private final IPath location;
   private final String name;
 
@@ -49,6 +49,7 @@ public abstract class AbstractSdk implements Sdk {
         && versionsEqual(otherSdk);
   }
 
+  @Override
   public String getDescription() {
     String version = getVersion();
     if (version == null || version.equals("")) {
@@ -58,10 +59,12 @@ public abstract class AbstractSdk implements Sdk {
     return getName() + " - " + version;
   }
 
+  @Override
   public IPath getInstallationPath() {
     return location;
   }
 
+  @Override
   public String getName() {
     return name;
   }
@@ -83,6 +86,7 @@ public abstract class AbstractSdk implements Sdk {
     return getName() + ", " + getInstallationPath() + ", " + getVersion();
   }
 
+  @Override
   public String toXml() {
     StringBuilder sb = new StringBuilder();
     sb.append("<sdk name=\"");

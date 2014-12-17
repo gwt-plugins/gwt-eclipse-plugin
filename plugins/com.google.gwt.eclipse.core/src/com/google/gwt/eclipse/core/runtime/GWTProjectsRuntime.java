@@ -181,7 +181,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
   /**
    * Convenience method to synthesize a GWT Contributor Runtime. The runtime is not actually
    * persisted to the user's set of SDKs.
-   * 
+   *
    * This method can be useful when working with the GWT Runtime projects (as they do not have an
    * SDK themselves).
    */
@@ -255,6 +255,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
     return null;
   }
 
+  @Override
   public IClasspathEntry[] getClasspathEntries() {
     IJavaProject devProject = findDevProject();
     IJavaProject userProject = findUserProject();
@@ -334,6 +335,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
 
     // Find the staging output directory: gwt-<platform>-<version>
     final File[] buildDirs = stagingDir.listFiles(new FileFilter() {
+      @Override
       public boolean accept(File file) {
         return (file.isDirectory() && file.getName().startsWith("gwt-"));
       }
@@ -345,6 +347,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
 
     // Find the gwt-dev .jar
     File[] gwtDevJars = buildDirs[0].listFiles(new FileFilter() {
+      @Override
       public boolean accept(File file) {
         String name = file.getName();
         IPath sdkLocationPath = Path.fromOSString(buildDirs[0].getAbsolutePath());
@@ -363,6 +366,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
     return VERSION;
   }
 
+  @Override
   public File[] getWebAppClasspathFiles(IProject project) {
     try {
       File devJar = getDevJar();

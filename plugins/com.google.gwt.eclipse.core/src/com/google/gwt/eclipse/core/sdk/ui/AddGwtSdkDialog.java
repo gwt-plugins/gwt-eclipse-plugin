@@ -71,6 +71,7 @@ public class AddGwtSdkDialog extends AddSdkDialog<GWTRuntime> {
     directoryTextGridData.widthHint = 300;
     directoryText.setLayoutData(directoryTextGridData);
     directoryText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         validate();
       }

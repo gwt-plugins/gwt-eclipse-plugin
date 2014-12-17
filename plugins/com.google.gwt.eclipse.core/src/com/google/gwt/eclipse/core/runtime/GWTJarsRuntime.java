@@ -16,6 +16,7 @@
 package com.google.gwt.eclipse.core.runtime;
 
 import com.google.gwt.eclipse.core.GWTPluginLog;
+import com.google.gwt.eclipse.core.util.GwtVersionUtil;
 import com.google.gwt.eclipse.core.util.Util;
 
 import org.eclipse.core.resources.IProject;
@@ -60,6 +61,7 @@ public class GWTJarsRuntime extends GWTRuntime {
     return new URLClassLoader(urls, null);
   }
 
+  @Override
   public IClasspathEntry[] getClasspathEntries() {
     // Note that the GWT SDK puts the javadoc in "doc/javadoc", whereas GAE uses
     // "docs/javadoc".
@@ -101,6 +103,7 @@ public class GWTJarsRuntime extends GWTRuntime {
     return null;
   }
 
+  @Override
   public File[] getWebAppClasspathFiles(IProject project) {
     if (validate().isOK()) {
       return new File[] {getInstallationPath().append("gwt-servlet.jar").toFile()};
@@ -122,11 +125,6 @@ public class GWTJarsRuntime extends GWTRuntime {
       return Util.newErrorStatus(gwtUserPath.toOSString() + " is missing");
     }
 
-    IPath gwtCodeServerPath = sdkLocation.append(GWT_CODESERVER_JAR);
-    if (!gwtCodeServerPath.toFile().exists()) {
-      return Util.newErrorStatus(gwtCodeServerPath.toOSString() + " is missing");
-    }
-
     IPath gwtDevPath = sdkLocation.append(Util.getDevJarName(sdkLocation));
     if (!gwtDevPath.toFile().exists()) {
       return Util.newErrorStatus(gwtDevPath.toOSString() + " is missing");
@@ -137,6 +135,14 @@ public class GWTJarsRuntime extends GWTRuntime {
       return Util.newErrorStatus(gwtServletPath.toOSString() + " is missing");
     }
 
+    // The codeserver jar is not present in GWT SDKs earlier than version 2.5.
+    if (GwtVersionUtil.isGwtVersionKnownAndAtLeast25(sdkLocation.lastSegment())) {
+      IPath gwtCodeServerPath = sdkLocation.append(GWT_CODESERVER_JAR);
+      if (!gwtCodeServerPath.toFile().exists()) {
+        return Util.newErrorStatus(gwtCodeServerPath.toOSString() + " is missing");
+      }
+    }
+
     return Status.OK_STATUS;
   }
 
@@ -144,7 +150,9 @@ public class GWTJarsRuntime extends GWTRuntime {
     ArrayList<IPath> classpathEntries = new ArrayList<IPath>();
 
     classpathEntries.add(getInstallationPath().append(GWT_USER_JAR));
-    classpathEntries.add(getInstallationPath().append(GWT_CODESERVER_JAR));
+    if (GwtVersionUtil.isGwtVersionKnownAndAtLeast25(getInstallationPath().lastSegment())) {
+      classpathEntries.add(getInstallationPath().append(GWT_CODESERVER_JAR));
+    }
     classpathEntries.add(getInstallationPath().append(Util.getDevJarName(getInstallationPath())));
 
     for (String validationJarName : Util.getValidationJarNames(getInstallationPath())) {

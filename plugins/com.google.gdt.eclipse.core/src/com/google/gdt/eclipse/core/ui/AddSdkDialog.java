@@ -45,7 +45,7 @@ import java.io.File;
 
 /**
  * Allows the user to add an {@link Sdk}.
- * 
+ *
  * @param <T>
  */
 public class AddSdkDialog<T extends Sdk> extends StatusDialog {
@@ -120,7 +120,7 @@ public class AddSdkDialog<T extends Sdk> extends StatusDialog {
 
     return container;
   }
-  
+
   protected void createDirectoryArea(Composite container) {
     Label jarsLabel = new Label(container, SWT.NONE);
     jarsLabel.setText("Installation directory:");
@@ -132,6 +132,7 @@ public class AddSdkDialog<T extends Sdk> extends StatusDialog {
     directoryTextGridData.widthHint = 300;
     directoryText.setLayoutData(directoryTextGridData);
     directoryText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         validate();
       }
@@ -154,7 +155,7 @@ public class AddSdkDialog<T extends Sdk> extends StatusDialog {
           }
         }
       }
-    });    
+    });
   }
 
   protected void createNameArea(Composite container) {
@@ -164,20 +165,23 @@ public class AddSdkDialog<T extends Sdk> extends StatusDialog {
     nameText = new Text(container, SWT.BORDER);
     nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
     nameText.addFocusListener(new FocusListener() {
+      @Override
       public void focusGained(FocusEvent e) {
       }
 
+      @Override
       public void focusLost(FocusEvent e) {
         validate();
       }
     });
     nameText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         validate();
       }
     });
   }
-  
+
   protected String getDirectory() {
     return directoryText.getText().trim();
   }
@@ -185,7 +189,7 @@ public class AddSdkDialog<T extends Sdk> extends StatusDialog {
   protected String getName() {
     return nameText.getText().trim();
   }
-  
+
   protected IPath getSdkHome(String directory) {
     return new Path(directory);
   }

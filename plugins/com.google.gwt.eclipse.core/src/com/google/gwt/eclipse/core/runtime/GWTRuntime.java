@@ -59,7 +59,7 @@ import java.util.Set;
 /**
  * Represents a GWT runtime and provides a URLClassLoader that can be used to load the gwt-user and
  * gwt-dev classes.
- * 
+ *
  * TODO: Move this and subtypes into the sdk package.
  */
 public abstract class GWTRuntime extends AbstractSdk {
@@ -91,11 +91,11 @@ public abstract class GWTRuntime extends AbstractSdk {
 
     /**
      * Returns a {@link ClassLoader} that is backed by the project's runtime classpath.
-     * 
+     *
      * TODO: This returns a classloader which contains ALL of the jars of the project. Lookups on
      * this thing are going to be SLOW. Can we optimize this? We could create a classloader that
      * just contains the jars that GWT requires. Maybe caching is the right solution here.
-     * 
+     *
      * TODO: Why can't we just delegate to {@link #getClasspathEntries()} when generating the
      * classloader URLs? Why do we have to add every URL that is part of the project? That would
      * certainly speed up lookups on this classloader. Maybe we cannot do this because project-bound
@@ -120,14 +120,15 @@ public abstract class GWTRuntime extends AbstractSdk {
     /**
      * Returns the classpath entries from the {@link IJavaProject}'s raw classpath that make up the
      * {@link com.google.gdt.eclipse.core.sdk.Sdk}.
-     * 
+     *
      * TODO: Can we clean up uses of this method? It really only seems to be useful in the case
      * where you want to derive a classpath container from an SDK. I'm not sure if this should be a
      * first-class method on an SDK.
-     * 
+     *
      * TODO: Get rid of this method. It's only needed when a classpath container needs to be
      * initialized, and classpath containers are never initialized from ProjectBoundSdks.
      */
+    @Override
     public IClasspathEntry[] getClasspathEntries() {
       try {
         // If containers are being used, we avoid duplicates by using a set
@@ -154,6 +155,7 @@ public abstract class GWTRuntime extends AbstractSdk {
         // raw classpath.
         IClasspathEntry[] classpathEntryArray = classpathEntries.toArray(NO_ICLASSPATH_ENTRIES);
         Collections.sort(Arrays.asList(classpathEntryArray), new Comparator<IClasspathEntry>() {
+          @Override
           public int compare(IClasspathEntry o1, IClasspathEntry o2) {
             return rawClasspath.indexOf(o1) - rawClasspath.indexOf(o2);
           }
@@ -198,6 +200,7 @@ public abstract class GWTRuntime extends AbstractSdk {
       }
     }
 
+    @Override
     public File[] getWebAppClasspathFiles(IProject project) {
       IPath installPath = computeInstallPath();
       if (installPath != null) {
@@ -384,6 +387,7 @@ public abstract class GWTRuntime extends AbstractSdk {
   public static final String VALIDATION_API_JAR_PREFIX = "validation-api-";
 
   private static final SdkFactory<GWTRuntime> factory = new SdkFactory<GWTRuntime>() {
+    @Override
     public GWTRuntime newInstance(String name, IPath sdkHome) {
       if (isProjectBasedSdk(sdkHome)) {
         return new GWTProjectsRuntime(name, sdkHome);
@@ -430,6 +434,7 @@ public abstract class GWTRuntime extends AbstractSdk {
 
     // Find the staging output directory: gwt-<platform>-<version>
     final File[] buildDirs = stagingDirectory.listFiles(new FileFilter() {
+      @Override
       public boolean accept(File file) {
         return (file.isDirectory() && file.getName().startsWith("gwt-"));
       }
@@ -443,7 +448,7 @@ public abstract class GWTRuntime extends AbstractSdk {
 
   /**
    * Returns <code>true</code> if the SDK home is a project based SDK.
-   * 
+   *
    * @param sdkHome
    * @return whether the SDK home is a project based SDK
    */
