@@ -12,26 +12,19 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.appengine.api;
 
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.when;
 
-import com.google.api.services.appengine.Appengine;
-import com.google.api.services.appengine.Appengine.Apps;
-import com.google.api.services.appengine.Appengine.Apps.Insert;
-import com.google.api.services.appengine.model.App;
-import com.google.api.services.appengine.model.InsertAppRequest;
-import com.google.api.services.appengine.model.InsertAppResponse;
-import com.google.api.services.appengine.model.ListAppResponse;
+import com.google.api.services.appengine.v1beta2.Appengine;
+import com.google.api.services.appengine.v1beta2.Appengine.Apps;
+import com.google.api.services.appengine.v1beta2.model.App;
+import com.google.api.services.appengine.v1beta2.model.AppsListResponse;
 
 import junit.framework.TestCase;
 
 import org.junit.Assert;
-import org.mockito.ArgumentMatcher;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,17 +49,6 @@ public class AppengineApiWrapperTest extends TestCase {
     }
   }
 
-  private class IsInsertAppRequest extends ArgumentMatcher<InsertAppRequest> {
-    @Override
-    public boolean matches(Object obj) {
-      if (obj instanceof InsertAppRequest) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-  }
-
   @Mock
   private Apps mockApps;
 
@@ -77,8 +59,6 @@ public class AppengineApiWrapperTest extends TestCase {
   private Appengine mockAppengine;
 
   @Mock
-  private Insert mockInsert;
-
   private AppengineApiWrapperMock mockAppengineApiWrapper;
 
   private List<App> appsList;
@@ -131,54 +111,18 @@ public class AppengineApiWrapperTest extends TestCase {
     Assert.assertArrayEquals(expected, actuals);
   }
 
-  /**
-   * Tests that applications added using
-   * {@link AppengineApiWrapper#insertNewApplication(String, boolean)} can be retrieved using
-   * {@link AppengineApiWrapper#getApplications(boolean)}.
-   *
-   * NOTE: This test now verifies that an IllegalStateException is thrown whenever
-   * insertNewApplication is called (as the inserting functionality no longer exists/works in the
-   * App Engine API.
-   */
-  public void testInsertNewApplication() {
-    try {
-      mockAppengineApiWrapper.insertNewApplication("App4", true);
-    } catch (IllegalStateException e) {
-      Assert.assertEquals(e.getMessage(), "The ability to insert apps no longer exists.");
-      return;
-    } catch (IOException e) {
-      // Should never happen, since we're expecting an IllegalStateException to be thrown
-      fail(e.getMessage());
-    }
-
-    fail("Expected IllegalStateException to be thrown.");
-  }
-
   @Override
   protected void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     mockAppengineApiWrapper = new AppengineApiWrapperMock();
-    ListAppResponse listAppResponse = new ListAppResponse();
+    AppsListResponse listAppResponse = new AppsListResponse();
     appsList = new ArrayList<App>();
     listAppResponse.setApps(appsList);
-    InsertAppResponse insertAppResponse = new InsertAppResponse();
 
     // Mocks for listApps();
     when(mockAppengine.apps()).thenReturn(mockApps);
     when(mockApps.list()).thenReturn(mockAppsDotList);
     when(mockAppsDotList.execute()).thenReturn(listAppResponse);
-    // Mocks for insertApps()
-    when(mockInsert.execute()).thenReturn(insertAppResponse);
-    when(mockApps.insert(argThat(new IsInsertAppRequest()))).thenAnswer(new Answer<Insert>() {
-      @Override
-      public Insert answer(InvocationOnMock invocation) {
-        Object[] args = invocation.getArguments();
-        InsertAppRequest insertAppRequest = (InsertAppRequest) args[0];
-        appsList.add(insertAppRequest.getApp());
-        return mockInsert;
-      }
-    });
-
   }
 
   @Override
