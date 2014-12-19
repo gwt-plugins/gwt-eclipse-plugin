@@ -158,7 +158,7 @@ public class JpaFacetHelper {
    * Returns the {@link Persistence} object for the given {@link JpaProject}. API breakage in recent
    * WTP-JPA releases requires the use of reflection (blech!).
    */
-  private static Persistence getPersistence(JpaProject jpaProject) throws CoreException {
+  public static Persistence getPersistence(JpaProject jpaProject) throws CoreException {
     // On Eclipse 4.4+ retrieve the Persistence object via 
     // JpaProject.getContextRoot().getPersistenceXml().getRoot()
     // On Eclipse 4.3 retrieve the Persistence object via 
