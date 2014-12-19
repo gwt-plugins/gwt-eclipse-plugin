@@ -15,29 +15,21 @@
 package com.google.appengine.eclipse.core.sdk;
 
 import com.google.appengine.eclipse.core.resources.GaeProject;
-import com.google.appengine.eclipse.core.validators.java.PluginTestUtils;
+import com.google.gcp.eclipse.testing.GaeProjectTestUtil;
 
 import junit.framework.TestCase;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.ClasspathContainerInitializer;
-import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Test cases for {@link GaeSdkContainerInitializer}.
- * 
+ *
  * TODO: This class duplicates code from GaeSdkContainerInitializer, see if we
  * can unify.
  */
@@ -50,18 +42,22 @@ public class GaeSdkContainerInitializerTest extends TestCase {
       this.container = container;
     }
 
+    @Override
     public IClasspathEntry[] getClasspathEntries() {
       return container.getClasspathEntries();
     }
 
+    @Override
     public String getDescription() {
       return container.getDescription();
     }
 
+    @Override
     public int getKind() {
       return container.getKind();
     }
 
+    @Override
     public IPath getPath() {
       return container.getPath();
     }
@@ -72,10 +68,10 @@ public class GaeSdkContainerInitializerTest extends TestCase {
   public void testCanUpdateClasspathContainerIPathIJavaProject() {
     ClasspathContainerInitializer intializer = JavaCore.getClasspathContainerInitializer(GaeSdkContainer.CONTAINER_ID);
     assertNotNull(intializer);
-    
+
     assertTrue(intializer.canUpdateClasspathContainer(
         GaeSdkContainer.CONTAINER_PATH, gaeProject.getJavaProject()));
-    
+
     assertFalse(intializer.canUpdateClasspathContainer(new Path("Nonexistent"),
         gaeProject.getJavaProject()));
   }
@@ -134,7 +130,7 @@ public class GaeSdkContainerInitializerTest extends TestCase {
     }, null);
 
     PluginTestUtils.waitForIdle();
-      
+
     // Check that the modifications took effect
     IClasspathContainer updatedContainer = JavaCore.getClasspathContainer(
         defaultContainerPath, testProject);
@@ -163,13 +159,13 @@ public class GaeSdkContainerInitializerTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    GaeSdkTestUtilities.addDefaultSdk();
-    gaeProject = PluginTestUtils.createGaeProject("GaeProject");
+    GaeProjectTestUtil.addDefaultSdk();
+    gaeProject = GaeProjectTestUtil.createGaeProject("GaeProject");
   }
 
   @Override
   protected void tearDown() throws Exception {
-    PluginTestUtils.removeDefaultGaeSdk();
+    GaeProjectTestUtil.removeDefaultSdk();
     gaeProject.getProject().delete(true, null);
   }
 }

@@ -1,9 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test Fragment
-Bundle-SymbolicName: com.google.gdt.eclipse.suite.test;singleton:=true
-Bundle-Version: 1.0.0
-Bundle-Vendor: Google Inc.
-Fragment-Host: com.google.gdt.eclipse.suite
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.junit
+Bundle-SymbolicName: com.google.gdt.eclipse.suite.test
+Bundle-Vendor: Google Inc.
+Bundle-Version: 1.0.0
+Fragment-Host: com.google.gdt.eclipse.suite
+Require-Bundle: com.google.gcp.eclipse.testing,
+ org.junit

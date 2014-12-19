@@ -18,7 +18,7 @@ import com.google.appengine.eclipse.core.markers.AppEngineJavaProblem;
 import com.google.appengine.eclipse.core.preferences.GaePreferences;
 import com.google.appengine.eclipse.core.resources.GaeProject;
 import com.google.appengine.eclipse.core.sdk.GaeSdk;
-import com.google.appengine.eclipse.core.sdk.GaeSdkTestUtilities;
+import com.google.gcp.eclipse.testing.GaeProjectTestUtil;
 import com.google.gdt.eclipse.core.markers.GdtProblemSeverity;
 import com.google.gdt.eclipse.core.sdk.SdkSet;
 
@@ -54,7 +54,7 @@ public class GaeCheckerTest extends TestCase {
 
     private SimpleTestHelper(boolean forceResolvedClassPath)
         throws CoreException {
-      GaeProject gaeProject = PluginTestUtils.createGaeProject("TestProject");
+      GaeProject gaeProject = GaeProjectTestUtil.createGaeProject("TestProject");
       javaProject = gaeProject.getJavaProject();
       javaProject.setOption(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
 
@@ -136,11 +136,12 @@ public class GaeCheckerTest extends TestCase {
 
   /**
    * {@link Comparator} for {@link CategorizedProblem}s.
-   * 
+   *
    * NOTE: The source start and end offsets are ignored to avoid having to
    * compute them exactly.
    */
   private static final Comparator<CategorizedProblem> CATEGORIZED_PROBLEM_COMPARATOR = new Comparator<CategorizedProblem>() {
+    @Override
     public int compare(CategorizedProblem o1, CategorizedProblem o2) {
       if (o1.getCategoryID() != o2.getCategoryID()) {
         return o1.getCategoryID() - o2.getCategoryID();
@@ -291,12 +292,12 @@ public class GaeCheckerTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    GaeSdkTestUtilities.addDefaultSdk();
+    GaeProjectTestUtil.addDefaultSdk();
   }
 
   @Override
   protected void tearDown() throws Exception {
-    PluginTestUtils.removeDefaultGaeSdk();
+    GaeProjectTestUtil.removeDefaultSdk();
   }
 
 }

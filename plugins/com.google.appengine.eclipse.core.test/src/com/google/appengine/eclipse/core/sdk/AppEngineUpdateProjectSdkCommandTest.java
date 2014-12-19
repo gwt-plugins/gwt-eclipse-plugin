@@ -16,7 +16,9 @@ package com.google.appengine.eclipse.core.sdk;
 
 import com.google.appengine.eclipse.core.AppEngineCorePlugin;
 import com.google.appengine.eclipse.core.preferences.GaePreferences;
-import com.google.appengine.eclipse.core.validators.java.PluginTestUtils;
+import com.google.gcp.eclipse.testing.GaeProjectTestUtil;
+import com.google.gcp.eclipse.testing.TestUtil;
+import com.google.gcp.eclipse.testing.ProjectTestUtil;
 import com.google.gdt.eclipse.core.ClasspathUtilities;
 import com.google.gdt.eclipse.core.JavaProjectUtilities;
 import com.google.gdt.eclipse.core.StatusUtilities;
@@ -50,11 +52,12 @@ public class AppEngineUpdateProjectSdkCommandTest extends TestCase {
     // Set the project's classpath contain the expanded container
     ClasspathUtilities.setRawClasspath(javaProject,
         defaultSdk.getClasspathEntries());
-    PluginTestUtils.waitForIdle();
+    TestUtil.waitForIdle();
 
     final GaeSdk oldSdk = GaeSdk.findSdkFor(javaProject);
 
     ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+      @Override
       public void run(IProgressMonitor monitor) throws CoreException {
         try {
           AppEngineUpdateProjectSdkCommand command = new AppEngineUpdateProjectSdkCommand(
@@ -71,7 +74,7 @@ public class AppEngineUpdateProjectSdkCommandTest extends TestCase {
       }
     }, null);
 
-    PluginTestUtils.waitForIdle();
+    TestUtil.waitForIdle();
     IClasspathEntry[] rawClasspath = javaProject.getRawClasspath();
 
     // Ensure that the entries were collapsed back into a single container entry
@@ -82,17 +85,17 @@ public class AppEngineUpdateProjectSdkCommandTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-    GaeSdkTestUtilities.addDefaultSdk();
+    GaeProjectTestUtil.addDefaultSdk();
     IJavaProject findJavaProject = JavaProjectUtilities.findJavaProject("TestProject");
     if (findJavaProject != null) {
       findJavaProject.getProject().delete(true, null);
     }
-    javaProject = PluginTestUtils.createProject("TestProject");
+    javaProject = ProjectTestUtil.createProject("TestProject");
   }
 
   @Override
   protected void tearDown() throws Exception {
     javaProject.getProject().delete(true, null);
-    PluginTestUtils.removeDefaultGaeSdk();
+    GaeProjectTestUtil.removeDefaultSdk();
   }
 }

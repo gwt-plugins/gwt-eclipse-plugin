@@ -15,7 +15,8 @@
 package com.google.appengine.eclipse.core.sdk;
 
 import com.google.appengine.eclipse.core.preferences.GaePreferences;
-import com.google.appengine.eclipse.core.validators.java.PluginTestUtils;
+import com.google.gcp.eclipse.testing.GaeProjectTestUtil;
+import com.google.gcp.eclipse.testing.ProjectTestUtil;
 import com.google.gdt.eclipse.core.JavaProjectUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkClasspathContainer;
 
@@ -42,6 +43,7 @@ public class GaeSdkTest extends TestCase {
     IPath path = defaultSdk.getInstallationPath().append("lib/user");
     File file = path.toFile();
     String[] list = file.list(new FilenameFilter() {
+      @Override
       public boolean accept(File dir, String name) {
         return name.matches("appengine\\-api\\-.*\\-sdk\\-.*\\.jar");
       }
@@ -115,18 +117,18 @@ public class GaeSdkTest extends TestCase {
   // }
   @Override
   protected void setUp() throws Exception {
-    GaeSdkTestUtilities.addDefaultSdk();
+    GaeProjectTestUtil.addDefaultSdk();
     IJavaProject findJavaProject = JavaProjectUtilities.findJavaProject(getName());
     if (findJavaProject != null) {
       findJavaProject.getProject().delete(true, null);
     }
-    javaProject = PluginTestUtils.createProject(getName());
+    javaProject = ProjectTestUtil.createProject(getName());
   }
 
   @Override
   protected void tearDown() throws Exception {
     javaProject.getProject().delete(true, null);
-    PluginTestUtils.removeDefaultGaeSdk();
+    GaeProjectTestUtil.removeDefaultSdk();
   }
 
   private void assertEquals(Object[] expected, Object[] actual) {
