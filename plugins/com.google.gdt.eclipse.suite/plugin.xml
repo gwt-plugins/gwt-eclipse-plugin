@@ -81,6 +81,23 @@
               description="Profile Using Speed Tracer">
           </launchMode>
       </launchConfigurationTabGroup>
+      
+      <!-- TODO: possibly move to gwt plugin, but cyclic dependency issue. Use extensions to clean it up. -->
+      <!-- GWT SDM Code Server -->
+      <launchConfigurationTabGroup
+            class="com.google.gdt.eclipse.suite.launch.ui.GwtSdmCodeServerTabGroup"
+            id="com.google.gwt.eclipse.core.launch.gwtSdmCodeServerTabGroup"
+            type="com.google.gwt.eclipse.core.sdmCodeServer">
+         <launchMode
+               description="Run GWT Super Dev Mode"
+               mode="debug"
+               perspective="org.eclipse.debug.ui.DebugPerspective">
+         </launchMode>
+         <launchMode
+               description="Run GWT Super Dev Mode"
+               mode="run">
+         </launchMode>
+      </launchConfigurationTabGroup>
    </extension>
       
    <!-- Web Application shortcut -->

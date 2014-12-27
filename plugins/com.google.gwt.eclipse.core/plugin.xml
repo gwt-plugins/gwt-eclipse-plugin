@@ -248,6 +248,15 @@
             sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
             sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer">
       </launchConfigurationType>
+      <launchConfigurationType
+            delegate="com.google.gwt.eclipse.core.launch.GwtSdmCodeServerDelegate"
+            delegateDescription="Runs the GWT Super Dev Mode Code Server"
+            delegateName="GWT SDM Code Server"
+            id="com.google.gwt.eclipse.core.sdmCodeServer"
+            modes="run, debug"
+            name="GWT SDM Code Server"
+            sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
+            sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
    </extension>   
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
@@ -286,8 +295,7 @@
             id="com.google.gwt.eclipse.core.launch.gwtJUnitShortcut"
             label="GWT JUnit Test"
             modes="run, debug">
-            
-			<contextualLaunch>
+			   <contextualLaunch>
             	<enablement>
 	               	<with variable="selection">
 	                	<count value= "1"/>
@@ -296,7 +304,7 @@
 	                  	</iterate>
 	              	</with>
             	</enablement>
-         	</contextualLaunch>
+         </contextualLaunch>
          <description
                description="Runs a GWT JUnit Test"
                mode="run">
@@ -317,7 +325,6 @@
             id="com.google.gwt.eclipse.core.launch.gwtJUnitWebShortcut"
             label="GWT JUnit Test (production mode)"
             modes="run, debug">
-
 			<contextualLaunch>
             	<enablement>
 	               	<with variable="selection">
@@ -340,6 +347,33 @@
                id="com.google.gwt.eclipse.core.launch.gwtJUnit">
          </configurationType>
       </shortcut>
+      
+      <shortcut
+            class="com.google.gwt.eclipse.core.launch.ui.GwtSdmCodeServerLaunchShortcut"
+            description="Run the GWT super dev mode code server."
+            icon="icons/gwt_16x16.png"
+            id="com.google.gwt.eclipse.core.launch.ui.gwtSdmCodeServerLaunchShortcut"
+            label="Run GWT Super Dev Mode Code Server"
+            modes="run, debug">
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <count value= "1"/>
+                     <iterate>
+                        <test property="com.google.gwt.launching.isGwtLaunchTarget"/>
+                     </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
+         <description
+               description="Run GWT Super Dev Mode Code Server"
+               mode="run" />
+         <description
+               description="Run GWT Super Dev Mode Code Server"
+               mode="debug" />
+         <configurationType
+               id="com.google.gwt.eclipse.core.sdmCodeServer"/>
+      </shortcut>
    </extension>
    <!--
    	Property tester to determine if a selection can be run as a GWT JUnit test 
@@ -352,7 +386,14 @@
             namespace="com.google.gwt.launching"
             properties="isGWTTest"
             type="org.eclipse.core.runtime.IAdaptable">
-      </propertyTester>            
+      </propertyTester>    
+      <propertyTester
+            class="com.google.gwt.eclipse.core.propertytesters.GwtLaunchTargetTester"
+            id="com.google.gwt.eclipse.core.propertytesters.gwtLaunchTargetTester"
+            namespace="com.google.gwt.launching"
+            properties="isGwtLaunchTarget"
+            type="org.eclipse.core.runtime.IAdaptable">
+      </propertyTester>           
    </extension>
    
    <extension
@@ -921,6 +962,11 @@
             icon="icons/speed-tracer_small.png"
             configTypeID="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunch"
             id="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunchImage">
+        </launchConfigurationTypeImage>
+        <launchConfigurationTypeImage
+            icon="icons/gwt_16x16.png"
+            configTypeID="com.google.gwt.eclipse.core.sdmCodeServer"
+            id="com.google.gwt.eclipse.core.sdmCodeServerImage">
         </launchConfigurationTypeImage>
     </extension>
     <extension

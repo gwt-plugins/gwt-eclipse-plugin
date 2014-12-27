@@ -45,6 +45,8 @@ public enum GWTLaunchAttributes implements ILaunchConfigurationAttribute {
    * classpath other than the default for the project.
    */
   SDK_CONTAINER_PATH(""),
+  
+  SDM_CODE_SERVER_PORT("9876"),
 
   SUPERDEVMODE_ENABLED(false),
 

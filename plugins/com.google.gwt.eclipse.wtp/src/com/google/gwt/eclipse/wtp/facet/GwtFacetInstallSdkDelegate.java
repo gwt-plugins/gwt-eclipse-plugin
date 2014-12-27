@@ -14,6 +14,8 @@ package com.google.gwt.eclipse.wtp.facet;
 
 import com.google.gwt.eclipse.core.properties.ui.GWTProjectPropertyPage;
 import com.google.gwt.eclipse.core.runtime.GWTJarsRuntime;
+import com.google.gwt.eclipse.wtp.GwtWtpPlugin;
+import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -22,7 +24,7 @@ import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IDelegate;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
-public final class GwtSdkDelegate implements IDelegate, IGwtFacetConstants {
+public final class GwtFacetInstallSdkDelegate implements IDelegate, IGwtFacetConstants {
 
   private IProject project;
   private GWTJarsRuntime runtime;
@@ -36,11 +38,43 @@ public final class GwtSdkDelegate implements IDelegate, IGwtFacetConstants {
 
     runtime = (GWTJarsRuntime) dataModel.getProperty(GWT_SDK);
 
-    System.out.println("runtime version=" + runtime.getVersion());
+    GwtWtpPlugin.logMessage("GwtFacetInstallSdkDelegate: selected runtime version="
+        + runtime.getVersion());
 
+    // Standard project GWT facet install
+    if (!isMavenProject(dataModel)) {
+      String message = "GwtFacetInstallSdkDelegate: installing standard classpath container.";
+      GwtWtpPlugin.logMessage(message);
+      installGwtFacet();
+    } else {
+      String message =
+          "GwtFacetInstallSdkDelegate: Maven detected, skipping standard GWT classpath container.";
+      GwtWtpPlugin.logMessage(message);
+    }
+  }
+
+  /**
+   * Configure a standard GWT classpath container for Facet.
+   */
+  private void installGwtFacet() {
 
     GWTProjectPropertyPage projectProperty = new GWTProjectPropertyPage();
-    projectProperty.test(project, runtime);
+
+
+    // TODO extract to this class, having problems with exporting/importing UpdateType?
+    projectProperty.createGwtSdkContainerForFacet(project, runtime);
+
+
+  }
+
+  private static boolean isMavenProject(IDataModel model) {
+    if (!model.isProperty(GwtWtpPlugin.USE_MAVEN_DEPS_PROPERTY_NAME)) {
+      return false;
+    }
+    if (!model.isPropertySet(GwtWtpPlugin.USE_MAVEN_DEPS_PROPERTY_NAME)) {
+      return false;
+    }
+    return model.getBooleanProperty(GwtWtpPlugin.USE_MAVEN_DEPS_PROPERTY_NAME);
   }
 
 }

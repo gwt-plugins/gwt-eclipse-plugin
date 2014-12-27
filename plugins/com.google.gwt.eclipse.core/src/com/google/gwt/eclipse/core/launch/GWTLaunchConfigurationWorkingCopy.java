@@ -41,6 +41,14 @@ public class GWTLaunchConfigurationWorkingCopy extends GWTLaunchConfiguration {
     setBooleanAttribute(workingCopy, GWTLaunchAttributes.CODE_SERVER_PORT_AUTO, auto);
   }
 
+  public static void setCodeServerPort(ILaunchConfigurationWorkingCopy workingCopy, String port) {
+    setStringAttribute(workingCopy, GWTLaunchAttributes.CODE_SERVER_PORT, port);
+  }
+
+  public static void setCodeServerPortAuto(ILaunchConfigurationWorkingCopy workingCopy, boolean auto) {
+    setBooleanAttribute(workingCopy, GWTLaunchAttributes.CODE_SERVER_PORT_AUTO, auto);
+  }
+
   /**
    * Sets the persisted set of entry point modules.
    * 

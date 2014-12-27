@@ -15,7 +15,7 @@ package com.google.gwt.eclipse.wtp.wizards;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
-import com.google.gwt.eclipse.wtp.facet.IGwtFacetConstants;
+import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;

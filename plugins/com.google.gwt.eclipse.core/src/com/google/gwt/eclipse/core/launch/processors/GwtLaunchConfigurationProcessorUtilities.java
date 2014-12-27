@@ -41,12 +41,15 @@ public final class GwtLaunchConfigurationProcessorUtilities {
 
   public static final String SUPERDEVMODE_MODE_MAIN_TYPE =
       "com.google.gwt.dev.codeserver.CodeServer";
+  
+  public static final String SDM_MODE_MAIN_TYPE = "com.google.gwt.dev.codeserver.CodeServer";
 
   public static boolean isDevMode(ILaunchConfiguration config) throws CoreException {
     String mainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
     return DEV_MODE_MAIN_TYPE.equals(mainTypeName);
   }
-
+  
+  @Deprecated
   public static boolean isGwtShell(ILaunchConfiguration config) throws CoreException {
     String mainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
     return GWT_SHELL_MAIN_TYPE.equals(mainTypeName);
@@ -55,6 +58,11 @@ public final class GwtLaunchConfigurationProcessorUtilities {
   public static boolean isHostedMode(ILaunchConfiguration config) throws CoreException {
     String mainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
     return HOSTED_MODE_MAIN_TYPE.equals(mainTypeName);
+  }
+
+  public static boolean isSdmMode(ILaunchConfiguration config) throws CoreException {
+    String mainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
+    return SDM_MODE_MAIN_TYPE.equals(mainTypeName);
   }
 
 }

@@ -10,11 +10,10 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
-package com.google.gwt.eclipse.wtp.facet.datamodel;
+package com.google.gwt.eclipse.wtp.facet.data;
 
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
-import com.google.gwt.eclipse.wtp.facet.IGwtFacetConstants;
 
 import org.eclipse.wst.common.componentcore.datamodel.FacetInstallDataModelProvider;
 

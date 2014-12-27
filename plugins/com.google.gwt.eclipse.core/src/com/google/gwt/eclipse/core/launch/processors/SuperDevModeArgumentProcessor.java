@@ -184,7 +184,7 @@ public class SuperDevModeArgumentProcessor implements ILaunchConfigurationProces
     }
 
     // Verify its a GWT > 2.7, just in case another version snuck in.
-    if (!GwtVersionUtil.isGwtVersionGreaterOrEqualTo27(javaProject)) {
+    if (GwtVersionUtil.isGwtVersionGreaterOrEqualTo27(javaProject)) {
       // Previously created in GWT 2.7, but switched to GWT 2.4 will do this
       return;
     }

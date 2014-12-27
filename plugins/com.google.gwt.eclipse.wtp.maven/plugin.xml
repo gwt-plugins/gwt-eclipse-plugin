@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<plugin>
+    <extension
+          point="org.eclipse.m2e.wtp.facetDetectors">
+       <facetDetector
+             class="com.google.gwt.eclipse.wtp.maven.GwtFacetDetector"
+             facetId="com.google.gwt.facet"
+             priority="1">
+       </facetDetector>
+    </extension>
+    
+    <extension
+          point="org.eclipse.m2e.core.mavenComponentContributors">
+       <configurator
+             class="com.google.gwt.eclipse.wtp.maven.GwtMavenComponentContributor">
+       </configurator>
+    </extension>
+    
+    <extension
+          point="org.eclipse.m2e.core.projectConfigurators">
+       <configurator
+             class="com.google.gwt.eclipse.wtp.maven.GwtProjectConfigurator"
+             id="com.google.gwt.eclipse.wtp.maven.gwtConfigurator"
+             secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator"
+             name="GWT Dynamic Web Project Configurator">
+       </configurator>
+    </extension>
+
+   <extension
+         point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
+   </extension>
+</plugin>

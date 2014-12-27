@@ -24,19 +24,19 @@ import java.util.HashSet;
 /**
  * Google GWT WTP plug-in life-cycle.
  */
-public final class GwtPlugin extends AbstractUIPlugin {
+public final class GwtWtpPlugin extends AbstractUIPlugin {
 
   public static final String PLUGIN_ID = "com.google.gwt.eclipse.wtp";
   public static final String USE_MAVEN_DEPS_PROPERTY_NAME = PLUGIN_ID + ".useMavenDependencies";
 
   private static HashSet<String[]> commandsToExecuteAtExit = new HashSet<String[]>();
-  private static GwtPlugin INSTANCE;
+  private static GwtWtpPlugin INSTANCE;
 
   public static IStatus createErrorStatus(String mess, Exception e) {
     return new Status(IStatus.ERROR, PLUGIN_ID, -1, mess, e);
   }
 
-  public static GwtPlugin getInstance() {
+  public static GwtWtpPlugin getInstance() {
     return INSTANCE;
   }
 
@@ -54,7 +54,7 @@ public final class GwtPlugin extends AbstractUIPlugin {
     logMessage(null, e);
   }
 
-  public GwtPlugin() {
+  public GwtWtpPlugin() {
     INSTANCE = this;
   }
 

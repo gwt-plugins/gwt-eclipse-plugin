@@ -29,7 +29,7 @@ public final class GwtFacetUninstallDelegate implements IDelegate {
 
     GWTProjectPropertyPage projectProperty = new GWTProjectPropertyPage();
     try {
-      projectProperty.removeGWT(project);
+      projectProperty.removeGWTSdkForFacet(project);
     } catch (BackingStoreException e) {
       // TODO(${user}): Auto-generated catch block
       e.printStackTrace();

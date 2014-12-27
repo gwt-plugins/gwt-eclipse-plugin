@@ -10,11 +10,11 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>com.google.gwt.eclipse.wtp</artifactId>
+    <artifactId>com.google.gwt.eclipse.wtp.maven</artifactId>
     <packaging>eclipse-plugin</packaging>
     <version>0.0.1.qualifier</version>
 
-    <name>Google GWT WTP Plugin</name>
+    <name>Google GWT WTP Maven Plugin</name>
     <build>
         <plugins>
             <plugin>

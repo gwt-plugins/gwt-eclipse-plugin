@@ -91,6 +91,11 @@ public class GWTLaunchConfiguration {
     return new Path(pathAsString);
   }
 
+  public static String getSdmCodeServerPort(ILaunchConfiguration launchConfiguration) 
+      throws CoreException {
+    return getStringAttribute(launchConfiguration, GWTLaunchAttributes.SDM_CODE_SERVER_PORT);
+  }
+
   public static boolean getSuperDevModeEnabled(ILaunchConfiguration launchConfiguration)
       throws CoreException {
     return getBooleanAttribute(launchConfiguration, GWTLaunchAttributes.SUPERDEVMODE_ENABLED);
