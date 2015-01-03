@@ -1,16 +1,19 @@
 /*******************************************************************************
  * Copyright 2013 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
 package com.google.gdt.eclipse.appengine.api;
+
+import static org.mockito.Matchers.argThat;
+import static org.mockito.Mockito.when;
 
 import com.google.api.services.appengine.Appengine;
 import com.google.api.services.appengine.Appengine.Apps;
@@ -29,9 +32,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,6 +57,7 @@ public class AppengineApiWrapperTest extends TestCase {
   }
 
   private class IsInsertAppRequest extends ArgumentMatcher<InsertAppRequest> {
+    @Override
     public boolean matches(Object obj) {
       if (obj instanceof InsertAppRequest) {
         return true;
@@ -134,7 +135,7 @@ public class AppengineApiWrapperTest extends TestCase {
    * Tests that applications added using
    * {@link AppengineApiWrapper#insertNewApplication(String, boolean)} can be retrieved using
    * {@link AppengineApiWrapper#getApplications(boolean)}.
-   * 
+   *
    * NOTE: This test now verifies that an IllegalStateException is thrown whenever
    * insertNewApplication is called (as the inserting functionality no longer exists/works in the
    * App Engine API.
@@ -169,6 +170,7 @@ public class AppengineApiWrapperTest extends TestCase {
     // Mocks for insertApps()
     when(mockInsert.execute()).thenReturn(insertAppResponse);
     when(mockApps.insert(argThat(new IsInsertAppRequest()))).thenAnswer(new Answer<Insert>() {
+      @Override
       public Insert answer(InvocationOnMock invocation) {
         Object[] args = invocation.getArguments();
         InsertAppRequest insertAppRequest = (InsertAppRequest) args[0];

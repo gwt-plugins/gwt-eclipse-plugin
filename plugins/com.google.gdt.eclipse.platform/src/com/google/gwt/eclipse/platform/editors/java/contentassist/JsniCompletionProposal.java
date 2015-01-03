@@ -21,10 +21,10 @@ import org.eclipse.jface.viewers.StyledString;
 
 /**
  * Overrides Eclipse 3.4+ functionality (styled display text) for
- * {@link com.google.gwt.eclipse.core.editors.java.contentassist.JsniCompletionProposal }
+ * {@link AbstractJsniCompletionProposal}.
  */
-public abstract class JsniCompletionProposal extends
-    AbstractJsniCompletionProposal implements ICompletionProposalExtension6 {
+public abstract class JsniCompletionProposal extends AbstractJsniCompletionProposal implements
+    ICompletionProposalExtension6 {
 
   public JsniCompletionProposal(IJavaCompletionProposal jdtProposal,
       CompletionProposal wrappedProposal) {
@@ -34,8 +34,10 @@ public abstract class JsniCompletionProposal extends
   // TODO: This code is duplicated verbatim in the e34 platform plugin. When we
   // drop support for Eclipse 3.3, move all platform-specific code for JSNI
   // auto-completion back into the GWT plugin.
+  @Override
   public StyledString getStyledDisplayString() {
-    StyledString styledDisplayString = ((ICompletionProposalExtension6) jdtProposal).getStyledDisplayString();
+    StyledString styledDisplayString =
+        ((ICompletionProposalExtension6) jdtProposal).getStyledDisplayString();
 
     if (wrappedProposal.isConstructor()) {
       String displayString = styledDisplayString.getString();
@@ -47,8 +49,7 @@ public abstract class JsniCompletionProposal extends
       // string, but with our own ctor name ('new') in place of the original.
       int qualifierSeparatorPos = displayString.lastIndexOf('-');
       if (qualifierSeparatorPos > -1) {
-        String ctorSignature = displayString.substring(0,
-            qualifierSeparatorPos + 1);
+        String ctorSignature = displayString.substring(0, qualifierSeparatorPos + 1);
         String className = displayString.substring(qualifierSeparatorPos + 1);
 
         styledDisplayString = new StyledString(ctorSignature);
@@ -58,5 +59,4 @@ public abstract class JsniCompletionProposal extends
 
     return styledDisplayString;
   }
-
 }

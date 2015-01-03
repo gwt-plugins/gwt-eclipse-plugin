@@ -35,10 +35,12 @@ public class PixelConverterImpl implements IPixelConverter {
     pixelConverter = new PixelConverter(font);
   }
 
+  @Override
   public int convertHeightInCharsToPixels(int chars) {
     return pixelConverter.convertHeightInCharsToPixels(chars);
   }
 
+  @Override
   public int convertWidthInCharsToPixels(int chars) {
     return pixelConverter.convertWidthInCharsToPixels(chars);
   }

@@ -226,6 +226,7 @@ public class UpdateDetailsPresenter implements IUpdateDetailsPresenter {
     }
   }
 
+  @Override
   public void presentUpdateDetails(Shell shell, String updateSiteUrl, ILog log,
       String pluginId) {
     try {

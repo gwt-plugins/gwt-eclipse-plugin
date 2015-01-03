@@ -24,16 +24,19 @@ import org.eclipse.jdt.internal.ui.viewsupport.BasicElementLabels;
  * Adapter around the eclipse version specific {@link NewCUUsingWizardProposal}.
  */
 @SuppressWarnings("restriction")
-public class NewCompilationUnitUsingWizardProposal extends
-    NewCUUsingWizardProposal {
+public class NewCompilationUnitUsingWizardProposal extends NewCUUsingWizardProposal {
 
+  @SuppressWarnings("hiding")
   public static final int K_CLASS = NewCUUsingWizardProposal.K_CLASS;
+  @SuppressWarnings("hiding")
   public static final int K_INTERFACE = NewCUUsingWizardProposal.K_INTERFACE;
+  @SuppressWarnings("hiding")
   public static final int K_ENUM = NewCUUsingWizardProposal.K_ENUM;
+  @SuppressWarnings("hiding")
   public static final int K_ANNOTATION = NewCUUsingWizardProposal.K_ANNOTATION;
 
-  public NewCompilationUnitUsingWizardProposal(ICompilationUnit cu, Name node,
-      int typeKind, IJavaElement typeContainer, int severity) {
+  public NewCompilationUnitUsingWizardProposal(ICompilationUnit cu, Name node, int typeKind,
+      IJavaElement typeContainer, int severity) {
     super(cu, node, typeKind, typeContainer, severity);
   }
 
@@ -41,4 +44,3 @@ public class NewCompilationUnitUsingWizardProposal extends
     return BasicElementLabels.getJavaElementName(label);
   }
 }
-

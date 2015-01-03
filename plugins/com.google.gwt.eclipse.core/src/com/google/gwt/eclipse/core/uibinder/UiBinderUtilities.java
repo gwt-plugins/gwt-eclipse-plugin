@@ -19,7 +19,6 @@ import com.google.gdt.eclipse.core.java.ClasspathResourceUtilities;
 import com.google.gdt.eclipse.core.java.JavaModelSearch;
 import com.google.gdt.eclipse.core.java.SignatureUtilities;
 import com.google.gdt.eclipse.platform.jdt.model.PlatformJavaModelUtilities;
-import com.google.gdt.eclipse.platform.jdt.model.PlatformJavaModelUtilities.IAnnotationNotAvailableException;
 import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.uibinder.contentassist.ElExpressionFirstFragmentComputer.ElExpressionFirstFragment;
 import com.google.gwt.eclipse.core.uibinder.model.reference.UiBinderReferenceManager;
@@ -69,7 +68,7 @@ public final class UiBinderUtilities {
 
     /**
      * Called for a fragment that has been resolved to a particular method.
-     * 
+     *
      * @param method the method corresponding to the fragment
      * @param offset the offset to the fragment relative to the EL contents
      * @param length the length of the fragment
@@ -78,7 +77,7 @@ public final class UiBinderUtilities {
 
     /**
      * Called for a fragment that could not be resolved to a particular method.
-     * 
+     *
      * @param fragment the text of the fragment
      * @param offset the offset to the fragment relative to the EL contents
      * @param length the length of the fragment
@@ -92,7 +91,7 @@ public final class UiBinderUtilities {
 
   /**
    * Finds the exact matching first fragment from a list of first fragments.
-   * 
+   *
    * @param elExpressionContents the contents of the EL expression to match
    * @param firstFragments the list of first fragments to be searched
    * @return the matching first fragment, or null
@@ -112,7 +111,7 @@ public final class UiBinderUtilities {
 
   /**
    * Returns all but the first fragment.
-   * 
+   *
    * @param fragments period-separate fragments
    * @return the second fragment onwards, period separated
    */
@@ -127,7 +126,7 @@ public final class UiBinderUtilities {
    */
   /**
    * Finds the EL expressions's contents in the given text.
-   * 
+   *
    * @param in the text containing EL expressions.
    * @return a non-null list of regions of the contents of EL expressions
    */
@@ -157,7 +156,7 @@ public final class UiBinderUtilities {
 
   /**
    * Returns the first fragment.
-   * 
+   *
    * @param fragments the period-separated fragments
    * @return the first fragment, without the trailing period
    */
@@ -172,7 +171,7 @@ public final class UiBinderUtilities {
    * <p>
    * Note: If the EL expression contents contains an escaped '{' (e.g.
    * "{com.f{{oo.bar}"), this will return -1 since it is invalid.
-   * 
+   *
    * @param text the text to search
    * @return the offset to the contents of the EL expression
    */
@@ -188,7 +187,7 @@ public final class UiBinderUtilities {
 
   /**
    * Gets the owner type for the given UiBinder subtype.
-   * 
+   *
    * @return the owner type
    * @throws UiBinderException if the given UiBinder subtype is not enclosed by
    *           an owner type
@@ -208,7 +207,7 @@ public final class UiBinderUtilities {
    * Gets the package name from a namespace URI (formatted with
    * {@link UiBinderConstants#URN_IMPORT_NAMESPACE_BEGINNING}). This does not
    * check for the existence of the package.
-   * 
+   *
    * @param namespaceUrn the package formatted in the URN import scheme
    * @return the package name, or null if unavailable
    */
@@ -225,7 +224,7 @@ public final class UiBinderUtilities {
   /**
    * Uses the GWT UiBinder way of splitting a delimited string of paths into the
    * individual paths.
-   * 
+   *
    * @param delimitedString the delimited string containing many paths
    * @return a list of strings of individual paths
    */
@@ -264,7 +263,7 @@ public final class UiBinderUtilities {
 
   /**
    * Gets the UiBinder interface type.
-   * 
+   *
    * @return the UiBinder interface type, or null
    */
   public static IType getUiBinderType(IJavaProject javaProject) {
@@ -279,11 +278,11 @@ public final class UiBinderUtilities {
   /**
    * Returns the (possibly non-existant) path to the UiBinder XML file for the
    * given type.
-   * 
+   *
    * @param uiBinderSubtype the UiBinder subtype whose corresponding XML file
    *          will be returned
    * @return the possibly non-existant path to the UiBinder XML file, or null
-   * 
+   *
    * @throws UiBinderException
    */
   public static IPath getUiXmlPath(IType uiBinderSubtype)
@@ -298,8 +297,6 @@ public final class UiBinderUtilities {
             uiTemplateAnnotation, String.class);
         return uiBinderPackagePath.append(relativePath);
       }
-    } catch (IAnnotationNotAvailableException e) {
-      // Ignore, fallback
     } catch (JavaModelException e) {
       throw new UiBinderException(e);
     }
@@ -310,7 +307,7 @@ public final class UiBinderUtilities {
 
   /**
    * Gets the GWT Widget type.
-   * 
+   *
    * @return the GWT Widget type
    */
   public static IType getWidgetType(IJavaProject javaProject)
@@ -355,7 +352,7 @@ public final class UiBinderUtilities {
    * <p>
    * For example, a base type of String and a snippet of
    * "toString.getClass.getDeclaredField" will return the Field type.
-   * 
+   *
    * @param contextType the type which will be used as the starting point for
    *          the snippet
    * @param snippet the string to trail onto a reference to the base type
