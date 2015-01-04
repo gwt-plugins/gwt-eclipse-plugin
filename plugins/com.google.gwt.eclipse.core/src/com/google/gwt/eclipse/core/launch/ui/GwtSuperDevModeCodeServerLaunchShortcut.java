@@ -17,8 +17,8 @@ package com.google.gwt.eclipse.core.launch.ui;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.ResourceUtils;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationUtilities;
-import com.google.gwt.eclipse.core.launch.GwtSdmCodeServerLaunchUtil;
-import com.google.gwt.eclipse.core.launch.GwtSdmLaunchConfiguration;
+import com.google.gwt.eclipse.core.launch.GwtSuperDevModeLaunchConfiguration;
+import com.google.gwt.eclipse.core.launch.util.GwtSuperDevModeCodeServerLaunchUtil;
 import com.google.gwt.eclipse.core.propertytesters.GwtLaunchTargetTester;
 
 import org.eclipse.core.resources.IProject;
@@ -42,13 +42,16 @@ import java.util.List;
 
 /**
  * Launch shortcut for SDM Code server.
+ *
+ * Set SDM on by default.
  */
-public class GwtSdmCodeServerLaunchShortcut implements ILaunchShortcut {
+public class GwtSuperDevModeCodeServerLaunchShortcut implements ILaunchShortcut {
 
   private static String calculateLaunchConfigName(IResource resource) {
     return resource.getProject().getName();
   }
 
+  @Override
   public void launch(IEditorPart editor, String mode) {
     IResource resource = ResourceUtils.getEditorInput(editor);
     if (resource != null) {
@@ -56,6 +59,7 @@ public class GwtSdmCodeServerLaunchShortcut implements ILaunchShortcut {
     }
   }
 
+  @Override
   public void launch(ISelection selection, String mode) {
     IResource resource = ResourceUtils.getSelectionResource(selection);
     if (resource != null) {
@@ -64,48 +68,45 @@ public class GwtSdmCodeServerLaunchShortcut implements ILaunchShortcut {
   }
 
   /**
-   * Finds and returns an <b>existing</b> configuration to re-launch for the
-   * given URL, or <code>null</code> if there is no existing configuration.
+   * Finds and returns an <b>existing</b> configuration to re-launch for the given URL, or
+   * <code>null</code> if there is no existing configuration.
    *
    * @return a configuration to use for launching the given type or <code>null
    *         </code> if none
    * @throws CoreException
    */
-  protected ILaunchConfiguration findLaunchConfiguration(
-      IResource resource, boolean isExternal) throws CoreException {
+  protected ILaunchConfiguration findLaunchConfiguration(IResource resource)
+      throws CoreException {
 
     ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
     ILaunchConfigurationType typeid =
-        launchManager.getLaunchConfigurationType(GwtSdmLaunchConfiguration.TYPE_ID);
+        launchManager.getLaunchConfigurationType(GwtSuperDevModeLaunchConfiguration.TYPE_ID);
     ILaunchConfiguration[] configs = launchManager.getLaunchConfigurations(typeid);
 
-    return searchMatchingUrlAndProject(resource.getProject(), isExternal, configs);
+    return searchMatchingUrlAndProject(resource.getProject(), configs);
   }
 
   /**
-   * Given a resource, infer the startup URL that the resource points at, then
-   * look for an existing launch configuration that points at this URL. If none
-   * exists, we'll create a new one.
+   * Given a resource, infer the startup URL that the resource points at, then look for an existing
+   * launch configuration that points at this URL. If none exists, we'll create a new one.
    *
    * @return the found or newly created launch configuration
    * @throws CoreException
    * @throws OperationCanceledException
    */
-  protected ILaunchConfiguration findOrCreateLaunchConfiguration(
-      IResource resource, boolean isExternal)
-      throws CoreException, OperationCanceledException {
-    ILaunchConfiguration config = findLaunchConfiguration(resource, isExternal);
+  protected ILaunchConfiguration findOrCreateLaunchConfiguration(IResource resource) throws CoreException, OperationCanceledException {
+    ILaunchConfiguration config = findLaunchConfiguration(resource);
 
     if (config == null) {
-      config = createNewLaunchConfiguration(resource, isExternal);
+      config = createNewLaunchConfiguration(resource);
     }
 
     return config;
   }
 
   /**
-   * Given a specific resource, launch for that resource. This will involve
-   * either finding an existing launch configuration, or making a new one.
+   * Given a specific resource, launch for that resource. This will involve either finding an
+   * existing launch configuration, or making a new one.
    */
   protected void launch(IResource resource, String mode) {
     // assert that by the time we're in here, the PropertyTester agrees that we
@@ -116,9 +117,9 @@ public class GwtSdmCodeServerLaunchShortcut implements ILaunchShortcut {
     resource = ResourceUtils.resolveTargetResource(resource);
 
     try {
-      String startupUrl = GwtSdmCodeServerLaunchUtil.determineStartupURL(resource, false);
+      String startupUrl = GwtSuperDevModeCodeServerLaunchUtil.determineStartupURL(resource, false);
       if (startupUrl != null) {
-        ILaunchConfiguration config = findOrCreateLaunchConfiguration(resource, false);
+        ILaunchConfiguration config = findOrCreateLaunchConfiguration(resource);
 
         assert (config != null);
 
@@ -131,8 +132,8 @@ public class GwtSdmCodeServerLaunchShortcut implements ILaunchShortcut {
     }
   }
 
-  protected ILaunchConfiguration searchMatchingUrlAndProject(IProject project, 
-      boolean isExternal, ILaunchConfiguration[] configs) throws CoreException {
+  protected ILaunchConfiguration searchMatchingUrlAndProject(IProject project,
+      ILaunchConfiguration[] configs) throws CoreException {
     List<ILaunchConfiguration> candidates = new ArrayList<ILaunchConfiguration>();
 
     for (ILaunchConfiguration config : configs) {
@@ -151,16 +152,15 @@ public class GwtSdmCodeServerLaunchShortcut implements ILaunchShortcut {
   }
 
   /**
-   * Create a new launch configuration. 
+   * Create a new launch configuration.
    */
-  private ILaunchConfiguration createNewLaunchConfiguration(
-      IResource resource, boolean isExternal)
+  private ILaunchConfiguration createNewLaunchConfiguration(IResource resource)
       throws CoreException, OperationCanceledException {
     String initialName = calculateLaunchConfigName(resource);
 
     IProject project = resource.getProject();
-    ILaunchConfigurationWorkingCopy wc = GwtSdmCodeServerLaunchUtil.createLaunchConfigWorkingCopy(
-        initialName, project, isExternal);
+    ILaunchConfigurationWorkingCopy wc =
+        GwtSuperDevModeCodeServerLaunchUtil.createLaunchConfigWorkingCopy(initialName, project);
 
     // save the new launch configuration
     ILaunchConfiguration toReturn = wc.doSave();

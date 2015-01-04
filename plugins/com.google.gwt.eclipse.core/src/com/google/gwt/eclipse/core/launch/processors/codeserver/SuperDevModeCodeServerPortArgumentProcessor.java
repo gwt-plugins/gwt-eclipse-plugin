@@ -32,17 +32,16 @@ import java.util.List;
  *
  * SDM Mode only. Do not use for Dev Mode.
  */
-public class SdmCodeServerPortArgumentProcessor implements ILaunchConfigurationProcessor {
+public class SuperDevModeCodeServerPortArgumentProcessor implements ILaunchConfigurationProcessor {
 
   public static final String SDM_CODE_SERVER_PORT_ARG = "-port";
-
   private static final String SDM_CODE_SERVER_PORT_ERROR = "-port must specify a valid port number";
 
   /**
    * Return either the default port or an override value.
    *
    * @param args Arguments used to start the code server.
-   * @return The port.
+   * @return the port.
    */
   public static String getPort(List<String> args) {
     int index = getArgIndex(args);
@@ -78,21 +77,23 @@ public class SdmCodeServerPortArgumentProcessor implements ILaunchConfigurationP
   }
 
   @Override
-  public void update(ILaunchConfigurationWorkingCopy launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
-      throws CoreException {
-
+  public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject,
+      List<String> programArgs, List<String> vmArgs) throws CoreException {
     // only gwt projects use -codeServerPort
     if (!GWTNature.isGWTProject(javaProject.getProject())) {
       return;
     }
 
-    // Only for GWT SDM mode
-    if (!GwtLaunchConfigurationProcessorUtilities.isSdmMode(launchConfig)) {
+    int index = getArgIndex(programArgs);
+
+    // Only use with the CodeServer entrypoint
+    if (GwtLaunchConfigurationProcessorUtilities.isSuperDevModeCodeServer(launchConfig)) {
+      if (index > -1) {
+        programArgs.remove(index); // remove arg name
+        programArgs.remove(index); // remove port value
+      }
       return;
     }
-
-    int index = getArgIndex(programArgs);
 
     String port = GWTLaunchConfigurationWorkingCopy.getSdmCodeServerPort(launchConfig);
 
@@ -118,9 +119,8 @@ public class SdmCodeServerPortArgumentProcessor implements ILaunchConfigurationP
   }
 
   @Override
-  public String validate(ILaunchConfiguration launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
-      throws CoreException {
+  public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject,
+      List<String> programArgs, List<String> vmArgs) throws CoreException {
     int index = getArgIndex(programArgs);
 
     if (index < 0) {

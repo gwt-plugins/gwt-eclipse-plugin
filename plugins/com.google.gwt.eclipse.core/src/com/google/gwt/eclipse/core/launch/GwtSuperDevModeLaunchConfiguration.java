@@ -14,7 +14,7 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.launch;
 
-public class GwtSdmLaunchConfiguration {
+public class GwtSuperDevModeLaunchConfiguration {
 
   public final static String TYPE_ID = "com.google.gwt.eclipse.core.sdmCodeServer";
   

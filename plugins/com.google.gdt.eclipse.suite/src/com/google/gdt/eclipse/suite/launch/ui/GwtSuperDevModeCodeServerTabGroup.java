@@ -17,9 +17,9 @@ package com.google.gdt.eclipse.suite.launch.ui;
 import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import com.google.gdt.eclipse.platform.debug.ui.CommonTab;
 import com.google.gwt.eclipse.core.GWTPlugin;
-import com.google.gwt.eclipse.core.launch.GwtSdmCodeServerLaunchUtil;
-import com.google.gwt.eclipse.core.launch.ui.GwtSdmCodeServerSettingsTab;
-import com.google.gwt.eclipse.core.launch.ui.GwtSdmCodeServerSettingsTab.IGWTSettingsTabFactory;
+import com.google.gwt.eclipse.core.launch.ui.GwtSuperDevModeCodeServerSettingsTab;
+import com.google.gwt.eclipse.core.launch.ui.GwtSuperDevModeCodeServerSettingsTab.IGWTSettingsTabFactory;
+import com.google.gwt.eclipse.core.launch.util.GwtSuperDevModeCodeServerLaunchUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -40,20 +40,21 @@ import java.util.List;
 /**
  * Tabs on the launch configuration for web apps.
  */
-public class GwtSdmCodeServerTabGroup extends AbstractLaunchConfigurationTabGroup {
-  
+public class GwtSuperDevModeCodeServerTabGroup extends AbstractLaunchConfigurationTabGroup {
+
   public interface IGwtSdmTabFactory {
-    GwtSdmCodeServerTabGroup newInstance();
+    GwtSuperDevModeCodeServerTabGroup newInstance();
   }
 
   private ILaunchConfigurationDialog launchConfigurationDialog;
-  
+
+  @Override
   public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
     launchConfigurationDialog = dialog;
 
     WebAppArgumentsTab argsTab = new WebAppArgumentsTab();
 
-    GwtSdmCodeServerSettingsTab gwtSettingsTab = null;
+    GwtSuperDevModeCodeServerSettingsTab gwtSettingsTab = null;
 
     ExtensionQuery<IGWTSettingsTabFactory> extQuery = new ExtensionQuery<IGWTSettingsTabFactory>(
         GWTPlugin.PLUGIN_ID, "gwtSettingsTabFactory", "class");
@@ -65,7 +66,7 @@ public class GwtSdmCodeServerTabGroup extends AbstractLaunchConfigurationTabGrou
     }
 
     if (gwtSettingsTab == null) {
-      gwtSettingsTab = new GwtSdmCodeServerSettingsTab(argsTab);
+      gwtSettingsTab = new GwtSuperDevModeCodeServerSettingsTab(argsTab);
     }
 
     ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
@@ -75,7 +76,7 @@ public class GwtSdmCodeServerTabGroup extends AbstractLaunchConfigurationTabGrou
         new CommonTab()};
     setTabs(tabs);
   }
-  
+
   @Override
   public void initializeFrom(ILaunchConfiguration configuration) {
     super.initializeFrom(configuration);
@@ -95,11 +96,11 @@ public class GwtSdmCodeServerTabGroup extends AbstractLaunchConfigurationTabGrou
   public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
     super.setDefaults(configuration);
 
-    GwtSdmCodeServerLaunchUtil.setDefaults(configuration, null);
+    GwtSuperDevModeCodeServerLaunchUtil.setDefaults(configuration, null);
   }
 
   private void createUpdateJob() {
-    new WorkbenchJob("GwtSdmCodeServerTabGroup") {
+    new WorkbenchJob("GwtSuperDevModeCodeServerTabGroup") {
       @Override
       public IStatus runInUIThread(IProgressMonitor monitor) {
         ILaunchConfigurationTab tab = launchConfigurationDialog.getActiveTab();

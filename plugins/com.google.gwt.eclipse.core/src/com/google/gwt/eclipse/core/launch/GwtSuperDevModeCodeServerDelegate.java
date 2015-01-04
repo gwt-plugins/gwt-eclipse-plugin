@@ -20,6 +20,6 @@ import org.eclipse.jdt.launching.JavaLaunchDelegate;
  * This is found in plugin.xml and used with the shortcut.
  */
 @SuppressWarnings({"restriction", "nls"})
-public class GwtSdmCodeServerDelegate extends JavaLaunchDelegate {
+public class GwtSuperDevModeCodeServerDelegate extends JavaLaunchDelegate {
   // So far nothing is needed
 }

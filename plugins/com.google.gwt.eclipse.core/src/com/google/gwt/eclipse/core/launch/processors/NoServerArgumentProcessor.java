@@ -38,24 +38,25 @@ public class NoServerArgumentProcessor implements ILaunchConfigurationProcessor 
     return args.indexOf(ARG_NO_SERVER) >= 0;
   }
 
-  public void update(ILaunchConfigurationWorkingCopy launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
-      throws CoreException {
-
+  @Override
+  public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject,
+      List<String> programArgs, List<String> vmArgs) throws CoreException {
     IProject project = javaProject.getProject();
     int noServerArgIndex = programArgs.indexOf(ARG_NO_SERVER);
 
-    int insertionIndex = LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(
-        programArgs, noServerArgIndex, false);
-    if (!WebAppLaunchConfiguration.getRunServer(launchConfig)
-        && GWTNature.isGWTProject(project)) {
+    int insertionIndex =
+        LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(programArgs,
+            noServerArgIndex, false);
+    if (!WebAppLaunchConfiguration.getRunServer(launchConfig) && GWTNature.isGWTProject(project)) {
       programArgs.add(insertionIndex, ARG_NO_SERVER);
     }
   }
 
-  public String validate(ILaunchConfiguration launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs) {
+  @Override
+  public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject,
+      List<String> programArgs, List<String> vmArgs) {
     // The server tab will show the error
     return null;
   }
+
 }

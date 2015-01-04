@@ -21,6 +21,7 @@ import com.google.gdt.eclipse.core.launch.UpdateLaunchConfigurationDialogBatcher
 import com.google.gdt.eclipse.core.natures.NatureUtils;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.launch.processors.LaunchConfigurationUpdater;
+import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 
 import org.eclipse.core.resources.IProject;
@@ -55,6 +56,7 @@ public class WebAppMainTab extends JavaMainTab implements
   private final UpdateLaunchConfigurationDialogBatcher updateLaunchConfigurationDialogBatcher = new UpdateLaunchConfigurationDialogBatcher(
       this);
 
+  @Override
   public void callSuperUpdateLaunchConfigurationDialog() {
     super.updateLaunchConfigurationDialog();
   }
@@ -73,6 +75,7 @@ public class WebAppMainTab extends JavaMainTab implements
     super.dispose();
   }
 
+  @Override
   public void doPerformApply(ILaunchConfigurationWorkingCopy configuration) {
     super.performApply(configuration);
 
@@ -111,7 +114,7 @@ public class WebAppMainTab extends JavaMainTab implements
     setMessage(null);
 
     if (!super.isValid(launchConfig)
-        || !isValidProject(getEnteredProjectName())) {
+        || !isValidProject(getEnteredProjectName(), launchConfig)) {
       return false;
     }
 
@@ -155,7 +158,7 @@ public class WebAppMainTab extends JavaMainTab implements
   /**
    * Returns <code>true</code> if the project exists and it uses GWT or GAE.
    */
-  private boolean isValidProject(String projectName) {
+  private boolean isValidProject(String projectName, ILaunchConfiguration launchConfig) {
     if (projectName.length() == 0) {
       setErrorMessage("Project was not specified");
       return false;
@@ -179,7 +182,11 @@ public class WebAppMainTab extends JavaMainTab implements
       }
 
       try {
-        if (DynamicWebProjectUtilities.isAppengineDynamicWebProject(project)) {
+        // When WTP configuration is used:
+        // Stop the user using this launcher configuration and tell them to use the WTP Server.
+        // But its ok to use the launcher config when its the GWT SDM CodeServer.
+        if (DynamicWebProjectUtilities.isAppengineDynamicWebProject(project)
+            && !GwtLaunchConfigurationProcessorUtilities.isSuperDevModeCodeServer(launchConfig)) {
           setErrorMessage("Use \"Run on Server...\" launch shortcut to launch GAE WTP project");
           return false;
         }

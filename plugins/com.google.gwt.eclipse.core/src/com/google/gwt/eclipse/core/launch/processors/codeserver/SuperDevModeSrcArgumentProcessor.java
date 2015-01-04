@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -30,10 +30,10 @@ import java.util.List;
 
 /**
  * Handles the -src [src/] arg.
- * 
+ *
  * SDM mode only.
  */
-public class SdmSrcArgumentProcessor implements ILaunchConfigurationProcessor {
+public class SuperDevModeSrcArgumentProcessor implements ILaunchConfigurationProcessor {
 
   public static final String SRC_ARG = "-src";
 
@@ -44,16 +44,16 @@ public class SdmSrcArgumentProcessor implements ILaunchConfigurationProcessor {
   /**
    * Only update this argument when in GWT SDM mode.
    */
-  public void update(ILaunchConfigurationWorkingCopy launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
-      throws CoreException {
+  @Override
+  public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject,
+      List<String> programArgs, List<String> vmArgs) throws CoreException {
     // only gwt projects use -src
     if (!GWTNature.isGWTProject(javaProject.getProject())) {
       return;
     }
 
     // only gwt projects with SDM mode
-    if (!GwtLaunchConfigurationProcessorUtilities.isSdmMode(launchConfig)) {
+    if (!GwtLaunchConfigurationProcessorUtilities.isSuperDevModeCodeServer(launchConfig)) {
       return;
     }
 
@@ -62,8 +62,7 @@ public class SdmSrcArgumentProcessor implements ILaunchConfigurationProcessor {
     // Prefer the existing value, fallback on the precanned one
     String srcDirs = null;
     if (srcArgIndex >= 0) {
-      srcDirs = LaunchConfigurationProcessorUtilities.getArgValue(programArgs,
-          srcArgIndex + 1);
+      srcDirs = LaunchConfigurationProcessorUtilities.getArgValue(programArgs, srcArgIndex + 1);
     }
 
     // default directories, is retrieved from classpaths
@@ -71,8 +70,9 @@ public class SdmSrcArgumentProcessor implements ILaunchConfigurationProcessor {
       srcDirs = getSrcDirectories(javaProject);
     }
 
-    int insertionIndex = LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(
-        programArgs, srcArgIndex, true);
+    int insertionIndex =
+        LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(programArgs,
+            srcArgIndex, true);
 
     // add the args to the list
     programArgs.add(insertionIndex, SRC_ARG);
@@ -82,18 +82,18 @@ public class SdmSrcArgumentProcessor implements ILaunchConfigurationProcessor {
   /**
    * Only update this argument when in GWT SDM mode.
    */
-  public String validate(ILaunchConfiguration launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
-      throws CoreException {
+  @Override
+  public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject,
+      List<String> programArgs, List<String> vmArgs) throws CoreException {
     return null;
   }
 
   /**
    * Get the class path entries that are the source.
-   * 
+   *
    * @param javaProject the java project.
    * @param entry classpath entry value.
-   * @return
+   * @return the path.
    */
   private String getPathIfDir(IJavaProject javaProject, IClasspathEntry entry) {
     IPath p = entry.getPath();
@@ -104,8 +104,8 @@ public class SdmSrcArgumentProcessor implements ILaunchConfigurationProcessor {
     // src directories don't have an output
     // cpe source are src,test directories
     if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE
-        && (entry.getOutputLocation() == null || (entry.getOutputLocation() != null && !entry.getOutputLocation().lastSegment().toString().equals(
-            "test-classes")))) {
+        && (entry.getOutputLocation() == null || (entry.getOutputLocation() != null && !entry
+            .getOutputLocation().lastSegment().toString().equals("test-classes")))) {
       String dir = p.toString();
       // if the base segment has the project name,
       // lets remove that so its relative to project
@@ -120,7 +120,7 @@ public class SdmSrcArgumentProcessor implements ILaunchConfigurationProcessor {
 
   /**
    * Get a comma delimited list of the source directories relative to project.
-   * 
+   *
    * @param javaProject The java project.
    * @return csv of the source directories.
    */

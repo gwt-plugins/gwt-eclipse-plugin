@@ -31,9 +31,10 @@ import com.google.gwt.eclipse.core.launch.processors.LogLevelArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.ModuleArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.NoServerArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.RemoteUiArgumentProcessor;
-import com.google.gwt.eclipse.core.launch.processors.SuperDevModeArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.StartupUrlArgumentProcessor;
+import com.google.gwt.eclipse.core.launch.processors.SuperDevModeArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.XStartOnFirstThreadArgumentProcessor;
+import com.google.gwt.eclipse.core.launch.processors.codeserver.SuperDevModeCodeServerPortArgumentProcessor;
 import com.google.gwt.eclipse.core.speedtracer.SpeedTracerLaunchConfiguration;
 
 import org.eclipse.core.runtime.CoreException;
@@ -69,8 +70,7 @@ public class LaunchConfigurationUpdater {
       new ArrayList<ILaunchConfigurationProcessor>();
 
   static {
-    // Ordering matters! E.g. startup URL depends on main type, so it must
-    // appear after main type.
+    // Ordering matters! E.g. startup URL depends on main type, so it must appear after main type.
     ClasspathUtilities.ClassFinder classFinder = new ClasspathUtilities.ClassFinder();
 
     PROCESSORS.add(new ClasspathProviderProcessor());
@@ -78,12 +78,13 @@ public class LaunchConfigurationUpdater {
     PROCESSORS.add(new ServerArgumentProcessor());
     PROCESSORS.add(new WarArgumentProcessor());
     PROCESSORS.add(new PortArgumentProcessor());
-    PROCESSORS.add(new DevModeCodeServerPortArgumentProcessor());
-    PROCESSORS.add(new NoServerArgumentProcessor());
-    PROCESSORS.add(new LogLevelArgumentProcessor());
+    PROCESSORS.add(new DevModeCodeServerPortArgumentProcessor()); // GWT DevMode
+    PROCESSORS.add(new SuperDevModeCodeServerPortArgumentProcessor()); // GWT CodeServer
+    PROCESSORS.add(new NoServerArgumentProcessor()); // GWT DevMode
+    PROCESSORS.add(new LogLevelArgumentProcessor()); // GWT DevMode
     PROCESSORS.add(new ModuleArgumentProcessor());
     PROCESSORS.add(new StartupUrlArgumentProcessor());
-    PROCESSORS.add(new RemoteUiArgumentProcessor());
+    PROCESSORS.add(new RemoteUiArgumentProcessor()); // GWT DevMode
     PROCESSORS.add(new XStartOnFirstThreadArgumentProcessor());
     PROCESSORS.add(new JavaAgentArgumentProcessor());
     PROCESSORS.add(new XBootclasspathArgumentProcessor());
@@ -91,7 +92,7 @@ public class LaunchConfigurationUpdater {
     PROCESSORS.add(new XmxArgumentProcessor());
     PROCESSORS.add(new HrdArgumentProcessor());
     PROCESSORS.add(new GoogleCloudSqlArgumentProcessor());
-    PROCESSORS.add(new SuperDevModeArgumentProcessor());
+    PROCESSORS.add(new SuperDevModeArgumentProcessor()); // GWT DevMode
     addExternalProcessors();
 
     ExtensionQueryStringAttr extQuery =
@@ -142,7 +143,7 @@ public class LaunchConfigurationUpdater {
    * Updates the launch configuration by delegating to each {@link ILaunchConfigurationProcessor}.
    * <p>
    * This method saves the launch configuration's working copy.
-   * 
+   *
    * @throws CoreException
    */
   public void update() throws CoreException {

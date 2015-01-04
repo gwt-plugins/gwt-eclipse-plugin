@@ -32,7 +32,7 @@ import com.google.gwt.eclipse.core.launch.processors.ModuleArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.NoServerArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.StartupUrlArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.XStartOnFirstThreadArgumentProcessor;
-import com.google.gwt.eclipse.core.launch.processors.codeserver.SdmCodeServerPortArgumentProcessor;
+import com.google.gwt.eclipse.core.launch.processors.codeserver.SuperDevModeCodeServerPortArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.ui.EntryPointModulesSelectionBlock.IModulesChangeListener;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.resources.GWTImages;
@@ -85,14 +85,14 @@ import java.util.List;
  * For webapp launch configuration, tab where you specify GWT options.
  */
 @SuppressWarnings("restriction")
-public class GwtSdmCodeServerSettingsTab extends JavaLaunchTab implements
+public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implements
     ILaunchArgumentsContainer.ArgumentsListener, UpdateLaunchConfigurationDialogBatcher.Listener {
 
   /**
    * A factory that returns a GWT settings tab bound to an arguments tab.
    */
   public interface IGWTSettingsTabFactory {
-    GwtSdmCodeServerSettingsTab newInstance(ILaunchArgumentsContainer argsContainer);
+    GwtSuperDevModeCodeServerSettingsTab newInstance(ILaunchArgumentsContainer argsContainer);
   }
 
   /**
@@ -198,7 +198,7 @@ public class GwtSdmCodeServerSettingsTab extends JavaLaunchTab implements
       GWTLaunchConfigurationWorkingCopy
           .setCodeServerPortAuto(launchConfig, getCodeServerPortAuto());
       LaunchConfigurationProcessorUtilities.updateViaProcessor(
-          new SdmCodeServerPortArgumentProcessor(), launchConfig);
+          new SuperDevModeCodeServerPortArgumentProcessor(), launchConfig);
 
       updateDevModeBlockVisibility(launchConfig);
     }
@@ -213,7 +213,8 @@ public class GwtSdmCodeServerSettingsTab extends JavaLaunchTab implements
      */
     private void updateDevModeBlockVisibility(ILaunchConfigurationWorkingCopy launchConfig) {
       try {
-        boolean isSdmMode = GwtLaunchConfigurationProcessorUtilities.isSdmMode(launchConfig);
+        boolean isSdmMode =
+            GwtLaunchConfigurationProcessorUtilities.isSuperDevModeCodeServer(launchConfig);
         groupDevMode.setVisible(!isSdmMode);
       } catch (CoreException e) {}
     }
@@ -297,7 +298,7 @@ public class GwtSdmCodeServerSettingsTab extends JavaLaunchTab implements
       boolean showStartupUrl =
           GwtLaunchConfigurationProcessorUtilities.isGwtShell(config)
               || GwtLaunchConfigurationProcessorUtilities.isHostedMode(config)
-              || (GwtLaunchConfigurationProcessorUtilities.isSdmMode(config) && hasNoServerArg)
+              || (GwtLaunchConfigurationProcessorUtilities.isSuperDevModeCodeServer(config) && hasNoServerArg)
               || (GwtLaunchConfigurationProcessorUtilities.isDevMode(config) && hasNoServerArg);
       GridData layoutData = (GridData) browserGroup.getLayoutData();
       layoutData.exclude = !showStartupUrl;
@@ -366,11 +367,11 @@ public class GwtSdmCodeServerSettingsTab extends JavaLaunchTab implements
   private final UpdateLaunchConfigurationDialogBatcher updateLaunchConfigurationDialogBatcher =
       new UpdateLaunchConfigurationDialogBatcher(this);
 
-  public GwtSdmCodeServerSettingsTab(ILaunchArgumentsContainer argsContainer) {
+  public GwtSuperDevModeCodeServerSettingsTab(ILaunchArgumentsContainer argsContainer) {
     this(argsContainer, true, true, false);
   }
 
-  public GwtSdmCodeServerSettingsTab(ILaunchArgumentsContainer argsContainer,
+  public GwtSuperDevModeCodeServerSettingsTab(ILaunchArgumentsContainer argsContainer,
       boolean showDevelopmentModeBlock, boolean showUrlSelectionBlock,
       boolean showPerformGwtCompileSetting) {
     this.showDevelopmentModeBlock = showDevelopmentModeBlock;
@@ -382,7 +383,7 @@ public class GwtSdmCodeServerSettingsTab extends JavaLaunchTab implements
     }
   }
 
-  protected GwtSdmCodeServerSettingsTab() {
+  protected GwtSuperDevModeCodeServerSettingsTab() {
     this(null, true, true, false);
   }
 
@@ -457,11 +458,11 @@ public class GwtSdmCodeServerSettingsTab extends JavaLaunchTab implements
 
     // // SDM CodeServer -src
     // LaunchConfigurationProcessorUtilities.updateViaProcessor(
-    // new SdmSrcArgumentProcessor(), configuration);
+    // new SuperDevModeSrcArgumentProcessor(), configuration);
     // // TODO change to text box
     // // SDM CodeServer -port
     // LaunchConfigurationProcessorUtilities.updateViaProcessor(
-    // new SdmCodeServerPortArgumentProcessor(), configuration);
+    // new SuperDevModeCodeServerPortArgumentProcessor(), configuration);
 
   }
 
@@ -560,7 +561,7 @@ public class GwtSdmCodeServerSettingsTab extends JavaLaunchTab implements
       GWTPluginLog.logError(e, "Could not persist startup URL");
     }
 
-    String port = SdmCodeServerPortArgumentProcessor.getPort(args);
+    String port = SuperDevModeCodeServerPortArgumentProcessor.getPort(args);
     if (port.equalsIgnoreCase("auto")) {
       GWTLaunchConfigurationWorkingCopy.setCodeServerPortAuto(config, true);
     } else {

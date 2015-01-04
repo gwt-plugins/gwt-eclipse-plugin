@@ -249,7 +249,7 @@
             sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer">
       </launchConfigurationType>
       <launchConfigurationType
-            delegate="com.google.gwt.eclipse.core.launch.GwtSdmCodeServerDelegate"
+            delegate="com.google.gwt.eclipse.core.launch.GwtSuperDevModeCodeServerDelegate"
             delegateDescription="Runs the GWT Super Dev Mode Code Server"
             delegateName="GWT SDM Code Server"
             id="com.google.gwt.eclipse.core.sdmCodeServer"
@@ -349,7 +349,7 @@
       </shortcut>
       
       <shortcut
-            class="com.google.gwt.eclipse.core.launch.ui.GwtSdmCodeServerLaunchShortcut"
+            class="com.google.gwt.eclipse.core.launch.ui.GwtSuperDevModeCodeServerLaunchShortcut"
             description="Run the GWT super dev mode code server."
             icon="icons/gwt_16x16.png"
             id="com.google.gwt.eclipse.core.launch.ui.gwtSdmCodeServerLaunchShortcut"

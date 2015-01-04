@@ -14,8 +14,6 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.launch.processors.codeserver;
 
-import com.google.gdt.eclipse.core.ClasspathUtilities;
-import com.google.gdt.eclipse.core.ClasspathUtilities.ClassFinder;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.StringUtilities;
 import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
@@ -37,7 +35,7 @@ import java.util.List;
  *
  * This is similar to the web app main types, although this is pulled out so its not cyclic.
  */
-public class SdmCodeServerMainTypeProcessor implements ILaunchConfigurationProcessor {
+public class SuperDevModeCodeServerMainTypeProcessor implements ILaunchConfigurationProcessor {
 
   /**
    * Enum for possible main types for a launch.
@@ -77,24 +75,6 @@ public class SdmCodeServerMainTypeProcessor implements ILaunchConfigurationProce
     return false;
   }
 
-  private static String computeMainTypeName(ILaunchConfigurationWorkingCopy config,
-      IJavaProject javaProject, ClassFinder classFinder) throws CoreException {
-
-    IProject project = javaProject.getProject();
-
-    if (GWTNature.isGWTProject(project)) {
-
-      ClassLoader classLoader = LaunchConfigurationProcessorUtilities.getClassLoaderFor(config);
-      if (classFinder.exists(classLoader, MainType.GWT_SDM_MODE.mainTypeName)) {
-        return MainType.GWT_SDM_MODE.mainTypeName;
-      }
-
-      return MainType.GWT_SDM_MODE.mainTypeName;
-    } else {
-      return null;
-    }
-  }
-
   private static String getPreviouslySetMainTypeName(ILaunchConfiguration config) {
     try {
       return config.getAttribute(ATTR_PREVIOUSLY_SET_MAIN_TYPE_NAME, (String) null);
@@ -109,10 +89,7 @@ public class SdmCodeServerMainTypeProcessor implements ILaunchConfigurationProce
     config.setAttribute(ATTR_PREVIOUSLY_SET_MAIN_TYPE_NAME, mainType);
   }
 
-  private final ClassFinder classFinder;
-
-  public SdmCodeServerMainTypeProcessor(ClasspathUtilities.ClassFinder classFinder) {
-    this.classFinder = classFinder;
+  public SuperDevModeCodeServerMainTypeProcessor() {
   }
 
   @Override
@@ -128,7 +105,12 @@ public class SdmCodeServerMainTypeProcessor implements ILaunchConfigurationProce
       return;
     }
 
-    String newMainTypeName = computeMainTypeName(config, javaProject, classFinder);
+    String newMainTypeName = null;
+    IProject project = javaProject.getProject();
+    if (GWTNature.isGWTProject(project)) {
+      newMainTypeName = MainType.GWT_SDM_MODE.mainTypeName;
+    }
+
     if (StringUtilities.isEmpty(newMainTypeName) || newMainTypeName.equals(currentMainTypeName)) {
       return;
     }
