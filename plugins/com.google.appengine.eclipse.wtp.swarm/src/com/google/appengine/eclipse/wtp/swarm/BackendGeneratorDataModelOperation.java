@@ -267,7 +267,12 @@ public final class BackendGeneratorDataModelOperation extends AbstractDataModelO
                 JpaProject jpaProject = (JpaProject) item;
                 if (jpaProject.getProject().equals(project)) {
                   SynchronizeClassesRunner runner = new SynchronizeClassesRunner();
-                  runner.synchronizeClasses(jpaProject, new NullProgressMonitor());
+                  try {
+                    runner.synchronizeClasses(jpaProject, new NullProgressMonitor());
+                  } catch (CoreException e) {
+                    AppEngineSwarmPlugin.logMessage("Failed to synchronize classes into the JPA "
+                        + "project's persistence.xml file.", e);
+                  }
                 }
               }
             }

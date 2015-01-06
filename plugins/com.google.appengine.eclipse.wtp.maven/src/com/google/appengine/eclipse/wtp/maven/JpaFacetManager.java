@@ -12,6 +12,10 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.maven;
 
+import com.google.appengine.eclipse.webtools.facet.JpaFacetHelper;
+import com.google.appengine.eclipse.wtp.AppEnginePlugin;
+import com.google.gdt.eclipse.core.BuilderUtilities;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
@@ -20,26 +24,22 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
-import com.google.appengine.eclipse.wtp.AppEnginePlugin;
-import com.google.gdt.eclipse.core.BuilderUtilities;
-import com.google.appengine.eclipse.wtp.jpa.JpaPlatformIdSetter;
-
 /**
  * Provides a method to configure a faceted project's JPA facet for App Engine.
  */
 public class JpaFacetManager {
-  
+
   private static final String APP_ENGINE_JPA_PLATFORM_ID =
       "com.google.appengine.eclipse.wtp.jpa.GaePlatform";
       // Defined in the org.eclipse.jpt.jpa.core.jpaPlatforms extension point in
       // com.google.appengine.eclipse.wtp.jpa.e43/plugin.xml
-  
+
   /**
    * Configures the JPA facet of a specified faceted project to use the implementation of JPA
    * bundled with App Engine, by ensuring that the latest JPA project facet is installed, setting
    * the JPA platform in project preferences to App Engine, and adding the builder for the
-   * App Engine Datanucleus enhancer to the project. 
-   * 
+   * App Engine Datanucleus enhancer to the project.
+   *
    * @param facetedProject the specified faceted project
    * @param monitor a progress monitor for the operation
    * @throws CoreException if there is an error adding the builder
@@ -49,7 +49,7 @@ public class JpaFacetManager {
     IProjectFacetVersion installedVersion =
         ensureLatestJpaFacetVersionInstalled(facetedProject, monitor);
     if (installedVersion != null) {
-      JpaPlatformIdSetter.setJpaPlatformId(facetedProject.getProject(), APP_ENGINE_JPA_PLATFORM_ID);
+      JpaFacetHelper.setJpaPlatformId(facetedProject.getProject(), APP_ENGINE_JPA_PLATFORM_ID);
       BuilderUtilities.addBuilderToProject(
           facetedProject.getProject(), AppEnginePlugin.PLUGIN_ID + ".enhancerbuilder");
     }
@@ -59,7 +59,7 @@ public class JpaFacetManager {
    * Ensure that the latest available JPA facet version is installed in a specified faceted project.
    * If no JPA facet is installed, the latest JPA facet version is installed. If an earlier JPA
    * facet version is installed, it is upgraded to the latest version.
-   * 
+   *
    * @param facetedProject the specified faceted project
    * @param monitor a progress monitor for the operation
    * @return
@@ -99,5 +99,4 @@ public class JpaFacetManager {
   private static final boolean sameVersion(IProjectFacetVersion v1, IProjectFacetVersion v2) {
     return v1.getVersionString().equals(v2.getVersionString());
   }
- 
 }

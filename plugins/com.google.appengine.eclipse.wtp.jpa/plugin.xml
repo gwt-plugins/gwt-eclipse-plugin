@@ -2,6 +2,99 @@
 <?eclipse version="3.0"?>
 
 <plugin>
+    <extension
+         point="com.google.appengine.eclipse.core.enhancerJobExtension">
+      <datanucleusVersionProvider
+            class="com.google.appengine.eclipse.wtp.jpa.libprov.DatanucleusVersionProvider"/>
+    </extension>
+    <extension point="org.eclipse.core.expressions.propertyTesters">
+        <propertyTester
+           class="com.google.appengine.eclipse.wtp.jpa.libprov.TargetRuntimePropertyTester"
+           id="com.google.appengine.eclipse.wtp.jpa.libprov.TargetRuntimeTester"
+           namespace="com.google.appengine.eclipse.wtp.jpa.libprov"
+           properties="isEnabledFor"
+           type="java.util.Set">
+        </propertyTester>
+    </extension>
+    <extension
+          point="org.eclipse.jdt.core.classpathContainerInitializer">
+       <classpathContainerInitializer
+             class="com.google.appengine.eclipse.wtp.jpa.libprov.DatanucleusClasspathContainerInitializer"
+             id="com.google.appengine.eclipse.wtp.jpa.DATANUCLEUS_CONTAINER">
+       </classpathContainerInitializer>
+    </extension>
+    <extension
+          point="org.eclipse.jpt.jpa.ui.jpaPlatformUis">
+       <jpaPlatformUi
+             factoryClass="com.google.appengine.eclipse.wtp.jpa.GaeJpaPlatformUiFactory"
+             id="com.google.appengine.eclipse.wtp.jpa.GaePlatformUI"
+             jpaPlatform="com.google.appengine.eclipse.wtp.jpa.GaePlatform">
+       </jpaPlatformUi>
+    </extension>
+    <extension
+          point="org.eclipse.jst.common.project.facet.core.libraryProviders">
+       <provider
+             abstract="false"
+             hidden="false"
+             id="com.google.appengine.eclipse.wtp.jpa.GaeLibraryProvider">
+          <label>
+             %appenginesdk
+          </label>
+          <action type="INSTALL">
+             <operation class="com.google.appengine.eclipse.wtp.jpa.libprov.GaeLibraryProviderInstallOperation"/>
+             <config class="com.google.appengine.eclipse.wtp.jpa.libprov.GaeLibraryProviderOperationConfig"/>
+          </action>
+          <action type="UNINSTALL">
+             <operation class="com.google.appengine.eclipse.wtp.jpa.libprov.GaeLibraryProviderUninstallOperation"/>
+          </action>
+          <enablement>
+              <and>
+                  <with variable="requestingProjectFacet">
+                      <test property="org.eclipse.wst.common.project.facet.core.projectFacet" value="jpt.jpa" forcePluginActivation="true"/>
+                  </with>
+                  <with variable="jpaPlatform">
+                      <equals value="com.google.appengine.eclipse.wtp.jpa.GaePlatform"/>
+                  </with>
+                  <with variable="targetedRuntimes">
+                      <test property="com.google.appengine.eclipse.wtp.jpa.libprov.isEnabledFor" 
+                        value="com.google.appengine.facet" 
+                        forcePluginActivation="true"/>
+                  </with>
+              </and>
+          </enablement>
+          <priority>
+             2000
+          </priority>
+       </provider>
+    </extension>
+    <extension
+          point="org.eclipse.jst.common.project.facet.ui.libraryProviderActionPanels">
+       <panel
+             class="com.google.appengine.eclipse.wtp.jpa.libprov.GaeLibraryProviderActionPanel"
+             provider="com.google.appengine.eclipse.wtp.jpa.GaeLibraryProvider">
+       </panel>
+    </extension>
+    <extension
+         point="org.eclipse.wst.common.project.facet.core.listeners">
+      <listener
+            class="com.google.appengine.eclipse.wtp.jpa.JpaFacetUninstallListener"
+            eventTypes="PRE_UNINSTALL">
+      </listener>
+   </extension>
+    <extension
+         point="org.eclipse.wst.common.project.facet.core.listeners">
+      <listener
+            class="com.google.appengine.eclipse.wtp.jpa.JpaFacetPostInstallListener"
+            eventTypes="POST_INSTALL">
+      </listener>
+   </extension>
+   <extension
+          point="org.eclipse.wst.common.project.facet.core.presets">
+       <dynamic-preset
+             id="com.google.appengine.jpaPreset">
+           <factory class="com.google.appengine.eclipse.wtp.jpa.GaeJpaPresetFactory"/>
+       </dynamic-preset>
+    </extension>
     <extension point="org.eclipse.ui.propertyPages">
         <page id="com.google.appengine.eclipse.wtp.gaeProjectOrmPropertyPage"
               name="Google App Engine ORM"
@@ -15,31 +108,5 @@
                 </adapt>
             </enabledWhen>
         </page>
-    </extension>
-    <extension
-          point="org.eclipse.jdt.core.classpathContainerInitializer">
-       <classpathContainerInitializer
-             class="com.google.appengine.eclipse.wtp.jpa.libprov.DatanucleusClasspathContainerInitializer"
-             id="com.google.appengine.eclipse.wtp.jpa.DATANUCLEUS_CONTAINER">
-       </classpathContainerInitializer>
-    </extension>
-    <extension
-         point="org.eclipse.wst.common.project.facet.core.listeners">
-      <listener
-            class="com.google.appengine.eclipse.wtp.jpa.JpaFacetUninstallListener"
-            eventTypes="PRE_UNINSTALL">
-      </listener>
-   </extension>
-   <extension
-          point="org.eclipse.wst.common.project.facet.core.presets">
-       <dynamic-preset
-             id="com.google.appengine.jpaPreset">
-           <factory class="com.google.appengine.eclipse.wtp.jpa.GaeJpaPresetFactory"/>
-       </dynamic-preset>
-    </extension>
-    <extension
-         point="com.google.appengine.eclipse.core.enhancerJobExtension">
-      <datanucleusVersionProvider
-            class="com.google.appengine.eclipse.wtp.jpa.libprov.DatanucleusVersionProvider"/>
     </extension>
 </plugin>

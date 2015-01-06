@@ -59,7 +59,7 @@ public abstract class RemoteOperationHandler extends AbstractSingleServerHandler
   /**
    * Performs remote operation to AppEngine server.
    */
-  protected void doExecute(IServer server) throws ExecutionException {
+  protected void doExecute(IServer server) {
     // prompt for log on
     if (!GoogleLogin.getInstance().isLoggedIn()) {
       boolean signedIn = GoogleLogin.getInstance().logIn(

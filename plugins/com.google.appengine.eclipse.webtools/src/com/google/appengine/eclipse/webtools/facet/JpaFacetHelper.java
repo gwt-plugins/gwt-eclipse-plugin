@@ -27,6 +27,8 @@ import com.google.gdt.eclipse.core.WebAppUtilities;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -37,12 +39,24 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jpt.common.core.AnnotationProvider;
+import org.eclipse.jpt.common.utility.command.Command;
+import org.eclipse.jpt.jpa.core.JpaFactory;
+import org.eclipse.jpt.jpa.core.JpaPlatform;
+import org.eclipse.jpt.jpa.core.JpaPlatform.Version;
+import org.eclipse.jpt.jpa.core.JpaAnnotationDefinitionProvider;
+import org.eclipse.jpt.jpa.core.JpaPlatformProvider;
+import org.eclipse.jpt.jpa.core.JpaPlatformVariation;
 import org.eclipse.jpt.jpa.core.JpaProject;
+import org.eclipse.jpt.jpa.core.JpaProjectManager;
 import org.eclipse.jpt.jpa.core.context.persistence.Persistence;
 import org.eclipse.jpt.jpa.core.context.persistence.PersistenceUnit;
 import org.eclipse.jpt.jpa.core.context.persistence.PersistenceUnitTransactionType;
+import org.eclipse.jpt.jpa.core.internal.GenericJpaPlatform;
 import org.eclipse.jpt.jpa.db.ConnectionProfile;
+import org.eclipse.jpt.jpa.ui.JpaPlatformUiProvider;
 import org.eclipse.jst.common.project.facet.core.internal.ClasspathUtil;
+import org.eclipse.persistence.jpa.jpql.parser.JPQLGrammar;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -52,6 +66,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -175,7 +190,7 @@ public class JpaFacetHelper {
       if (persistenceXml != null) {
         Object persistence = invokeMethod(persistenceXml.getClass(), persistenceXml, "getRoot");
         if (persistence != null) {
-          return (Persistence) persistence;    
+          return (Persistence) persistence;
         }
       }
       // At this point we saw the API for retrieving a persistence object for Eclipse 4.3+, but it
@@ -183,7 +198,7 @@ public class JpaFacetHelper {
       throw new CoreException(AppEngineWtpPlugin.createErrorStatus(
           "Unable to retrieve a JPA project persistence object.", null));
     }
-    
+
     // On Eclipse 4.2, retrieve the Persistence object via
     // JpaProject.getRootContextNode().getPersistenceXml().getPersistence()
     // Any failures to invoke this method chain will result in a CoreException being thrown.
@@ -202,6 +217,231 @@ public class JpaFacetHelper {
     // not hooked up to an actual persistence object, so report the failure to retrieve it.
     throw new CoreException(AppEngineWtpPlugin.createErrorStatus(
         "Unable to retrieve a JPA project persistence object.", null));
+  }
+
+  /**
+   * Returns the {@link JpaPlatformUiProvider} singleton instance for the current version of
+   * Eclipse.
+   */
+  public static JpaPlatformUiProvider getJpaPlatformUiProvider() throws CoreException {
+    @SuppressWarnings("rawtypes")
+    Class clazz = null;
+    try {
+        clazz =
+            Class.forName("org.eclipse.jpt.jpa.ui.internal.jpa2.GenericJpaPlatformUiProvider2_0");
+    } catch (ClassNotFoundException e) {
+      // fall through
+    }
+    if (clazz == null) {
+      try {
+        clazz =
+            Class.forName("org.eclipse.jpt.jpa.ui.internal.jpa2.Generic2_0JpaPlatformUiProvider");
+      } catch (ClassNotFoundException e) {
+        // fall through
+      }
+    }
+    if (clazz != null) {
+      return (JpaPlatformUiProvider) invokeMethod(clazz, null, "instance");
+    }
+    throw new CoreException(AppEngineWtpPlugin.createErrorStatus(
+        "Unable to retrieve the JpaPlatformUiProvider instance. Incompatible version of Eclipse?",
+        null));
+  }
+
+  /**
+   * Returns the AnnotationDefinitionProvider singleton instance for the current version of Eclipse.
+   */
+  public static JpaAnnotationDefinitionProvider getJpaAnnotationDefinitionProvider()
+      throws CoreException {
+    @SuppressWarnings("rawtypes")
+    Class clazz = null;
+    try {
+        clazz =  Class.forName(
+            "org.eclipse.jpt.jpa.core.internal.jpa2.GenericJpaAnnotationDefinitionProvider2_0");
+    } catch (ClassNotFoundException e) {
+      // fall through
+    }
+    if (clazz == null) {
+      try {
+        clazz = Class.forName(
+            "org.eclipse.jpt.jpa.core.internal.jpa2.Generic2_0JpaAnnotationDefinitionProvider");
+      } catch (ClassNotFoundException e) {
+        // fall through
+      }
+    }
+    if (clazz != null) {
+      return (JpaAnnotationDefinitionProvider) invokeMethod(clazz, null, "instance");
+    }
+    throw new CoreException(AppEngineWtpPlugin.createErrorStatus(
+        "Unable to retrieve the JpaAnnotationDefinitionProvider instance. "
+            + "Incompatible version of Eclipse?",
+        null));
+  }
+
+  /**
+   * Returns the JpaPlatformProvider singleton instance for the current version of Eclipse.
+   */
+  public static JpaPlatformProvider getJpaPlatformProvider() throws CoreException {
+    @SuppressWarnings("rawtypes")
+    Class clazz = null;
+    try {
+        clazz =  Class.forName(
+            "org.eclipse.jpt.jpa.core.internal.jpa2.GenericJpaPlatformProvider2_0");
+    } catch (ClassNotFoundException e) {
+      // fall through
+    }
+    if (clazz == null) {
+      try {
+        clazz = Class.forName(
+            "org.eclipse.jpt.jpa.core.internal.jpa2.Generic2_0JpaPlatformProvider");
+      } catch (ClassNotFoundException e) {
+        // fall through
+      }
+    }
+    if (clazz != null) {
+      return (JpaPlatformProvider) invokeMethod(clazz, null, "instance");
+    }
+    throw new CoreException(AppEngineWtpPlugin.createErrorStatus(
+        "Unable to retrieve the JpaPlatformProvider instance. Incompatible version of Eclipse?",
+        null));
+  }
+
+  /**
+   * Returns the {@link JpaPlatformUiProvider} singleton instance for the current version of
+   * Eclipse.
+   */
+  public static void setJpaPlatformId(IProject project, String platformId) throws CoreException {
+    Class<?>[] argumentTypes = new Class<?>[] {IProject.class, String.class};
+    Object[] arguments = new Object[] {project, platformId};
+
+    // For Eclipse 4.3+ use JpaPreferences.setJpaPlatformID()
+    try {
+      @SuppressWarnings("rawtypes")
+      Class clazz = Class.forName("org.eclipse.jpt.jpa.core.JpaPreferences");
+      invokeMethod(clazz, null, "setJpaPlatformID", argumentTypes, arguments);
+      return;
+    } catch (ClassNotFoundException e) {
+      // fall through
+    }
+
+    // For Eclipse 4.2 use JptJpaCorePlugin.setJpaPlatformId()
+    try {
+      @SuppressWarnings("rawtypes")
+      Class clazz = Class.forName("org.eclipse.jpt.jpa.core.JptJpaCorePlugin");
+      invokeMethod(clazz, null, "setJpaPlatformId", argumentTypes, arguments);
+      return;
+    } catch (ClassNotFoundException e) {
+      // fall through
+    }
+
+    throw new CoreException(AppEngineWtpPlugin.createErrorStatus(
+        "Unable to retrieve the JpaPlatformUiProvider instance. Incompatible version of Eclipse?",
+        null));
+  }
+
+  /**
+   * Returns the {@link JpaPlatformUiProvider} singleton instance for the current version of
+   * Eclipse.
+   */
+  public static Version buildJpaVersion() throws CoreException {
+    // return new GenericJpaPlatformFactory.SimpleVersion(JpaFacet.VERSION_2_0.getVersionString());
+    // return new GenericJpaPlatformFactory.GenericJpaPlatformVersion(
+    //     JpaProject2_0.FACET_VERSION_STRING);
+    @SuppressWarnings("rawtypes")
+    Class clazz = null;
+    Exception exception = null;
+    try {
+      clazz = Class.forName(
+          "org.eclipse.jpt.jpa.core.internal.GenericJpaPlatformFactory$GenericJpaPlatformVersion");
+    } catch (ClassNotFoundException e) {
+      // fall through
+    }
+    try {
+      clazz = Class.forName(
+          "org.eclipse.jpt.jpa.core.internal.GenericJpaPlatformFactory$SimpleVersion");
+    } catch (ClassNotFoundException e) {
+      exception = e; // fall through
+    }
+    if (clazz != null) {
+      String version = "2.0";
+      try {
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        Constructor ctor = clazz.getDeclaredConstructor(String.class);
+        return (Version) ctor.newInstance(version);
+      } catch (IllegalAccessException | IllegalArgumentException | InstantiationException
+          | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+        exception = e; // fall through
+      }
+    }
+
+    throw new CoreException(AppEngineWtpPlugin.createErrorStatus(
+        "Unable to build the JPA version. Incompatible version of Eclipse?", exception));
+  }
+
+  /**
+   * Executes a command via {@link JpaProjectManager}'s {@code execute} method.
+   */
+  @SuppressWarnings("rawtypes")
+  public static void executeProjectManagerCommand(Command command) throws CoreException {
+    final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+    JpaProjectManager jpaProjectManager =
+        (JpaProjectManager) workspace.getAdapter(JpaProjectManager.class);
+    Class commandContextOrExecutorClass = null;
+    Class implementationClass = null;
+
+    // For Eclipse 4.3+ use JpaProjectManager.execute(Command, SynchronousUiCommandContext)
+    // For Eclipse 4.2 use JpaProjectManager.execute(Command, SynchronousUiCommandExecutor)
+    try {
+      commandContextOrExecutorClass =
+          Class.forName("org.eclipse.jpt.common.utility.command.ExtendedCommandContext");
+      implementationClass =
+          Class.forName("org.eclipse.jpt.common.ui.internal.utility.SynchronousUiCommandContext");
+    } catch (ClassNotFoundException e) {
+      try {
+        commandContextOrExecutorClass =
+            Class.forName("org.eclipse.jpt.common.utility.command.ExtendedCommandExecutor");
+        implementationClass = Class.forName(
+            "org.eclipse.jpt.common.ui.internal.utility.SynchronousUiCommandExecutor");
+      } catch (ClassNotFoundException e2) {
+        throw new CoreException(AppEngineWtpPlugin.createErrorStatus(
+            "Unable to run JpaProjectManager.execute(). Incompatible version of Eclipse?", null));
+      }
+    }
+
+    Object instance = invokeMethod(implementationClass, null, "instance");
+    invokeMethod(JpaProjectManager.class, jpaProjectManager, "execute",
+        new Class<?>[] {Command.class, commandContextOrExecutorClass},
+        new Object[] {command, instance});
+  }
+
+  /**
+   * Greate a new {@link GenericJpaPlatform} for the Juno version of the JPA.
+   */
+  public static JpaPlatform newJunoGenericJpaPlatform(
+      String config,
+      Version jpaVersion,
+      JpaFactory jpaFactory,
+      AnnotationProvider annotationProvider,
+      JpaPlatformProvider platformProvider,
+      JpaPlatformVariation jpaVariation,
+      JPQLGrammar jpqlGrammar) throws CoreException {
+    try {
+      Constructor<GenericJpaPlatform> ctor = GenericJpaPlatform.class.getDeclaredConstructor(
+          String.class,
+          Version.class,
+          JpaFactory.class,
+          AnnotationProvider.class,
+          JpaPlatformProvider.class,
+          JpaPlatformVariation.class,
+          JPQLGrammar.class);
+      return ctor.newInstance(config, jpaVersion, jpaFactory, annotationProvider,
+          platformProvider, jpaVariation, jpqlGrammar);
+    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+        | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+      throw new CoreException(AppEngineWtpPlugin.createErrorStatus(
+          "Unable to build the JPA version. Incompatible version of Eclipse?", null));
+      // fall through
+    }
   }
 
   @SuppressWarnings({"rawtypes", "unchecked"})
@@ -225,6 +465,21 @@ public class JpaFacetHelper {
       Method method = clazz.getDeclaredMethod(methodName);
       if (method != null) {
         return method.invoke(object);
+      }
+    } catch (NoSuchMethodException | SecurityException | IllegalAccessException
+        | IllegalArgumentException | InvocationTargetException e) {
+      throw createCoreException(e);
+    }
+    throw createCoreException(null);
+  }
+
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  private static Object invokeMethod(Class clazz, Object object, String methodName,
+      Class<?>[] argTypes, Object[] args) throws CoreException {
+    try {
+      Method method = clazz.getDeclaredMethod(methodName, argTypes);
+      if (method != null) {
+        return method.invoke(object, args);
       }
     } catch (NoSuchMethodException | SecurityException | IllegalAccessException
         | IllegalArgumentException | InvocationTargetException e) {

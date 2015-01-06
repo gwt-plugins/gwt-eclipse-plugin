@@ -22,35 +22,115 @@ import junit.framework.TestCase;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jpt.common.utility.command.Command;
+import org.eclipse.jpt.jpa.core.JpaPlatform.Version;
 import org.eclipse.jpt.jpa.core.JpaProject;
 import org.eclipse.jpt.jpa.core.JpaProjectManager;
 import org.eclipse.jst.common.project.facet.core.JavaFacet;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IFacetedProjectWorkingCopy;
+import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
 /**
  * Tests for {@link JpaFacetHelper}.
  */
 public class JpaFacetHelperTest extends TestCase {
+  private static final String JPA_FACET_ID = "jpt.jpa"; //$NON-NLS-1$
+
   private JpaProject jpaProject;
 
   @Override
   protected void setUp() throws Exception {
+    super.setUp();
+    jpaProject = setupJpaProject();
   }
 
   @Override
   protected void tearDown() throws Exception {
+    ProjectTestUtil.cleanup();
+    super.tearDown();
   }
 
   public void testGetPersistence() throws Exception {
+    try {
+      assertFalse(JpaFacetHelper.getPersistence(jpaProject) == null);
+    } catch (Exception e) {
+      fail ("JpaFacetHelper.getPersistence() should succeed for supported versions of JPA");
+    }
+  }
+
+  public void testGetJpaAnnotationDefinitionProvider() throws Exception {
+    try {
+      assertFalse(JpaFacetHelper.getJpaAnnotationDefinitionProvider() == null);
+    } catch (Exception e) {
+      fail ("JpaFacetHelper.getJpaAnnotationDefinitionProvider() should succeed "
+          + "for supported versions of JPA");
+    }
+  }
+
+  public void testGetJpaPlatformProvider() throws Exception {
+    try {
+      assertFalse(JpaFacetHelper.getJpaPlatformProvider() == null);
+    } catch (Exception e) {
+      fail ("JpaFacetHelper.getJpaPlatformProvider() should succeed "
+          + "for supported versions of JPA");
+    }
+  }
+
+  public void testGetJpaPlatformUiProvider() throws Exception {
+    try {
+      assertFalse(JpaFacetHelper.getJpaPlatformUiProvider() == null);
+    } catch (Exception e) {
+      fail ("JpaFacetHelper.getJpaPlatformUiProvider() should succeed "
+          + "for supported versions of JPA");
+    }
+  }
+
+  public void testSetJpaPlatformId() throws Exception {
+    String platformId = "com.google.appengine.eclipse.wtp.jpa.GaePlatform";
+    try {
+      JpaFacetHelper.setJpaPlatformId(jpaProject.getProject(), platformId);
+    } catch (Exception e) {
+      fail("JpaFacetHelper.setJpaPlatformId() should succeed for supported versions of JPA");
+    }
+  }
+
+  public void testBuildJpaVersion() throws Exception {
+    try {
+      Version version = JpaFacetHelper.buildJpaVersion();
+      assertEquals("2.0", version.getVersion());
+    } catch (Exception e) {
+      fail("JpaFacetHelper.buildJpaVersion() should succeed for supported versions of JPA");
+    }
+  }
+
+  public void testExecuteProjectManagerCommand() throws Exception {
+    final boolean[] executed = new boolean[] {false};
+    try {
+      JpaFacetHelper.executeProjectManagerCommand(new Command() {
+        @Override
+        public void execute() {
+          executed[0] = true;
+        }
+      });
+    } catch (Exception e) {
+      fail("JpaFacetHelper.executeProjectManagerCommand() should succeed for "
+          + "supported versions of JPA");
+    }
+    assertEquals("Command did not execute", true, executed[0]);
+  }
+
+  private JpaProject setupJpaProject() throws Exception {
     IJavaProject jProject = ProjectTestUtil.createProject("FOO");
     IProject project = jProject.getProject();
     ProjectTestUtil.createPersistenceFile(project);
     IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, null);
     facetedProject.installProjectFacet(JavaFacet.FACET.getDefaultVersion(), null, null);
     IFacetedProjectWorkingCopy workingCopy = facetedProject.createWorkingCopy();
-    workingCopy.addProjectFacet(JpaProject.FACET.getDefaultVersion());
+    IProjectFacetVersion jpaFacetVersion =
+        ProjectFacetsManager.getProjectFacet(JPA_FACET_ID).getDefaultVersion();
+    workingCopy.addProjectFacet(jpaFacetVersion);
     workingCopy.commitChanges(null);
 
     JpaProjectManager manager =
@@ -60,11 +140,7 @@ public class JpaFacetHelperTest extends TestCase {
     }
     assertTrue("Failed to create a JPA project in a timely manner",
         manager.getJpaProjectsSize() > 0);
-    jpaProject = manager.getJpaProjects().iterator().next();
-    try {
-      assertFalse(JpaFacetHelper.getPersistence(jpaProject) == null);
-    } catch (Exception e) {
-      fail ("JpaFacetHelper.getPersistence() should always succeed for supported versions of JPA");
-    }
+    return manager.getJpaProjects().iterator().next();
   }
 }
+

@@ -41,6 +41,12 @@ public final class AppEngineSwarmPlugin extends AbstractUIPlugin {
     logMessage(null, e);
   }
 
+  public static void logWarning(String msg, Throwable e) {
+    msg = msg == null ? "Google App Engine Error" : "Google App Engine: " + msg;
+    Status status = new Status(IStatus.WARNING, PLUGIN_ID, 1, msg, e);
+    getInstance().getLog().log(status);
+  }
+
   public AppEngineSwarmPlugin() {
     INSTANCE = this;
   }

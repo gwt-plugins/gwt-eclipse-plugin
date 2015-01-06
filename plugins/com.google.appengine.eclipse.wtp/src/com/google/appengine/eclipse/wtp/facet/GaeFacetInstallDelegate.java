@@ -77,7 +77,7 @@ public final class GaeFacetInstallDelegate implements IDelegate {
     GaeNature.removeNatureFromProject(project);
     // do create project contents
     if (JavaEEProjectUtilities.isDynamicWebProject(project)) {
-      // Add a special container to be dependency of the Web App (WEB-INF/lib), unless this is a 
+      // Add a special container to be dependency of the Web App (WEB-INF/lib), unless this is a
       // Maven project (in which case we use the Maven dependency container)
       if (!isMavenProject(model)) {
         ProjectUtils.addWebAppDependencyContainer(
@@ -224,7 +224,8 @@ public final class GaeFacetInstallDelegate implements IDelegate {
    * <code>null</code>, if cannot be found.
    */
   private static IPath getSdkLocation(IDataModel model) {
-    IFacetedProjectWorkingCopy fpwc = (IFacetedProjectWorkingCopy) model.getProperty(IFacetDataModelProperties.FACETED_PROJECT_WORKING_COPY);
+    IFacetedProjectWorkingCopy fpwc = (IFacetedProjectWorkingCopy) model.getProperty(
+        IFacetDataModelProperties.FACETED_PROJECT_WORKING_COPY);
     IRuntime primaryRuntime = fpwc.getPrimaryRuntime();
     return primaryRuntime == null ? null : ProjectUtils.getGaeSdkLocation(primaryRuntime);
   }
@@ -253,16 +254,16 @@ public final class GaeFacetInstallDelegate implements IDelegate {
     }
     return sanitized;
   }
-  
+
   /**
    * Reports whether a specified faceted-project-configuration data model indicates that the faceted
    * project is marked as a Maven project. If so, the classpath container
    * {@link GaeWtpClasspathContainer.CONTAINER_PATH} should not be added to the project, because
    * this will duplicate dependencies provided through Maven.
-   * 
+   *
    * <p>(The class {@link com.google.appengine.eclipse.wtp.maven.GaeFacetManager} adds such a mark
    * to a faceted project when adding the GAE facet to the project.)
-   * 
+   *
    * @param model the specified faceted-project-configuration data model
    * @return {@code true} if the project has been marked as a Maven project, {@code false} otherwise
    */

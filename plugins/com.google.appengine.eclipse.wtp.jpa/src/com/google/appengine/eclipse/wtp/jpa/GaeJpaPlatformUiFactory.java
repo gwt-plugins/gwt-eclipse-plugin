@@ -12,9 +12,11 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.jpa;
 
+import com.google.appengine.eclipse.webtools.facet.JpaFacetHelper;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jpt.jpa.ui.JpaPlatformUi;
 import org.eclipse.jpt.jpa.ui.JpaPlatformUiFactory;
-import org.eclipse.jpt.jpa.ui.internal.jpa2.GenericJpaPlatformUiProvider2_0;
 import org.eclipse.jpt.jpa.ui.internal.platform.generic.GenericJpaPlatformUiFactory;
 
 /**
@@ -25,7 +27,14 @@ public final class GaeJpaPlatformUiFactory implements JpaPlatformUiFactory {
 
   @Override
   public JpaPlatformUi buildJpaPlatformUi() {
-    return new GaeJpaPlatformUi(GenericJpaPlatformUiFactory.NAVIGATOR_FACTORY_PROVIDER,
-    		GenericJpaPlatformUiProvider2_0.instance());
+    try {
+      return new GaeJpaPlatformUi(GenericJpaPlatformUiFactory.NAVIGATOR_FACTORY_PROVIDER,
+          JpaFacetHelper.getJpaPlatformUiProvider());
+    } catch (CoreException e) {
+      AppEngineJpaPlugin.logMessage("Unable to bring up the JPA conversion UI.", e);
+    }
+    // On failures return null. The framework already handles null returns for the cases where it
+    // doesn't find a factory.
+    return null;
   }
 }

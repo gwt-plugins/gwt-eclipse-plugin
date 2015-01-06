@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.jpa;
 
+import com.google.appengine.eclipse.webtools.facet.JpaFacetHelper;
 import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
 import com.google.appengine.eclipse.wtp.jpa.libprov.IGaeLibraryProvider;
@@ -27,6 +28,8 @@ import org.eclipse.jpt.common.utility.model.event.CollectionRemoveEvent;
 import org.eclipse.jpt.common.utility.model.listener.CollectionChangeListener;
 import org.eclipse.jpt.jpa.core.JpaProject;
 import org.eclipse.jpt.jpa.core.JpaProjectManager;
+import org.eclipse.jpt.jpa.core.context.persistence.Persistence;
+import org.eclipse.jpt.jpa.core.context.persistence.PersistenceUnit;
 import org.eclipse.jpt.jpa.core.internal.facet.JpaFacetDataModelProperties;
 import org.eclipse.jst.common.project.facet.core.libprov.ILibraryProvider;
 import org.eclipse.jst.common.project.facet.core.libprov.LibraryProviderFramework;
@@ -45,7 +48,7 @@ import org.eclipse.wst.common.project.facet.core.runtime.IRuntime;
  * {@link JpaProject} creation/adding.
  */
 @SuppressWarnings("restriction")
-public abstract class JpaFacetAbstractPostInstallListener implements IFacetedProjectListener {
+public class JpaFacetPostInstallListener implements IFacetedProjectListener {
 
   protected static abstract class JpaProjectChangeListener implements CollectionChangeListener,
       IDatanucleusConstants {
@@ -120,5 +123,50 @@ public abstract class JpaFacetAbstractPostInstallListener implements IFacetedPro
     }
   }
 
-  protected abstract JpaProjectChangeListener createJpaListener();
+  private JpaProjectChangeListener createJpaListener() {
+    return new JpaProjectChangeListener() {
+      @Override
+      protected void initializePersistenceUnit(Iterable<?> items) {
+        // since it is 'itemsAdded' then 'items' should always has next element.
+        for (Object object : items) {
+          if (!(object instanceof JpaProject)) {
+            continue;
+          }
+          final JpaProject jpaProject = (JpaProject) object;
+          if (!isUsingGaeLibProv(jpaProject.getProject())) {
+            continue;
+          }
+          Persistence persistence = null;
+          try {
+            persistence = JpaFacetHelper.getPersistence(jpaProject);
+          } catch (CoreException e) {
+            AppEngineJpaPlugin.logMessage("Failed to update JPA persistence for Appengine.", e);
+          }
+          PersistenceUnit unit;
+          if (persistence.getPersistenceUnitsSize() != 0) {
+            unit = persistence.getPersistenceUnits().iterator().next();
+          } else {
+            // create a persistence unit if there isn't one
+            unit = persistence.addPersistenceUnit();
+          }
+          unit.setName("transactions-optional");
+          // initial setup for properties
+          if (unit.getProvider() == null) {
+            unit.setProvider(PERSISTENCE_PROVIDER);
+          }
+          if (unit.getProperty(PROP_NONTRANSACTIONAL_READ) == null) {
+            unit.setProperty(PROP_NONTRANSACTIONAL_READ, "true");
+          }
+          if (unit.getProperty(PROP_NONTRANSACTIONAL_WRITE) == null) {
+            unit.setProperty(PROP_NONTRANSACTIONAL_WRITE, "true");
+          }
+          if (unit.getProperty(PROP_CONNECTION_URL) == null) {
+            unit.setProperty(PROP_CONNECTION_URL, "appengine");
+          }
+          // save
+          jpaProject.getPersistenceXmlResource().save();
+        }
+      }
+    };
+  }
 }
