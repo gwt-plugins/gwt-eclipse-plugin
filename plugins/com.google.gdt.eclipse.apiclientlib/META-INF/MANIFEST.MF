@@ -1,33 +1,5 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: %pluginName
-Bundle-SymbolicName: com.google.gdt.eclipse.apiclientlib;singleton:=true
-Bundle-Version: 0.0.0.qualifier
-Bundle-Vendor: %providerName
-Require-Bundle: org.eclipse.core.runtime
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Export-Package: com.google.api.client.auth.oauth2,
- com.google.api.client.googleapis,
- com.google.api.client.googleapis.auth.clientlogin,
- com.google.api.client.googleapis.auth.oauth2,
- com.google.api.client.googleapis.batch,
- com.google.api.client.googleapis.batch.json,
- com.google.api.client.googleapis.extensions.java6.auth.oauth2,
- com.google.api.client.googleapis.json,
- com.google.api.client.googleapis.media,
- com.google.api.client.googleapis.services,
- com.google.api.client.googleapis.services.json,
- com.google.api.client.googleapis.xml.atom,
- com.google.api.client.http,
- com.google.api.client.http.apache,
- com.google.api.client.http.javanet,
- com.google.api.client.http.json,
- com.google.api.client.json,
- com.google.api.client.json.gson,
- com.google.api.client.json.jackson,
- com.google.api.client.util,
- com.google.api.client.util.escape
 Bundle-ClassPath: .,
  lib/commons-logging-1.1.1.jar,
  lib/google-api-client-1.16.0-rc.jar,
@@ -56,3 +28,32 @@ Bundle-ClassPath: .,
  lib/protobuf-java-2.4.1.jar,
  lib/transaction-api-1.1.jar,
  lib/xpp3-1.1.4c.jar
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: com.google.gdt.eclipse.apiclientlib;singleton:=true
+Bundle-Vendor: %providerName
+Bundle-Version: 0.0.0.qualifier
+Export-Package: com.google.api.client.auth.oauth2,
+ com.google.api.client.googleapis,
+ com.google.api.client.googleapis.auth.clientlogin,
+ com.google.api.client.googleapis.auth.oauth2,
+ com.google.api.client.googleapis.batch,
+ com.google.api.client.googleapis.batch.json,
+ com.google.api.client.googleapis.extensions.java6.auth.oauth2,
+ com.google.api.client.googleapis.json,
+ com.google.api.client.googleapis.media,
+ com.google.api.client.googleapis.services,
+ com.google.api.client.googleapis.services.json,
+ com.google.api.client.googleapis.xml.atom,
+ com.google.api.client.http,
+ com.google.api.client.http.apache,
+ com.google.api.client.http.javanet,
+ com.google.api.client.http.json,
+ com.google.api.client.json,
+ com.google.api.client.json.gson,
+ com.google.api.client.json.jackson,
+ com.google.api.client.util,
+ com.google.api.client.util.escape,
+ javax.annotation.concurrent
+Require-Bundle: org.eclipse.core.runtime
