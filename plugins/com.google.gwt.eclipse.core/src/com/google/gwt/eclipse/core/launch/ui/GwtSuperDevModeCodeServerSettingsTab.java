@@ -32,6 +32,7 @@ import com.google.gwt.eclipse.core.launch.processors.ModuleArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.NoServerArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.StartupUrlArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.XStartOnFirstThreadArgumentProcessor;
+import com.google.gwt.eclipse.core.launch.processors.codeserver.SuperDevModeCodeServerLauncherDirArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.codeserver.SuperDevModeCodeServerPortArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.ui.EntryPointModulesSelectionBlock.IModulesChangeListener;
 import com.google.gwt.eclipse.core.nature.GWTNature;
@@ -188,17 +189,21 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
     }
 
     public void performApply(ILaunchConfigurationWorkingCopy launchConfig) {
-      // DevMode Save the log level
+      // Dev Mode Save the log level
       GWTLaunchConfigurationWorkingCopy.setLogLevel(launchConfig, getLogLevel());
       LaunchConfigurationProcessorUtilities.updateViaProcessor(new LogLevelArgumentProcessor(),
           launchConfig);
 
-      // DevMode CodeServer port
+      // Dev Mode CodeServer port
       GWTLaunchConfigurationWorkingCopy.setCodeServerPort(launchConfig, getCodeServerPort());
       GWTLaunchConfigurationWorkingCopy
           .setCodeServerPortAuto(launchConfig, getCodeServerPortAuto());
       LaunchConfigurationProcessorUtilities.updateViaProcessor(
           new SuperDevModeCodeServerPortArgumentProcessor(), launchConfig);
+
+      // Super Dev Mode Code Server only launcerDir
+      LaunchConfigurationProcessorUtilities.updateViaProcessor(
+          new SuperDevModeCodeServerLauncherDirArgumentProcessor(), launchConfig);
 
       updateDevModeBlockVisibility(launchConfig);
     }

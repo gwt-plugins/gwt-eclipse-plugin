@@ -34,6 +34,7 @@ import com.google.gwt.eclipse.core.launch.processors.RemoteUiArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.StartupUrlArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.SuperDevModeArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.XStartOnFirstThreadArgumentProcessor;
+import com.google.gwt.eclipse.core.launch.processors.codeserver.SuperDevModeCodeServerLauncherDirArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.codeserver.SuperDevModeCodeServerPortArgumentProcessor;
 import com.google.gwt.eclipse.core.speedtracer.SpeedTracerLaunchConfiguration;
 
@@ -79,7 +80,6 @@ public class LaunchConfigurationUpdater {
     PROCESSORS.add(new WarArgumentProcessor());
     PROCESSORS.add(new PortArgumentProcessor());
     PROCESSORS.add(new DevModeCodeServerPortArgumentProcessor()); // GWT DevMode
-    PROCESSORS.add(new SuperDevModeCodeServerPortArgumentProcessor()); // GWT CodeServer
     PROCESSORS.add(new NoServerArgumentProcessor()); // GWT DevMode
     PROCESSORS.add(new LogLevelArgumentProcessor()); // GWT DevMode
     PROCESSORS.add(new ModuleArgumentProcessor());
@@ -93,6 +93,8 @@ public class LaunchConfigurationUpdater {
     PROCESSORS.add(new HrdArgumentProcessor());
     PROCESSORS.add(new GoogleCloudSqlArgumentProcessor());
     PROCESSORS.add(new SuperDevModeArgumentProcessor()); // GWT DevMode
+    PROCESSORS.add(new SuperDevModeCodeServerPortArgumentProcessor()); // GWT CodeServer
+    PROCESSORS.add(new SuperDevModeCodeServerLauncherDirArgumentProcessor()); // GWT CodeServer
     addExternalProcessors();
 
     ExtensionQueryStringAttr extQuery =

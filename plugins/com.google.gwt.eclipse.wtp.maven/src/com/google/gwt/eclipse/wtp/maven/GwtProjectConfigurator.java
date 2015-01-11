@@ -42,7 +42,7 @@ public class GwtProjectConfigurator extends WTPProjectConfigurator {
     // Given pom.xml configuration
     Model pom = request.getMavenProject().getModel();
 
-    // When having GWT plugin
+    // When the GWT plugin exists in POM
     if (isGwtProject(pom)) {
       IProject eclipseProject = request.getProject();
       IFacetedProject facetedProject = ProjectFacetsManager.create(eclipseProject);
@@ -63,7 +63,7 @@ public class GwtProjectConfigurator extends WTPProjectConfigurator {
   /**
    * TODO ****** only turn on with facet flag????? *****
    *
-   * TODO consider using Thomas project too?
+   * TODO consider using Thomas maven plugin too?
    */
   private static boolean isGwtProject(Model pom) {
     List<Plugin> plugins = pom.getBuild().getPlugins();
