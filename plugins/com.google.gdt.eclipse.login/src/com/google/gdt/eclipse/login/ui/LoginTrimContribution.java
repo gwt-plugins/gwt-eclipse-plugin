@@ -43,10 +43,10 @@ import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 import java.net.URL;
 
 /**
- * 
+ * A {@link org.eclipse.jface.action.ControlContribution} for the 'org.eclipse.ui.menus' extension
+ * point that displays the "Login to Google" control on the status bar.
  */
 public class LoginTrimContribution extends WorkbenchWindowControlContribution {
-
   private interface RecursiveRunner {
     void runOnControl(Control c);
   }
@@ -60,7 +60,7 @@ public class LoginTrimContribution extends WorkbenchWindowControlContribution {
   private static final String SIGN_IN_MSG = "Signed in";
   private static final String SIGN_IN_TO_GOOGLE_MSG = "Sign in to Google...";
   private static final String SIGNED_IN_AS_MSG = "Signed in as ";
-  
+
   static {
     LOGGED_IN_ICON = getIcon("google_logged_in.gif");
     LOGGED_OUT_ICON = getIcon("google_logged_out.gif");
@@ -82,9 +82,9 @@ public class LoginTrimContribution extends WorkbenchWindowControlContribution {
   private boolean drawBorder = false;
 
   private MenuItem iconOnlyMenuItem;
-  
+
   private Label loginImg;
-  
+
   private Label loginMsg;
 
   private Composite loginTrim;
@@ -124,7 +124,7 @@ public class LoginTrimContribution extends WorkbenchWindowControlContribution {
   };
 
   private Menu rightClickMenu;
-  
+
   public LoginTrimContribution() {
     GoogleLogin.getInstance().setLoginTrimContribution(this);
   }
@@ -157,7 +157,6 @@ public class LoginTrimContribution extends WorkbenchWindowControlContribution {
   }
 
   public String getLoginToolTipText() {
-
     StringBuffer sb = new StringBuffer();
     if (GoogleLogin.getInstance().isConnected()) {
       if (GoogleLogin.getInstance().isLoggedIn()) {
@@ -183,7 +182,6 @@ public class LoginTrimContribution extends WorkbenchWindowControlContribution {
   }
 
   public void updateUi() {
-
     if (!GoogleLogin.getInstance().isConnected()) {
       setLoginImage(LOGGED_OUT_ICON);
     } else if (GoogleLogin.getInstance().isLoggedIn()) {
@@ -220,16 +218,8 @@ public class LoginTrimContribution extends WorkbenchWindowControlContribution {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * org.eclipse.jface.action.ControlContribution#createControl(org.eclipse.
-   * swt.widgets.Composite)
-   */
   @Override
   protected Control createControl(Composite parent) {
-
     loginTrim = createLoginTrim(parent);
 
     loginImg = new Label(loginTrim, SWT.NONE);
@@ -239,6 +229,7 @@ public class LoginTrimContribution extends WorkbenchWindowControlContribution {
     createRightClickMenu();
 
     runOnControlRecursive(loginTrim, new RecursiveRunner() {
+      @Override
       public void runOnControl(Control c) {
         c.setToolTipText(getLoginToolTipText());
         c.addMouseListener(mouseListener);
@@ -256,6 +247,7 @@ public class LoginTrimContribution extends WorkbenchWindowControlContribution {
   private Composite createLoginTrim(Composite parent) {
     Composite comp = new Composite(parent, SWT.NONE);
     comp.addPaintListener(new PaintListener() {
+      @Override
       public void paintControl(PaintEvent e) {
         if (drawBorder) {
           GC g = e.gc;
@@ -272,7 +264,7 @@ public class LoginTrimContribution extends WorkbenchWindowControlContribution {
     comp.setLayout(layout);
     return comp;
   }
-  
+
   private void createRightClickMenu() {
     rightClickMenu = new Menu(loginTrim);
 
@@ -299,7 +291,7 @@ public class LoginTrimContribution extends WorkbenchWindowControlContribution {
       }
     });
   }
-  
+
   private void runOnControlRecursive(Control c, RecursiveRunner rr) {
     rr.runOnControl(c);
     if (c instanceof Composite) {
@@ -319,6 +311,7 @@ public class LoginTrimContribution extends WorkbenchWindowControlContribution {
   private void updateToolTips() {
     final String tooltip = getLoginToolTipText();
     runOnControlRecursive(loginTrim, new RecursiveRunner() {
+      @Override
       public void runOnControl(Control c) {
         c.setToolTipText(tooltip);
       }

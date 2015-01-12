@@ -14,6 +14,10 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.login.ui;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
+import com.google.gdt.eclipse.core.browser.BrowserUtilities;
+import com.google.gdt.eclipse.login.GoogleLoginPlugin;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -33,10 +37,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
-import com.google.gdt.eclipse.core.browser.BrowserUtilities;
-import com.google.gdt.eclipse.login.GoogleLoginPlugin;
-
 /**
  * A dialog that has an embedded browser for the user to sign in. The browser issues a request to
  * the URL specified by a {@link GoogleAuthorizationCodeRequestUrl} to start an interaction with the
@@ -49,7 +49,7 @@ public class LoginBrowser extends Dialog {
   private static final boolean IS_MAC_OS = Platform.OS_MACOSX.equals(Platform.getOS());
   private static final String LOGOUT_URL = "https://www.google.com/accounts/Logout";
   private static final String SUCCESS_CODE_PREFIX = "Success code=";
-  
+
   private Browser browser;
 
   private final LocationAdapter browserLocationAdapter = new LocationAdapter() {
@@ -79,7 +79,7 @@ public class LoginBrowser extends Dialog {
       }
     }
   };
-  
+
   private final ProgressAdapter browserProgressListener = new ProgressAdapter() {
     @Override
     public void completed(ProgressEvent event) {
@@ -101,7 +101,7 @@ public class LoginBrowser extends Dialog {
        * If we arrive to a logout url not programmatically (ie, loggingOut if
        * false), then the user is trying to log out. So, send them back to our
        * login url.
-       * 
+       *
        * Redirecting on ManageAccount is for when the user may have logged in,
        * needed to enter an OTP, and then decided to click the "log in as
        * another user" link. Without this, they're bounced back to the login
@@ -116,6 +116,7 @@ public class LoginBrowser extends Dialog {
   };
 
   private final TitleListener browserTitleListener = new TitleListener() {
+    @Override
     public void changed(TitleEvent event) {
       if (event.title.startsWith(SUCCESS_CODE_PREFIX)) {
         verificationCode = event.title.substring(SUCCESS_CODE_PREFIX.length());
@@ -151,6 +152,7 @@ public class LoginBrowser extends Dialog {
    */
   public void asyncClose(final int code) {
     Display.getDefault().asyncExec(new Runnable() {
+      @Override
       public void run() {
         setReturnCode(code);
         close();
@@ -159,7 +161,7 @@ public class LoginBrowser extends Dialog {
   }
 
   /**
-   * @returns the verification code parsed from the redirect url after the user. 
+   * @returns the verification code parsed from the redirect url after the user.
    */
   public String getVerificationCode() {
     return verificationCode;
@@ -237,7 +239,7 @@ public class LoginBrowser extends Dialog {
 
     return parent;
   }
-  
+
   @Override
   protected boolean isResizable() {
     return true;

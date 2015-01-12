@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- * 
+ *
  *  All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -14,11 +14,23 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.login;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-
-import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
+import com.google.api.client.http.HttpRequestFactory;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
+import com.google.gdt.eclipse.core.browser.BrowserUtilities;
+import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
+import com.google.gdt.eclipse.login.common.GoogleLoginState;
+import com.google.gdt.eclipse.login.common.LoggerFacade;
+import com.google.gdt.eclipse.login.common.LoginListener;
+import com.google.gdt.eclipse.login.common.OAuthData;
+import com.google.gdt.eclipse.login.common.OAuthDataStore;
+import com.google.gdt.eclipse.login.common.UiFacade;
+import com.google.gdt.eclipse.login.common.VerificationCodeHolder;
+import com.google.gdt.eclipse.login.extensions.IClientProvider;
+import com.google.gdt.eclipse.login.ui.LoginBrowser;
+import com.google.gdt.eclipse.login.ui.LoginTrimContribution;
 
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -35,23 +47,11 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
-import com.google.gdt.eclipse.core.browser.BrowserUtilities;
-import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
-import com.google.gdt.eclipse.login.common.OAuthData;
-import com.google.gdt.eclipse.login.common.OAuthDataStore;
-import com.google.gdt.eclipse.login.common.GoogleLoginState;
-import com.google.gdt.eclipse.login.common.LoggerFacade;
-import com.google.gdt.eclipse.login.common.LoginListener;
-import com.google.gdt.eclipse.login.common.UiFacade;
-import com.google.gdt.eclipse.login.common.VerificationCodeHolder;
-import com.google.gdt.eclipse.login.extensions.IClientProvider;
-import com.google.gdt.eclipse.login.ui.LoginBrowser;
-import com.google.gdt.eclipse.login.ui.LoginTrimContribution;
+import java.io.IOException;
+import java.net.MalformedURLException;
+
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Class that handles logging in to Google services.
@@ -124,13 +124,14 @@ public class GoogleLogin {
   public static void promptToLogIn(final String message) {
     if (!instance.isLoggedIn()) {
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
           GoogleLogin.getInstance().logIn(message);
         }
       });
     }
   }
-  
+
   private final GoogleLoginState delegate;
 
   protected GoogleLogin(GoogleLoginState delegate) {
@@ -149,12 +150,12 @@ public class GoogleLogin {
    * authentication headers to use to make http requests. If the user has not
    * signed in, this method will block and pop up the login dialog to the user.
    * If the user cancels signing in, this method will return null.
-   * 
+   *
    *  If the access token that was used to sign this transport was revoked or
    * has expired, then execute() invoked on Request objects constructed from
    * this transport will throw an exception, for example,
    * "com.google.api.client.http.HttpResponseException: 401 Unauthorized"
-   * 
+   *
    * @param message The message to display in the login dialog if the user needs
    *          to log in to complete this action. If null, then no message area
    *          is created. See {@link #logIn(String)}
@@ -166,11 +167,11 @@ public class GoogleLogin {
   /**
    * Makes a request to get an OAuth2 access token from the OAuth2 refresh token
    * if it is expired.
-   * 
+   *
    * @return an OAuth2 token, or null if there was an error or if the user
    *         wasn't signed in and canceled signing in.
    * @throws IOException if something goes wrong while fetching the token.
-   * 
+   *
    */
   public String fetchAccessToken() throws IOException {
     return delegate.fetchAccessToken();
@@ -191,11 +192,11 @@ public class GoogleLogin {
   /**
    * Makes a request to get an OAuth2 access token from the OAuth2 refresh
    * token. This token is short lived.
-   * 
+   *
    * @return an OAuth2 token, or null if there was an error or if the user
    *         wasn't signed in and canceled signing in.
    * @throws IOException if something goes wrong while fetching the token.
-   * 
+   *
    */
   public String fetchOAuth2Token() throws IOException {
     return delegate.fetchOAuth2Token();
@@ -239,14 +240,14 @@ public class GoogleLogin {
   /**
    * Pops up the dialogs to allow the user to sign in. If the user is already
    * signed in, then this does nothing and returns true.
-   * 
+   *
    * @param message if not null, then this message is displayed above the
    *          embedded browser widget. This is for when the user is presented
    *          the login dialog from doing something other than logging in, such
    *          as accessing Google API services. It should say something like
    *          "Importing a project from Google Project Hosting requires signing
    *          in."
-   * 
+   *
    * @return true if the user signed in or is already signed in, false otherwise
    */
   public boolean logIn(String message) {
@@ -256,7 +257,7 @@ public class GoogleLogin {
   /**
    * Logs the user out. Pops up a question dialog asking if the user really
    * wants to quit.
-   * 
+   *
    * @return true if the user logged out, false otherwise
    */
   public boolean logOut() {
@@ -265,7 +266,7 @@ public class GoogleLogin {
 
   /**
    * Logs the user out.
-   * 
+   *
    * @param showPrompt if true, opens a prompt asking if the user really wants
    *          to log out. If false, the user is logged out
    * @return true if the user was logged out or is already logged out, and false
@@ -283,7 +284,7 @@ public class GoogleLogin {
    * When the login trim is instantiated by the UI, it calls this method so that
    * when logIn() is called by something other than the login trim itself, the
    * login trim can be notified to update its UI.
-   * 
+   *
    * @param trim
    */
   public void setLoginTrimContribution(LoginTrimContribution trim) {
@@ -301,7 +302,7 @@ public class GoogleLogin {
    * contribution that are normally performed as part of a log in or log out, and retrieves any
    * persistently stored credentials upon log in, but does not actually interact with an OAuth
    * server.
-   * 
+   *
    * @param login
    *     {@code true} if a log in is to be simulated, {@code false} if a log out is to be simulated
    */
@@ -309,7 +310,7 @@ public class GoogleLogin {
   public void updateInternalLogin(boolean login) {
     delegate.simulateLoginStatusChange(login);
   }
-  
+
   /**
    * A pair consisting of the OAuth client ID and OAuth client secret for a client application.
    */
@@ -317,21 +318,21 @@ public class GoogleLogin {
   private static class ClientIdSecretPair {
     private final String clientId;
     private final String clientSecret;
-    
+
     public ClientIdSecretPair(String clientId, String clientSecret) {
       this.clientId = clientId;
       this.clientSecret = clientSecret;
     }
-    
+
     public String getClientId() {
       return clientId;
     }
-    
+
     public String getClientSecret() {
       return clientSecret;
     }
   }
-    
+
   /**
    * An implementation of {@link UiFacade} using Eclipse dialogs and embedded browsers.
    */
@@ -341,22 +342,24 @@ public class GoogleLogin {
         "An embedded browser could not be created for signing in. "
             + "An external web browser has been launched instead. "
             + "Please sign in using this browser, and enter the verification code here.";
-    
+
     private static final String NO_BROWSER_MSG =
         "An embedded browser could not be created for signing in."
             + "\nAn external browser is needed to sign in, however, none are defined in Eclipse."
             + "\nPlease add a browser in <a href=\"#\">Window -> Preferences -> General -> "
             + "Web Browser</a> and sign in again.";
-    
+
     private LoginTrimContribution trim;
 
     public void setLoginTrimContribution(LoginTrimContribution trim) {
       this.trim = trim;
     }
 
+    @Override
     public void notifyStatusIndicator() {
       if (trim != null) {
         Display.getDefault().asyncExec(new Runnable() {
+          @Override
           public void run() {
             trim.updateUi();
           }
@@ -364,6 +367,7 @@ public class GoogleLogin {
       }
     }
 
+    @Override
     @Nullable
     public VerificationCodeHolder obtainVerificationCodeFromExternalUserInteraction
       (String message) {
@@ -371,6 +375,7 @@ public class GoogleLogin {
       return null;
     }
 
+    @Override
     @Nullable
     public String obtainVerificationCodeFromUserInteraction(
         String message, GoogleAuthorizationCodeRequestUrl requestUrl) {
@@ -403,7 +408,7 @@ public class GoogleLogin {
      * browser into the dialog. This is a fall-back for the case in which it is impossible to obtain
      * the authorization code that the OAuth server sends back to the browser directly from the
      * browser, without user intervention.
-     * 
+     *
      * @param requestUrl the given {@code GoogleAuthorizationCodeRequestUrl}
      */
     private String openExternalBrowserForLogin(GoogleAuthorizationCodeRequestUrl requestUrl) {
@@ -427,6 +432,7 @@ public class GoogleLogin {
               EXTERNAL_BROWSER_MSG,
               null,
               new IInputValidator() {
+                @Override
                 public String isValid(String newText) {
                   return newText.trim().isEmpty() ? "Verification code cannot be empty" : null;
                 }
@@ -454,10 +460,10 @@ public class GoogleLogin {
             @Override
             protected Control createMessageArea(Composite parent) {
               super.createMessageArea(parent);
-    
+
               Link link = new Link(parent, SWT.WRAP);
               link.setText(NO_BROWSER_MSG);
-    
+
               link.addSelectionListener(new SelectionAdapter() {
                   @Override
                 public void widgetSelected(SelectionEvent e) {
@@ -465,7 +471,7 @@ public class GoogleLogin {
                       Display.getDefault().getActiveShell(),
                       "org.eclipse.ui.browser.preferencePage",
                       new String[] {"org.eclipse.ui.browser.preferencePage"}, null);
-    
+
                   if (dialog != null) {
                     dialog.open();
                   }
@@ -476,41 +482,48 @@ public class GoogleLogin {
           };
       noBrowsersMd.open();
     }
-    
+
+    @Override
     public void showErrorDialog(String title, String message) {
       MessageDialog.openError(Display.getDefault().getActiveShell(), title, message);
     }
-    
+
+    @Override
     public boolean askYesOrNo(String title, String message) {
       return MessageDialog.openQuestion(Display.getDefault().getActiveShell(), title, message);
     }
   }
-  
+
   /**
    * An implementation of the {@link OAuthDataStore} interface using Eclipse preferences.
    */
   private static class EclipsePreferencesOAuthDataStore implements OAuthDataStore {
 
+    @Override
     public void saveOAuthData(OAuthData credentials) {
-      GoogleLoginPrefs.saveOAuthData(credentials);      
+      GoogleLoginPrefs.saveOAuthData(credentials);
     }
 
+    @Override
     public OAuthData loadOAuthData() {
       return GoogleLoginPrefs.loadOAuthData();
     }
 
+    @Override
     public void clearStoredOAuthData() {
-      GoogleLoginPrefs.clearStoredOAuthData();      
-    }    
+      GoogleLoginPrefs.clearStoredOAuthData();
+    }
   }
-  
+
   private static class EclipseLoggerFacade implements LoggerFacade {
+    @Override
     public void logError(String msg, Throwable t) {
       GoogleLoginPlugin.logError(msg, t);
     }
 
+    @Override
     public void logWarning(String msg) {
       GoogleLoginPlugin.logWarning(msg);
-    }    
+    }
   }
 }

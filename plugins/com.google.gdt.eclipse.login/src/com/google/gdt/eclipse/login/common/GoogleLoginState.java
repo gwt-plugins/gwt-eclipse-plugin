@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright 2011, 2014 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -13,18 +13,6 @@
  * the License.
  *******************************************************************************/
 package com.google.gdt.eclipse.login.common;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.SortedSet;
-
-import javax.annotation.Nullable;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeRequestUrl;
@@ -43,10 +31,22 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.common.collect.Lists;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.SortedSet;
+
+import javax.annotation.Nullable;
+
 /**
  * Provides methods for logging into and out of Google services via OAuth 2.0, and for fetching
  * credentials while a user is logged in.
- * 
+ *
  * <p>This class is platform independent, but an instance is constructed with platform-specific
  * implementations of the {@link OAuthDataStore} interface to store credentials persistently on
  * the platform, the {@link UiFacade} interface to perform certain user interactions using the
@@ -66,7 +66,7 @@ public class GoogleLoginState {
   private OAuthDataStore authDataStore;
   private UiFacade uiFacade;
   private LoggerFacade loggerFacade;
-  
+
   private Credential oAuth2Credential;
   private String accessToken;
   private long accessTokenExpiryTime;
@@ -74,13 +74,13 @@ public class GoogleLoginState {
   private boolean isLoggedIn;
   private String email;
   private boolean connected; // whether we connected to the internet
-  
+
   private Collection<LoginListener> listeners;
 
   /**
    * Construct a new platform-specific {@code GoogleLoginState} for a specified client application
    * and specified authorization scopes.
-   * 
+   *
    * @param clientId the client ID for the specified client application
    * @param clientSecret the client secret for the specified client application
    * @param oAuthScopes the specified authorization scopes
@@ -98,7 +98,7 @@ public class GoogleLoginState {
     this.authDataStore = authDataStore;
     this.uiFacade = uiFacade;
     this.loggerFacade = loggerFacade;
-    
+
     this.isLoggedIn = false;
     this.email = "";
     connected = true; // assume we're connected until checkCredentials is called
@@ -106,10 +106,10 @@ public class GoogleLoginState {
     listeners = Lists.newLinkedList();
     retrieveSavedCredentials();
   }
-  
+
   /**
    * Register a specified {@link LoginListener} to be notified of changes to the logged-in state.
-   * 
+   *
    * @param listener the specified {@code LoginListener}
    */
   public void addLoginListener(LoginListener listener) {
@@ -123,12 +123,12 @@ public class GoogleLoginState {
    * authentication headers to use to make http requests. If the user has not
    * signed in, this method will block and pop up the login dialog to the user.
    * If the user cancels signing in, this method will return null.
-   * 
+   *
    * <p>If the access token that was used to sign this transport was revoked or
    * has expired, then execute() invoked on Request objects constructed from
    * this transport will throw an exception, for example,
    * "com.google.api.client.http.HttpResponseException: 401 Unauthorized"
-   * 
+   *
    * @param message The message to display in the login dialog if the user needs
    *          to log in to complete this action. If null, then no message area
    *          is created. See {@link #logIn(String)}
@@ -143,11 +143,11 @@ public class GoogleLoginState {
   /**
    * Makes a request to get an OAuth2 access token from the OAuth2 refresh token
    * if it is expired.
-   * 
+   *
    * @return an OAuth2 token, or null if there was an error or if the user
    *         wasn't signed in and canceled signing in.
    * @throws IOException if something goes wrong while fetching the token.
-   * 
+   *
    */
   public String fetchAccessToken() throws IOException {
     if (!checkLoggedIn(null)) {
@@ -175,7 +175,7 @@ public class GoogleLoginState {
   /**
    * Returns the OAuth2 refresh token, logging in to obtain it if necessary. If the user has not
    * signed in, this method blocks and prompts the user to log in.
-   * 
+   *
    * @return the refresh token, or {@code null} if the user cancels out of a request to log in
    */
   public String fetchOAuth2RefreshToken() {
@@ -188,11 +188,11 @@ public class GoogleLoginState {
   /**
    * Makes a request to get an OAuth2 access token from the OAuth2 refresh
    * token. This token is short lived.
-   * 
+   *
    * @return an OAuth2 token, or null if there was an error or if the user
    *         wasn't signed in and canceled signing in.
    * @throws IOException if something goes wrong while fetching the token.
-   * 
+   *
    */
   public String fetchOAuth2Token() throws IOException {
     if (!checkLoggedIn(null)) {
@@ -252,16 +252,16 @@ public class GoogleLoginState {
    * result indicating whether the user is successfully signed in. (If the user is already signed in
    * when this method is called, then the method immediately returns true, without conducting any
    * user interaction.)
-   * 
+   *
    * <p>The caller may optionally specify a title to be displayed at the top of the interaction, if
    * the platform supports it. This is for when the user is presented the login dialog from doing
    * something other than logging in, such as accessing Google API services. It should say something
    * like "Importing a project from Drive requires signing in."
-   * 
+   *
    * @param title
    *     the title to be displayed at the top of the interaction if the platform supports it, or
    *     {@code null} if no title is to be displayed
-   * 
+   *
    * @return true if the user signed in or is already signed in, false otherwise
    */
   public boolean logIn(@Nullable String title) {
@@ -277,7 +277,7 @@ public class GoogleLoginState {
     connected = true;
     String verificationCode =
         uiFacade.obtainVerificationCodeFromUserInteraction(title, requestUrl);
-    
+
     if (verificationCode == null) {
       return false;
     }
@@ -363,7 +363,7 @@ public class GoogleLoginState {
   /**
    * Logs the user out. Pops up a question dialog asking if the user really
    * wants to quit.
-   * 
+   *
    * @return true if the user logged out, false otherwise
    */
   public boolean logOut() {
@@ -372,14 +372,33 @@ public class GoogleLoginState {
 
   /**
    * Logs the user out.
-   * 
+   *
    * @param showPrompt if true, opens a prompt asking if the user really wants
    *          to log out. If false, the user is logged out
    * @return true if the user was logged out or is already logged out, and false
    *         if the user chose not to log out
    */
   public boolean logOut(boolean showPrompt) {
-    return logOut(showPrompt, true);
+    if (!isLoggedIn) {
+      return true;
+    }
+
+    boolean logOut = true;
+    if (showPrompt) {
+      logOut = uiFacade.askYesOrNo("Sign out?", "Are you sure you want to sign out?");
+    }
+
+    if (logOut) {
+      email = "";
+      isLoggedIn = false;
+
+      authDataStore.clearStoredOAuthData();
+
+      notifyLoginStatusChange(false);
+      uiFacade.notifyStatusIndicator();
+      return true;
+    }
+    return false;
   }
 
   public Credential makeCredential() {
@@ -398,7 +417,7 @@ public class GoogleLoginState {
    * Performs the firing of listeners and the updates to the UI that are normally performed as part
    * of a log in or log out, and retrieves any persistently stored credentials upon log in, but does
    * not actually interact with an OAuth server. This method is provided for use in tests.
-   * 
+   *
    * @param login
    *     {@code true} if a log in is to be simulated, {@code false} if a log out is to be simulated
    */
@@ -462,30 +481,6 @@ public class GoogleLoginState {
     return true;
   }
 
-  private boolean logOut(boolean showPrompt, boolean doRevoke) {
-
-    if (!isLoggedIn) {
-      return true;
-    }
-
-    boolean logOut = true;
-    if (showPrompt) {
-      logOut = uiFacade.askYesOrNo("Sign out?", "Are you sure you want to sign out?");
-    }
-
-    if (logOut) {
-      email = "";
-      isLoggedIn = false;
-
-      authDataStore.clearStoredOAuthData();
-
-      notifyLoginStatusChange(false);
-      uiFacade.notifyStatusIndicator();
-      return true;
-    }
-    return false;
-  }
-
   private void notifyLoginStatusChange(boolean login) {
     synchronized(listeners) {
       for (LoginListener listener : listeners) {
@@ -497,7 +492,7 @@ public class GoogleLoginState {
       }
     }
   }
-  
+
   private String queryEmail() {
     String url = GET_EMAIL_URL;
 
@@ -540,7 +535,7 @@ public class GoogleLoginState {
    * puts the key-value pairs into a map. The string is assumed to be UTF-8
    * encoded. If the string has a '?' character, then only the characters after
    * the question mark are considered.
-   * 
+   *
    * @param params The parameter string.
    * @return A map with the key value pairs
    * @throws UnsupportedEncodingException if UTF-8 encoding is not supported
@@ -548,12 +543,12 @@ public class GoogleLoginState {
   private static Map<String, String> parseUrlParameters(String params)
       throws UnsupportedEncodingException {
     Map<String, String> paramMap = new HashMap<String, String>();
-    
+
     int qMark = params.indexOf('?');
     if (qMark > -1) {
       params = params.substring(qMark + 1);
     }
-    
+
     String[] paramArr = params.split("&");
     for (String s : paramArr) {
       String[] keyVal = s.split("=");

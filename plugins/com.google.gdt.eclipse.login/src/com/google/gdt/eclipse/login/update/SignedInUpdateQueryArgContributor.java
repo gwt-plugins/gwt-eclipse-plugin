@@ -24,7 +24,7 @@ import org.eclipse.core.resources.IProject;
  * of users who are signed in.
  */
 public class SignedInUpdateQueryArgContributor implements UpdateQueryArgContributor {
-
+  @Override
   public String getContribution(IProject project) {
     if (GoogleLogin.getInstance().isLoggedIn()) {
       return "&isSignedIn=true";
@@ -32,5 +32,4 @@ public class SignedInUpdateQueryArgContributor implements UpdateQueryArgContribu
       return "&isSignedIn=false";
     }
   }
-
 }
