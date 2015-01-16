@@ -21,8 +21,6 @@ import java.io.Serializable;
  * autocomplete system. It defines a set of functions that lay out how the
  * entry will be shown in different contexts, as well as some semantic
  * information about the entry itself.
- *
- * @author nikhilsinghal@google.com (Nikhil Singhal)
  */
 public interface AutocompleteEntry extends Comparable<AutocompleteEntry>, Serializable {
 
@@ -32,7 +30,7 @@ public interface AutocompleteEntry extends Comparable<AutocompleteEntry>, Serial
    * @return The way this entry should be shown in the autocomplete popup.
    */
   String getPopupView();
-  
+
   /**
    * @return The description that should appear in content assist.
    */

@@ -27,8 +27,6 @@ import java.util.Map;
 
 /**
 * Encapsulates the concept of a parsing expression
-*
-* @author ostrulovich@google.com (Omer Strulovich)
 */
 class Expression implements Iterable<Segment> {
 private final List<Segment> segments = Lists.newArrayList();

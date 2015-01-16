@@ -18,8 +18,6 @@ import com.google.common.base.Objects;
 
 /**
  * This class represents a field (emum/variable) for the autocomplete system.
- *
- * @author nikhilsinghal@google.com (Nikhil Singhal)
  */
 @SuppressWarnings("serial")
 public class FieldAutocompleteEntry extends AbstractAutocompleteEntry {
@@ -72,7 +70,7 @@ public class FieldAutocompleteEntry extends AbstractAutocompleteEntry {
   public int autoSelectEnd() {
     return -1;
   }
-  
+
   @Override
   public String toString() {
     return Objects.toStringHelper(this)

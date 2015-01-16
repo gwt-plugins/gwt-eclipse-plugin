@@ -22,8 +22,6 @@ import java.util.List;
 
 /**
  * This class represents a method for the autocomplete system.
- *
- * @author nikhilsinghal@google.com (Nikhil Singhal)
  */
 @SuppressWarnings("serial")
 public class MethodAutocompleteEntry extends AbstractAutocompleteEntry {
@@ -125,7 +123,7 @@ public class MethodAutocompleteEntry extends AbstractAutocompleteEntry {
     resultBuilder.append(')');
     return resultBuilder.toString();
   }
-  
+
   private String getParameterString(Function<Param, String> stringForParam) {
     StringBuilder resultBuilder = new StringBuilder();
     boolean commaNeeded = false;

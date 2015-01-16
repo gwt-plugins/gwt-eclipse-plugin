@@ -17,14 +17,12 @@ package com.google.gdt.eclipse.drive.editors.webautocomplete;
 /**
  * Abstract base class for {@link AutocompleteEntry}. None of the methods in here need to be
  * overridden. This is strictly common code.
- *
- * @author ganetsky@google.com (Jason Ganetsky)
  */
 @SuppressWarnings("serial")
 public abstract class AbstractAutocompleteEntry implements AutocompleteEntry {
 
   private static final String VARARGS_MARKER = "...";
-  
+
   private final String description;
 
   protected AbstractAutocompleteEntry(String description) {

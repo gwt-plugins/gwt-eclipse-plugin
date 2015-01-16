@@ -30,9 +30,7 @@ import java.util.List;
 
 /**
  * SourcePathComputer for the GenericLaunchConfiguration.
- * 
- * @author Gorkem Ercan
- * 
+ *
  *         TODO(amitin): this will be rewritten.
  */
 public class GenericServerSourcePathComputerDelegate implements ISourcePathComputerDelegate {

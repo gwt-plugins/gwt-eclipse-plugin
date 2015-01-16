@@ -30,8 +30,6 @@ import com.google.common.base.Objects;
 * <p>Each segment is guaranteed to be well-formed, in that calling
 * {@code Segment#getValue()} will return either a valid string (with no
 * unbalanced parenthesis etc), or the empty string.
-*
-* @author nikhilsinghal@google.com (Nikhil Singhal)
 */
 final class Segment {
   private static final CharMatcher ALPHANUMERIC =

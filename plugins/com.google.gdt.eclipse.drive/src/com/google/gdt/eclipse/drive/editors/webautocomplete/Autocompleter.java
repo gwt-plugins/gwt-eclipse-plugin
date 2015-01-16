@@ -35,8 +35,6 @@ import javax.annotation.Nullable;
 
 /**
  * This class handles the autocomplete logic for a particular editor tab.
- *
- * @author nikhilsinghal@google.com (Nikhil Singhal)
  */
 public final class Autocompleter {
 
@@ -88,7 +86,7 @@ public final class Autocompleter {
    * want to return all entries in FooClass that start with "ba". Similarily, calling this method
    * for a line like "SomeB" should return completions for beans whose names start with that prefix,
    * e.g., "SomeBean".
-   * 
+   *
    * @param cursorPos
    * @param chars a reverse character iterator
    */
@@ -124,7 +122,7 @@ public final class Autocompleter {
    * Parse the given line to infer variable types.
    * This handles assignments of the type: var x = foo;
    * and also var x = var y ... = foo;
-   * 
+   *
    * @param chars a reverse character iterator
    */
   // TODO(ns): Handle multiple statements on the same line like:
@@ -158,7 +156,7 @@ public final class Autocompleter {
       }
     }
   }
-  
+
   public boolean isTypeName(String word) {
     return autocompleteEntryHolder.isTypeName(word);
   }

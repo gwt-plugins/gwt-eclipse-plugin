@@ -31,13 +31,11 @@ import javax.annotation.Nullable;
 
 /**
  * Singleton holding autocomplete data in the format expected by the {@code Autocompleter}.
- *
- * @author bcat@google.com (Jonathan Rascher)
  */
 public final class AutocompleteEntryHolder {
 
   private static final AutocompleteEntryHolder INSTANCE = new AutocompleteEntryHolder();
-  
+
   private final Set<String> typeNames = Sets.newHashSet();
 
   private final SetMultimap<String, String> topLevelTypeNamesToTypeNames = HashMultimap.create();
@@ -183,8 +181,6 @@ public final class AutocompleteEntryHolder {
 
   /**
    * Interface used for callbacks needed when the auto-complete data finishes loading
-   *
-   * @author ostrulovich@google.com (Omer Strulovich)
    */
   public interface Callback {
     public void execute();
