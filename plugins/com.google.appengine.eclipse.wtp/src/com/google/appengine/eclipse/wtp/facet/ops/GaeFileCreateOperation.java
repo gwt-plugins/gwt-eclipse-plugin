@@ -12,8 +12,9 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.facet.ops;
 
-import java.io.File;
-import java.io.InputStream;
+import com.google.appengine.eclipse.wtp.utils.IOUtils;
+import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
+import com.google.common.io.Files;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
@@ -25,9 +26,7 @@ import org.eclipse.wst.common.componentcore.ComponentCore;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 
-import com.google.appengine.eclipse.wtp.utils.IOUtils;
-import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
-import com.google.common.io.Files;
+import java.io.InputStream;
 
 /**
  * Create file resource operation.
@@ -51,7 +50,7 @@ public class GaeFileCreateOperation extends GaeResourceCreateOperation {
         // Protect against an imported project missing an expected directory:
         Files.createParentDirs(file.getLocation().toFile());
         file.refreshLocal(IResource.DEPTH_ONE, null);
-        
+
         file.create(is, false, null);
       }
     } catch (Throwable e) {

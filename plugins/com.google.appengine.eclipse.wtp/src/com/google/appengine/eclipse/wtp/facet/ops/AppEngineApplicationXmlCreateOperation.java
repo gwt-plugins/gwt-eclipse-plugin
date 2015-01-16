@@ -18,8 +18,6 @@ import com.google.appengine.eclipse.wtp.utils.ProjectUtils;
 import com.google.gdt.eclipse.core.DynamicWebProjectUtilities;
 import com.google.gdt.eclipse.core.StatusUtilities;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
-
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -34,6 +32,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
@@ -88,8 +87,12 @@ public final class AppEngineApplicationXmlCreateOperation extends GaeFileCreateO
   protected InputStream getResourceContentsAsStream() throws CoreException {
     try {
       // TODO(amitin): move to template.
-      String defaultDesc = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>\n<appengine-application xmlns=\"http://appengine.google.com/ns/1.0\">\n<application></application>\n</appengine-application>";
-      return new ByteInputStream(defaultDesc.getBytes("UTF-8"), defaultDesc.length());
+      String defaultDesc =
+          "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>\n"
+              + "<appengine-application xmlns=\"http://appengine.google.com/ns/1.0\">\n"
+              + "<application></application>\n"
+              + "</appengine-application>";
+      return new ByteArrayInputStream(defaultDesc.getBytes("UTF-8"));
     } catch (UnsupportedEncodingException e) {
       throw new CoreException(StatusUtilities.newErrorStatus(e, AppEnginePlugin.PLUGIN_ID));
     }
