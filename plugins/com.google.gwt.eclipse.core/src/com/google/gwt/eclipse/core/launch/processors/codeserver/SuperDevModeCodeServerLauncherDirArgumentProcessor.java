@@ -15,10 +15,10 @@ package com.google.gwt.eclipse.core.launch.processors.codeserver;
 import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
+import com.google.gwt.eclipse.core.launch.GWTLaunchConfiguration;
 import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -55,36 +55,32 @@ public class SuperDevModeCodeServerLauncherDirArgumentProcessor implements
 
     int argIndex = programArgs.indexOf(LAUNCHERDIR_ARG);
 
+    // This is created in the GWT WTP facet and started by WTP server
+    String launcherDir = GWTLaunchConfiguration.getSuperDevModeCodeServerLauncherDir(launchConfig);
+
     // Skip if arg already exists, developer entered or this previously added it.
-    if (argIndex > -1) {
+    if (argIndex > -1 && (launcherDir == null || launcherDir.isEmpty())) {
       return;
     }
 
-    // Get the war output path, such as target/.../webapp or ./war
-    // TODO get launch configuration working directory
-    IPath pathToWarOut = WebAppUtilities.getWarOutLocationOrPrompt(javaProject.getProject()); // This won't work, b/c GAE is in tmp dir
+    // Path to the output war directory
+    String pathToWarOutDir = null;
 
-
-
-    // Path to the war, web content, context-root directory
-    String pathToWarDir = null;
-
-    // Is this a WTP facet Dynamic web module config or classic launcher config
-    if (pathToWarOut != null) {
-      pathToWarDir = pathToWarOut.toFile().getAbsolutePath();
-
-    } else {
-      // TODO is this even needed ***********************************
-      // This is a classic launcher config managed war directory
-      IFolder warDir = WebAppUtilities.getManagedWarOut(javaProject.getProject());
-      if (warDir != null) {
-        pathToWarDir = warDir.getLocation().toFile().getAbsolutePath();
-      }
-      // TODO ********************************************************
+    // TODO possibly prompt for directory
+    IPath path = WebAppUtilities.getWarOutLocationOrPrompt(javaProject.getProject());
+    if (path != null) {
+      pathToWarOutDir = path.toFile().getAbsolutePath();
     }
 
-    if (pathToWarDir == null) {
-      // Not a WTP project or classic launcher config,
+    // Override the path with the launcher configuration stored attribute.
+    // This is activated in the GWT WTP plugin.
+    if (launcherDir != null) {
+      pathToWarOutDir = launcherDir;
+    }
+
+    if (pathToWarOutDir == null) {
+      // Not a WTP project or classic launcher config
+      // TODO, should it prompt for one?
       return;
     }
 
@@ -92,9 +88,11 @@ public class SuperDevModeCodeServerLauncherDirArgumentProcessor implements
         LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(programArgs,
             argIndex, true);
 
-    // add the args to the program arguments list -launcherDir = /path/To/war
+    // Add the args to the list
     programArgs.add(insertionIndex, LAUNCHERDIR_ARG);
-    programArgs.add(insertionIndex + 1, pathToWarDir);
+    programArgs.add(insertionIndex + 1, pathToWarOutDir);
+
+    // TODO commit working addition?
   }
 
   @Override

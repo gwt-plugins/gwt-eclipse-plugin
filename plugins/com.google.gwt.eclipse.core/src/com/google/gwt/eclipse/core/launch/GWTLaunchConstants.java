@@ -75,6 +75,8 @@ public final class GWTLaunchConstants {
 
   public static final String SUPERDEVMODE_LINKER_NAME = "xsiframe";
 
+  public static final String SUPERDEVMODE_LAUNCH_ID = GWTPlugin.PLUGIN_ID  + ".launch.id";
+
   private GWTLaunchConstants() {
     // Not instantiable
   }

@@ -21,4 +21,6 @@ public interface IGwtFacetConstants {
 
   static final String GWT_SDK = GWT_FACET_ID + ".property.sdk";
 
+  static final String LAUNCHER_ID = GWT_FACET_ID + ".launcher.id";
+
 }

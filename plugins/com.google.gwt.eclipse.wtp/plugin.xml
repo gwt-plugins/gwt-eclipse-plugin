@@ -31,7 +31,7 @@
     <action 
     	facet="com.google.gwt.facet"
         id="com.google.gwt.facet.install"
-        type="install" >
+        type="install">
      	<delegate class="com.google.gwt.eclipse.wtp.facet.GwtFacetInstallSdkDelegate"/>
         
         <config-factory 
@@ -57,4 +57,38 @@
 		</wizard-pages>
    </extension>
    
+   
+   <!-- Testing -->
+   <extension point="org.eclipse.wst.server.core.clients">
+      <client
+            id="com.google.gwt.clients"
+            name="GWT SDM CodeServer WTP client."
+            description="Run the GWT CodeServer when the SDM starts."
+            class="com.google.gwt.eclipse.wtp.clients.CodeServerWtpClient" 
+            launchable="com.google.gwt.eclipse.wtp.clients.SdmCodeServerLaunchable" 
+            typeIds="*"/>
+   </extension>
+   
+   <!-- Testing -->
+   <extension point="org.eclipse.wst.server.core.launchableAdapters">
+        <launchableAdapter
+            class="com.google.gwt.eclipse.wtp.clients.GwtLaunchableAdapterDelegate"
+            id="com.google.gwt.server.web"
+            typeIds="*"
+            priority="100000" />
+    </extension>
+    
+    <!-- Testing won't work -->
+    <extension point="org.eclipse.wst.server.core.internalStartup">
+      <startup
+            class="com.google.gwt.eclipse.wtp.clients.GwtRuntimeConfigurator"
+            id="com.google.gwt.eclipse.wtp.runtime.startup">
+      </startup>
+    </extension>
+    
+    <extension
+          point="org.eclipse.wst.server.core.internalServerMonitors">
+    </extension>
+    
+    
 </plugin>

@@ -91,7 +91,7 @@ public class GWTLaunchConfiguration {
     return new Path(pathAsString);
   }
 
-  public static String getSdmCodeServerPort(ILaunchConfiguration launchConfiguration) 
+  public static String getSdmCodeServerPort(ILaunchConfiguration launchConfiguration)
       throws CoreException {
     return getStringAttribute(launchConfiguration, GWTLaunchAttributes.SDM_CODE_SERVER_PORT);
   }
@@ -107,6 +107,11 @@ public class GWTLaunchConfiguration {
 
   public static String getStartupUrl(ILaunchConfiguration launchConfiguration) throws CoreException {
     return getStringAttribute(launchConfiguration, GWTLaunchAttributes.URL);
+  }
+
+  public static String getSuperDevModeCodeServerLauncherDir(ILaunchConfiguration launchConfiguration)
+      throws CoreException {
+    return getStringAttribute(launchConfiguration, GWTLaunchAttributes.CODE_SERVER_LAUNCHER_DIR);
   }
 
   /**

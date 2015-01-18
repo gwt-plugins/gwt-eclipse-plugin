@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 Google Inc. All Rights Reserved.
+ * Copyright 2015 Google Inc. All Rights Reserved.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,23 +15,18 @@
 package com.google.gwt.eclipse.core.launch.util;
 
 import com.google.gdt.eclipse.core.CorePluginLog;
-import com.google.gdt.eclipse.core.WebAppUtilities;
-import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
-import com.google.gdt.eclipse.core.launch.ILaunchShortcutStrategy;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationUtilities;
-import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.launch.GWTLaunchConfigurationWorkingCopy;
+import com.google.gwt.eclipse.core.launch.GWTLaunchConstants;
 import com.google.gwt.eclipse.core.launch.GwtSuperDevModeLaunchConfiguration;
-import com.google.gwt.eclipse.core.launch.ILaunchShortcutStrategyProvider;
 import com.google.gwt.eclipse.core.launch.ModuleClasspathProvider;
-import com.google.gwt.eclipse.core.launch.WebAppLaunchShortcutStrategy;
 import com.google.gwt.eclipse.core.launch.processors.ModuleArgumentProcessor;
+import com.google.gwt.eclipse.core.launch.processors.codeserver.SuperDevModeCodeServerLauncherDirArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.codeserver.SuperDevModeCodeServerMainTypeProcessor;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -39,13 +34,17 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Launch config utilities.
- *
+ * Launch config utilities. <br/>
+ * <br/>
  * This is similar to WebAppLaunchUtil, but pulled out not to be cyclic, and unique to code server.
  */
 public class GwtSuperDevModeCodeServerLaunchUtil {
@@ -54,85 +53,24 @@ public class GwtSuperDevModeCodeServerLaunchUtil {
    * Create a new GWT SDM Code Server Configuration. This will occur when running the debug
    * configuration from shortcut.
    */
-  public static ILaunchConfigurationWorkingCopy createLaunchConfigWorkingCopy(
-      String launchConfigName, final IProject project) throws CoreException,
-      OperationCanceledException {
+  public static ILaunchConfiguration createLaunchConfig(String launchConfigName,
+      final IProject project) throws CoreException, OperationCanceledException {
     ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
     ILaunchConfigurationType type =
         manager.getLaunchConfigurationType(GwtSuperDevModeLaunchConfiguration.TYPE_ID);
     ILaunchConfigurationWorkingCopy launchConfig = type.newInstance(null, launchConfigName);
 
-    // project name
+    // Project name
     LaunchConfigurationUtilities.setProjectName(launchConfig, project.getName());
 
     launchConfig.setMappedResources(new IResource[] {project});
 
     setDefaults(launchConfig, project);
 
-    return launchConfig;
-  }
+    // Save the new launch configuration
+    ILaunchConfiguration ilaunchConfig = launchConfig.doSave();
 
-  /**
-   * Given a resource, figure out what the target URL should be for a launch configuration
-   * corresponding to this resource. If the resource has several possible URLs that correspond to
-   * it, this method will cause a dialog to pop up, asking the user to choose one. If the resource's
-   * project uses GAE but not GWT, return empty string; GAE-only projects have no startup url. If
-   * the resource's project uses GWT 2.0+, return empty string since no URL is started in dev mode.
-   */
-  public static String determineStartupURL(IResource resource, boolean isExternalLaunch)
-      throws CoreException {
-    ILaunchShortcutStrategy strategy = null;
-    IProject project = resource.getProject();
-
-    ExtensionQuery<ILaunchShortcutStrategyProvider> extQuery =
-        new ExtensionQuery<ILaunchShortcutStrategyProvider>(GWTPlugin.PLUGIN_ID,
-            "launchShortcutStrategy", "class");
-    List<ExtensionQuery.Data<ILaunchShortcutStrategyProvider>> strategyProviderInfos =
-        extQuery.getData();
-
-    for (ExtensionQuery.Data<ILaunchShortcutStrategyProvider> data : strategyProviderInfos) {
-      strategy = data.getExtensionPointData().getStrategy(project);
-      break;
-    }
-
-    if (strategy == null && WebAppUtilities.isWebApp(project)) {
-      strategy = new WebAppLaunchShortcutStrategy();
-    }
-
-    return strategy.generateUrl(resource, isExternalLaunch);
-  }
-
-  public static ILaunchConfiguration findConfigurationByName(String name) {
-    try {
-      String configTypeStr = "";
-      ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
-      ILaunchConfigurationType typeid = launchManager.getLaunchConfigurationType(configTypeStr);
-      ILaunchConfiguration[] configs = launchManager.getLaunchConfigurations(typeid);
-
-      for (ILaunchConfiguration config : configs) {
-        if (config.getName().equals(name)) {
-          return config;
-        }
-      }
-    } catch (CoreException e) {
-      CorePluginLog.logError(e);
-    }
-    return null;
-  }
-
-  /**
-   * Returns the project associated with this launch configuration, or <code>
-   * null</code> if there is no project assigned or if the project does not exist.
-   */
-  public static IProject getProject(ILaunchConfiguration configuration) throws CoreException {
-    String projectName = LaunchConfigurationUtilities.getProjectName(configuration);
-    if (projectName.length() == 0) {
-      return null;
-    }
-
-    IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
-
-    return project.exists() ? project : null;
+    return ilaunchConfig;
   }
 
   /**
@@ -154,6 +92,139 @@ public class GwtSuperDevModeCodeServerLaunchUtil {
     // Update program arg for - GWT module
     LaunchConfigurationProcessorUtilities.updateViaProcessor(new ModuleArgumentProcessor(),
         launchConfig);
+  }
+
+  /**
+   * Finds and returns an <b>existing</b> configuration to re-launch for the given URL, or
+   * <code>null</code> if there is no existing configuration.
+   *
+   * @return a configuration to use for launching the given type or <code>null
+   *         </code> if none
+   * @throws CoreException
+   */
+  private static ILaunchConfiguration findLaunchConfiguration(IProject project)
+      throws CoreException {
+    ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
+    ILaunchConfigurationType typeid =
+        launchManager.getLaunchConfigurationType(GwtSuperDevModeLaunchConfiguration.TYPE_ID);
+    ILaunchConfiguration[] configs = launchManager.getLaunchConfigurations(typeid);
+
+    return searchMatchingConfigWithProject(project, configs);
+  }
+
+  /**
+   * Given a resource, infer the startup URL that the resource points at, then look for an existing
+   * launch configuration that points at this URL. If none exists, we'll create a new one.
+   *
+   * @return the found or newly created launch configuration
+   */
+  private static ILaunchConfiguration findOrCreateLaunchConfiguration(IProject project,
+      String launcherDir, String launcherId) throws CoreException, OperationCanceledException {
+    ILaunchConfiguration config = findLaunchConfiguration(project);
+    if (config == null) {
+      config = createNewLaunchConfiguration(project);
+    }
+
+    // If a launcherDir value was provided from the WTP launcher, create or update the argument
+    config = addOrModifyLauncherArgs(config, launcherDir, launcherId);
+
+
+    return config;
+  }
+
+  /**
+   * Add or modify the launcherDir program argument in the launch config.
+   */
+  private static ILaunchConfiguration addOrModifyLauncherArgs(ILaunchConfiguration config,
+      String launcherDir, String launcherId) throws CoreException {
+    ILaunchConfigurationWorkingCopy launchConfigWc = config.getWorkingCopy();
+
+    if (launcherDir != null) {
+      // Update the launcherDir argument
+      GWTLaunchConfigurationWorkingCopy.setCodeServerLauncherDir(launchConfigWc, launcherDir);
+      LaunchConfigurationProcessorUtilities.updateViaProcessor(
+          new SuperDevModeCodeServerLauncherDirArgumentProcessor(), launchConfigWc);
+    }
+
+    // Update the launcherId
+    if (launcherId != null) {
+      launchConfigWc.setAttribute(GWTLaunchConstants.SUPERDEVMODE_LAUNCH_ID, launcherId);
+    }
+
+    config = launchConfigWc.doSave();
+
+    return config;
+  }
+
+  /**
+   * Given a specific resource, launch for that resource. This will involve either finding an
+   * existing launch configuration, or making a new one.
+   */
+  public static void launch(IProject project, String mode) {
+    launch(project, mode, null, null);
+  }
+
+  /**
+   * Given a specific resource, launch for that resource. This will involve either finding an
+   * existing launch configuration, or making a new one.
+   *
+   * @param launchMode - launch mode, like run or debug.
+   * @param launcherDir - war directory path.
+   * @param launcherId - provide an launch id to reference launch,
+   *        GWTLaunchConstants.SUPERDEVMODE_LAUNCH_ID
+   */
+  public static void launch(IProject project, String launchMode, String launcherDir,
+      String launcherId) {
+    try {
+      ILaunchConfiguration launchConfig =
+          findOrCreateLaunchConfiguration(project, launcherDir, launcherId);
+      DebugUITools.launch(launchConfig, launchMode);
+    } catch (CoreException e) {
+      CorePluginLog.logError(e, "CoreException: Aborting GWT Super Dev Mode Code Server launcher.");
+    } catch (OperationCanceledException e) {
+      CorePluginLog.logError(e,
+          "OperationCancelException: Aborting GWT Super Dev Mode Code Server launcher.");
+    }
+  }
+
+  private static ILaunchConfiguration searchMatchingConfigWithProject(IProject project,
+      ILaunchConfiguration[] configs) throws CoreException {
+    List<ILaunchConfiguration> candidates = new ArrayList<ILaunchConfiguration>();
+    for (ILaunchConfiguration config : configs) {
+      if (LaunchConfigurationUtilities.getProjectName(config).equals(project.getName())) {
+        candidates.add(config);
+      }
+    }
+
+    if (candidates.isEmpty()) {
+      return null;
+    } else if (candidates.size() == 1) {
+      return candidates.get(0);
+    } else {
+      return LaunchConfigurationUtilities.chooseConfiguration(candidates, getShell());
+    }
+  }
+
+  /**
+   * Create a new launch configuration.
+   */
+  private static ILaunchConfiguration createNewLaunchConfiguration(IProject project)
+      throws CoreException, OperationCanceledException {
+    String initialName = calculateLaunchConfigName(project);
+
+    // Create a new launch config
+    ILaunchConfiguration launchConfig =
+        GwtSuperDevModeCodeServerLaunchUtil.createLaunchConfig(initialName, project);
+
+    return launchConfig;
+  }
+
+  private static String calculateLaunchConfigName(IProject project) {
+    return project.getName();
+  }
+
+  private static Shell getShell() {
+    return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
   }
 
 }

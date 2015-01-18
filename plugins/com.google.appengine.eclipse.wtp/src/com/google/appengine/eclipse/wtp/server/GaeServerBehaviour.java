@@ -234,10 +234,7 @@ public final class GaeServerBehaviour extends ServerBehaviourDelegate {
     List<String> list = Collections.singletonList(toolApiEntry.getMemento());
     workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH, list);
     workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_DEFAULT_CLASSPATH, false);
-
     // Working directory
-    // TODO when it's a maven, make the working directory the source
-    // maybe use IPath pathToWarOut = WebAppUtilities.getWarOutLocationOrPrompt(javaProject.getProject());
     workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
         getGaeServer().getAppDeployDirectory().toOSString());
   }

@@ -22,6 +22,7 @@ import java.util.List;
  * Launch configuration working copy
  */
 public class GWTLaunchConfigurationWorkingCopy extends GWTLaunchConfiguration {
+
   public static void clearAttribute(ILaunchConfigurationWorkingCopy workingCopy,
       GWTLaunchAttributes launchAttribute) {
     workingCopy.setAttribute(launchAttribute.getQualifiedName(), (String) null);
@@ -47,6 +48,11 @@ public class GWTLaunchConfigurationWorkingCopy extends GWTLaunchConfiguration {
 
   public static void setCodeServerPortAuto(ILaunchConfigurationWorkingCopy workingCopy, boolean auto) {
     setBooleanAttribute(workingCopy, GWTLaunchAttributes.CODE_SERVER_PORT_AUTO, auto);
+  }
+  
+  public static void setCodeServerLauncherDir(ILaunchConfigurationWorkingCopy workingCopy, 
+      String launcherDir) {
+    setStringAttribute(workingCopy, GWTLaunchAttributes.CODE_SERVER_LAUNCHER_DIR, launcherDir);
   }
 
   /**
