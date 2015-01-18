@@ -242,7 +242,7 @@ public class GWTSettingsTab extends JavaLaunchTab implements
 
       buttonDevMode = new Button(groupSelection, SWT.RADIO);
       buttonDevMode.setSelection(true);
-      buttonDevMode.setText("Classic Devlopment Mode");
+      buttonDevMode.setText("Classic Development Mode");
 
       buttonSuperDevMode.addSelectionListener(new SelectionAdapter() {
         @Override
