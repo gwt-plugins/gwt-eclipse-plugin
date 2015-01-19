@@ -7,7 +7,7 @@ public final class GwtRuntimeConfigurator implements IStartup {
 
   @Override
   public void startup() {
-    System.out.println("test startup");
+    System.out.println("GWT Facet startup");
   }
 
 }

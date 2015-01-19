@@ -54,13 +54,12 @@ import org.eclipse.ui.part.ViewPart;
 import java.util.List;
 
 /**
- * A Web Application debug view that allows inspections of launch
- * configurations, browsers and servers.
+ * A Web Application debug view that allows inspections of launch configurations, browsers and
+ * servers.
  */
 public class WebAppLaunchView extends ViewPart {
   /**
-   * Enumeration used for persisting and restoring the layout state of this
-   * view.
+   * Enumeration used for persisting and restoring the layout state of this view.
    */
   enum LayoutType {
     BREADCRUMB, TREE;
@@ -84,8 +83,7 @@ public class WebAppLaunchView extends ViewPart {
    */
   private final class ClearLogViewerAction extends Action {
     private ClearLogViewerAction() {
-      super("Clear Log Viewer", Activator.getDefault().getImageDescriptor(
-          DevModeImages.CLEAR_LOG));
+      super("Clear Log Viewer", Activator.getDefault().getImageDescriptor(DevModeImages.CLEAR_LOG));
     }
 
     @Override
@@ -112,12 +110,12 @@ public class WebAppLaunchView extends ViewPart {
   }
 
   /**
-   * Controls when the ClearLogViewerAction should be enabled/disabled based on
-   * the current selection.
+   * Controls when the ClearLogViewerAction should be enabled/disabled based on the current
+   * selection.
    */
-  private final class ClearLogViewerEnablementController implements
-      ISelectionChangedListener {
+  private final class ClearLogViewerEnablementController implements ISelectionChangedListener {
 
+    @Override
     public void selectionChanged(SelectionChangedEvent event) {
       ISelection selection = event.getSelection();
       if (selection.isEmpty()) {
@@ -148,9 +146,8 @@ public class WebAppLaunchView extends ViewPart {
    */
   private final class ClearTerminatedLaunchesAction extends Action {
     private ClearTerminatedLaunchesAction() {
-      super("Remove all terminated launches",
-          Activator.getDefault().getImageDescriptor(
-              DevModeImages.CLEAR_TERMINATED_LAUNCHES));
+      super("Remove all terminated launches", Activator.getDefault().getImageDescriptor(
+          DevModeImages.CLEAR_TERMINATED_LAUNCHES));
     }
 
     @Override
@@ -158,20 +155,19 @@ public class WebAppLaunchView extends ViewPart {
       WebAppDebugModel.getInstance().removeTerminatedLaunchesFromModel();
 
       /*
-       * At this point, we know that the view has been notified of the removals
-       * of the terminated launches from the model. It is safe to disable the
-       * "Clear Terminated Launches" button, because there is no way that the
-       * viewer could have been notified about a newly-terminated launch while
-       * this method is executing. Notifications occur on the UI thread, and
-       * we're currently executing on the UI thread.
+       * At this point, we know that the view has been notified of the removals of the terminated
+       * launches from the model. It is safe to disable the "Clear Terminated Launches" button,
+       * because there is no way that the viewer could have been notified about a newly-terminated
+       * launch while this method is executing. Notifications occur on the UI thread, and we're
+       * currently executing on the UI thread.
        */
       clearTerminatedLaunches.setEnabled(false);
     }
   }
 
   /**
-   * Controls when the {@link ClearTerminatedLaunchesAction} should be
-   * enabled/disabled based on the current selection.
+   * Controls when the {@link ClearTerminatedLaunchesAction} should be enabled/disabled based on the
+   * current selection.
    */
   private final class ClearTerminatedLaunchesEnablementController extends
       WebAppDebugModelListenerAdapter implements ISelectionChangedListener {
@@ -180,23 +176,22 @@ public class WebAppLaunchView extends ViewPart {
     }
 
     @Override
-    public void launchConfigurationTerminated(
-        WebAppDebugModelEvent<LaunchConfiguration> e) {
+    public void launchConfigurationTerminated(WebAppDebugModelEvent<LaunchConfiguration> e) {
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
           /*
-           * We execute the runnable synchronously here, because we want to make
-           * sure it's safe to enable the "Clear Terminated Launches" button. If
-           * we were to execute this runnable asynchronously, the enabling may
-           * happen after the user actually clicks the
-           * "Clear Terminated Launches" action. (the likelihood of this is very
-           * low).
+           * We execute the runnable synchronously here, because we want to make sure it's safe to
+           * enable the "Clear Terminated Launches" button. If we were to execute this runnable
+           * asynchronously, the enabling may happen after the user actually clicks the
+           * "Clear Terminated Launches" action. (the likelihood of this is very low).
            */
           clearTerminatedLaunches.setEnabled(true);
         }
       });
     }
 
+    @Override
     public void selectionChanged(SelectionChangedEvent event) {
       ISelection selection = event.getSelection();
       if (selection.isEmpty()) {
@@ -213,7 +208,8 @@ public class WebAppLaunchView extends ViewPart {
 
     private boolean shouldEnableAction(Object firstElement) {
       WebAppDebugModel model = WebAppDebugModel.getInstance();
-      List<LaunchConfiguration> terminatedLaunchConfigurations = model.getTerminatedLaunchConfigurations();
+      List<LaunchConfiguration> terminatedLaunchConfigurations =
+          model.getTerminatedLaunchConfigurations();
       return terminatedLaunchConfigurations.size() > 0;
     }
   }
@@ -251,34 +247,37 @@ public class WebAppLaunchView extends ViewPart {
           return;
         }
 
-        final DevModeServiceClient client = DevModeServiceClientManager.getInstance().getClient(
-            lc);
+        final DevModeServiceClient client = DevModeServiceClientManager.getInstance().getClient(lc);
 
         if (client == null) {
           return;
         }
-        
+
         reloadServer.setEnabled(false); // ok because we're on the UI thread
         lc.setServerReloading(true);
-        
+
         Thread t = new Thread(new Runnable() {
+          @Override
           public void run() {
             try {
               client.restartWebServer();
             } catch (Exception e) {
-              Activator.getDefault().getLog().log(
-                  new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                      "Unable to reload the web server.", e));
+              Activator
+                  .getDefault()
+                  .getLog()
+                  .log(
+                      new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                          "Unable to reload the web server.", e));
               Display.getDefault().asyncExec(new Runnable() {
+                @Override
                 public void run() {
-                  MessageDialog.openError(getSite().getShell(),
-                      "Development Mode View",
+                  MessageDialog.openError(getSite().getShell(), "Development Mode View",
                       "Unable to reload the web server. See the Error Log for detals.");
                 }
               });
             }
             lc.setServerReloading(false);
-            
+
           }
         });
         t.setName("Restart Web Server Executor Thread");
@@ -289,11 +288,11 @@ public class WebAppLaunchView extends ViewPart {
   }
 
   /**
-   * Controls when the {@link ReloadServerAction} should be enabled/disabled
-   * based on the current selection.
+   * Controls when the {@link ReloadServerAction} should be enabled/disabled based on the current
+   * selection.
    */
-  private final class ReloadServerEnablementController extends
-      WebAppDebugModelListenerAdapter implements ISelectionChangedListener {
+  private final class ReloadServerEnablementController extends WebAppDebugModelListenerAdapter
+      implements ISelectionChangedListener {
 
     public ReloadServerEnablementController() {
       WebAppDebugModel.getInstance().addWebAppDebugModelListener(this);
@@ -303,6 +302,7 @@ public class WebAppLaunchView extends ViewPart {
     public void launchConfigurationRestartWebServerStatusChanged(
         WebAppDebugModelEvent<LaunchConfiguration> e) {
       Display.getDefault().asyncExec(new Runnable() {
+        @Override
         public void run() {
           shouldEnableActionBasedOnSelection(currentLayout.getSelection());
         }
@@ -310,15 +310,16 @@ public class WebAppLaunchView extends ViewPart {
     }
 
     @Override
-    public void launchConfigurationTerminated(
-        WebAppDebugModelEvent<LaunchConfiguration> e) {
+    public void launchConfigurationTerminated(WebAppDebugModelEvent<LaunchConfiguration> e) {
       Display.getDefault().asyncExec(new Runnable() {
+        @Override
         public void run() {
           shouldEnableActionBasedOnSelection(currentLayout.getSelection());
         }
       });
     }
 
+    @Override
     public void selectionChanged(SelectionChangedEvent event) {
       shouldEnableActionBasedOnSelection(event.getSelection());
     }
@@ -334,10 +335,8 @@ public class WebAppLaunchView extends ViewPart {
         return false;
       }
 
-      return launchConfiguration.hasWebServer()
-          && launchConfiguration.supportsRestartWebServer()
-          && !launchConfiguration.isTerminated()
-          && !launchConfiguration.isServerReloading();
+      return launchConfiguration.hasWebServer() && launchConfiguration.supportsRestartWebServer()
+          && !launchConfiguration.isTerminated() && !launchConfiguration.isServerReloading();
     }
 
     private void shouldEnableActionBasedOnSelection(ISelection selection) {
@@ -355,16 +354,15 @@ public class WebAppLaunchView extends ViewPart {
   }
 
   /**
-   * Listens for a new launch, and if the preference is set,
-   * remove terminated launches.
+   * Listens for a new launch, and if the preference is set, remove terminated launches.
    */
   private final class RemoveTerminatedLaunchesOnLaunchListener extends
       WebAppDebugModelListenerAdapter {
 
     @Override
-    public void launchConfigurationLaunched(
-        WebAppDebugModelEvent<LaunchConfiguration> e) {
+    public void launchConfigurationLaunched(WebAppDebugModelEvent<LaunchConfiguration> e) {
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         @SuppressWarnings("restriction")
         public void run() {
           if (GWTPreferences.getRemoveTerminatedLaunches()) {
@@ -381,9 +379,8 @@ public class WebAppLaunchView extends ViewPart {
    */
   private final class TerminateLaunchAction extends Action {
     public TerminateLaunchAction() {
-      super("Terminate Selected Launch",
-          Activator.getDefault().getImageDescriptor(
-              DevModeImages.TERMINATE_LAUNCH));
+      super("Terminate Selected Launch", Activator.getDefault().getImageDescriptor(
+          DevModeImages.TERMINATE_LAUNCH));
     }
 
     @Override
@@ -410,21 +407,20 @@ public class WebAppLaunchView extends ViewPart {
           launchConfiguration.getLaunch().terminate();
           terminateLaunchAction.setEnabled(false);
         } catch (DebugException e) {
-          Activator.getDefault().getLog().log(
-              StatusUtilities.newErrorStatus(e, Activator.PLUGIN_ID));
+          Activator.getDefault().getLog()
+              .log(StatusUtilities.newErrorStatus(e, Activator.PLUGIN_ID));
         }
       }
     }
   }
 
   /**
-   * Controls when the TerminateLaunchAction should be enabled/disabled based on
-   * the current selection.
+   * Controls when the TerminateLaunchAction should be enabled/disabled based on the current
+   * selection.
    */
-  private final class TerminateLaunchEnablementController
-      implements
-        ISelectionChangedListener {
+  private final class TerminateLaunchEnablementController implements ISelectionChangedListener {
 
+    @Override
     public void selectionChanged(SelectionChangedEvent event) {
       ISelection selection = event.getSelection();
       if (selection.isEmpty()) {
@@ -456,19 +452,17 @@ public class WebAppLaunchView extends ViewPart {
   }
 
   /**
-   * The ID of the view as specified by the extension. Note this is hard-coded
-   * since the ID differs from the plugin package name.
+   * The ID of the view as specified by the extension. Note this is hard-coded since the ID differs
+   * from the plugin package name.
    */
   public static final String ID = "com.google.gwt.eclipse.DevModeView";
 
   protected static final Object[] NO_ELEMENTS = new Object[0];
 
   /**
-   * Key used to store this view's layout in this plugin's
-   * {@link IDialogSettings}.
+   * Key used to store this view's layout in this plugin's {@link IDialogSettings}.
    */
-  private static final String DIALOG_PROPERTIES_LAYOUT_KEY = WebAppLaunchView.ID
-      + ".layout";
+  private static final String DIALOG_PROPERTIES_LAYOUT_KEY = WebAppLaunchView.ID + ".layout";
 
   private BreadcrumbNavigationView breadcrumbLayout;
   private Action clearLogAction;
@@ -485,9 +479,9 @@ public class WebAppLaunchView extends ViewPart {
   private TreeNavigationView treeLayout;
 
   /**
-   * This is a callback that will allow us to create the viewer and initialize
-   * it.
+   * This is a callback that will allow us to create the viewer and initialize it.
    */
+  @Override
   public void createPartControl(Composite parent) {
     createActions();
     addTerminatedLaunchListener();
@@ -503,13 +497,14 @@ public class WebAppLaunchView extends ViewPart {
   /**
    * Passing the focus request to the viewer's control.
    */
+  @Override
   public void setFocus() {
     // TODO: Fill me in
   }
 
   private void addTerminatedLaunchListener() {
     WebAppDebugModel.getInstance().addWebAppDebugModelListener(
-      new RemoveTerminatedLaunchesOnLaunchListener());
+        new RemoveTerminatedLaunchesOnLaunchListener());
   }
 
   private void contributeToActionBars() {
@@ -527,8 +522,7 @@ public class WebAppLaunchView extends ViewPart {
       }
     };
 
-    switchToBreadcrumbLayoutAction = new Action("Breadcrumb",
-        IAction.AS_RADIO_BUTTON) {
+    switchToBreadcrumbLayoutAction = new Action("Breadcrumb", IAction.AS_RADIO_BUTTON) {
       @Override
       public void run() {
         switchToBreadcrumbLayout();
@@ -600,8 +594,8 @@ public class WebAppLaunchView extends ViewPart {
 
   private StructuredSelection maybeSelectFirstLaunchConfig() {
     if (WebAppDebugModel.getInstance().getLaunchConfigurations().size() > 0) {
-      return new StructuredSelection(
-          WebAppDebugModel.getInstance().getLaunchConfigurations().get(0));
+      return new StructuredSelection(WebAppDebugModel.getInstance().getLaunchConfigurations()
+          .get(0));
     }
 
     return null;
@@ -630,8 +624,7 @@ public class WebAppLaunchView extends ViewPart {
     }
 
     pageBook.showPage(breadcrumbLayout);
-    getDialogSettings().put(DIALOG_PROPERTIES_LAYOUT_KEY,
-        LayoutType.BREADCRUMB.name());
+    getDialogSettings().put(DIALOG_PROPERTIES_LAYOUT_KEY, LayoutType.BREADCRUMB.name());
   }
 
   private void switchToTreeLayout() {
@@ -657,8 +650,7 @@ public class WebAppLaunchView extends ViewPart {
     }
 
     pageBook.showPage(treeLayout);
-    getDialogSettings().put(DIALOG_PROPERTIES_LAYOUT_KEY,
-        LayoutType.TREE.name());
+    getDialogSettings().put(DIALOG_PROPERTIES_LAYOUT_KEY, LayoutType.TREE.name());
   }
 
 }

@@ -35,7 +35,8 @@ Require-Bundle: org.eclipse.wst.server.core,
  com.google.gdt.eclipse.suite,
  org.eclipse.wst.common.frameworks.ui,
  org.eclipse.wst.common.project.facet.ui,
- org.eclipse.debug.ui;bundle-version="3.10.1"
+ org.eclipse.debug.ui;bundle-version="3.10.1",
+ org.eclipse.ui.console;bundle-version="3.5.300"
 Export-Package: com.google.gwt.eclipse.wtp,
  com.google.gwt.eclipse.wtp.facet.data
 

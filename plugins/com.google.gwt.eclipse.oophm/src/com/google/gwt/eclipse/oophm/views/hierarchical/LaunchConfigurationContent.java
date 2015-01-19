@@ -71,6 +71,7 @@ public class LaunchConfigurationContent extends Composite {
           WebAppDebugModelEvent<LaunchConfiguration> e) {
         if (e.getElement().equals(launchConfigurationModelObject)) {
           Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
               updateLaunchUrlsOrLoadingOnViewer();
             }
@@ -96,9 +97,11 @@ public class LaunchConfigurationContent extends Composite {
       this.launchUrlsCaptionLabel = launchUrlsCaptionLabel;
     }
 
+    @Override
     public void dispose() {
     }
 
+    @Override
     public Object[] getChildren(Object parentElement) {
       if (!(parentElement instanceof LaunchConfiguration)) {
         return null;
@@ -113,19 +116,23 @@ public class LaunchConfigurationContent extends Composite {
       }
     }
 
+    @Override
     public Object[] getElements(Object inputElement) {
       return getChildren(inputElement);
     }
 
+    @Override
     public Object getParent(Object element) {
       return element != launchConfigurationModelObject
           ? launchConfigurationModelObject : null;
     }
 
+    @Override
     public boolean hasChildren(Object element) {
       return element == launchConfigurationModelObject;
     }
 
+    @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 
       this.launchConfigurationModelObject = (LaunchConfiguration) newInput;
@@ -149,8 +156,7 @@ public class LaunchConfigurationContent extends Composite {
         viewer.getTree().setEnabled(isServing);
 
         if (isServing) {
-          launchUrlsCaptionLabel.setText("Double-click to open a URL (or right-click for more options)." +
-              " Click the yellow 'Reload web server' button above after server-side code changes.");
+          launchUrlsCaptionLabel.setText("Double-click to open a URL or right-click for more options).");
           launchUrlsCaptionLabel.getParent().layout();
         } else {
           launchUrlsCaptionLabel.setText("Development mode is loading...");
@@ -162,24 +168,30 @@ public class LaunchConfigurationContent extends Composite {
   }
 
   private static class LabelProvider implements ILabelProvider {
+    @Override
     public void addListener(ILabelProviderListener listener) {
     }
 
+    @Override
     public void dispose() {
     }
 
+    @Override
     public Image getImage(Object element) {
       return null;
     }
 
+    @Override
     public String getText(Object element) {
       return (String) element;
     }
 
+    @Override
     public boolean isLabelProperty(Object element, String property) {
       return false;
     }
 
+    @Override
     public void removeListener(ILabelProviderListener listener) {
     }
   }
@@ -193,11 +205,13 @@ public class LaunchConfigurationContent extends Composite {
         private final String ATTR_PREVIOUS_BROWSER = GWTPlugin.PLUGIN_ID
             + ".oophm." + LaunchConfigurationContent.class.getSimpleName();
 
+        @Override
         public String getDefaultBrowserName() {
           return GWTPlugin.getDefault().getPreferenceStore().getString(
               ATTR_PREVIOUS_BROWSER);
         }
 
+        @Override
         public void setDefaultBrowserName(String browserName) {
           GWTPlugin.getDefault().getPreferenceStore().setValue(
               ATTR_PREVIOUS_BROWSER, browserName);
@@ -236,6 +250,7 @@ public class LaunchConfigurationContent extends Composite {
     MenuManager menuMgr = new MenuManager("#PopupMenu");
     menuMgr.setRemoveAllWhenShown(true);
     menuMgr.addMenuListener(new IMenuListener() {
+      @Override
       public void menuAboutToShow(IMenuManager manager) {
 
         if (launchConfigurationModelObject instanceof SpeedTracerLaunchConfiguration) {
@@ -272,6 +287,7 @@ public class LaunchConfigurationContent extends Composite {
     viewer.setInput(launchConfigurationModelObject);
 
     viewer.addDoubleClickListener(new IDoubleClickListener() {
+      @Override
       public void doubleClick(DoubleClickEvent event) {
         if (launchConfigurationModelObject instanceof SpeedTracerLaunchConfiguration) {
           launchSpeedTracer();

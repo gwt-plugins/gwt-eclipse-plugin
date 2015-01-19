@@ -128,7 +128,6 @@ public class GwtSuperDevModeCodeServerLaunchUtil {
     // If a launcherDir value was provided from the WTP launcher, create or update the argument
     config = addOrModifyLauncherArgs(config, launcherDir, launcherId);
 
-
     return config;
   }
 
@@ -178,6 +177,9 @@ public class GwtSuperDevModeCodeServerLaunchUtil {
     try {
       ILaunchConfiguration launchConfig =
           findOrCreateLaunchConfiguration(project, launcherDir, launcherId);
+
+      // TODO check for running or terminated launcher and restart it
+
       DebugUITools.launch(launchConfig, launchMode);
     } catch (CoreException e) {
       CorePluginLog.logError(e, "CoreException: Aborting GWT Super Dev Mode Code Server launcher.");
