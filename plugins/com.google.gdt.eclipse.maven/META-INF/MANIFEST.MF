@@ -17,12 +17,10 @@ Export-Package: com.google.gdt.eclipse.maven,
  com.google.gdt.eclipse.maven.web
 Require-Bundle: com.google.gdt.eclipse.core,
  com.google.gwt.eclipse.core,
- org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.debug.core,
  org.eclipse.jdt.core,
  org.eclipse.jdt.launching,
  org.eclipse.m2e.core;resolution:=optional,
- org.eclipse.m2e.jdt;resolution:=optional,
  org.eclipse.m2e.maven.runtime;resolution:=optional,
  org.eclipse.ui

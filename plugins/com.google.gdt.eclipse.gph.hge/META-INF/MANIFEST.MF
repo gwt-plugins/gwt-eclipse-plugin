@@ -9,9 +9,10 @@ Bundle-Vendor: %providerName
 Bundle-Version: 0.0.0.qualifier
 Export-Package: com.google.gdt.eclipse.gph.hge
 Require-Bundle: com.vectrace.MercurialEclipse;resolution:=optional,
- com.google.gdt.eclipse.core,
  com.google.gdt.eclipse.gph,
- org.eclipse.core.resources,
+ com.google.gdt.eclipse.suite,
+ com.google.gdt.eclipse.core,
+ com.google.gwt.eclipse.oophm,
  org.eclipse.core.runtime,
  org.eclipse.team.core,
  org.eclipse.ui

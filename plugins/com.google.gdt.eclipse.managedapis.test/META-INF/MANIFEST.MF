@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test Fragment
-Bundle-SymbolicName: com.google.gdt.eclipse.managedapis.test;singleton:=true
-Bundle-Version: 1.0.0
-Bundle-Vendor: GOOGLE
-Fragment-Host: com.google.gdt.eclipse.managedapis;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: com.google.gdt.eclipse.managedapis.test
+Bundle-Vendor: Google, Inc.
+Bundle-Version: 0.0.0.qualifier
+Fragment-Host: com.google.gdt.eclipse.managedapis
 Require-Bundle: org.junit

@@ -7,14 +7,5 @@ Bundle-SymbolicName: com.google.appengine.eclipse.webtools.test
 Bundle-Vendor: %providerName
 Bundle-Version: 0.0.0.qualifier
 Fragment-Host: com.google.appengine.eclipse.webtools
-Require-Bundle: com.google.appengine.eclipse.wtp,
- com.google.appengine.eclipse.wtp.maven,
- com.google.gcp.eclipse.testing,
- org.eclipse.jdt.core,
- org.eclipse.jdt.ui,
- org.eclipse.jpt.common.core,
- org.eclipse.jpt.jpa.ui,
- org.eclipse.jst.j2ee,
- org.eclipse.jst.server.core,
- org.eclipse.wst.server.core,
+Require-Bundle: com.google.gcp.eclipse.testing,
  org.junit

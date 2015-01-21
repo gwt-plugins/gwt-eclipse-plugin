@@ -1,33 +1,18 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Drive
-Bundle-SymbolicName: com.google.gdt.eclipse.drive;singleton:=true
-Bundle-Version: 0.0.0.qualifier
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: com.google.gdt.eclipse.drive.DrivePlugin
 Bundle-ClassPath: .,
  lib/google-api-services-drive-v2-rev90-1.16.0-rc.jar
-Bundle-Activator: com.google.gdt.eclipse.drive.DrivePlugin
-Bundle-Vendor: Google, Inc.
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.core.resources,
- org.eclipse.ui.ide,
- com.google.gdt.eclipse.apiclientlib,
- com.google.gdt.eclipse.login,
- org.eclipse.jdt,
- org.eclipse.core.filesystem,
- com.google.gdt.eclipse.core,
- org.eclipse.wst.jsdt.core,
- org.eclipse.wst.jsdt.manipulation,
- org.eclipse.wst.jsdt.ui,
- org.eclipse.jdt.ui,
- org.eclipse.wst.sse.core,
- org.eclipse.wst.sse.ui,
- org.eclipse.jface.text
+Bundle-ManifestVersion: 2
+Bundle-Name: Drive
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ActivationPolicy: lazy
+Bundle-SymbolicName: com.google.gdt.eclipse.drive;singleton:=true
+Bundle-Vendor: Google, Inc.
+Bundle-Version: 0.0.0.qualifier
 Export-Package: com.google.api.services.drive;x-friends:="com.google.gdt.eclipse.drive.test",
  com.google.api.services.drive.model;x-friends:="com.google.gdt.eclipse.drive.test",
  com.google.gdt.eclipse.drive,
+ com.google.gdt.eclipse.drive.actions,
  com.google.gdt.eclipse.drive.driveapi;x-friends:="com.google.gdt.eclipse.drive.test",
  com.google.gdt.eclipse.drive.editors;x-friends:="com.google.gdt.eclipse.drive.test",
  com.google.gdt.eclipse.drive.editors.webautocomplete;x-friends:="com.google.gdt.eclipse.drive.test",
@@ -38,3 +23,17 @@ Export-Package: com.google.api.services.drive;x-friends:="com.google.gdt.eclipse
  com.google.gdt.eclipse.drive.preferences;x-friends:="com.google.gdt.eclipse.drive.test",
  com.google.gdt.eclipse.drive.resources;x-friends:="com.google.gdt.eclipse.drive.test",
  com.google.gdt.eclipse.drive.wizards;x-friends:="com.google.gdt.eclipse.drive.test"
+Require-Bundle: com.google.gdt.eclipse.apiclientlib,
+ com.google.gdt.eclipse.core,
+ com.google.gdt.eclipse.login,
+ org.eclipse.core.filesystem,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.jface.text,
+ org.eclipse.ui,
+ org.eclipse.ui.ide,
+ org.eclipse.wst.jsdt.core,
+ org.eclipse.wst.jsdt.manipulation,
+ org.eclipse.wst.jsdt.ui,
+ org.eclipse.wst.sse.core,
+ org.eclipse.wst.sse.ui

@@ -1,40 +1,32 @@
 Manifest-Version: 1.0
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: com.google.appengine.eclipse.wtp.swarm.AppEngineSwarmPlugin
+Bundle-Localization: plugin
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: com.google.appengine.eclipse.wtp.swarm;singleton:=true
-Bundle-Version: 0.0.0.qualifier
-Bundle-Localization: plugin
-Bundle-Activator: com.google.appengine.eclipse.wtp.swarm.AppEngineSwarmPlugin
 Bundle-Vendor: %providerName
-Require-Bundle: com.google.appengine.eclipse.wtp,
+Bundle-Version: 0.0.0.qualifier
+Require-Bundle: com.google.appengine.eclipse.core,
+ com.google.appengine.eclipse.wtp,
  com.google.appengine.eclipse.wtp.jpa,
- com.google.appengine.eclipse.wtp.jpa.e43;resolution:=optional,
- com.google.appengine.eclipse.wtp.jpa.e42;resolution:=optional,
  com.google.gdt.eclipse.appengine.swarm,
  com.google.gdt.eclipse.appengine.swarm_backend,
- com.google.gdt.eclipse.login,
+ com.google.gdt.eclipse.core,
+ com.google.gdt.eclipse.managedapis,
+ com.google.gwt.eclipse.oophm,
+ com.google.gdt.eclipse.platform,
  com.google.gdt.eclipse.suite,
  org.eclipse.core.expressions,
- org.eclipse.core.runtime,
  org.eclipse.debug.ui,
  org.eclipse.emf.edit.ui,
  org.eclipse.jdt.core,
- org.eclipse.jdt.ui,
  org.eclipse.jpt.common.utility,
  org.eclipse.jpt.jpa.core,
- org.eclipse.jpt.jpa.ui,
  org.eclipse.jst.common.project.facet.core,
- org.eclipse.jst.common.project.facet.ui,
  org.eclipse.jst.j2ee,
  org.eclipse.ltk.core.refactoring,
  org.eclipse.wst.server.ui,
  org.eclipse.wst.common.frameworks.ui,
- org.eclipse.wst.common.project.facet.core,
  org.eclipse.wst.common.project.facet.ui
-Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-
-
-
-
-

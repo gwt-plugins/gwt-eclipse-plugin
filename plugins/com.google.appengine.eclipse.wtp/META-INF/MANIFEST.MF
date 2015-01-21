@@ -25,11 +25,13 @@ Export-Package: com.google.appengine.eclipse.wtp,
  com.google.appengine.eclipse.wtp.validators,
  com.google.appengine.eclipse.wtp.wizards.ui,
  com.google.appengine.eclipse.wtp.wizards
-Require-Bundle: com.google.gdt.eclipse.login,
+Require-Bundle: com.google.appengine.eclipse.core,
+ com.google.gdt.eclipse.apiclientlib,
+ com.google.gdt.eclipse.core,
+ com.google.gdt.eclipse.login,
  com.google.gdt.eclipse.managedapis,
  com.google.gdt.eclipse.suite,
  org.eclipse.core.expressions,
- org.eclipse.core.runtime,
  org.eclipse.debug.ui,
  org.eclipse.emf.codegen,
  org.eclipse.emf.edit.ui,
@@ -47,13 +49,7 @@ Require-Bundle: com.google.gdt.eclipse.login,
  org.eclipse.ui.forms,
  org.eclipse.ui.ide,
  org.eclipse.wst.common.frameworks.ui,
- org.eclipse.wst.common.project.facet.core,
  org.eclipse.wst.common.project.facet.ui,
  org.eclipse.wst.server.core,
  org.eclipse.wst.server.ui,
  org.eclipse.wst.xml.core
-
-
-
-
-

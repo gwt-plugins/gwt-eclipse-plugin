@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test plugin for Cloud Endpoints Backend Generation
-Bundle-SymbolicName: com.google.gdt.eclipse.appengine.swarm_backend.test.swtbot;singleton:=true
-Bundle-Vendor: Google, Inc
-Bundle-Version: 0.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: com.google.gdt.eclipse.appengine.swarm_backend.test.swtbot
+Bundle-Vendor: Google, Inc
+Bundle-Version: 0.0.0.qualifier
 Fragment-Host: com.google.gdt.eclipse.appengine.swarm_backend
 Require-Bundle: com.google.gdt.eclipse.swtbot,
  org.eclipse.swtbot.eclipse.finder,
- org.eclipse.swtbot.swt.finder,
  org.junit

@@ -10,10 +10,11 @@ Bundle-Vendor: %providerName
 Bundle-Version: 0.0.0.qualifier
 Export-Package: com.google.appengine.eclipse.wtp.jpa,
  com.google.appengine.eclipse.wtp.jpa.libprov
-Require-Bundle: com.google.appengine.eclipse.webtools,
+Require-Bundle: com.google.appengine.eclipse.core,
+ com.google.appengine.eclipse.webtools,
  com.google.appengine.eclipse.wtp,
- com.google.gdt.eclipse.login,
- com.google.gdt.eclipse.suite,
+ com.google.gdt.eclipse.core,
+ com.google.gwt.eclipse.oophm,
  org.eclipse.core.expressions,
  org.eclipse.core.runtime,
  org.eclipse.debug.ui,
@@ -27,6 +28,5 @@ Require-Bundle: com.google.appengine.eclipse.webtools,
  org.eclipse.jst.common.project.facet.core,
  org.eclipse.jst.common.project.facet.ui,
  org.eclipse.jst.j2ee,
- org.eclipse.persistence.jpa.jpql,
  org.eclipse.wst.common.frameworks.ui,
  org.eclipse.wst.common.project.facet.core

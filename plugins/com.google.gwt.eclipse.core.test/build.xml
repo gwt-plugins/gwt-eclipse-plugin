@@ -6,8 +6,6 @@
 
     <property name="project.tail" value="plugins/${plugin_name}" />
 
-    <import file="${build.project.dir}/common.ant.xml" />
-
     <!-- No token replacements needed -->
     <filterset id="plugin.property.token.replace.filterset" />
 
@@ -16,6 +14,8 @@
         <pathelement location="${gwt.plugin.root}/plugins/com.google.gwt.eclipse.core/src" />
     </path>
 
+    <import file="${build.project.dir}/common.ant.xml" />
+    <property name="plugin.version" value="${gdt.version}" />
     <import file="${build.project.dir}/plugins/test.plugins.common.ant.xml" />
 
     <target name="build">

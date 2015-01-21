@@ -1,14 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GWT Eclipse Plugin SWTBot Test Fragment
-Bundle-SymbolicName: com.google.gwt.eclipse.core.test.swtbot;singleton:=true
-Bundle-Version: 0.0.0
-Bundle-Vendor: Google, Inc.
-Fragment-Host: com.google.gwt.eclipse.core;bundle-version="0.0.0"
-Require-Bundle: org.junit,
- org.eclipse.swtbot.eclipse.finder,
- org.eclipse.swtbot.swt.finder,
- com.google.gdt.eclipse.swtbot
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: com.google.gdt.eclipse.swtbot
-
+Bundle-SymbolicName: com.google.gwt.eclipse.core.test.swtbot
+Bundle-Vendor: Google, Inc.
+Bundle-Version: 0.0.0.qualifier
+Fragment-Host: com.google.gwt.eclipse.core
+Require-Bundle: com.google.gdt.eclipse.swtbot,
+ org.eclipse.swtbot.eclipse.finder,
+ org.junit

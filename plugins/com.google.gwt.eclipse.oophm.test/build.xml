@@ -6,16 +6,15 @@
 
     <property name="project.tail" value="plugins/${plugin_name}" />
 
-    <import file="${build.project.dir}/common.ant.xml" />
-
     <!-- No token replacements needed -->
     <filterset id="plugin.property.token.replace.filterset" />
-
 
     <path id="plugin.src">
         <pathelement location="${build.project.dir}/plugins/com.google.gwt.eclipse.oophm/src" />
     </path>
 
+    <import file="${build.project.dir}/common.ant.xml" />
+    <property name="plugin.version" value="${gdt.version}" />
     <import file="${build.project.dir}/plugins/test.plugins.common.ant.xml" />
 
     <target name="build">
