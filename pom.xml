@@ -6,8 +6,8 @@
   <artifactId>trunk</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
+
   <modules>
-<!--
     <module>features/com.google.appengine.eclipse.wtp.maven.feature</module>
     <module>features/com.google.gdt.eclipse.mobile.android.feature</module>
     <module>features/com.google.gdt.eclipse.suite.e44.feature</module>
@@ -21,18 +21,24 @@
     <module>plugins/com.google.appengine.eclipse.wtp.jpa.e43</module>
     <module>plugins/com.google.appengine.eclipse.wtp.maven</module>
     <module>plugins/com.google.appengine.eclipse.wtp.swarm</module>
--->
+    <module>plugins/com.google.gcp.eclipse.testing</module>
     <module>plugins/com.google.gdt.eclipse.apiclientlib</module>
-<!--
+    <module>plugins/com.google.gdt.eclipse.appengine.api</module>
+    <module>plugins/com.google.gdt.eclipse.appengine.api.test</module>
     <module>plugins/com.google.gdt.eclipse.appengine.swarm</module>
     <module>plugins/com.google.gdt.eclipse.appengine.swarm_backend</module>
+    <module>plugins/com.google.gdt.eclipse.appengine.swarm_backend.test.swtbot</module>
+    <module>plugins/com.google.gdt.eclipse.appengine.swarm.test.swtbot</module>
     <module>plugins/com.google.gdt.eclipse.core</module>
     <module>plugins/com.google.gdt.eclipse.core.test</module>
     <module>plugins/com.google.gdt.eclipse.drive</module>
     <module>plugins/com.google.gdt.eclipse.drive.test</module>
     <module>plugins/com.google.gdt.eclipse.gph</module>
     <module>plugins/com.google.gdt.eclipse.gph.egit</module>
+
+<!-- Have not yet found a p2 repository for the Mercurial Eclipse plug-ins
     <module>plugins/com.google.gdt.eclipse.gph.hge</module>
+-->
     <module>plugins/com.google.gdt.eclipse.gph.subclipse</module>
     <module>plugins/com.google.gdt.eclipse.gph.subversive</module>
     <module>plugins/com.google.gdt.eclipse.login</module>
@@ -43,48 +49,58 @@
     <module>plugins/com.google.gdt.eclipse.mobile.android</module>
     <module>plugins/com.google.gdt.eclipse.platform</module>
     <module>plugins/com.google.gdt.eclipse.suite</module>
-    <module>plugins/com.google.gdt.eclipse.suite.ext</module>
     <module>plugins/com.google.gdt.eclipse.suite.test</module>
     <module>plugins/com.google.gdt.eclipse.suite.test.swtbot</module>
     <module>plugins/com.google.gdt.eclipse.swtbot</module>
     <module>plugins/com.google.gwt.eclipse.core</module>
     <module>plugins/com.google.gwt.eclipse.core.test</module>
     <module>plugins/com.google.gwt.eclipse.core.test.swtbot</module>
+    <module>plugins/com.google.gwt.eclipse.libs</module>
     <module>plugins/com.google.gwt.eclipse.oophm</module>
     <module>plugins/com.google.gwt.eclipse.oophm.test</module>
-    <module>plugins/com.google.gwt.eclipse.sdkbundle</module>
--->
   </modules>
 
   <properties>
-    <tycho.version>0.19.0</tycho.version>
+    <tycho.version>0.22.0</tycho.version>
+    <tycho-extras.version>0.22.0</tycho-extras.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <egit-repo.url>http://download.eclipse.org/egit/updates</egit-repo.url>
-    <jetty-repo.url>http://download.eclipse.org/jetty/updates/jetty-bundles-9.x/9.2.6.v20141205/</jetty-repo.url>
-    <luna-repo.url>http://download.eclipse.org/releases/luna</luna-repo.url>
-    <orbit-repo.url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</orbit-repo.url>
-    <swtbot-repo.url>http://download.eclipse.org/technology/swtbot/helios/dev-build/update-site</swtbot-repo.url>
+
+    <!-- These constants are currently set up to build against Eclipse Luna. -->
+    <eclipse.target>luna</eclipse.target>
+    <jettyMinVersion>8.1</jettyMinVersion>
+    <jettyMaxVersion>8.2</jettyMaxVersion>
+    <swtbotVersion>2.2.1</swtbotVersion>
+
+    <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
+    <adt-repo.url>http://dl-ssl.google.com/android/eclipse/</adt-repo.url>
+    <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
+    <subclipse-repo.url>http://subclipse.tigris.org/update_1.10.x/</subclipse-repo.url>
+    <swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/${swtbotVersion}/</swtbot-repo.url>
+
+    <comparator.repo>https://dl.google.com/eclipse/plugin/4.4</comparator.repo>
   </properties>
 
   <repositories>
     <repository>
-      <id>egit</id>
-      <url>${egit-repo.url}</url>
+      <id>android</id>
+      <url>${adt-repo.url}</url>
       <layout>p2</layout>
     </repository>
     <repository>
-      <id>jetty</id>
-      <url>${jetty-repo.url}</url>
+      <id>eclipse</id>
+      <url>${eclipse-repo.url}</url>
       <layout>p2</layout>
     </repository>
+    <!--
     <repository>
-      <id>luna</id>
-      <url>${luna-repo.url}</url>
+      <id>mercurial</id>
+      <url>http://mercurialeclipse.eclipselabs.org.codespot.com/hg.wiki/update_site/stable/</url>
       <layout>p2</layout>
     </repository>
+    -->
     <repository>
-      <id>oribit</id>
-      <url>${orbit-repo.url}</url>
+      <id>subclipse</id>
+      <url>${subclipse-repo.url}</url>
       <layout>p2</layout>
     </repository>
     <repository>
@@ -93,21 +109,198 @@
       <layout>p2</layout>
     </repository>
   </repositories>
-  <dependencies>
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty-util</artifactId>
-      <version>6.1.26</version>
-    </dependency>
-  </dependencies>
+
   <build>
     <plugins>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
-        <version>0.21.0</version>
+        <version>${tycho.version}</version>
         <extensions>true</extensions>
       </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <filters>
+            <filter>
+              <type>java-package</type>
+              <id>org.eclipse.jetty.http</id>
+              <restrictTo>
+                <versionRange>[${jettyMinVersion},${jettyMaxVersion})</versionRange>
+              </restrictTo>
+            </filter>
+          </filters>
+          <environments>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>ppc</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>ppc64</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>s390</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>s390x</arch>
+            </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>solaris</os>
+              <ws>gtk</ws>
+              <arch>sparc</arch>
+            </environment>
+            <environment>
+              <os>solaris</os>
+              <ws>gtk</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>hpux</os>
+              <ws>gtk</ws>
+              <arch>ia64</arch>
+            </environment>
+            <environment>
+              <os>aix</os>
+              <ws>gtk</ws>
+              <arch>ppc</arch>
+            </environment>
+            <environment>
+              <os>aix</os>
+              <ws>gtk</ws>
+              <arch>ppc64</arch>
+            </environment>
+          </environments>
+        </configuration>
+      </plugin>
     </plugins>
+
+    <pluginManagement>
+      <plugins>
+       <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>target-platform-configuration</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-compiler-plugin</artifactId>
+          <version>${tycho.version}</version>
+          <configuration>
+            <showWarnings>true</showWarnings>
+          </configuration>
+        </plugin>
+        <!-- Reenable when the Git repo becomes the source of truth
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-packaging-plugin</artifactId>
+          <version>${tycho.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.eclipse.tycho.extras</groupId>
+              <artifactId>tycho-buildtimestamp-jgit</artifactId>
+              <version>${tycho-extras.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.eclipse.tycho.extras</groupId>
+              <artifactId>tycho-sourceref-jgit</artifactId>
+              <version>${tycho-extras.version}</version>
+            </dependency>
+          </dependencies>
+          <configuration>
+            <strictBinIncludes>false</strictBinIncludes>
+            <format>'v'yyyyMMdd-HHmm</format>
+            <timestampProvider>jgit</timestampProvider>
+            <jgit.ignore>
+              pom.xml
+            </jgit.ignore>
+            <jgit.dirtyWorkingTree>${jgit.dirtyWorkingTree}</jgit.dirtyWorkingTree>
+            <sourceReferences>
+              <generate>true</generate>
+            </sourceReferences>
+            <archive>
+              <addMavenDescriptor>false</addMavenDescriptor>
+            </archive>
+            <additionalFileSets>
+              <fileSet>
+                <directory>${project.build.directory}</directory>
+                <includes>
+                  <include>.api_description</include>
+                </includes>
+              </fileSet>
+            </additionalFileSets>
+          </configuration>
+        </plugin>
+         -->
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-surefire-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-p2-director-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-p2-repository-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-p2-plugin</artifactId>
+          <version>${tycho.version}</version>
+          <configuration>
+            <baselineMode>warn</baselineMode>
+            <baselineReplace>all</baselineReplace>
+            <baselineRepositories>
+              <repository>
+                <url>${comparator.repo}</url>
+              </repository>
+            </baselineRepositories>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 </project>
