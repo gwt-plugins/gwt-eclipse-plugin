@@ -82,15 +82,6 @@ Some projects will not compile without an Eclipse API Baseline defined.
 
 * The `com.google.gdt.eclipse.maven` plug-in requires m2e (Maven Integration for Eclipse) to be installed. 
 Install m2e from your Eclipse version's default update site. i.e. http://download.eclipse.org/releases/kepler
-* The `com.google.gdt.eclipse.gph.hge` project requires MercurialEclipse to be 
-installed. You can either close the project, or install MercurialEclipse: http://cbes.javaforge.com/update
-* The `com.google.gdt.eclipse.gph.subclipse` project requires Subclipse to be 
-installed. You can either close the project, or install Subclipse: http://subclipse.tigris.org/update_1.6.x
-* The `com.google.gdt.eclipse.gph.subversive` project requires Subversive to 
-be installed. You can either close the project, or install Subversive: http://download.eclipse.org/releases/helios
-
-* Known Issue: MercurialEclipse, Subclipse, and Subversive can cause SWTBot and JUnit Plug-in Tests to fail
-due to their popups on launch of fresh Eclipse.
 
 ###Eclipse 3.3, 3.4
 

@@ -206,34 +206,6 @@
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.gph"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.gdt.eclipse.gph.hge"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.gdt.eclipse.gph.subclipse"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.gdt.eclipse.gph.subversive"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
          id="com.google.gdt.eclipse.login"
          download-size="0"
          install-size="0" 
