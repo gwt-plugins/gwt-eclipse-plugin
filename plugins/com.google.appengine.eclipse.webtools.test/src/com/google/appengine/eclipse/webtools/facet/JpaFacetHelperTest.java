@@ -44,6 +44,9 @@ public class JpaFacetHelperTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     jpaProject = setupJpaProject();
+    // JPA project setup appears to set up jobs that must complete before the project is fully
+    // initialized, so wait for them to complete before testing the environment.
+    TestUtil.waitForIdle();
   }
 
   @Override
@@ -116,7 +119,7 @@ public class JpaFacetHelperTest extends TestCase {
       });
     } catch (Exception e) {
       fail("JpaFacetHelper.executeProjectManagerCommand() should succeed for "
-          + "supported versions of JPA");
+          + "supported versions of JPA: " + e.getMessage());
     }
     assertEquals("Command did not execute", true, executed[0]);
   }
