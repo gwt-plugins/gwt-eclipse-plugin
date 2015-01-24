@@ -42,7 +42,7 @@ import java.util.List;
 
 /**
  * Utility methods for launch configuration processors.
- * 
+ *
  * For more general methods relating to launch configurations, see
  * {@link LaunchConfigurationUtilities}.
  */
@@ -202,7 +202,7 @@ public final class LaunchConfigurationProcessorUtilities {
   /**
    * Parses the program arguments from the launch configuration into a list of
    * arguments.
-   * 
+   *
    * @throws CoreException
    */
   public static List<String> parseProgramArgs(ILaunchConfiguration launchConfig)
@@ -222,7 +222,7 @@ public final class LaunchConfigurationProcessorUtilities {
 
   /**
    * Removes the argument at the given index.
-   * 
+   *
    * @param args the list of arguments
    * @param argIndex the argument index to remove (out of bounds is allowed to
    *          simplify client logic)

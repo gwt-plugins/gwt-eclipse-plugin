@@ -79,7 +79,13 @@ public class LaunchConfigurationProcessorUtilitiesTest extends TestCase {
             args, "-missingArg", VALUES, defaultValue));
   }
 
+  /**
+   * Tests launch configuration argument parsing.
+   */
   public void testParseArgs() {
+    // NOTE: This test indirectly references the Platform object, which is not initialized when
+    // run from the PDE as a straight JUnit test, so run it as a JUnit Plug-in test. It runs fine
+    // as a Maven/Tycho non-UI test.
     assertEquals(Arrays.<String> asList(),
         LaunchConfigurationProcessorUtilities.parseArgs(null));
     assertEquals(Arrays.<String> asList(),
@@ -99,8 +105,6 @@ public class LaunchConfigurationProcessorUtilitiesTest extends TestCase {
         Arrays.asList("-one", "test InnerQuotes"),
         LaunchConfigurationProcessorUtilities.parseArgs("-one test\" InnerQuotes\""));
 
-    // NOTE: this needs to be run as a plug-in JUnit test because of this
-    // assertion -- otherwise something deep in Eclipse NPEs
     assertEquals(Arrays.asList("\""),
         LaunchConfigurationProcessorUtilities.parseArgs("\\\""));
   }
@@ -109,7 +113,7 @@ public class LaunchConfigurationProcessorUtilitiesTest extends TestCase {
     List<String> originalList = Arrays.asList("-war", "/tmp/war", "-noserver",
         "-d32");
     List<String> list;
-    
+
     // OOB
     list = new ArrayList<String>(originalList);
     assertEquals(
@@ -117,7 +121,7 @@ public class LaunchConfigurationProcessorUtilitiesTest extends TestCase {
         LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(
             list, -1, true));
     assertEquals(originalList, list);
-    
+
     list = new ArrayList<String>(originalList);
     assertEquals(
         0,

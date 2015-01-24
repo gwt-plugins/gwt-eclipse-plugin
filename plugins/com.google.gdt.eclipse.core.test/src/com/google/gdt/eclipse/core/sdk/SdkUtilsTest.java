@@ -45,40 +45,49 @@ public class SdkUtilsTest extends TestCase {
       this.version = version;
     }
 
+    @Override
     public IClasspathEntry[] getClasspathEntries() {
       return null;
     }
 
+    @Override
     public String getDescription() {
       return name + " - " + version;
     }
 
+    @Override
     public IPath getInstallationPath() {
       return null;
     }
 
+    @Override
     public String getName() {
       return name;
     }
 
+    @Override
     public String getVersion() {
       return SdkUtils.cleanupVersion(version);
     }
 
+    @Override
     public File[] getWebAppClasspathFiles(IProject project) {
       return null;
     }
 
+    @Override
     public String toXml() {
       return null;
     }
 
+    @Override
     public IStatus validate() {
       return Status.OK_STATUS;
     }
   }
 
   static class MockSdkFactory<T extends Sdk> implements SdkFactory<Sdk> {
+    @Override
     public Sdk newInstance(String name, IPath sdkHome) {
       return null;
     }
@@ -124,10 +133,10 @@ public class SdkUtilsTest extends TestCase {
   /**
    * Tests
    * {@link SdkUtils.MaxSdkVersionComputer#computeMaxSdkVersion(IJavaProject[])}.
-   *
-   * @throws CoreException
    */
   public void testComputeMaxSdkVersions() throws CoreException {
+    // Note: This test must be run as a JUnit Plug-in Test from the PDE, since it creates Java
+    // projects. It runs fine from a Maven/Tycho non-UI test.
     String container1ID = "Container1";
     SdkManager<Sdk> manager1 =
         new SdkManager<Sdk>(container1ID, new MockEclipsePreferences(), new MockSdkFactory<Sdk>());
