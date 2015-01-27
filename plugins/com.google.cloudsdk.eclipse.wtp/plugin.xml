@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="4.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.wst.server.core.runtimeTypes">
+      <runtimeType
+            class="com.google.cloudsdk.eclipse.wtp.runtime.CloudSdkRuntime"
+            description="%runtimeTypeDescription"
+            id="com.google.cloudsdk.runtime.id1"
+            name="%runtimeTypeName"
+            vendor="%runtimeTypeVendor"
+            version="1">
+            <moduleType types="jst.web" versions="2.2, 2.3, 2.4, 2.5, 3.1"/>
+            <moduleType types="jst.connector" versions="1.0, 1.5, 1.6"/>
+            <moduleType types="jst.utility"  versions="1.0"/>
+      </runtimeType>
+   </extension>
+   <extension
+         point="org.eclipse.wst.server.ui.wizardFragments">
+      <fragment
+            class="com.google.cloudsdk.eclipse.wtp.ui.CloudSdkRuntimeWizardFragment"
+            id="com.google.cloudsdk.runtime.fragment1"
+            typeIds="com.google.cloudsdk.runtime.id1">
+      </fragment>
+   </extension>
+
+</plugin>

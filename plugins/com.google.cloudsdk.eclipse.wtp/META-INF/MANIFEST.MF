@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
+Bundle-Localization: plugin
 Bundle-SymbolicName: com.google.cloudsdk.eclipse.wtp;singleton:=true
 Bundle-Version: 0.0.0.qualifier
 Bundle-Vendor: %providerName
@@ -8,6 +9,11 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: com.google.cloudsdk.eclipse.wtp.CloudSdkPlugin
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui.workbench
-Import-Package: org.eclipse.jface.dialogs,
- org.eclipse.swt.widgets
+ org.eclipse.jface,
+ org.eclipse.ui.workbench,
+ org.eclipse.wst.server.core,
+ org.eclipse.wst.server.ui
+Import-Package: com.google.common.annotations,
+ com.google.common.base,
+ com.google.common.io
+Export-Package: com.google.cloudsdk.eclipse.wtp

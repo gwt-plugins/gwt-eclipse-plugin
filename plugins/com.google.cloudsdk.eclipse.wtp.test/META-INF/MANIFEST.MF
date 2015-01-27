@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Google Cloud SDK WTP Tools Test
+Bundle-SymbolicName: com.google.cloudsdk.eclipse.wtp.test;singleton:=true
+Bundle-Version: 0.0.0.qualifier
+Bundle-Vendor: Google, Inc.
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: com.google.cloudsdk.eclipse.wtp,
+ org.junit
