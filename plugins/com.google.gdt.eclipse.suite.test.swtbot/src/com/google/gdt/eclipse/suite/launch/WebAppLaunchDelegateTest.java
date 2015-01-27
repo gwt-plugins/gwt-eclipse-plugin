@@ -34,7 +34,7 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Test for WebAppLaunchDelegate
- * 
+ *
  */
 public class WebAppLaunchDelegateTest extends TestCase {
 
@@ -42,7 +42,7 @@ public class WebAppLaunchDelegateTest extends TestCase {
 
   /**
    * Set up the bot
-   * 
+   *
    */
   @Override
   public void setUp() {
@@ -52,7 +52,7 @@ public class WebAppLaunchDelegateTest extends TestCase {
   /**
    * Test when auto port selection is on promptUserToContinueIfPortNotAvailable
    * return true (continue with launch, ignore port information)
-   * 
+   *
    * @throws CoreException
    */
   public void testAutoPortSelection() throws CoreException {
@@ -65,7 +65,7 @@ public class WebAppLaunchDelegateTest extends TestCase {
   /**
    * Test when a port is in use and user explicitly continues
    * promptUserToContinueIfPortNotAvailable return true (continue with launch)
-   * 
+   *
    * @throws CoreException
    * @throws InterruptedException
    * @throws ExecutionException
@@ -80,7 +80,7 @@ public class WebAppLaunchDelegateTest extends TestCase {
   /**
    * Test when a port is in use and user cancels
    * promptUserToContinueIfPortNotAvailable return false (abort launch)
-   * 
+   *
    * @throws CoreException
    * @throws InterruptedException
    * @throws ExecutionException
@@ -95,7 +95,7 @@ public class WebAppLaunchDelegateTest extends TestCase {
   /**
    * Test when a port is not in use and promptUserToContinueIfPortNotAvailable
    * returns true (continue with launch)
-   * 
+   *
    * @throws CoreException
    */
   public void testPortNotInUse() throws CoreException {
@@ -116,7 +116,7 @@ public class WebAppLaunchDelegateTest extends TestCase {
   /**
    * Internal function to check the result when a port is in use and a specific
    * action is taken on the UI
-   * 
+   *
    * @param buttonToClick the string representing the button to click (Yes, No)
    * @return the result from the UI element
    * @throws ExecutionException If the thread ends with an exception
@@ -139,6 +139,7 @@ public class WebAppLaunchDelegateTest extends TestCase {
       // this needs to run in separate thread because promptUser... is a
       // blocking call
       final Callable<Boolean> promptCallable = new Callable<Boolean>() {
+        @Override
         public Boolean call() throws CoreException {
           WebAppLaunchDelegate delegate = new WebAppLaunchDelegate();
           return delegate.promptUserToContinueIfPortNotAvailable(config);

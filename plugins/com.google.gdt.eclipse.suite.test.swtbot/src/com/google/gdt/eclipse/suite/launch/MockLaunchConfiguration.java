@@ -37,33 +37,40 @@ import java.util.TreeMap;
  */
 public class MockLaunchConfiguration implements ILaunchConfiguration {
 
-  TreeMap attributes = new TreeMap();
+  TreeMap<String, Object> attributes = new TreeMap<>();
 
+  @Override
   public boolean contentsEqual(ILaunchConfiguration configuration) {
     // not used in test
     return false;
   }
 
+  @Override
   public ILaunchConfigurationWorkingCopy copy(String name) throws CoreException {
     // not used in test
     return null;
   }
 
+  @Override
   public void delete() throws CoreException {
     // not used in test
 
   }
 
+  @Override
   public boolean exists() {
     // not used in test
     return false;
   }
 
+  @Override
+  @SuppressWarnings("rawtypes")
   public Object getAdapter(Class adapter) {
     // not used in test
     return null;
   }
 
+  @Override
   public boolean getAttribute(String attributeName, boolean defaultValue)
       throws CoreException {
     Object attr = attributes.get(attributeName);
@@ -78,6 +85,7 @@ public class MockLaunchConfiguration implements ILaunchConfiguration {
     return defaultValue;
   }
 
+  @Override
   public int getAttribute(String attributeName, int defaultValue)
       throws CoreException {
     Object attr = attributes.get(attributeName);
@@ -91,24 +99,28 @@ public class MockLaunchConfiguration implements ILaunchConfiguration {
     return defaultValue;
   }
 
-  public List getAttribute(String attributeName, List defaultValue)
+  @Override
+  public List<String> getAttribute(String attributeName, List<String> defaultValue)
       throws CoreException {
     // not used in test
     return null;
   }
 
-  public Map getAttribute(String attributeName, Map defaultValue)
+  @Override
+  public Map<String, String> getAttribute(String attributeName, Map<String, String> defaultValue)
       throws CoreException {
     // not used in test
     return null;
   }
 
-  public Set getAttribute(String attributeName, Set defaultValue)
+  @Override
+  public Set<String> getAttribute(String attributeName, Set<String> defaultValue)
       throws CoreException {
     // not used in test
     return null;
   }
 
+  @Override
   public String getAttribute(String attributeName, String defaultValue)
       throws CoreException {
     Object attr = attributes.get(attributeName);
@@ -122,104 +134,125 @@ public class MockLaunchConfiguration implements ILaunchConfiguration {
     return defaultValue;
   }
 
-  public Map getAttributes() throws CoreException {
+  @Override
+  public Map<String, Object> getAttributes() throws CoreException {
     // not used in test
     return null;
   }
 
+  @Override
   public String getCategory() throws CoreException {
     // not used in test
     return null;
   }
 
+  @Override
   public IFile getFile() {
     // not used in test
     return null;
   }
 
+  @Deprecated
+  @Override
   public IPath getLocation() {
     // not used in test
     return null;
   }
 
+  @Override
   public IResource[] getMappedResources() throws CoreException {
     // not used in test
     return null;
   }
 
+  @Override
   public String getMemento() throws CoreException {
     // not used in test
     return null;
   }
 
-  public Set getModes() throws CoreException {
+  @Override
+  public Set<String> getModes() throws CoreException {
     // not used in test
     return null;
   }
 
+  @Override
   public String getName() {
     // not used in test
     return null;
   }
 
-  public ILaunchDelegate getPreferredDelegate(Set modes) throws CoreException {
+  @Override
+  public ILaunchDelegate getPreferredDelegate(Set<String> modes) throws CoreException {
     // not used in test
     return null;
   }
 
+  @Override
   public ILaunchConfigurationType getType() throws CoreException {
     // not used in test
     return null;
   }
 
+  @Override
   public ILaunchConfigurationWorkingCopy getWorkingCopy() throws CoreException {
     // not used in test
     return null;
   }
 
+  @Override
   public boolean hasAttribute(String attributeName) throws CoreException {
     // not used in test
     return false;
   }
 
+  @Override
   public boolean isLocal() {
     // not used in test
     return false;
   }
 
+  @Override
   public boolean isMigrationCandidate() throws CoreException {
     // not used in test
     return false;
   }
 
+  @Override
   public boolean isReadOnly() {
     // not used in test
     return false;
   }
 
+  @Override
   public boolean isWorkingCopy() {
     // not used in test
     return false;
   }
 
+  @Override
   public ILaunch launch(String mode, IProgressMonitor monitor)
       throws CoreException {
     // not used in test
     return null;
   }
 
+  @Override
   public ILaunch launch(String mode, IProgressMonitor monitor, boolean build)
       throws CoreException {
     // not used in test
     return null;
   }
 
+  @Override
   public ILaunch launch(String mode, IProgressMonitor monitor, boolean build,
       boolean register) throws CoreException {
     // not used in test
     return null;
   }
 
+  @Override
   public void migrate() throws CoreException {
     // not used in test
 
@@ -230,6 +263,7 @@ public class MockLaunchConfiguration implements ILaunchConfiguration {
     attributes.put(attribute.getQualifiedName(), value);
   }
 
+  @Override
   public boolean supportsMode(String mode) throws CoreException {
     // not used in test
     return false;
