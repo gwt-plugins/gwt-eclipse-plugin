@@ -6,4 +6,7 @@ Bundle-Version: 0.0.0.qualifier
 Bundle-Vendor: Google, Inc.
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: com.google.cloudsdk.eclipse.wtp,
+ org.eclipse.core.resources,
+ org.eclipse.equinox.registry,
+ org.eclipse.m2e.maven.runtime,
  org.junit

@@ -23,5 +23,54 @@
             typeIds="com.google.cloudsdk.runtime.id1">
       </fragment>
    </extension>
+   <extension point="org.eclipse.wst.common.project.facet.core.facets">
+      <project-facet id="com.google.cloudsdk.facet">
+        <label>%cloudsdkfacetlabel</label>
+        <description>%cloudsdkfacetdescription</description>
+      </project-facet>
+      <project-facet-version facet="com.google.cloudsdk.facet" version="1">
+          <constraint>
+            <and>
+              <or>
+                  <requires facet="jst.web" version="2.2"/>
+                  <requires facet="jst.web" version="2.3"/>
+                  <requires facet="jst.web" version="2.4"/>
+                  <requires facet="jst.web" version="2.5"/>
+                  <requires facet="jst.web" version="3.0"/>
+                  <requires facet="jst.web" version="3.1"/>
+              </or>
+              <requires facet="java" version="[1.6"/>
+           </and>
+         </constraint>
+      </project-facet-version>
+      <action
+          facet="com.google.cloudsdk.facet"
+          id="com.google.cloudsdk.facet.install"
+          type="install">
+        <delegate class="com.google.cloudsdk.eclipse.wtp.facet.CloudSdkFacetInstallDelegate"/>
+      </action>
+      <action
+          facet="com.google.cloudsdk.facet"
+          id="com.google.cloudsdk.facet.uninstall"
+          type="uninstall">
+        <delegate class="com.google.cloudsdk.eclipse.wtp.facet.CloudSdkFacetUninstallDelegate"/>
+      </action>
+   </extension>
+   <extension point="org.eclipse.wst.common.project.facet.core.runtimes">
+      <runtime-component-type id="com.google.cloudsdk.runtime.id"/>
+      <runtime-component-version type="com.google.cloudsdk.runtime.id" version="1"/>
+      <supported>
+          <runtime-component id="com.google.cloudsdk.runtime.id" version="1"/>
+          <facet id="com.google.cloudsdk.facet" version="1"/>
+          <facet id="jst.web" version="2.2,2.3,2.4,2.5,3.1"/>
+          <facet id="jst.utility"  version="1.0"/>
+          <facet id="jst.webfragment" version="3.0" />
+          <facet id="java" version="[1.6" />
+      </supported>
+   </extension>
+   <extension point="org.eclipse.jst.server.core.runtimeFacetMappings">
+    <runtimeFacetMapping runtimeTypeId="com.google.cloudsdk.runtime.id1"
+        runtime-component="com.google.cloudsdk.runtime.id" version="1"/>
+   </extension>
 
 </plugin>
