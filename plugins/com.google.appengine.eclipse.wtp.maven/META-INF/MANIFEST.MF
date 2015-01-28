@@ -35,4 +35,5 @@ Require-Bundle: com.google.appengine.eclipse.core,
  org.eclipse.wst.common.project.facet.core,
  org.eclipse.wst.common.project.facet.ui,
  org.eclipse.wst.server.core,
- org.eclipse.wst.server.ui
+ org.eclipse.wst.server.ui,
+ com.google.gdt.eclipse.core
