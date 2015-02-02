@@ -39,7 +39,7 @@ public class AppengineApiWrapperTest extends TestCase {
   /**
    * Mock class for AppengineApiWrapper.
    */
-  private class AppengineApiWrapperMock extends AppengineApiWrapper {
+  public class AppengineApiWrapperMock extends AppengineApiWrapper {
     /**
      * The constructor
      */
