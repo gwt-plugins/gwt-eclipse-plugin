@@ -22,6 +22,8 @@
     <module>plugins/com.google.appengine.eclipse.wtp.jpa.e43</module>
     <module>plugins/com.google.appengine.eclipse.wtp.maven</module>
     <module>plugins/com.google.appengine.eclipse.wtp.swarm</module>
+    <module>plugins/com.google.cloudsdk.eclipse.wtp</module>
+    <module>plugins/com.google.cloudsdk.eclipse.wtp.test</module>
     <module>plugins/com.google.gcp.eclipse.testing</module>
     <module>plugins/com.google.gdt.eclipse.apiclientlib</module>
     <module>plugins/com.google.gdt.eclipse.appengine.api</module>
