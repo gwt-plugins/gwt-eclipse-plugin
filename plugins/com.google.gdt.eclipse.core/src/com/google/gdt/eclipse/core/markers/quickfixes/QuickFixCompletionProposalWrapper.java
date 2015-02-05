@@ -51,18 +51,22 @@ class QuickFixCompletionProposalWrapper implements IMarkerResolution2 {
     this.proposal = proposal;
   }
 
+  @Override
   public String getDescription() {
     return proposal.getAdditionalProposalInfo();
   }
 
+  @Override
   public Image getImage() {
     return proposal.getImage();
   }
 
+  @Override
   public String getLabel() {
     return proposal.getDisplayString();
   }
 
+  @Override
   public void run(IMarker marker) {
     try {
       IEditorPart part = EditorUtility.isOpenInEditor(cu);

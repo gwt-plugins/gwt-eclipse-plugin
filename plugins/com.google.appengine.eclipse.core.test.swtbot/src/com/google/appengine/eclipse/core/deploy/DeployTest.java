@@ -25,7 +25,7 @@ import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
  */
 public class DeployTest extends TestCase {
 
-  private static final String PROJECT_NAME = "WebApp";
+//  private static final String PROJECT_NAME = "WebApp";
 
   private SWTWorkbenchBot bot = new SWTWorkbenchBot();
 

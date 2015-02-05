@@ -198,6 +198,7 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
       return status;
     }
 
+    @Override
     public void onFailure(UpdateFailureEvent event) {
       monitor.done();
 
@@ -215,6 +216,7 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
       }
     }
 
+    @Override
     public void onProgress(UpdateProgressEvent event) {
 
       // Update the progress monitor
@@ -241,6 +243,7 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
       }
     }
 
+    @Override
     public void onSuccess(UpdateSuccessEvent event) {
       deployments++;
       percentDone = 0;
@@ -294,6 +297,7 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
   }
 
   private static class VersionComparator implements Comparator<String> {
+    @Override
     public int compare(String version1, String version2)
         throws NumberFormatException {
       return SdkUtils.compareVersionStrings(version1, version2);
@@ -367,6 +371,7 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
     }
   }
 
+  @Override
   public IStatus deploy(final IProgressMonitor monitor, DeployOptions options)
       throws IOException {
 
@@ -447,20 +452,24 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
     }
   }
 
+  @Override
   public String getAppId(IPath warPath) throws IOException {
     Application app = Application.readApplication(warPath.toOSString());
     return app.getAppId();
   }
 
+  @Override
   public String getAppVersion(IPath warPath) throws IOException {
     Application app = Application.readApplication(warPath.toOSString());
     return app.getVersion();
   }
 
+  @Override
   public List<File> getBuildclasspathFiles() throws ReflectionException {
     return getBuildclasspathFiles(true);
   }
 
+  @Override
   public List<File> getBuildclasspathFiles(boolean getDatanucleusFiles) throws ReflectionException {
     List<File> classpathFiles = new ArrayList<File>();
     classpathFiles.addAll(getSharedLibFiles());
@@ -476,6 +485,7 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
     return classpathFiles;
   }
 
+  @Override
   public List<File> getLatestUserLibFiles(boolean getDatanucleusFiles) throws ReflectionException {
     if (SdkUtils.compareVersionStrings(getSdkVersion(), MIN_VERSION_FOR_OPT_DATANUCLEUS_LIB) < 0) {
       return getUserLibFiles();
@@ -501,6 +511,7 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
     return userLibFiles;
   }
 
+  @Override
   public String getLatestVersion(String libName) throws ReflectionException {
     List<String> versions = getUserLibVersions(libName);
     String maxVersion = versions.get(0);
@@ -512,14 +523,17 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
     return maxVersion;
   }
 
+  @Override
   public String getSdkVersion() {
     return SdkInfo.getLocalVersion().getRelease();
   }
 
+  @Override
   public List<File> getSharedLibFiles() {
     return SdkInfo.getSharedLibFiles();
   }
 
+  @Override
   public List<File> getToolsLibFiles() {
     List<File> toolLibFiles = new ArrayList<File>();
     // FIXME: We should really be getting this list straight from SdkInfo
@@ -528,34 +542,42 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
     return toolLibFiles;
   }
 
+  @Override
   public List<File> getToolsLibFiles(String libName, String version) throws ReflectionException {
     return getLibFiles(libName, version, Lib.TOOLS);
   }
 
+  @Override
   public List<String> getToolsLibNames() throws ReflectionException {
     return getLibNames(Lib.TOOLS);
   }
 
+  @Override
   public List<String> getToolsLibVersions(String libName) throws ReflectionException {
     return getLibVersions(libName, Lib.TOOLS);
   }
 
+  @Override
   public List<File> getUserLibFiles() {
     return SdkInfo.getUserLibFiles();
   }
 
+  @Override
   public List<File> getUserLibFiles(String libName, String version) throws ReflectionException {
     return getLibFiles(libName, version, Lib.USER);
   }
 
+  @Override
   public List<String> getUserLibNames() throws ReflectionException {
     return getLibNames(Lib.USER);
   }
 
+  @Override
   public List<String> getUserLibVersions(String libName) throws ReflectionException {
     return getLibVersions(libName, Lib.USER);
   }
 
+  @Override
   public Set<String> getWhiteList() {
     return WhiteList.getWhiteList();
   }
@@ -569,7 +591,9 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
     if (optionalLib == null) {
       return null;
     }
-    return (List<File>) invoke(getFilesForVersion, optionalLib, version);
+    @SuppressWarnings("unchecked")
+    List<File> libFiles = (List<File>) invoke(getFilesForVersion, optionalLib, version);
+    return libFiles;
   }
 
   private List<String> getLibNames(Lib lib) throws ReflectionException {
@@ -587,7 +611,9 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
       Method getVersions = getMethod(getOptionalLibClass(), "getVersions");
       Method getOptionalLib = getMethod(SdkInfo.class, lib.getOptionalLib(), String.class);
       Object x = invoke(getOptionalLib, null, libName);
-      return (List<String>) invoke(getVersions, x);
+      @SuppressWarnings("unchecked")
+      List<String> libVersions = (List<String>) invoke(getVersions, x);
+      return libVersions;
   }
 
   private Method getMethod(Class<?> clazz, String method, Class<?>... parameterTypes)
