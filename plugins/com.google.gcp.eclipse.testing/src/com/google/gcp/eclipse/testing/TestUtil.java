@@ -14,10 +14,6 @@
  *******************************************************************************/
 package com.google.gcp.eclipse.testing;
 
-import com.google.gdt.eclipse.core.CorePlugin;
-
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 
@@ -28,20 +24,6 @@ public class TestUtil {
   public static final String PLUGIN_ID = "com.google.gcp.eclipse.testing";
 
   private TestUtil() {} // Non-instantiatable utility class
-
-  /**
-   * Creates a new error status with the given message.
-   */
-  public static IStatus createError(String message) {
-    return new Status(IStatus.ERROR, PLUGIN_ID, message);
-  }
-
-  /**
-   * Creates a new error status from the given exception.
-   */
-  public static IStatus createError(Exception e) {
-    return new Status(IStatus.ERROR, CorePlugin.PLUGIN_ID, e.getLocalizedMessage(), e);
-  }
 
   /**
    * Waits for the specified number of milliseconds.

@@ -27,6 +27,7 @@ import com.google.gdt.eclipse.core.sdk.UpdateWebInfFolderCommand;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
@@ -39,18 +40,21 @@ import java.io.FileNotFoundException;
  */
 public class GaeProjectTestUtil {
   /**
-   * Adds the default GAE SDK.
+   * Adds the default GAE SDK. Uses the path pointed to by the GAE_HOME environment variable if that
+   * variable is set, otherwise installs an SDK from this bundle and sets the GAE_HOME environment
+   * variable to point at it.
    */
   public static void addDefaultSdk() throws CoreException {
+    String gaeHome = System.getenv("GAE_HOME");
+    if (gaeHome == null) {
+      System.out.println("The GAE_HOME environment variable is not set, using test bundle version");
+      gaeHome = installGaeTestSdk().toOSString();
+      TestEnvironmentUtil.updateEnvironmentVariable("GAE_HOME", gaeHome);
+    }
+
     SdkSet<GaeSdk> sdkSet = GaePreferences.getSdks();
     if (sdkSet.getDefault() == null) {
       assert (sdkSet.size() == 0);
-
-      String gaeHome = System.getenv("GAE_HOME");
-      if (gaeHome == null) {
-        throw new CoreException(
-            TestUtil.createError("The GAE_HOME environment variable is not set)"));
-      }
 
       GaeSdk sdk = GaeSdk.getFactory().newInstance("Default GAE SDK", Path.fromOSString(gaeHome));
       IStatus status = sdk.validate();
@@ -63,6 +67,15 @@ public class GaeProjectTestUtil {
     }
   }
 
+  /**
+   * Installs the AppEngine SDK that is bundled with this plug-in and returns the absolute path
+   * where it was installed.
+   */
+  public static IPath installGaeTestSdk() {
+    return TestEnvironmentUtil.installTestSdk(
+        TestingPlugin.getDefault().getBundle(),
+        Path.fromPortableString("/resources/appengine-java-sdk-1.9.17.zip"));
+  }
   /**
    * Removes the default GAE SDK.
    */
@@ -93,7 +106,7 @@ public class GaeProjectTestUtil {
           webInfFolderUpdateCommand);
       command.execute();
     } catch (BackingStoreException | FileNotFoundException e) {
-      throw new CoreException(TestUtil.createError(e));
+      throw new CoreException(TestingPlugin.createError(e));
     }
 
     return gaeProject;

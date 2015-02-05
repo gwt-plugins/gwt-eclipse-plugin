@@ -47,7 +47,7 @@ public final class ProjectUtilities {
 
   /**
    * Creates a populated project via the {@link IWebAppProjectCreator}.
-   * 
+   *
    * @throws FileNotFoundException
    * @throws UnsupportedEncodingException
    * @throws MalformedURLException
@@ -77,7 +77,7 @@ public final class ProjectUtilities {
 
   /**
    * Creates a project with the specified name in the workspace.
-   * 
+   *
    * @param projectName
    * @return new project
    * @throws CoreException
@@ -98,7 +98,7 @@ public final class ProjectUtilities {
   /**
    * Do not call this from startup code, as it may not have been initialized yet
    * (if you do, you must catch the {@link IllegalStateException}).
-   * 
+   *
    * @return an instance of the {@link IWebAppProjectCreator}
    * @throws IllegalStateException when trying to use this before it has been
    *           initialized (should only happen if your startup code uses this)
@@ -114,7 +114,7 @@ public final class ProjectUtilities {
 
   /**
    * Deletes the project with the given name.
-   * 
+   *
    * @throws CoreException
    */
   public static void deleteProject(String projectName) throws CoreException {
@@ -124,7 +124,7 @@ public final class ProjectUtilities {
   /**
    * Deletes the project with the given name and optionally deletes the project
    * content.
-   * 
+   *
    * @throws CoreException
    */
   public static void deleteProject(String projectName, boolean deleteContent)
@@ -153,7 +153,7 @@ public final class ProjectUtilities {
     }
     return project;
   }
-  
+
   /**
    * This should not be called by typical clients.
    */
@@ -180,7 +180,6 @@ public final class ProjectUtilities {
     JobsUtilities.waitForIdle();
   }
 
-  
   /*
    * TODO: Figure out a way to achieve this without hardcoding the plugin IDs
    */
@@ -192,7 +191,7 @@ public final class ProjectUtilities {
         || NatureUtils.hasNature(project,
             "com.google.appengine.eclipse.core.gaeNature");
   }
-  
+
   /**
    * This should not be called by typical clients.
    */
