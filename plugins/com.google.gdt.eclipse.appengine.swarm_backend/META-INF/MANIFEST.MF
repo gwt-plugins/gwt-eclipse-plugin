@@ -21,4 +21,5 @@ Require-Bundle: com.google.gdt.eclipse.appengine.swarm,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.jdt.core,
+ org.eclipse.ltk.core.refactoring,
  org.eclipse.ui
