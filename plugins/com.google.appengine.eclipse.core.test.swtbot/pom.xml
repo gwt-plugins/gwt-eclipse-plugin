@@ -22,6 +22,14 @@
         <version>${tycho.version}</version>
         <configuration>
           <useUIHarness>true</useUIHarness>
+          <useUIThread>false</useUIThread>
+          <product>org.eclipse.sdk.ide</product>
+          <application>org.eclipse.ui.ide.workbench</application>
+          <!-- Re-enabling this test is tracked by
+           https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=326 -->
+          <excludes>
+            <exclude>**/GaePropertyPageTest.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
     </plugins>

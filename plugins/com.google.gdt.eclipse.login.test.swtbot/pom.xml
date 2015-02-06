@@ -22,6 +22,10 @@
         <version>${tycho.version}</version>
         <configuration>
           <useUIHarness>true</useUIHarness>
+          <useUIThread>false</useUIThread>
+          <product>org.eclipse.sdk.ide</product>
+          <application>org.eclipse.ui.ide.workbench</application>
+          <skipTests>true</skipTests>
         </configuration>
       </plugin>
     </plugins>
