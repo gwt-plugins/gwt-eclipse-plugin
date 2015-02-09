@@ -72,5 +72,17 @@
     <runtimeFacetMapping runtimeTypeId="com.google.cloudsdk.runtime.id1"
         runtime-component="com.google.cloudsdk.runtime.id" version="1"/>
    </extension>
+   <extension
+         point="org.eclipse.m2e.core.projectConfigurators">
+      <configurator
+            class="com.google.cloudsdk.eclipse.wtp.facet.CloudSdkProjectConfigurator"
+            id="com.google.cloudsdk.maven.cloudSdkConfigurator"
+            name="Cloud SDK Dynamic Web Project Configurator"
+            secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator">
+      </configurator>
+   </extension>
+   <extension
+         point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
+   </extension>
 
 </plugin>
