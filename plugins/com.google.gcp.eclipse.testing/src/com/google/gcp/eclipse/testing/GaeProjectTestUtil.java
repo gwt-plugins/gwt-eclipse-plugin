@@ -89,15 +89,7 @@ public class GaeProjectTestUtil {
         TestingPlugin.getDefault().getBundle(),
         Path.fromPortableString("/resources/appengine-java-sdk-1.9.17.zip"));
   }
-  /**
-   * Installs the AppEngine SDK that is bundled with this plug-in and returns the absolute path
-   * where it was installed.
-   */
-  public static IPath installGaeTestSdk() {
-    return TestEnvironmentUtil.installTestSdk(
-        TestingPlugin.getDefault().getBundle(),
-        Path.fromPortableString("/resources/appengine-java-sdk-1.9.17.zip"));
-  }
+
   /**
    * Removes the default GAE SDK.
    */
