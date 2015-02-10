@@ -1,0 +1,61 @@
+<project name="com.google.gdt.eclipse.suite.update" default="build" basedir=".">
+
+    <!-- Project-specific properties -->
+    <property name="plugin_name" value="com.google.gdt.eclipse.suite.update" />
+    <property name="project.tail" value="plugins/${plugin_name}" />
+
+    <import file="${build.project.dir}/common.ant.xml" />
+
+    <property name="plugin.version" value="${gdt.version}" />
+
+    <import file="${build.project.dir}/plugins/plugins.common.ant.xml" />
+
+  <get.eclipse.home.version property.name="eclipse.home.version" />
+   <switch value="${eclipse.home.version}">
+       <case value="4.2">
+           <property name="eclipseversion.feature.qualifier" value="e42" />
+       </case>
+       <case value="4.3">
+           <property name="eclipseversion.feature.qualifier" value="e43" />
+       </case>
+       <case value="4.4">
+           <property name="eclipseversion.feature.qualifier" value="e44" />
+       </case>
+       <default>
+           <fail message="Unknown Eclipse version" />
+       </default>
+   </switch>
+
+   <!-- It is a bit of a hack to hardcode the feature ids into this build file.
+        Really, the should be set in a top-level build file and then passed
+        down to the project-specific build files. To ensure that that this
+        hack does not get us into trouble if we ever change the feature ids,
+        we do an existence check on the project directorties of the features
+        to ensure that the hardcoded feature ids are correct.
+
+        Another advantage of having the feature ids in a top-level build file
+        is that verification could happen upfront. Though we have a check in
+        place here, one has to wait until the GDT plugin builds before the
+        failure is noticed. -->
+
+    <property name="gdt.plugin.associated.feature.id"
+              value="com.google.gdt.eclipse.suite.${eclipseversion.feature.qualifier}.feature" />
+    <property.ensure name="gdt.plugin.associated.feature.id.dir"
+                     location="${project.dir}/features/${gdt.plugin.associated.feature.id}" />
+
+    <target name="build">
+        <copy.plugin.src />
+
+        <replace dir="${pde.src.path}">
+            <replacefilter token="@FEATURE_ID@"
+                           value="${gdt.plugin.associated.feature.id}" />
+            <replacefilter token="@FEATURE_VERSION@" value="${gdt.version}" />
+            <replacefilter token="@FEATURE_UPDATE_SITE_URL@"
+                           value="${feature.update.site.url}" />
+        </replace>
+
+        <gwt.plugin.eclipseantrunner builddir="."
+                                     buildfile="build.xml"
+                                     buildtarget="buildInEclipse" />
+    </target>
+</project>

@@ -46,6 +46,7 @@
     <module>plugins/com.google.gdt.eclipse.suite</module>
     <module>plugins/com.google.gdt.eclipse.suite.test</module>
     <module>plugins/com.google.gdt.eclipse.suite.test.swtbot</module>
+    <module>plugins/com.google.gdt.eclipse.suite.update</module>
     <module>plugins/com.google.gdt.eclipse.swtbot</module>
     <module>plugins/com.google.gwt.eclipse.core</module>
     <module>plugins/com.google.gwt.eclipse.core.test</module>
