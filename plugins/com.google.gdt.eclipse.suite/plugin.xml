@@ -216,6 +216,12 @@
       </classpathProvider>
    </extension>
    <extension
+         point="com.google.gdt.eclipse.login.oauthClientProvider">
+      <oauthclientprovider
+            class="com.google.gdt.eclipse.suite.auth.OauthClientInfo">
+      </oauthclientprovider>
+   </extension>
+   <extension
         point="com.google.gwt.eclipse.core.moduleClasspathProvider">
       <moduleClasspathProvider
             priority="20"

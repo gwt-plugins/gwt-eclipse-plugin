@@ -14,14 +14,15 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.login;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.junit.Assert;
+
 /**
- * SWTBot test for {@link TestGoogleLogin}
+ * SWTBot test for {@link TestGoogleLogin}.
  */
 public class TestGoogleLoginTest extends TestCase {
-
+  // TODO: Debug why this fails in automated tests (it is disabled in the pom.xml file).
   /**
    * SWTBot test for {@link TestGoogleLogin#logIn()}
    */
