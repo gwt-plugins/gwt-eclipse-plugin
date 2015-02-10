@@ -34,7 +34,7 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.internal.ui.javaeditor.EditorUtility;
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -126,9 +126,8 @@ public class ViewSourceServlet extends HttpServlet {
     return (IFile) resource;
   }
 
-  private IPackageFragmentRoot getPackageFragmentRoot(String jarPathString,
-      String preferredProjectName)
-      throws IOException {
+  private IPackageFragmentRoot getPackageFragmentRoot(
+      String jarPathString, String preferredProjectName) {
     try {
       IFile jarIFile = getFile(jarPathString);
 
@@ -182,11 +181,12 @@ public class ViewSourceServlet extends HttpServlet {
    */
   /**
    * Jumps to the given line.
-   * 
+   *
    * @param line the line to jump to
    */
   private void gotoLine(final ITextEditor editor, final int line) {
     Display.getDefault().syncExec(new Runnable() {
+      @Override
       public void run() {
 
         IDocumentProvider provider = editor.getDocumentProvider();
@@ -292,6 +292,7 @@ public class ViewSourceServlet extends HttpServlet {
       final int lineNumber) {
 
     Display.getDefault().syncExec(new Runnable() {
+      @Override
       public void run() {
         if (lineNumber > 0) {
           if (editorPart instanceof ITextEditor) {
@@ -331,6 +332,7 @@ public class ViewSourceServlet extends HttpServlet {
     final IFile finalFile = file;
     final IEditorPart[] part = new IEditorPart[1];
     Display.getDefault().syncExec(new Runnable() {
+      @Override
       public void run() {
         final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         if (window == null) {
@@ -358,14 +360,8 @@ public class ViewSourceServlet extends HttpServlet {
 
   private IEditorPart openEditorForFileInJar(String jarPathString,
       String classpathRelativeFilePathString, String preferredProjectName) {
-    IPackageFragmentRoot jarPackageFragmentRoot;
-    try {
-      jarPackageFragmentRoot = getPackageFragmentRoot(jarPathString,
-          preferredProjectName);
-    } catch (IOException e) {
-      GWTPluginLog.logError(e);
-      return null;
-    }
+    IPackageFragmentRoot jarPackageFragmentRoot =
+        getPackageFragmentRoot(jarPathString, preferredProjectName);
 
     if (jarPackageFragmentRoot == null || !jarPackageFragmentRoot.exists()) {
       GWTPluginLog.logError("Could not view source because the file at \""
@@ -404,10 +400,10 @@ public class ViewSourceServlet extends HttpServlet {
       final String finalClassFileName = classFileName;
       final IEditorPart[] part = new IEditorPart[1];
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
           try {
-            part[0] = EditorUtility.openInEditor(
-                pf.getClassFile(finalClassFileName), true);
+            part[0] = JavaUI.openInEditor(pf.getClassFile(finalClassFileName), true, true);
           } catch (Throwable e) {
             GWTPluginLog.logError(e, "Could not open java editor");
           }
@@ -423,6 +419,7 @@ public class ViewSourceServlet extends HttpServlet {
 
   private void showErrorDialog(final String message) {
     Display.getDefault().asyncExec(new Runnable() {
+      @Override
       public void run() {
         MessageDialog.openError(SWTUtilities.getShell(),
             "Error viewing source", message);

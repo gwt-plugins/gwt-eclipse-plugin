@@ -52,7 +52,7 @@ public class JavaProjectUtilities {
    * <p>
    * To instantiate classpath entries, see the helper methods in JavaCore (e.g.
    * {@link JavaCore#newSourceEntry(org.eclipse.core.runtime.IPath)}).
-   * 
+   *
    * @param javaProject project to update
    * @param rawClasspathEntry new raw classpath entry
    * @throws JavaModelException
@@ -60,7 +60,7 @@ public class JavaProjectUtilities {
   public static void addRawClassPathEntry(IJavaProject javaProject,
       IClasspathEntry rawClasspathEntry) throws JavaModelException {
     IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
-  
+
     IProgressMonitor monitor = new NullProgressMonitor();
     List<IClasspathEntry> newEntries = new ArrayList<IClasspathEntry>(
         Arrays.asList(oldEntries));
@@ -75,11 +75,11 @@ public class JavaProjectUtilities {
           "Interrupted while waiting to ensure classpath entries were added");
     }
   }
-  
+
   /**
    * Creates an {@link ICompilationUnit} with the given fully qualified name and
    * code in the <code>javaProject</code>.
-   * 
+   *
    * @param javaProject java project to host the new class
    * @param fullyQualifiedClassName fully qualified name for the class
    * @param source code for the classs
@@ -95,7 +95,7 @@ public class JavaProjectUtilities {
           JavaCore.newSourceEntry(javaProject.getPath()));
       root = javaProject.findPackageFragmentRoot(javaProject.getPath());
     }
-  
+
     String qualifier = Signature.getQualifier(fullyQualifiedClassName);
     IProgressMonitor monitor = new NullProgressMonitor();
     IPackageFragment packageFragment = root.createPackageFragment(qualifier,
@@ -109,7 +109,7 @@ public class JavaProjectUtilities {
 
   /**
    * Creates a Java project using the default JRE library.
-   * 
+   *
    * @param projectName
    * @return a new project
    * @throws CoreException
@@ -122,7 +122,7 @@ public class JavaProjectUtilities {
 
   /**
    * a Finds a Java project with the given name.
-   * 
+   *
    * @param projectName The name of the Java project
    * @return The Java project, or null if it cannot be found or if it does not
    *         have the Java nature
@@ -130,11 +130,11 @@ public class JavaProjectUtilities {
   public static IJavaProject findJavaProject(String projectName) {
     IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
     IProject project = workspaceRoot.getProject(projectName);
-    
+
     if (!project.exists()) {
       return null;
     }
-    
+
     try {
       if (!NatureUtils.hasNature(project, JavaCore.NATURE_ID)) {
         return null;
@@ -143,7 +143,7 @@ public class JavaProjectUtilities {
       // Thrown if the project doesn't exist or is not open
       return null;
     }
-    
+
     return JavaCore.create(project);
   }
 
@@ -151,7 +151,7 @@ public class JavaProjectUtilities {
    * Gets the transitive closure of required Java projects for the given Java
    * project (including the project itself). The ordering is depth-first
    * preordered (i.e. a Java project is earlier than its dependencies).
-   * 
+   *
    * @param javaProject The Java project whose dependencies will be returned
    * @return An ordered set of the Java project and its transitively required
    *         projects
@@ -174,7 +174,7 @@ public class JavaProjectUtilities {
 
   /**
    * Creates a Java project with the specified name and raw classpath.
-   * 
+   *
    * @param projectName
    * @param rawClasspaths
    * @return a new project
@@ -185,11 +185,11 @@ public class JavaProjectUtilities {
     IProject project = ProjectUtilities.createProject(projectName);
     NullProgressMonitor monitor = new NullProgressMonitor();
     BuildPathsBlock.addJavaNature(project, monitor);
-  
+
     IJavaProject javaProject = JavaCore.create(project);
     javaProject.setRawClasspath(rawClasspaths, monitor);
     javaProject.open(monitor);
-  
+
     /*
      * Should only need a single waitForIdle() call, even though we make 3
      * separate calls to asynchronous JDT methods above. The reason is that each
@@ -197,30 +197,34 @@ public class JavaProjectUtilities {
      * they should end up running in FIFO order, meaning that each operation
      * will have its prerequisites met before it begins execution.
      */
-    JobsUtilities.waitForIdle();
-  
+    // Removing this wait significantly speeds up test execution time, because the Java
+    // indexing jobs for the GWT_ROOT-imported projects can take over 5 minutes to complete.
+    // This seems to run with no flakiness, but if flakiness continues, try figuring out
+    // if there is a Job family for the classpath modify operations that can be waited on instead.
+//    JobsUtilities.waitForIdle();
+
     return javaProject;
   }
 
   private static void fillTransitivelyRequiredProjects(IJavaProject javaProject,
       List<? super IJavaProject> requiredProjects)
       throws JavaModelException {
-    
+
     if (requiredProjects.contains(javaProject)) {
       return;
     }
-    
+
     requiredProjects.add(javaProject);
-    
+
     for (String projectName : javaProject.getRequiredProjectNames()) {
       IJavaProject curJavaProject = JavaProjectUtilities.findJavaProject(
           projectName);
       if (curJavaProject == null) {
         continue;
       }
-      
+
       fillTransitivelyRequiredProjects(curJavaProject, requiredProjects);
     }
   }
-  
+
 }

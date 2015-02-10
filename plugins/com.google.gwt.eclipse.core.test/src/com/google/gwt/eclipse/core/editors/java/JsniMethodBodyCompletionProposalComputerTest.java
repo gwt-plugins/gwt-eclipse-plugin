@@ -14,6 +14,7 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.editors.java;
 
+import com.google.gcp.eclipse.testing.TestUtil;
 import com.google.gdt.eclipse.core.JavaProjectUtilities;
 import com.google.gdt.eclipse.core.pde.BundleUtilities;
 import com.google.gwt.eclipse.core.GWTPlugin;
@@ -27,8 +28,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
-import org.eclipse.jdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.jdt.internal.ui.text.java.JavaCompletionProposal;
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jdt.ui.text.java.JavaContentAssistInvocationContext;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.text.BadLocationException;
@@ -63,8 +64,8 @@ public class JsniMethodBodyCompletionProposalComputerTest extends TestCase {
     for (ICompletionProposal actualCompletion : actualCompletions) {
       assertTrue(actualCompletion instanceof JavaCompletionProposal);
       actualSet.add(((JavaCompletionProposal) actualCompletion).getReplacementString());
-      assertEquals("Expected Overwrite: " + numCharsToOverwrite + 
-          "Actual Overwrite: " + 
+      assertEquals("Expected Overwrite: " + numCharsToOverwrite +
+          "Actual Overwrite: " +
           ((JavaCompletionProposal) actualCompletion).getReplacementLength(),
           ((JavaCompletionProposal) actualCompletion).getReplacementLength(), numCharsToOverwrite);
     }
@@ -98,7 +99,7 @@ public class JsniMethodBodyCompletionProposalComputerTest extends TestCase {
     return (test.getClass().getCanonicalName() + "." + test.getName()).replace(
         '.', '_');
   }
-  
+
   // Validate all proposals for invocation index at end of second line.
   private static void validateExpectedProposals(IJavaProject javaProject,
       String fullyQualifiedClassName, String source,
@@ -106,7 +107,7 @@ public class JsniMethodBodyCompletionProposalComputerTest extends TestCase {
     validateExpectedProposals(javaProject, fullyQualifiedClassName, source, 1, 0,
         expectedProposals);
   }
-  
+
   /**
    *  If length of line at 'lineNum' is 'len', then validate all proposals for invocation
    *  index varying from '(len - numCharsCompleted)' to 'len'.
@@ -118,15 +119,15 @@ public class JsniMethodBodyCompletionProposalComputerTest extends TestCase {
 
     ICompilationUnit iCompilationUnit = JavaProjectUtilities.createCompilationUnit(
         javaProject, fullyQualifiedClassName, source);
-    CompilationUnitEditor cuEditor = (CompilationUnitEditor) EditorUtility.openInEditor(iCompilationUnit);
+    CompilationUnitEditor cuEditor = (CompilationUnitEditor) JavaUI.openInEditor(iCompilationUnit);
 
     ISourceViewer viewer = cuEditor.getViewer();
     IDocument document = viewer.getDocument();
 
     IRegion lineInformation = document.getLineInformation(lineNum);
     JsniMethodBodyCompletionProposalComputer jcpc = new JsniMethodBodyCompletionProposalComputer();
-    
-    for (int numCharsToOverwrite = 0; numCharsToOverwrite <= numCharsCompleted; 
+
+    for (int numCharsToOverwrite = 0; numCharsToOverwrite <= numCharsCompleted;
         numCharsToOverwrite++){
       int invocationOffset = lineInformation.getOffset()
           + lineInformation.getLength() - numCharsToOverwrite;
@@ -134,7 +135,7 @@ public class JsniMethodBodyCompletionProposalComputerTest extends TestCase {
           viewer, invocationOffset, cuEditor);
       List<ICompletionProposal> completions = jcpc.computeCompletionProposals(
           context, monitor);
-  
+
       int indentationUnits = JsniMethodBodyCompletionProposalComputer.measureIndentationUnits(
           document, lineNum, lineInformation.getOffset(), javaProject);
       List<String> expected = createJsniBlocks(javaProject, indentationUnits,
@@ -146,7 +147,7 @@ public class JsniMethodBodyCompletionProposalComputerTest extends TestCase {
       assertExpectedProposals(expected, completions, numCharsToOverwrite);
     }
   }
-  
+
   /**
    * Constructs source for testing JSNI method body completion
    * with partial braces and comments. An example of source with
@@ -163,31 +164,31 @@ public class JsniMethodBodyCompletionProposalComputerTest extends TestCase {
    // public native void bar2()/*-{
    // /* A JSNI method body */
    // }-*/;
-  
-  private static int constructPartialBracesSource(String fullyQualifiedClassName, 
-      StringBuilder source, int numCharsCompleted, Boolean isCommentAbove, 
+
+  private static int constructPartialBracesSource(String fullyQualifiedClassName,
+      StringBuilder source, int numCharsCompleted, Boolean isCommentAbove,
       Boolean isCommentBelow) {
-    
-    // invocationLineNum is line number where auto-complete is to be tested. 
+
+    // invocationLineNum is line number where auto-complete is to be tested.
     int invocationLineNum = 1;
     String str = "/*-{".substring(0, numCharsCompleted) + "\n";
-    
+
     source.append("class " + fullyQualifiedClassName + "{\n");
-    
+
     if (isCommentAbove){
       source.append("  /* Global comment above with brackets () */\n");
       source.append("  // Single line global comment ()\n");
       invocationLineNum += 2;
     }
-    
+
     // The line where auto-completion is tested.
     source.append("  public native int bar()");
     source.append(str);
-    
+
     if (isCommentBelow){
       source.append("  /* Global comment below with brackets () */\n");
     }
-    
+
     source.append("  public  void bar1(){\n");
     source.append("  /* A java method body */\n");
     source.append("  }\n");
@@ -195,14 +196,14 @@ public class JsniMethodBodyCompletionProposalComputerTest extends TestCase {
     source.append("  /* A JSNI method body */\n");
     source.append("  }-*/;\n");
     source.append("}\n");
-    
+
     return invocationLineNum;
-    
+
   }
 
   /**
    * Test that we do not generate any proposals for our boundary conditions.
-   * 
+   *
    * @throws CoreException
    * @throws BadLocationException
    */
@@ -230,7 +231,7 @@ public class JsniMethodBodyCompletionProposalComputerTest extends TestCase {
 
     ICompilationUnit iCompilationUnit = JavaProjectUtilities.createCompilationUnit(
         javaProject, "A", source.toString());
-    CompilationUnitEditor cuEditor = (CompilationUnitEditor) EditorUtility.openInEditor(iCompilationUnit);
+    CompilationUnitEditor cuEditor = (CompilationUnitEditor) JavaUI.openInEditor(iCompilationUnit);
 
     ISourceViewer viewer = cuEditor.getViewer();
     IDocument document = viewer.getDocument();
@@ -267,7 +268,7 @@ public class JsniMethodBodyCompletionProposalComputerTest extends TestCase {
     sourceI.append("  private native void d()\n");
     iCompilationUnit = JavaProjectUtilities.createCompilationUnit(javaProject,
         "B", sourceI.toString());
-    cuEditor = (CompilationUnitEditor) EditorUtility.openInEditor(iCompilationUnit);
+    cuEditor = (CompilationUnitEditor) JavaUI.openInEditor(iCompilationUnit);
 
     viewer = cuEditor.getViewer();
     document = viewer.getDocument();
@@ -433,7 +434,7 @@ public class JsniMethodBodyCompletionProposalComputerTest extends TestCase {
 
   public void testComputeCompletionsProposalsWhenBracesArePresent()
       throws CoreException, BadLocationException {
-    IJavaProject javaProject = 
+    IJavaProject javaProject =
         JavaProjectUtilities.createJavaProject(synthesizeProjectNameForThisTest(this));
 
     StringBuilder aSource = new StringBuilder();
@@ -452,79 +453,79 @@ public class JsniMethodBodyCompletionProposalComputerTest extends TestCase {
 
     validateExpectedProposals(javaProject, "B", bSource.toString());
   }
-  
+
   public void testComputeCompletionsProposalsWithPartialBraces()
       throws CoreException, BadLocationException {
-    IJavaProject javaProject = 
+    IJavaProject javaProject =
         JavaProjectUtilities.createJavaProject(synthesizeProjectNameForThisTest(this));
 
     String className = "A";
-    
+
     for (int numCharsCompleted = 0; numCharsCompleted <= 4; numCharsCompleted++){
-      StringBuilder source = new StringBuilder();      
-      int invocationLineNum = constructPartialBracesSource(className, source, numCharsCompleted, 
+      StringBuilder source = new StringBuilder();
+      int invocationLineNum = constructPartialBracesSource(className, source, numCharsCompleted,
           false, false);
-      
-      validateExpectedProposals(javaProject, className, source.toString(), invocationLineNum, 
+
+      validateExpectedProposals(javaProject, className, source.toString(), invocationLineNum,
           numCharsCompleted, "", "return this.bar();", "return this.bar;");
-      
+
       className = className.concat("A");
     }
   }
 
   public void testComputeCompletionsProposalsWithPartialBracesAndCommentsBelow()
       throws CoreException, BadLocationException {
-    IJavaProject javaProject = 
+    IJavaProject javaProject =
         JavaProjectUtilities.createJavaProject(synthesizeProjectNameForThisTest(this));
 
     String className = "A";
-    
+
     for (int numCharsCompleted = 0; numCharsCompleted <= 4; numCharsCompleted++){
-      StringBuilder source = new StringBuilder();      
-      int invocationLineNum = constructPartialBracesSource(className, source, numCharsCompleted, 
+      StringBuilder source = new StringBuilder();
+      int invocationLineNum = constructPartialBracesSource(className, source, numCharsCompleted,
           false, true);
-      
-      validateExpectedProposals(javaProject, className, source.toString(), invocationLineNum, 
+
+      validateExpectedProposals(javaProject, className, source.toString(), invocationLineNum,
           numCharsCompleted, "", "return this.bar();", "return this.bar;");
-      
+
       className = className.concat("A");
     }
   }
 
   public void testComputeCompletionsProposalsWithPartialBracesAndCommentsAbove()
       throws CoreException, BadLocationException {
-    IJavaProject javaProject = 
+    IJavaProject javaProject =
         JavaProjectUtilities.createJavaProject(synthesizeProjectNameForThisTest(this));
 
     String className = "A";
-    
+
     for (int numCharsCompleted = 0; numCharsCompleted <= 4; numCharsCompleted++){
-      StringBuilder source = new StringBuilder();      
-      int invocationLineNum = constructPartialBracesSource(className, source, numCharsCompleted, 
+      StringBuilder source = new StringBuilder();
+      int invocationLineNum = constructPartialBracesSource(className, source, numCharsCompleted,
           true, false);
-      
-      validateExpectedProposals(javaProject, className, source.toString(), invocationLineNum, 
+
+      validateExpectedProposals(javaProject, className, source.toString(), invocationLineNum,
           numCharsCompleted, "", "return this.bar();", "return this.bar;");
-      
+
       className = className.concat("A");
     }
   }
-  
+
   public void testComputeCompletionsProposalsWithPartialBracesAndCommentsOnBothSides()
       throws CoreException, BadLocationException {
-    IJavaProject javaProject = 
+    IJavaProject javaProject =
         JavaProjectUtilities.createJavaProject(synthesizeProjectNameForThisTest(this));
 
     String className = "A";
-    
+
     for (int numCharsCompleted = 0; numCharsCompleted <= 4; numCharsCompleted++){
-      StringBuilder source = new StringBuilder();      
-      int invocationLineNum = constructPartialBracesSource(className, source, numCharsCompleted, 
+      StringBuilder source = new StringBuilder();
+      int invocationLineNum = constructPartialBracesSource(className, source, numCharsCompleted,
           true, true);
-      
-      validateExpectedProposals(javaProject, className, source.toString(), invocationLineNum, 
+
+      validateExpectedProposals(javaProject, className, source.toString(), invocationLineNum,
           numCharsCompleted, "", "return this.bar();", "return this.bar;");
-      
+
       className = className.concat("A");
     }
   }

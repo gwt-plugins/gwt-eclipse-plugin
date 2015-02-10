@@ -25,7 +25,7 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 /**
  * Helper class for launch processor tests. This is to be used via composition.
  * It contains common objects for most launch processor tests.
- * 
+ *
  * This assumes the default SDKs are set up already.
  */
 public class LaunchConfigurationProcessorTestingHelper {

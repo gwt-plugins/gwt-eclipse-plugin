@@ -53,6 +53,7 @@
     <module>plugins/com.google.gwt.eclipse.libs</module>
     <module>plugins/com.google.gwt.eclipse.oophm</module>
     <module>plugins/com.google.gwt.eclipse.oophm.test</module>
+    <module>plugins/com.google.gwt.eclipse.testing</module>
   </modules>
 
   <properties>

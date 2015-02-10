@@ -14,12 +14,14 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.runtime;
 
+import com.google.gcp.eclipse.testing.ProjectTestUtil;
 import com.google.gdt.eclipse.core.JavaProjectUtilities;
-import com.google.gdt.eclipse.core.TestUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkClasspathContainer;
 import com.google.gdt.eclipse.core.sdk.SdkClasspathContainer.Type;
 import com.google.gdt.eclipse.core.sdk.SdkSet;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
+import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
+import com.google.gwt.eclipse.testing.TestUtilities;
 
 import junit.framework.TestCase;
 
@@ -38,7 +40,7 @@ import java.util.Arrays;
 
 /**
  * Tests the {@link GWTRuntime} class.
- * 
+ *
  * These tests assume you have the GWT source code checked out. Some tests could fail otherwise.
  */
 public class GWTRuntimeTest extends TestCase {
@@ -51,7 +53,7 @@ public class GWTRuntimeTest extends TestCase {
    * Tests that {@link GWTRuntime#findSdkFor(IJavaProject)} returns a valid
    * {@link com.google.gdt.eclipse.core.sdk.Sdk} when the default classpath
    * containers for jars are being used on the project classpath.
-   * 
+   *
    * @throws Exception
    */
   public void testFindSdkFor_DefaultClasspathContainers_UsingJars() throws Exception {
@@ -63,7 +65,7 @@ public class GWTRuntimeTest extends TestCase {
    * Tests that {@link GWTRuntime#findSdkFor(IJavaProject)} returns a valid
    * {@link com.google.gdt.eclipse.core.sdk.Sdk} when named classpath containers
    * for jars are being used on the project classpath.
-   * 
+   *
    * @throws Exception
    */
   public void testFindSdkFor_DefaultClasspathContainers_UsingProjects() throws Exception {
@@ -83,8 +85,9 @@ public class GWTRuntimeTest extends TestCase {
       IJavaModel javaModel = JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
       IJavaProject javaProject = javaModel.getJavaProject("gwt-dev");
       GWTRuntime sdk = GWTRuntime.findSdkFor(javaProject);
+      IClasspathEntry[] entries = sdk.getClasspathEntries();
       assertEquals(new IClasspathEntry[] {JavaCore.newSourceEntry(javaModel.getJavaProject(
-          "gwt-dev").getPath().append("core/src"))}, sdk.getClasspathEntries());
+          "gwt-dev").getPath().append("core/src"))}, entries);
     } finally {
       GwtRuntimeTestUtilities.removeGwtSourceProjects();
     }
@@ -93,7 +96,7 @@ public class GWTRuntimeTest extends TestCase {
   /**
    * Tests that we find an {@link com.google.gdt.eclipse.core.sdk.Sdk} on the
    * gwt-user project.
-   * 
+   *
    * @throws Exception
    */
   public void testFindSdkFor_GwtUserProject() throws Exception {
@@ -134,7 +137,7 @@ public class GWTRuntimeTest extends TestCase {
    * Tests that {@link GWTRuntime#findSdkFor(IJavaProject)} returns a valid
    * {@link com.google.gdt.eclipse.core.sdk.Sdk} when named classpath containers
    * for jars are being used on the project classpath.
-   * 
+   *
    * @throws Exception
    */
   public void testFindSdkFor_NamedClasspathContainers_UsingProjects() throws Exception {
@@ -157,7 +160,7 @@ public class GWTRuntimeTest extends TestCase {
    * Tests that {@link GWTRuntime#findSdkFor(IJavaProject)} returns a valid
    * {@link com.google.gdt.eclipse.core.sdk.Sdk} when raw projects are being
    * used on the project classpath.
-   * 
+   *
    * @throws Exception
    */
   public void testFindSdkFor_RawProjects() throws Exception {
@@ -168,6 +171,7 @@ public class GWTRuntimeTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
+    ProjectTestUtil.setAutoBuilding(false);
     TestUtilities.setUp();
     GwtRuntimeTestUtilities.addDefaultRuntime();
   }

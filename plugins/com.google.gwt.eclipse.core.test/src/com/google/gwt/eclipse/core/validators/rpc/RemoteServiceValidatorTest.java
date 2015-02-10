@@ -19,7 +19,7 @@ import com.google.gdt.eclipse.core.JavaProjectUtilities;
 import com.google.gdt.eclipse.core.projects.ProjectUtilities;
 import com.google.gdt.eclipse.core.validation.ValidationResult;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
-import com.google.gwt.eclipse.core.runtime.GwtRuntimeTestUtilities;
+import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
 
 import junit.framework.TestCase;
 

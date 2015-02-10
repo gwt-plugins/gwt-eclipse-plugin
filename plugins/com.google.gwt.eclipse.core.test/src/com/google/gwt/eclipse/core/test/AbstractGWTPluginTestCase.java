@@ -14,19 +14,20 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.test;
 
-import com.google.gdt.eclipse.core.TestUtilities;
 import com.google.gdt.eclipse.core.jobs.JobsUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkClasspathContainer;
 import com.google.gdt.eclipse.core.sdk.SdkManager;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
-import com.google.gwt.eclipse.core.runtime.GwtRuntimeTestUtilities;
 import com.google.gwt.eclipse.core.runtime.tools.NewProjectCreatorTool;
 import com.google.gwt.eclipse.core.util.Util;
+import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
+import com.google.gwt.eclipse.testing.TestUtilities;
 
 import junit.framework.TestCase;
 
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.internal.resources.File;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IProject;
@@ -297,8 +298,9 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
     String gwtDevProjectName = "gwt-dev-" + platform;
 
     // Get the path to the Eclipse project files for GWT
-    IPath gwtProjectsDir = workspace.getPathVariableManager().getValue(
-        "GWT_ROOT").append("eclipse");
+    IPath gwtProjectsDir =
+        URIUtil.toPath(workspace.getPathVariableManager().getURIValue("GWT_ROOT"))
+            .append("eclipse");
 
     // Import gwt-dev
     IPath gwtDevDir = gwtProjectsDir.append("dev").append(platform);

@@ -20,6 +20,7 @@ import com.google.gdt.eclipse.core.sdk.SdkSet;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.test.AbstractGWTPluginTestCase;
 import com.google.gwt.eclipse.core.util.Util;
+import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;

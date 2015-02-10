@@ -7,4 +7,5 @@ Bundle-Vendor: Google, Inc.
 Bundle-Version: 0.0.0.qualifier
 Fragment-Host: com.google.gdt.eclipse.suite
 Require-Bundle: com.google.gcp.eclipse.testing,
+ com.google.gwt.eclipse.testing,
  org.junit

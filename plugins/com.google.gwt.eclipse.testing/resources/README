@@ -1,0 +1,10 @@
+The GWT SDK (gwt-<major>.<minor>.<micro>.zip) is simply an SDK downloaded from
+the Google website (currently http://www.gwtproject.org/download.html).
+
+The GWT development root zip file (gwt-root.zip) is obtained by cloning the
+GWT development repository and then zipping it up:
+$ mkdir gwt_root
+$ cd gwt_root
+$ git clone https://gwt.googlesource.com/gwt trunk
+$ cd ..
+$ zip -r gwt-root gwt_root/trunk/dev gwt_root/trunk/eclipse gwt_root/trunk/tools gwt_root/trunk/user

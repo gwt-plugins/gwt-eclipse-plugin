@@ -14,13 +14,13 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.launch.processors;
 
-import com.google.gdt.eclipse.core.TestUtilities;
 import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorTestingHelper;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.core.properties.WebAppProjectProperties;
 import com.google.gwt.eclipse.core.projects.GwtEnablingProjectCreationParticipant;
-import com.google.gwt.eclipse.core.runtime.GwtRuntimeTestUtilities;
+import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
+import com.google.gwt.eclipse.testing.TestUtilities;
 
 import junit.framework.TestCase;
 

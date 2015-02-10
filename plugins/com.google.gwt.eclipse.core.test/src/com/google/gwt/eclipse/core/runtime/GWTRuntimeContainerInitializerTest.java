@@ -19,6 +19,7 @@ import com.google.gdt.eclipse.core.sdk.SdkSet;
 import com.google.gdt.eclipse.core.sdk.UpdateProjectSdkCommand.UpdateType;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateProjectSdkCommand;
+import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;

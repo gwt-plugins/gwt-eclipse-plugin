@@ -37,6 +37,7 @@ import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitDocumentProvider;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitDocumentProvider.ProblemAnnotation;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.javaeditor.EditorUtility;
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.text.edits.InsertEdit;
@@ -65,10 +66,9 @@ public class JavaCompilationParticipantTest extends AbstractGWTPluginTestCase {
     assertEquals(1, markers.length);
 
     ICompilationUnit cu = testClass.getCompilationUnit();
-    CompilationUnitEditor editor = null;
 
     // Open the test class in the editor
-    editor = (CompilationUnitEditor) EditorUtility.openInEditor(cu);
+    CompilationUnitEditor editor = (CompilationUnitEditor) JavaUI.openInEditor(cu);
     IEditorInput editorInput = editor.getEditorInput();
 
     // Edit the document to create a new error (add 'foobar' to the front of
@@ -168,7 +168,7 @@ public class JavaCompilationParticipantTest extends AbstractGWTPluginTestCase {
     CompilationUnitEditor editor = null;
 
     try {
-      editor = (CompilationUnitEditor) EditorUtility.openInEditor(cu);
+      editor = (CompilationUnitEditor) JavaUI.openInEditor(cu);
       IEditorInput editorInput = editor.getEditorInput();
 
       JobsUtilities.waitForIdle();

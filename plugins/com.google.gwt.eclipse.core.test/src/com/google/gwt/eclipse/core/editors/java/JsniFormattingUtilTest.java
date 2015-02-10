@@ -19,11 +19,11 @@ import com.google.gwt.eclipse.core.test.AbstractGWTPluginTestCase;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
-import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
-import org.eclipse.jdt.internal.ui.javaeditor.EditorUtility;
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 import java.util.Map;
@@ -40,25 +40,25 @@ public class JsniFormattingUtilTest extends AbstractGWTPluginTestCase {
   public void testFormat() throws Exception {
 
     // Use GWT indentation settings
-    Map javaPrefs = JavaCore.getDefaultOptions();
+    Map<String, Object> javaPrefs = JavaCore.getDefaultOptions();
     javaPrefs.put(DefaultCodeFormatterConstants.FORMATTER_INDENTATION_SIZE, "2");
     javaPrefs.put(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR, JavaCore.SPACE);
     javaPrefs.put(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE, "2");
     javaPrefs.put(DefaultCodeFormatterConstants.FORMATTER_BLANK_LINES_AT_BEGINNING_OF_METHOD_BODY, "0");
-    
-    Map javaScriptPrefs = JavaScriptCore.getDefaultOptions();
+
+    Map<String, Object> javaScriptPrefs = JavaScriptCore.getDefaultOptions();
     javaScriptPrefs.put(org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants.FORMATTER_INDENTATION_SIZE, "2");
     javaScriptPrefs.put(org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR, JavaScriptCore.SPACE);
     javaScriptPrefs.put(org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE, "2");
     javaScriptPrefs.put(org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants.FORMATTER_BLANK_LINES_AT_BEGINNING_OF_METHOD_BODY, "0");
-    
+
     // Get the IDocument for the test class
     ICompilationUnit cu = testClass.getCompilationUnit();
 
-    CompilationUnitEditor editor = null;
+    AbstractTextEditor editor = null;
 
     try {
-      editor = (CompilationUnitEditor) EditorUtility.openInEditor(cu);
+      editor = (AbstractTextEditor) JavaUI.openInEditor(cu);
       IEditorInput editorInput = editor.getEditorInput();
       IDocument document = editor.getDocumentProvider().getDocument(editorInput);
 

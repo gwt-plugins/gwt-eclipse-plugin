@@ -17,13 +17,13 @@ package com.google.gdt.eclipse.suite.launch.processors;
 import com.google.appengine.eclipse.core.projects.GaeEnablingProjectCreationParticipant;
 import com.google.gcp.eclipse.testing.GaeProjectTestUtil;
 import com.google.gdt.eclipse.core.ClasspathUtilities.ClassFinder;
-import com.google.gdt.eclipse.core.TestUtilities;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorTestingHelper;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.core.properties.WebAppProjectProperties;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.projects.GwtEnablingProjectCreationParticipant;
-import com.google.gwt.eclipse.core.runtime.GwtRuntimeTestUtilities;
+import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
+import com.google.gwt.eclipse.testing.TestUtilities;
 
 import junit.framework.TestCase;
 

@@ -1,9 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: GWT Plugin Test Fragment
+Bundle-Name: GWT Core Test Fragment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: com.google.gwt.eclipse.core.test
+Bundle-Vendor: Google, Inc.
 Bundle-Version: 0.0.0.qualifier
 Fragment-Host: com.google.gwt.eclipse.core
-Require-Bundle: org.eclipse.m2e.core,
+Require-Bundle: com.google.gcp.eclipse.testing,
+ com.google.gwt.eclipse.testing,
+ org.eclipse.m2e.core,
  org.junit

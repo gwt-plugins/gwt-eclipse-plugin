@@ -17,6 +17,7 @@ package com.google.gwt.eclipse.core.runtime;
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
 import com.google.gwt.eclipse.core.test.AbstractGWTPluginTestCase;
 import com.google.gwt.eclipse.core.util.Util;
+import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
 
 import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -74,7 +75,8 @@ public class GWTJarsRuntimeTest extends AbstractGWTPluginTestCase {
 
       // Verify that our classpath entries point at the GWT javadoc.
       IClasspathAttribute[] extraAttributes = gwtClasspathEntry.getExtraAttributes();
-      assertTrue(extraAttributes.length > 0);
+      assertTrue("No extra attributes seen for classpath entry: " + gwtClasspathEntry,
+          extraAttributes.length > 0);
       assertEquals(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME,
           extraAttributes[0].getName());
 
@@ -83,9 +85,9 @@ public class GWTJarsRuntimeTest extends AbstractGWTPluginTestCase {
        * Strangely, the values of these classpath attributes are specified as "file://" urls.
        */
       File jdLocation = new File(new URL(extraAttributes[0].getValue()).getFile());
-      assertTrue(jdLocation.exists());
+      assertTrue("Javadoc file does not exist", jdLocation.exists());
       List<String> files1 = Arrays.asList(jdLocation.list());
-      assertTrue(files1.contains("index.html"));
+      assertTrue("Javadoc file is not an index.html file.", files1.contains("index.html"));
     }
   }
 

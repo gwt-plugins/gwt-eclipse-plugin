@@ -14,11 +14,14 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.runtime;
 
-import com.google.gdt.eclipse.core.TestUtilities;
+import com.google.gcp.eclipse.testing.ProjectTestUtil;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
+import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
+import com.google.gwt.eclipse.testing.TestUtilities;
 
 import junit.framework.TestCase;
 
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
 /*
@@ -32,19 +35,17 @@ public class GwtCapabilityCheckerTest extends TestCase {
 
   // TODO(nbashirbello): Enable this test when Pulse build agents can run jdk-7
   public void testCapabilitiesOfGwtProjectsRuntime() throws CoreException {
-    // GwtRuntimeTestUtilities.importGwtSourceProjects();
-    // try {
-    // GWTRuntime gwtRuntime = GWTRuntime.getFactory().newInstance(
-    // "GWT Projects",
-    // ResourcesPlugin.getWorkspace().getRoot().getLocation());
-    // assertLatestGwtCapabilities(gwtRuntime);
-    // } finally {
-    // GwtRuntimeTestUtilities.removeGwtSourceProjects();
-    // }
+//    GwtRuntimeTestUtilities.importGwtSourceProjects();
+//    try {
+//      GWTRuntime gwtRuntime = GWTRuntime.getFactory().newInstance(
+//          "GWT Projects", ResourcesPlugin.getWorkspace().getRoot().getLocation());
+//      assertLatestGwtCapabilities(gwtRuntime);
+//    } finally {
+//      GwtRuntimeTestUtilities.removeGwtSourceProjects();
+//    }
   }
 
   public void testCapabilitiesOfLatestGwtSdk() throws Exception {
-    GwtRuntimeTestUtilities.addDefaultRuntime();
     try {
       assertLatestGwtCapabilities(GWTPreferences.getDefaultRuntime());
     } finally {
@@ -54,12 +55,20 @@ public class GwtCapabilityCheckerTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
+    super.setUp();
+    ProjectTestUtil.setAutoBuilding(false);
     TestUtilities.setUp();
+    GwtRuntimeTestUtilities.addDefaultRuntime();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    ProjectTestUtil.setAutoBuilding(true);
+    super.tearDown();
   }
 
   private void assertLatestGwtCapabilities(GWTRuntime gwtRuntime) {
     GwtCapabilityChecker checker = new GwtCapabilityChecker(gwtRuntime);
     assertTrue(checker.doesCompilerAllowMultipleModules());
   }
-
 }

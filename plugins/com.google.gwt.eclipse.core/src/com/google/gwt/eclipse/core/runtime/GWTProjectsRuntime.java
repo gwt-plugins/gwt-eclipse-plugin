@@ -396,7 +396,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
           "Path variable 'GWT_ROOT' is not defined");
     }
 
-    IPath gwtRoot = URIUtil.toPath(pathVariableManager.getURIValue("GWT_ROOT"));
+    IPath gwtRoot = URIUtil.toPath(gwtUri);
     if (gwtRoot == null) {
       return new Status(IStatus.ERROR, GWTPlugin.PLUGIN_ID,
           "Path variable 'GWT_ROOT' is not defined");
