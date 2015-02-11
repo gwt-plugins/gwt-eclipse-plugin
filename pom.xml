@@ -8,6 +8,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>gpe-repo</module>
     <module>features/com.google.appengine.eclipse.wtp.maven.feature</module>
     <module>features/com.google.gdt.eclipse.mobile.android.feature</module>
     <module>features/com.google.gdt.eclipse.suite.e44.feature</module>
@@ -15,6 +16,7 @@
     <module>plugins/com.google.appengine.eclipse.core.test</module>
     <module>plugins/com.google.appengine.eclipse.core.test.swtbot</module>
     <module>plugins/com.google.appengine.eclipse.datatools</module>
+    <module>plugins/com.google.appengine.eclipse.dependencies</module>
     <module>plugins/com.google.appengine.eclipse.webtools</module>
     <module>plugins/com.google.appengine.eclipse.webtools.test</module>
     <module>plugins/com.google.appengine.eclipse.wtp</module>
