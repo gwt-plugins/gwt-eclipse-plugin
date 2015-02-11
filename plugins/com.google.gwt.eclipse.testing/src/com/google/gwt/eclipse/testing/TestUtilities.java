@@ -15,7 +15,9 @@
 package com.google.gwt.eclipse.testing;
 
 import com.google.gcp.eclipse.testing.TestEnvironmentUtil;
+import com.google.gcp.eclipse.testing.TestUtil;
 import com.google.gdt.eclipse.core.CorePluginLog;
+import com.google.gdt.eclipse.suite.GdtPlugin;
 
 import org.eclipse.core.resources.IPathVariableManager;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -36,6 +38,10 @@ public class TestUtilities {
   }
 
   public static void setUp() throws CoreException {
+    // Need to wait until ProjectUtilities.setWebAppProjectCreatorFactory() is invoked.
+    while (GdtPlugin.getDefault() == null) {
+      TestUtil.delay(100);
+    }
     setupWorkspaceVariables();
   }
 

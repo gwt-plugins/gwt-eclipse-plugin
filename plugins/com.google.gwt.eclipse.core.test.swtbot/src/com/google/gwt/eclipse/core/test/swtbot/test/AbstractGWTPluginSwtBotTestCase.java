@@ -18,15 +18,12 @@ import com.google.gdt.eclipse.swtbot.SwtBotProjectActions;
 import com.google.gdt.eclipse.swtbot.SwtBotSdkActions;
 import com.google.gdt.eclipse.swtbot.SwtBotTestingUtilities;
 import com.google.gdt.eclipse.swtbot.SwtBotWorkbenchActions;
+import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
 
 import junit.framework.TestCase;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
-import org.osgi.framework.Version;
 
 /**
  * Abstract class with utility methods for running SWTBot unit tests.
@@ -50,7 +47,6 @@ public class AbstractGWTPluginSwtBotTestCase extends TestCase {
    */
   protected void givenMavenGwtProjectIsCreated(String projectName) {
     closeDialogsIfNeedBe();
-    configureEclipsePreferences();
 
     // Given a gwt sdk is setup
     SwtBotSdkActions.setupGwtSdk(bot);
@@ -72,30 +68,6 @@ public class AbstractGWTPluginSwtBotTestCase extends TestCase {
     SwtBotWorkbenchActions.waitForIdle(getSwtWorkbenchBot());
   }
 
-  private void configureEclipsePreferences() {
-    Version version = Platform.getProduct().getDefiningBundle().getVersion();
-    int major = version.getMajor();
-    int minor = version.getMinor();
-
-    // Only configure this in Juno.
-    if (major == 4 && minor == 2) {
-      // Configure Juno JDK compiler compliance to 1.7
-      // Preferences > Java > Compiler > JDK Compliance Group, Compiler compliance Level: 1.7
-      SwtBotWorkbenchActions.openPreferencesDialog(bot);
-
-      SWTBotTree projectSelectionTree = bot.tree();
-      SWTBotTreeItem compilerItem =
-          SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, "Java", "Compiler")
-              .expand();
-      SwtBotTestingUtilities.selectTreeItem(bot, compilerItem, "Compiler");
-
-      // Set JDK Compliance to Java 1.7
-      bot.comboBox().setSelection("1.7");
-      bot.button("OK").click();
-      bot.sleep(500);
-    }
-  }
-
   /**
    * Create a basic GWT project.
    *
@@ -103,7 +75,6 @@ public class AbstractGWTPluginSwtBotTestCase extends TestCase {
    */
   protected void givenProjectIsCreated(String projectName) {
     closeDialogsIfNeedBe();
-    configureEclipsePreferences();
 
     // Given a gwt sdk is setup
     SwtBotSdkActions.setupGwtSdk(bot);
@@ -145,6 +116,7 @@ public class AbstractGWTPluginSwtBotTestCase extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
+    GwtRuntimeTestUtilities.addDefaultRuntime();
     SwtBotTestingUtilities.setUp(bot);
   }
 

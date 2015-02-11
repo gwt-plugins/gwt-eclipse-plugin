@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.editors.java;
 
-import com.google.gcp.eclipse.testing.TestUtil;
 import com.google.gdt.eclipse.core.JavaProjectUtilities;
 import com.google.gdt.eclipse.core.pde.BundleUtilities;
 import com.google.gwt.eclipse.core.GWTPlugin;
@@ -50,6 +49,8 @@ import java.util.TreeSet;
  */
 @SuppressWarnings("restriction")
 public class JsniMethodBodyCompletionProposalComputerTest extends TestCase {
+  // NOTE: This test is disabled in the pom.xml file.
+  // See https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329 for details.
   /**
    * Images that the JSNI completion proposal computer depends on.
    */

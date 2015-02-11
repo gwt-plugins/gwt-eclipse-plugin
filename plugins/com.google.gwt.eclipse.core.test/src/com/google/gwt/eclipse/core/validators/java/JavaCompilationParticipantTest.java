@@ -36,7 +36,6 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitDocumentProvider;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitDocumentProvider.ProblemAnnotation;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
-import org.eclipse.jdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IAnnotationModel;
@@ -55,6 +54,8 @@ import java.util.List;
  */
 @SuppressWarnings("restriction")
 public class JavaCompilationParticipantTest extends AbstractGWTPluginTestCase {
+  // NOTE: This test is disabled in the pom.xml file.
+  // See https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329 for details.
 
   private TestClass testClass;
 

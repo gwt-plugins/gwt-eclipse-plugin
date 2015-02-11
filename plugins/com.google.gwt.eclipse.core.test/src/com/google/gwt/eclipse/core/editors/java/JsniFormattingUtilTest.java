@@ -33,6 +33,8 @@ import java.util.Map;
  */
 @SuppressWarnings("restriction")
 public class JsniFormattingUtilTest extends AbstractGWTPluginTestCase {
+  // NOTE: This test is disabled in the pom.xml file.
+  // See https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329 for details.
 
   private TestClass testClass;
 
