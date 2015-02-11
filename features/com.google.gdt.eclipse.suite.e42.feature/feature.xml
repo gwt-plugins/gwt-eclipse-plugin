@@ -241,15 +241,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.suite.ext"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <!-- this plugin is labelled .e38 but it will work in versions >= 3.8 -->
-   <plugin
-         id="com.google.gdt.eclipse.suite.ext.e38"
+         id="com.google.gdt.eclipse.suite.update"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
