@@ -219,6 +219,7 @@ public class GaeSdk extends AbstractSdk {
       "geronimo-jpa_3.0_spec-1.1.1.jar", "geronimo-jta_1.1_spec-1.1.1.jar", "jdo2-api-2.3-eb.jar");
 
   private static final SdkFactory<GaeSdk> factory = new SdkFactory<GaeSdk>() {
+    @Override
     public GaeSdk newInstance(String name, IPath sdkHome) {
       return new GaeSdk(name, sdkHome);
     }
@@ -326,17 +327,8 @@ public class GaeSdk extends AbstractSdk {
   }
 
   public AppEngineBridge getAppEngineBridgeForDeploy() throws CoreException {
-    /**
-     * GAE SDK 1.4.3 includes support for deploying to appengine using oauth
-     * authentication. If the SDK this project is using is older than 1.4.3,
-     * use the appengine-tool-api jar bundled with GPE rather than the one
-     * in the GAE SDK.
-     */
-    if (SdkUtils.compareVersionStrings(getVersion(), "1.4.3") >= 0) {
-      return AppEngineBridgeFactory.getAppEngineBridge(getInstallationPath());
-    } else {
-      return AppEngineBridgeFactory.createBridgeWithBundledToolsJar(getInstallationPath());
-    }
+    // Only supports GAE SDK 1.4.3 and later.
+     return AppEngineBridgeFactory.getAppEngineBridge(getInstallationPath());
   }
 
   /**
@@ -353,6 +345,7 @@ public class GaeSdk extends AbstractSdk {
     return capabilities;
   }
 
+  @Override
   public IClasspathEntry[] getClasspathEntries() {
     try {
       AppEngineBridge appEngineBridge = AppEngineBridgeFactory.getAppEngineBridge(getInstallationPath());
@@ -423,6 +416,7 @@ public class GaeSdk extends AbstractSdk {
     return null;
   }
 
+  @Override
   public String getVersion() {
     try {
       AppEngineBridge bridge = getAppEngineBridge();
@@ -433,6 +427,7 @@ public class GaeSdk extends AbstractSdk {
     }
   }
 
+  @Override
   public File[] getWebAppClasspathFiles(IProject project) {
     try {
       AppEngineBridge appEngineBridge = AppEngineBridgeFactory.getAppEngineBridge(getInstallationPath());
@@ -486,6 +481,7 @@ public class GaeSdk extends AbstractSdk {
     return bridge.getWhiteList();
   }
 
+  @Override
   public IStatus validate() {
     try {
       // Additional validation
@@ -528,7 +524,7 @@ public class GaeSdk extends AbstractSdk {
           e.getTargetException());
     }
   }
-  
+
   private void logValidationException(Throwable t) {
     AppEngineCorePluginLog.logError(t, "GAE SDK " + getName() + " failed validation");
   }

@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -41,7 +41,7 @@ import java.util.Map;
 
 /**
  * The activator class controls the plug-in life cycle.
- * 
+ *
  */
 public class AppEngineCorePlugin extends AbstractGooglePlugin {
 
@@ -74,7 +74,7 @@ public class AppEngineCorePlugin extends AbstractGooglePlugin {
 
   /**
    * Returns the shared instance.
-   * 
+   *
    * @return the shared instance
    */
   public static AppEngineCorePlugin getDefault() {
@@ -82,23 +82,19 @@ public class AppEngineCorePlugin extends AbstractGooglePlugin {
   }
 
   public static String getVersion() {
-    return (String) getDefault().getBundle().getHeaders().get(Constants.BUNDLE_VERSION);
+    return getDefault().getBundle().getHeaders().get(Constants.BUNDLE_VERSION)
+;
   }
 
   /**
    * Reads the contents of appengine-api-proxy.jar from the root of the plugin's
    * jar, and makes a copy of the file in the plugin's state location.
-   * 
+   *
    * @throws IOException
    */
   private static void extractAppEngineProxyJar() throws IOException {
     extractJar(AppEngineCorePlugin.getDefault(), AppEngineBridge.APPENGINE_PROXY_JAR_NAME,
         AppEngineBridge.APPENGINE_PROXY_JAR_NAME);
-  }
-
-  private static void extractAppEngineToolsApiJar() throws IOException {
-    extractJar(AppEngineCorePlugin.getDefault(), "lib/" + AppEngineBridge.APPENGINE_TOOLS_JAR_NAME,
-        AppEngineBridge.APPENGINE_TOOLS_JAR_NAME);
   }
 
   private final WebInfFolderUpdater webInfFolderUpdater = new WebInfFolderUpdater() {
@@ -122,7 +118,7 @@ public class AppEngineCorePlugin extends AbstractGooglePlugin {
    * A bit of a hack to tell if we're running in development mode. If the
    * "proxy_bin" folder can be found at the plugin's root, then we're definitely
    * running in development mode.
-   * 
+   *
    * This method is useful for determining whether or not to load the bridge
    * implementation from appengine-api-proxy.jar, or proxy_bin.
    */
@@ -141,17 +137,16 @@ public class AppEngineCorePlugin extends AbstractGooglePlugin {
 
     if (!inDevelopmentMode()) {
       /*
-       * Extracts appengine-api-proxy.jar and appengine-tools-api.jar from the
+       * Extracts appengine-api-proxy.jar from the
        * plugin jar, and copies it into the plugin's state location, overwriting
        * any existing copy that may exist. We have to do this because
        * URLClassLoaders are not able to load classes from jars within jars.
-       * 
+       *
        * If the jar cannot be extracted, an IOException will be thrown, which
        * will escape and prevent this plugin from loading.
        */
       extractAppEngineProxyJar();
     }
-    extractAppEngineToolsApiJar();
 
     webInfFolderUpdater.start();
   }

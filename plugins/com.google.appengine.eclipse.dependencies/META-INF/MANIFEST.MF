@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ lib/appengine-tools-api.jar
+Bundle-ManifestVersion: 2
+Bundle-Name: Appengine Dependencies Plug-in
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: com.google.appengine.eclipse.dependencies;singleton:=true
+Bundle-Vendor: %providerName
+Bundle-Version: 0.0.0.qualifier
+Export-Package: com.google.appengine.tools.admin,
+ com.google.appengine.tools.info,
+ com.google.apphosting.runtime.security,
+ com.google.apphosting.utils.config

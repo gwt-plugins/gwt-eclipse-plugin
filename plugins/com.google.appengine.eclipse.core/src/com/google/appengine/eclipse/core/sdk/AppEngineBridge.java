@@ -146,8 +146,6 @@ public interface AppEngineBridge {
 
   String APPENGINE_PROXY_JAR_NAME = "appengine-sdk-proxy.jar";
 
-  String APPENGINE_TOOLS_JAR_NAME = "appengine-tools-api.jar";
-
   String MIN_VERSION_FOR_OPT_DATANUCLEUS_LIB = "1.6.4";
 
   IStatus deploy(IProgressMonitor monitor, DeployOptions options)

@@ -1,9 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: com.google.appengine.eclipse.core.AppEngineCorePlugin
-Bundle-ClassPath: .,
- appengine-sdk-proxy.jar,
- lib/appengine-tools-api.jar
+Bundle-ClassPath: .
 Bundle-Localization: plugin
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
@@ -32,7 +30,8 @@ Export-Package: com.google.appengine.eclipse.core,
  com.google.appengine.eclipse.core.sql,
  com.google.appengine.eclipse.core.validators,
  com.google.appengine.eclipse.core.validators.java
-Require-Bundle: com.google.gdt.eclipse.apiclientlib,
+Require-Bundle: com.google.appengine.eclipse.dependencies;resolution:=optional,
+ com.google.gdt.eclipse.apiclientlib,
  com.google.gdt.eclipse.core,
  com.google.gdt.eclipse.login,
  com.google.gdt.eclipse.maven,

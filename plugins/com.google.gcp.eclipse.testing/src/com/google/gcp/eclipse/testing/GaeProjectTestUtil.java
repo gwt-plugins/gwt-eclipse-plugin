@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -39,6 +40,9 @@ import java.io.FileNotFoundException;
  * Testing-related utility methods dealing with GAE SDKs.
  */
 public class GaeProjectTestUtil {
+  private static final String APPENGINE_DEPENDENCIES_PLUGIN_NAME =
+      "com.google.appengine.eclipse.dependencies";
+
   /**
    * Adds the default GAE SDK. Uses the path pointed to by the GAE_HOME environment variable if that
    * variable is set, otherwise installs an SDK from this bundle and sets the GAE_HOME environment
@@ -59,12 +63,21 @@ public class GaeProjectTestUtil {
       GaeSdk sdk = GaeSdk.getFactory().newInstance("Default GAE SDK", Path.fromOSString(gaeHome));
       IStatus status = sdk.validate();
       if (!status.isOK()) {
+        if (dependenciesPluginIsRunning()) {
+          throw new IllegalStateException("The " + APPENGINE_DEPENDENCIES_PLUGIN_NAME
+              + " plug-in  must not be in the running environment."
+              + "\nUse the launch configuration's 'Plug-ins' tab to disable it.");
+        }
         throw new CoreException(status);
       }
 
       sdkSet.add(sdk);
       GaePreferences.setSdks(sdkSet);
     }
+  }
+
+  private static boolean dependenciesPluginIsRunning() {
+    return Platform.getBundle(APPENGINE_DEPENDENCIES_PLUGIN_NAME) != null;
   }
 
   /**

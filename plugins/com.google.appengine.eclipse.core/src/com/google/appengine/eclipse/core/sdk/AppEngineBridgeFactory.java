@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
@@ -34,11 +33,11 @@ import java.util.Map;
 /**
  * A singleton class that is used to return bridge implementations for a
  * particular App Engine SDK location.
- * 
+ *
  * TODO: Need to have this class listen for App Engine SDK addition and removal
  * events, so that bridges can be removed when App Engine SDKs are removed, and
  * bridges can be created when App Engine SDKs are created.
- * 
+ *
  */
 public class AppEngineBridgeFactory {
   /**
@@ -100,39 +99,19 @@ public class AppEngineBridgeFactory {
     return bridgeCacheEntry.getAppEngineBridge();
   }
 
-  /**
-   * Creates an AppEngineBridge using classes from the bundled
-   * appengine-tools-api.jar. This is not cached, unlike
-   * getAppEngineBridge(IPath) above.
-   */
-  protected static AppEngineBridge createBridgeWithBundledToolsJar(
-      IPath sdkLocation) throws CoreException {
-
-    File apiToolsJar = AppEngineCorePlugin.getDefault().getStateLocation().append(
-        AppEngineBridge.APPENGINE_TOOLS_JAR_NAME).toFile();
-
-    return createBridge(sdkLocation, apiToolsJar, true);
-  }
-
-  private static AppEngineBridge createBridge(IPath sdkLocation)
-      throws CoreException {
-
+  private static AppEngineBridge createBridge(IPath sdkLocation) throws CoreException {
     File apiToolsJar = sdkLocation.append(GaeSdk.APPENGINE_TOOLS_API_JAR_PATH).toFile();
-
-    return createBridge(sdkLocation, apiToolsJar, false);
+    return createBridge(sdkLocation, apiToolsJar);
   }
 
   /**
    * Creates an AppEnginge bridge.
-   * 
+   *
    * @param sdkLocation The location of the sdk
    * @param apiToolsJar The location of the api-tools-jar
-   * @param doSetSdkRoot If true, will set the location of the sdk in the
-   *          api-tools-jar
    */
-  private static AppEngineBridge createBridge(IPath sdkLocation,
-      File apiToolsJar, boolean doSetSdkRoot) throws CoreException {
-
+  private static AppEngineBridge createBridge(IPath sdkLocation, File apiToolsJar)
+      throws CoreException {
     try {
       URL bridgeJarURL = null;
 
@@ -167,25 +146,11 @@ public class AppEngineBridgeFactory {
           apiToolsJar.toURI().toURL(), resolvedBridgeJarURL},
           AppEngineBridgeFactory.class.getClassLoader());
 
-      /*
-       * This is done for the bundled appengine-tools-api jar from GAE 1.4.3 for
-       * deploying projects with older SDKs. It needs to know where the rest of
-       * the SDK is, unlike the appengine-tool-api jar that comes with the older
-       * SDK which simply looks in its surrounding directories. See CL/20212038
-       */
-      if (doSetSdkRoot) {
-        Class<?> sdkInfoClass =
-            bridgeClassLoader.loadClass("com.google.appengine.tools.info.SdkInfo");
-        Method setSdkRoot = sdkInfoClass.getMethod("setSdkRoot", File.class);
-        Object sdkInfo = sdkInfoClass.newInstance();
-        setSdkRoot.invoke(sdkInfo, sdkLocation.toFile());
-      }
-
       Class<?> clazz =
           bridgeClassLoader.loadClass(
               "com.google.appengine.eclipse.core.proxy.AppEngineBridgeImpl");
-      // TODO(nhcohen): Uncomment the following line after Pulse advances to JDK7:
-      // bridgeClassLoader.close();
+      // TODO: Figure out why closing the loader causes PDE runs to fail.
+      //bridgeClassLoader.close();
       AppEngineBridge bridge = (AppEngineBridge) clazz.newInstance();
       return bridge;
     } catch (Throwable e) {

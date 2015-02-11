@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GAE Eclipse Plugin Test
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Comment: This plug-in is a singleton to avoid a circular dependency (com.google.gcp.eclipse.testing depends on com.google.appengine.eclipse.core)
+Comment: This testing plug-in is a non-fragment to avoid a circular dependency in the legacy build (com.google.gcp.eclipse.testing depends on com.google.appengine.eclipse.core)
 Bundle-SymbolicName: com.google.appengine.eclipse.core.test;singleton:=true
 Bundle-Vendor: Google, Inc.
 Bundle-Version: 0.0.0.qualifier
