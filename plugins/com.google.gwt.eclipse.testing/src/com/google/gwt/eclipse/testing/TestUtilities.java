@@ -56,7 +56,7 @@ public class TestUtilities {
   /**
    * Sets up workspace variables to point at the the {@code GWT_ROOT} and {@code GWT_TOOLS}
    * environment variables, which point at a local clone of the GWT git repository. If those
-   * environment variables are not set, extracts a snapshot of the GWT development environment that
+   * environment variables are not set, extracts a snapshot of the GWT source tree that
    * is bundled with this plug-in and sets the environment variables to point at it.
    */
   private static void setupWorkspaceVariables() throws CoreException {
