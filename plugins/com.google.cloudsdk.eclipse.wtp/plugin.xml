@@ -84,5 +84,20 @@
    <extension
          point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
    </extension>
+   <extension
+         point="org.eclipse.wst.server.ui.serverImages">
+      <image
+            icon="icons/cloud-sdk_16X16.png"
+            id="com.google.cloudsdk.image"
+            typeIds="com.google.cloudsdk.runtime.id1">
+      </image>
+   </extension>
+   <extension
+         point="org.eclipse.wst.common.project.facet.ui.images">
+      <image
+            path="icons/cloud-sdk_16X16.png"
+            facet="com.google.cloudsdk.facet">
+      </image>
+   </extension>
 
 </plugin>
