@@ -6,19 +6,19 @@
    <extension
          point="com.google.gdt.eclipse.core.deploymentParticipant">
       <deploymentParticipant
-            class="com.google.gdt.eclipse.suite.ext.update.GaeUsageTrackingDeploymentParticipant">
+            class="com.google.gdt.eclipse.suite.update.usage.GaeUsageTrackingDeploymentParticipant">
       </deploymentParticipant>
    </extension>
    <extension
          point="com.google.gdt.eclipse.managedapis.managedApiProjectInitializationCallback">
       <managedApiProjectInitializationCallback
-            class="com.google.gdt.eclipse.suite.ext.update.ManagedApiPing">
+            class="com.google.gdt.eclipse.suite.update.usage.ManagedApiPing">
       </managedApiProjectInitializationCallback>
    </extension>
    <extension
          point="org.eclipse.jdt.core.compilationParticipant">
       <compilationParticipant
-            class="com.google.gdt.eclipse.suite.ext.builders.UpdateTriggerCompilationParticipant"
+            class="com.google.gdt.eclipse.suite.update.builders.UpdateTriggerCompilationParticipant"
             createsProblems="false"
             id="com.google.gdt.eclipse.suite.updateTriggerCompilationParticipant">
       </compilationParticipant>
@@ -26,7 +26,7 @@
    <extension
          point="com.google.appengine.eclipse.core.logGaeStats">
       <LogGaeStats
-            class="com.google.gdt.eclipse.suite.ext.update.LogGaeStats">
+            class="com.google.gdt.eclipse.suite.update.usage.LogGaeStats">
       </LogGaeStats>
    </extension>
    <extension
@@ -46,7 +46,7 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="com.google.gdt.eclipse.suite.ext.ImportGaeDemoAppToolbarHandler"
+            defaultHandler="com.google.gdt.eclipse.suite.update.importer.ImportGaeDemoAppToolbarHandler"
             id="com.google.gdt.eclipse.suite.ext.importGaeDemo"
             name="Import App Engine Sample Apps">
       </command>
@@ -54,11 +54,11 @@
    <extension
          point="com.google.gdt.eclipse.appengine.swarm.endpointscallback">
       <endpointscallback
-            class="com.google.gdt.eclipse.suite.ext.update.EndpointsUsageReporter">
+            class="com.google.gdt.eclipse.suite.update.usage.EndpointsUsageReporter">
       </endpointscallback>
    </extension>
    <extension point="com.google.gdt.eclipse.drive.listener">
-      <listenerClass class="com.google.gdt.eclipse.suite.ext.update.AppsScriptImportReporter" />
+      <listenerClass class="com.google.gdt.eclipse.suite.update.usage.AppsScriptImportReporter" />
    </extension>
 
 </plugin>
