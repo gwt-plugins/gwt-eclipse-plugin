@@ -76,6 +76,9 @@
     <swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/${swtbotVersion}/</swtbot-repo.url>
 
     <comparator.repo>https://dl.google.com/eclipse/plugin/4.4</comparator.repo>
+
+    <!-- OS-specific JVM flags, empty for the default case but redefined below -->
+    <os-jvm-flags/>
   </properties>
 
   <repositories>
@@ -261,6 +264,9 @@
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-surefire-plugin</artifactId>
           <version>${tycho.version}</version>
+          <configuration>
+            <argLine>-Xms40m -Xmx1G ${os-jvm-flags}</argLine>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
@@ -289,4 +295,16 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <profiles>
+    <profile>
+      <id>macosx-jvm-flags</id>
+      <activation>
+        <os><family>mac</family></os>
+      </activation>
+      <properties>
+        <os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
+      </properties>
+    </profile>
+  </profiles>
 </project>
