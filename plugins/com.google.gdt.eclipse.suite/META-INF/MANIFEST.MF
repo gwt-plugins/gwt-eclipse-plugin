@@ -20,7 +20,6 @@ Export-Package: com.google.gdt.eclipse.suite,
  com.google.gdt.eclipse.suite.resources,
  com.google.gdt.eclipse.suite.wizards
 Require-Bundle: com.google.appengine.eclipse.core;visibility:=reexport,
- 
  com.google.gdt.eclipse.login,
  com.google.gdt.eclipse.managedapis,
  com.google.gwt.eclipse.core;visibility:=reexport,
@@ -41,4 +40,6 @@ Require-Bundle: com.google.appengine.eclipse.core;visibility:=reexport,
  org.eclipse.ui.forms,
  org.eclipse.ui.ide,
  org.eclipse.wst.server.core,
- org.eclipse.wst.common.project.facet.core
+ org.eclipse.wst.common.project.facet.core,
+ com.google.gdt.eclipse.appengine.api,
+ com.google.gdt.eclipse.platform

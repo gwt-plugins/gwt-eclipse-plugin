@@ -1,0 +1,4 @@
+# Debugging options for the com.google.gwt.eclipse.wtp plugin
+
+# Turn on general debugging
+com.google.gwt.eclipse.wtp/debug=true

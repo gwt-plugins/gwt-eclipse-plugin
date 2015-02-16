@@ -12,10 +12,7 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.wizards;
 
-import com.google.gdt.eclipse.appengine.api.AppengineApiWrapper;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -27,19 +24,16 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-
-import java.io.IOException;
 
 /**
  * This is the Create App Id dialog. It allows the user to create a new Cloud project app id using
  * the App Engine API. User should be logged in before opening this dialog. If user is not logged in
  * before opening this dialog, user will be prompted to log in when they attempt to create a new app
  * id.
- * 
+ *
  * NOTE: This class is unused, because we've disabled the ability to create App Ids on the
  * service side. We'll re-enable this once an updated project creation API exists.
  */
@@ -58,7 +52,7 @@ public class CreateAppIdDialog extends TitleAreaDialog {
 
   /**
    * Constructor.
-   * 
+   *
    * NOTE: This constructor is private, because we've disabled the ability to create App Ids on the
    * service side. We'll re-enable this once an updated project creation API exists.
    */
@@ -119,6 +113,7 @@ public class CreateAppIdDialog extends TitleAreaDialog {
     gd1.horizontalSpan = 2;
     newAppIdText.setLayoutData(gd1);
     newAppIdText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         newAppIdCopy = newAppIdText.getText();
         updateControls();
@@ -141,14 +136,14 @@ public class CreateAppIdDialog extends TitleAreaDialog {
    * the function returns true else an error message is displayed and the function returns false.
    */
   private boolean createAppID() {
-    AppengineApiWrapper appEngineApi = new AppengineApiWrapper();
-    try {
-      appEngineApi.insertNewApplication(newAppIdText.getText(), true);
-    } catch (IOException e) {
-      MessageDialog.openError(Display.getDefault().getActiveShell(), "Error creating App Id",
-          e.getMessage());
-      return false;
-    }
+//    AppengineApiWrapper appEngineApi = new AppengineApiWrapper();
+//    try {
+//      appEngineApi.insertNewApplication(newAppIdText.getText(), true);
+//    } catch (IOException e) {
+//      MessageDialog.openError(Display.getDefault().getActiveShell(), "Error creating App Id",
+//          e.getMessage());
+//      return false;
+//    }
     return true;
   }
 

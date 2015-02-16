@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>  
+
+  <extension point="org.eclipse.wst.common.project.facet.core.facets">
+  
+    <!-- Preset -->
+    <preset id="com.google.gwt.facet.preset.gwtonly">
+      <label>GWT Project</label>
+      <description>Enables GWT project runtime.</description>
+      <facet id="jst.java" version="1.7,1.8"/>
+      <facet id="com.google.gwt.facet" version="1.0"/>
+    </preset>
+    
+    <!-- Facet -->   
+    <project-facet id="com.google.gwt.facet">
+      <category>com.google.gwt.facet</category>
+      <label>GWT</label>
+      <description>
+        Enables GWT SDK use for project.
+      </description>
+    </project-facet>  
+    
+    <!-- Version -->
+    <project-facet-version facet="com.google.gwt.facet" version="1.0">
+      <requires facet="java" version="[1.7"/>
+      <requires facet="jst.web" version="[2.2"/>
+    </project-facet-version>
+  
+  	<!-- Install -->
+    <action 
+    	facet="com.google.gwt.facet"
+        id="com.google.gwt.facet.install"
+        type="install">
+     	<delegate class="com.google.gwt.eclipse.wtp.facet.GwtFacetInstallSdkDelegate"/>
+        
+        <config-factory 
+        	class="com.google.gwt.eclipse.wtp.facet.data.GwtFacetInstallDataModelProvider">
+        </config-factory>
+    </action>
+    
+    <!-- Uninstall -->
+    <action
+		  facet="com.google.gwt.facet"
+		  id="com.google.gwt.facet.uninstall"
+		  type="uninstall">
+		<delegate class="com.google.gwt.eclipse.wtp.facet.GwtFacetUninstallDelegate"/>
+	</action>
+  </extension>
+
+  <!-- Wizards -->
+  <extension point="org.eclipse.wst.common.project.facet.ui.wizardPages">
+    <wizard-pages action="com.google.gwt.facet.install">
+    <page class="com.google.gwt.eclipse.wtp.wizards.GwtFacetWizardPage"/>
+    </wizard-pages>
+  </extension>
+   
+  <!-- TODO why can't I remove this, it causes the plugin not to load -->
+  <extension point="org.eclipse.wst.server.core.internalStartup">
+    <startup
+        class="com.google.gwt.eclipse.wtp.clients.GwtRuntimeConfigurator"
+        id="com.google.gwt.eclipse.wtp.runtime.startup">
+    </startup>
+  </extension>
+  
+  <!-- won't work -->
+  <extension point="org.eclipse.wst.server.core.launchableAdapters">
+      <launchableAdapter
+        id="com.google.gwt.server.http.web"
+        class="com.google.gwt.eclipse.wtp.facet.GwtLaunchableAdapterDelegate"
+        typeIds="*" priority="1000" />
+   </extension>
+
+</plugin>
