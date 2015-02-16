@@ -1,21 +1,19 @@
 /*******************************************************************************
- * Copyright 2014 Google Inc. All Rights Reserved.
+ * Copyright 2011 Google Inc. All Rights Reserved.
  *
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *******************************************************************************/
-package com.google.gwt.eclipse.core.launch.processors;
+package com.google.gwt.eclipse.core.launch.processors.codeserver;
 
-import com.google.gdt.eclipse.core.ClasspathUtilities;
-import com.google.gdt.eclipse.core.ClasspathUtilities.ClassFinder;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.StringUtilities;
 import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
@@ -33,18 +31,17 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import java.util.List;
 
 /**
- * Main type(s) for GWT when super dev mode is enabled.
- * 
+ * Main type for GWT SDM code server.
+ *
  * This is similar to the web app main types, although this is pulled out so its not cyclic.
  */
 public class SuperDevModeCodeServerMainTypeProcessor implements ILaunchConfigurationProcessor {
 
   /**
-   * Possible main types for a launch.
+   * Enum for possible main types for a launch.
    */
   public enum MainType {
-    GWT_SUPERDEVMODE(GwtLaunchConfigurationProcessorUtilities.SUPERDEVMODE_CODESERVER_MAIN_TYPE);
-
+    GWT_SDM_MODE("com.google.gwt.dev.codeserver.CodeServer");
     public final String mainTypeName;
 
     private MainType(String mainTypeName) {
@@ -58,6 +55,7 @@ public class SuperDevModeCodeServerMainTypeProcessor implements ILaunchConfigura
   public interface MainTypeFinder {
     String findMainType(IJavaProject javaProject);
   }
+
 
   private static final String ATTR_PREVIOUSLY_SET_MAIN_TYPE_NAME = GWTPlugin.PLUGIN_ID
       + "MainTypeProcessor.PREVIOUSLY_SET_MAIN_TYPE_NAME";
@@ -77,19 +75,6 @@ public class SuperDevModeCodeServerMainTypeProcessor implements ILaunchConfigura
     return false;
   }
 
-  private static String computeMainTypeName(ILaunchConfigurationWorkingCopy config,
-      IJavaProject javaProject, ClassFinder classFinder) throws CoreException {
-    IProject project = javaProject.getProject();
-
-    // If there are multiple Super Dev mode entry points, the logic would
-    // go here, like DevMode.
-    if (GWTNature.isGWTProject(project)) {
-      return MainType.GWT_SUPERDEVMODE.mainTypeName;
-    } else {
-      return null;
-    }
-  }
-
   private static String getPreviouslySetMainTypeName(ILaunchConfiguration config) {
     try {
       return config.getAttribute(ATTR_PREVIOUSLY_SET_MAIN_TYPE_NAME, (String) null);
@@ -104,18 +89,12 @@ public class SuperDevModeCodeServerMainTypeProcessor implements ILaunchConfigura
     config.setAttribute(ATTR_PREVIOUSLY_SET_MAIN_TYPE_NAME, mainType);
   }
 
-  private final ClassFinder classFinder;
-
-  public SuperDevModeCodeServerMainTypeProcessor(ClasspathUtilities.ClassFinder classFinder) {
-    this.classFinder = classFinder;
+  public SuperDevModeCodeServerMainTypeProcessor() {
   }
 
+  @Override
   public void update(ILaunchConfigurationWorkingCopy config, IJavaProject javaProject,
       List<String> programArgs, List<String> vmArgs) throws CoreException {
-    if (!GWTNature.isGWTProject(javaProject.getProject())) {
-      return;
-    }
-
     String currentMainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
     String previouslySetMainTypeName = getPreviouslySetMainTypeName(config);
 
@@ -126,7 +105,12 @@ public class SuperDevModeCodeServerMainTypeProcessor implements ILaunchConfigura
       return;
     }
 
-    String newMainTypeName = computeMainTypeName(config, javaProject, classFinder);
+    String newMainTypeName = null;
+    IProject project = javaProject.getProject();
+    if (GWTNature.isGWTProject(project)) {
+      newMainTypeName = MainType.GWT_SDM_MODE.mainTypeName;
+    }
+
     if (StringUtilities.isEmpty(newMainTypeName) || newMainTypeName.equals(currentMainTypeName)) {
       return;
     }
@@ -134,6 +118,7 @@ public class SuperDevModeCodeServerMainTypeProcessor implements ILaunchConfigura
     setMainTypeName(config, newMainTypeName);
   }
 
+  @Override
   public String validate(ILaunchConfiguration config, IJavaProject javaProject,
       List<String> programArgs, List<String> vmArgs) {
     return null;

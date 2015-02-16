@@ -20,7 +20,7 @@ import com.google.gwt.eclipse.core.GWTPlugin;
 import java.util.Collections;
 
 /**
- * 
+ *
  */
 public enum GWTLaunchAttributes implements ILaunchConfigurationAttribute {
 
@@ -46,6 +46,8 @@ public enum GWTLaunchAttributes implements ILaunchConfigurationAttribute {
    */
   SDK_CONTAINER_PATH(""),
 
+  SDM_CODE_SERVER_PORT("9876"),
+
   SUPERDEVMODE_ENABLED(false),
 
   SUPERDEVMODE_PORT("9876"),
@@ -53,8 +55,12 @@ public enum GWTLaunchAttributes implements ILaunchConfigurationAttribute {
   /**
    * URL to launch.
    */
-  URL("");
+  URL(""),
 
+  /**
+   * Super Dev Mode Code Server War Directory. Resource and compile output will land here.
+   */
+  CODE_SERVER_LAUNCHER_DIR("");
 
   // TODO: these should be defined inside their own enum
   public static final String[] LOG_LEVELS = {
@@ -70,10 +76,12 @@ public enum GWTLaunchAttributes implements ILaunchConfigurationAttribute {
     this.defaultValue = defaultValue;
   }
 
+  @Override
   public Object getDefaultValue() {
     return defaultValue;
   }
 
+  @Override
   public String getQualifiedName() {
     return GWTPlugin.PLUGIN_ID + "." + name();
   }

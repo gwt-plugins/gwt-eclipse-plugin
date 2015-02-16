@@ -30,12 +30,18 @@ import org.eclipse.jdt.core.IJavaProject;
 import java.util.List;
 
 /**
- * Processes the GWT "-remoteUI" argument.
+ * Processes the GWT "-remoteUI" argument.<br/>
+ * <br/>
+ *
+ * Turn off Remote UI with environment variable `USE_REMOTE_UI=false`.
  */
 public class RemoteUiArgumentProcessor implements ILaunchConfigurationProcessor {
 
   public static final String ARG_REMOTE_UI = "-remoteUI";
 
+  /**
+   * Turn off Remote UI with environment variable `USE_REMOTE_UI=false`.
+   */
   static boolean isUseRemoteUiEnvVarFalse(ILaunchConfiguration configuration) throws CoreException {
     String[] environmentVariables =
         DebugPlugin.getDefault().getLaunchManager().getEnvironment(configuration);
@@ -50,8 +56,13 @@ public class RemoteUiArgumentProcessor implements ILaunchConfigurationProcessor 
     return false;
   }
 
+  /**
+   * Returns true if the remote ui can be used. It can be turned off via the environment variable or
+   * if the super dev mode main type is used.
+   */
   private static boolean shouldUseRemoteUI(ILaunchConfiguration configuration) throws CoreException {
-    return !isUseRemoteUiEnvVarFalse(configuration);
+    return !isUseRemoteUiEnvVarFalse(configuration)
+        && !GwtLaunchConfigurationProcessorUtilities.isSuperDevModeCodeServer(configuration);
   }
 
   // Package-scoped for testing.

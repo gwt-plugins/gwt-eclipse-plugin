@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * The model for the OOPHM data. At the top level, the model consists of a list
- * of {@link LaunchConfiguration}.
- * 
- * This class is thread-safe, except for the initializeModel() method.
- * TODO: initializeModel() method gone, determine impact on thread safety.
+ * The model for the OOPHM data. At the top level, the model consists of a list of
+ * {@link LaunchConfiguration}.
+ *
+ * This class is thread-safe, except for the initializeModel() method. TODO: initializeModel()
+ * method gone, determine impact on thread safety.
  */
 public class WebAppDebugModel implements IModelNode {
 
@@ -42,12 +42,14 @@ public class WebAppDebugModel implements IModelNode {
   }
 
   private final int id;
-  private final List<LaunchConfiguration> launchConfigurations = new ArrayList<LaunchConfiguration>();
+  private final List<LaunchConfiguration> launchConfigurations =
+      new ArrayList<LaunchConfiguration>();
   private final AtomicInteger nextModelNodeId = new AtomicInteger();
 
   private final Object privateInstanceLock = new Object();
 
-  private final List<IWebAppDebugModelListener> webAppDebugModelListeners = new ArrayList<IWebAppDebugModelListener>();
+  private final List<IWebAppDebugModelListener> webAppDebugModelListeners =
+      new ArrayList<IWebAppDebugModelListener>();
 
   WebAppDebugModel() {
     // Not instantiable
@@ -55,16 +57,15 @@ public class WebAppDebugModel implements IModelNode {
   }
 
   /**
-   * Adds the launch configuration to the model, or returns the existing launch
-   * configuration. Fires an event to all listeners on the model if the launch
-   * configuration was added.
-   * 
+   * Adds the launch configuration to the model, or returns the existing launch configuration. Fires
+   * an event to all listeners on the model if the launch configuration was added.
+   *
    * @param clientId optional if newLaunch is non-null
-   * @param factory if non-null, this will be used to instantiate a
-   *          {@link LaunchConfiguration} to be added
+   * @param factory if non-null, this will be used to instantiate a {@link LaunchConfiguration} to
+   *        be added
    */
-  public LaunchConfiguration addOrReturnExistingLaunchConfiguration(
-      ILaunch newLaunch, String clientId, ILaunchConfigurationFactory factory) {
+  public LaunchConfiguration addOrReturnExistingLaunchConfiguration(ILaunch newLaunch,
+      String clientId, ILaunchConfigurationFactory factory) {
     LaunchConfiguration launchConfiguration;
 
     synchronized (privateInstanceLock) {
@@ -76,8 +77,7 @@ public class WebAppDebugModel implements IModelNode {
 
       String name = LaunchConfiguration.computeNamePrefix(newLaunch, clientId);
       if (factory != null) {
-        launchConfiguration = factory.newLaunchConfiguration(newLaunch, name,
-            this);
+        launchConfiguration = factory.newLaunchConfiguration(newLaunch, name, this);
       } else {
         launchConfiguration = new LaunchConfiguration(newLaunch, name, this);
       }
@@ -86,8 +86,8 @@ public class WebAppDebugModel implements IModelNode {
 
     // Only fire events when we're not holding any locks. Otherwise, deadlock
     // may happen.
-    WebAppDebugModelEvent<LaunchConfiguration> launchedEvent = new WebAppDebugModelEvent<LaunchConfiguration>(
-        launchConfiguration);
+    WebAppDebugModelEvent<LaunchConfiguration> launchedEvent =
+        new WebAppDebugModelEvent<LaunchConfiguration>(launchConfiguration);
     fireLaunchConfigurationLaunched(launchedEvent);
 
     // Clean up terminated launch configurations with the same name as the added
@@ -95,6 +95,32 @@ public class WebAppDebugModel implements IModelNode {
     removeAllAssociatedTerminatedLaunchConfigsExceptMostRecent(launchConfiguration);
 
     return launchConfiguration;
+  }
+
+  /**
+   * TODO extract possibly? 
+   *
+   * @param launchConfiguration
+   */
+  public void addLaunchConfiguration(LaunchConfiguration launchConfiguration) {
+    synchronized (privateInstanceLock) {
+      for (LaunchConfiguration lc : launchConfigurations) {
+        if (lc.equals(launchConfiguration)) {
+          return;
+        }
+      }
+      launchConfigurations.add(launchConfiguration);
+    }
+
+    // Only fire events when we're not holding any locks. Otherwise, deadlock
+    // may happen.
+    WebAppDebugModelEvent<LaunchConfiguration> launchedEvent =
+        new WebAppDebugModelEvent<LaunchConfiguration>(launchConfiguration);
+    fireLaunchConfigurationLaunched(launchedEvent);
+
+    // Clean up terminated launch configurations with the same name as the added
+    // launch configuration
+    removeAllAssociatedTerminatedLaunchConfigsExceptMostRecent(launchConfiguration);
   }
 
   /**
@@ -106,18 +132,19 @@ public class WebAppDebugModel implements IModelNode {
     }
   }
 
+  @Override
   public List<? extends IModelNode> getChildren() {
     return getLaunchConfigurations();
   }
 
+  @Override
   public int getId() {
     return id;
   }
 
   /**
-   * Returns the most-recently created launch configuration that has not been
-   * terminated as yet, or <code>null</code> if no such launch configuration can
-   * be found.
+   * Returns the most-recently created launch configuration that has not been terminated as yet, or
+   * <code>null</code> if no such launch configuration can be found.
    */
   public LaunchConfiguration getLatestActiveLaunchConfiguration() {
     synchronized (privateInstanceLock) {
@@ -140,15 +167,18 @@ public class WebAppDebugModel implements IModelNode {
     }
   }
 
+  @Override
   public String getName() {
     // The WebAppDebugModel doesn't have a name; return the empty string
     return "";
   }
 
+  @Override
   public String getNeedsAttentionLevel() {
     return null;
   }
 
+  @Override
   public IModelNode getParent() {
     return null;
   }
@@ -170,8 +200,8 @@ public class WebAppDebugModel implements IModelNode {
   }
 
   /**
-   * Returns a list of the {@link IWebAppDebugModelListener} instances that are
-   * registered with the model.
+   * Returns a list of the {@link IWebAppDebugModelListener} instances that are registered with the
+   * model.
    */
   public List<IWebAppDebugModelListener> getWebAppDebugModelListeners() {
     synchronized (privateInstanceLock) {
@@ -179,15 +209,16 @@ public class WebAppDebugModel implements IModelNode {
     }
   }
 
+  @Override
   public boolean isTerminated() {
     return false;
   }
 
   /**
-   * Given a {@link ILaunch} of a terminated launch, find the associated launch
-   * configuration in the model, and mark it as terminated. Fires an event to
-   * all listeners on the {@link WebAppDebugModel}.
-   * 
+   * Given a {@link ILaunch} of a terminated launch, find the associated launch configuration in the
+   * model, and mark it as terminated. Fires an event to all listeners on the
+   * {@link WebAppDebugModel}.
+   *
    * This method does nothing if no such launch configuration can be found.
    */
   public void launchTerminated(ILaunch launch) {
@@ -207,9 +238,8 @@ public class WebAppDebugModel implements IModelNode {
   }
 
   /**
-   * Remove the launch configuration. Fires an event for the launch
-   * configuration that was removed.
-   * 
+   * Remove the launch configuration. Fires an event for the launch configuration that was removed.
+   *
    * @return true if the launch configuration was removed successfully
    */
   public boolean removeLaunchConfiguration(LaunchConfiguration lc) {
@@ -225,17 +255,17 @@ public class WebAppDebugModel implements IModelNode {
 
       // Only fire events when we're not holding any locks. Otherwise, deadlock
       // may happen.
-      WebAppDebugModelEvent<LaunchConfiguration> removedEvent = new WebAppDebugModelEvent<LaunchConfiguration>(
-          lc);
+      WebAppDebugModelEvent<LaunchConfiguration> removedEvent =
+          new WebAppDebugModelEvent<LaunchConfiguration>(lc);
       fireLaunchConfigurationRemoved(removedEvent);
     }
     return wasRemoved;
   }
 
   /**
-   * Removes all launches that have been terminated from the model. Fires an
-   * event for each launch configuration that was removed.
-   * 
+   * Removes all launches that have been terminated from the model. Fires an event for each launch
+   * configuration that was removed.
+   *
    * {@link #removeLaunchConfiguration(LaunchConfiguration)}
    */
   public void removeTerminatedLaunchesFromModel() {
@@ -255,11 +285,10 @@ public class WebAppDebugModel implements IModelNode {
 
   /**
    * Remove a listener registered to receive notifications about model changes.
-   * 
+   *
    * @return true if the listener was removed successfully
    */
-  public boolean removeWebAppDebugModelListener(
-      IWebAppDebugModelListener listener) {
+  public boolean removeWebAppDebugModelListener(IWebAppDebugModelListener listener) {
     synchronized (privateInstanceLock) {
       return webAppDebugModelListeners.remove(listener);
     }
@@ -285,11 +314,11 @@ public class WebAppDebugModel implements IModelNode {
 
   private void removeAllAssociatedTerminatedLaunchConfigsExceptMostRecent(
       LaunchConfiguration addedLaunchConfiguration) {
-    List<LaunchConfiguration> terminatedAssociatedLaunchConfigs = new ArrayList<LaunchConfiguration>();
+    List<LaunchConfiguration> terminatedAssociatedLaunchConfigs =
+        new ArrayList<LaunchConfiguration>();
     synchronized (privateInstanceLock) {
       for (LaunchConfiguration lc : launchConfigurations) {
-        if (lc.isTerminated()
-            && lc.getName().equals(addedLaunchConfiguration.getName())) {
+        if (lc.isTerminated() && lc.getName().equals(addedLaunchConfiguration.getName())) {
           terminatedAssociatedLaunchConfigs.add(lc);
         }
       }

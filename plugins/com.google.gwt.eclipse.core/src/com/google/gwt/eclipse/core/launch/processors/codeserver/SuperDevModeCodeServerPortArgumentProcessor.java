@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2014 Google Inc. All Rights Reserved.
+ * Copyright 2011 Google Inc. All Rights Reserved.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,11 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.google.gwt.eclipse.core.launch.processors;
+package com.google.gwt.eclipse.core.launch.processors.codeserver;
 
 import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
 import com.google.gwt.eclipse.core.launch.GWTLaunchAttributes;
 import com.google.gwt.eclipse.core.launch.GWTLaunchConfigurationWorkingCopy;
+import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 
 import org.eclipse.core.runtime.CoreException;
@@ -27,16 +28,17 @@ import org.eclipse.jdt.core.IJavaProject;
 import java.util.List;
 
 /**
- * Handles the -codeServerPort [auto | <port>] arg when using the DevMode entrypoint.
+ * Handles the -codeServerPort [auto | <port>] arg.
+ *
+ * SDM Mode only. Do not use for Dev Mode.
  */
-public class DevModeCodeServerPortArgumentProcessor implements ILaunchConfigurationProcessor {
+public class SuperDevModeCodeServerPortArgumentProcessor implements ILaunchConfigurationProcessor {
 
-  public static final String CODE_SERVER_PORT_ARG = "-codeServerPort";
-  private static final String CODE_SERVER_PORT_ERROR =
-      "-codeServerPort must specify a valid port number or use 'auto'";
+  public static final String SDM_CODE_SERVER_PORT_ARG = "-port";
+  private static final String SDM_CODE_SERVER_PORT_ERROR = "-port must specify a valid port number";
 
   /**
-   * Return either the default port or an override port.
+   * Return either the default port or an override value.
    *
    * @param args Arguments used to start the code server.
    * @return the port.
@@ -58,14 +60,10 @@ public class DevModeCodeServerPortArgumentProcessor implements ILaunchConfigurat
   }
 
   private static int getArgIndex(List<String> args) {
-    return args.indexOf(CODE_SERVER_PORT_ARG);
+    return args.indexOf(SDM_CODE_SERVER_PORT_ARG);
   }
 
   private static boolean validatePort(String port) {
-    if ("auto".equalsIgnoreCase(port)) {
-      return true;
-    }
-
     try {
       int valueNum = Integer.parseInt(port);
       if (valueNum < 0 || valueNum > 65535) {
@@ -81,16 +79,15 @@ public class DevModeCodeServerPortArgumentProcessor implements ILaunchConfigurat
   @Override
   public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject,
       List<String> programArgs, List<String> vmArgs) throws CoreException {
-    // Only GWT projects will use -codeServerPort
+    // only gwt projects use -codeServerPort
     if (!GWTNature.isGWTProject(javaProject.getProject())) {
       return;
     }
 
     int index = getArgIndex(programArgs);
 
-    // Only run with the DevMode entrypoint and not the CodeServer entrypoint
+    // Only use with the CodeServer entrypoint
     if (GwtLaunchConfigurationProcessorUtilities.isSuperDevModeCodeServer(launchConfig)) {
-      // Just in case the argument pre-existed, remove it
       if (index > -1) {
         programArgs.remove(index); // remove arg name
         programArgs.remove(index); // remove port value
@@ -98,15 +95,14 @@ public class DevModeCodeServerPortArgumentProcessor implements ILaunchConfigurat
       return;
     }
 
-    String port = GWTLaunchConfigurationWorkingCopy.getCodeServerPort(launchConfig);
-    boolean auto = GWTLaunchConfigurationWorkingCopy.getCodeServerPortAuto(launchConfig);
+    String port = GWTLaunchConfigurationWorkingCopy.getSdmCodeServerPort(launchConfig);
 
-    if (auto || !validatePort(port)) {
-      port = "auto";
+    if (!validatePort(port)) {
+      port = GWTLaunchAttributes.CODE_SERVER_PORT.getDefaultValue().toString();
     }
 
     if (index < 0) {
-      programArgs.add(0, CODE_SERVER_PORT_ARG);
+      programArgs.add(0, SDM_CODE_SERVER_PORT_ARG);
       programArgs.add(1, port);
     } else {
       if (index == programArgs.size() - 1) {
@@ -114,9 +110,9 @@ public class DevModeCodeServerPortArgumentProcessor implements ILaunchConfigurat
       } else {
         String argValue = programArgs.get(index + 1);
         if (validatePort(argValue)) {
-          programArgs.set(index + 1, port);
+          programArgs.set(index + 1, argValue);
         } else {
-          programArgs.add(index + 1, port);
+          programArgs.add(index + 1, argValue);
         }
       }
     }
@@ -126,22 +122,20 @@ public class DevModeCodeServerPortArgumentProcessor implements ILaunchConfigurat
   public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject,
       List<String> programArgs, List<String> vmArgs) throws CoreException {
     int index = getArgIndex(programArgs);
+
     if (index < 0) {
       return null;
     }
 
     // last thing on the list, and hence can't have a value
     if (index == programArgs.size() - 1) {
-      return CODE_SERVER_PORT_ERROR;
+      return SDM_CODE_SERVER_PORT_ERROR;
     }
 
     String value = programArgs.get(index + 1);
-    if (value.equals("auto")) {
-      return null;
-    }
 
     if (!validatePort(value)) {
-      return CODE_SERVER_PORT_ERROR;
+      return SDM_CODE_SERVER_PORT_ERROR;
     }
 
     return null;

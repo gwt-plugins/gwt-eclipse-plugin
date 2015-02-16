@@ -24,20 +24,18 @@ import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
 import org.eclipse.jdt.core.IJavaProject;
 
 /**
- * 
+ *
  */
-public class GWTUpdateProjectSdkCommand extends
-    UpdateProjectSdkCommand<GWTRuntime> {
+public class GWTUpdateProjectSdkCommand extends UpdateProjectSdkCommand<GWTRuntime> {
 
-  public static <T extends Sdk> UpdateType computeUpdateType(GWTRuntime oldSdk,
-      GWTRuntime newSdk, boolean isDefault) {
-    return computeUpdateType(oldSdk, newSdk, isDefault,
-        GWTPreferences.getSdks(), GWTRuntimeContainer.CONTAINER_ID);
+  public static <T extends Sdk> UpdateType computeUpdateType(GWTRuntime oldSdk, GWTRuntime newSdk,
+      boolean isDefault) {
+    return computeUpdateType(oldSdk, newSdk, isDefault, GWTPreferences.getSdks(),
+        GWTRuntimeContainer.CONTAINER_ID);
   }
 
-  public GWTUpdateProjectSdkCommand(IJavaProject javaProject,
-      GWTRuntime oldSdk, GWTRuntime newSdk, UpdateType updateType,
-      UpdateWebInfFolderCommand updateWebInfFolderCommand) {
+  public GWTUpdateProjectSdkCommand(IJavaProject javaProject, GWTRuntime oldSdk, GWTRuntime newSdk,
+      UpdateType updateType, UpdateWebInfFolderCommand updateWebInfFolderCommand) {
     super(javaProject, oldSdk, newSdk, updateType, updateWebInfFolderCommand);
   }
 
@@ -45,4 +43,5 @@ public class GWTUpdateProjectSdkCommand extends
   protected String getContainerId() {
     return GWTRuntimeContainer.CONTAINER_ID;
   }
+
 }

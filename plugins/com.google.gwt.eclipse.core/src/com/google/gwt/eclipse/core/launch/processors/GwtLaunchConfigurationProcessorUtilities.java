@@ -25,36 +25,60 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 public final class GwtLaunchConfigurationProcessorUtilities {
 
   /**
-   * GWT 2.0+
+   * GWT >= 2.0
    */
   public static final String DEV_MODE_MAIN_TYPE = "com.google.gwt.dev.DevMode";
 
   /**
-   * GWT < 1.6
+   * GWT <= 1.5
    */
+  @Deprecated
   public static final String GWT_SHELL_MAIN_TYPE = "com.google.gwt.dev.GWTShell";
 
   /**
-   * GWT > 1.6 TO 2.0
+   * GWT >= 1.6 TO 2.0
    */
+  @Deprecated
   public static final String HOSTED_MODE_MAIN_TYPE = "com.google.gwt.dev.HostedMode";
 
-  public static final String SUPERDEVMODE_MODE_MAIN_TYPE =
+  /**
+   * GWT >= 2.7
+   */
+  public static final String SUPERDEVMODE_CODESERVER_MAIN_TYPE =
       "com.google.gwt.dev.codeserver.CodeServer";
 
+  /**
+   * GWT >= 2.0
+   */
   public static boolean isDevMode(ILaunchConfiguration config) throws CoreException {
     String mainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
     return DEV_MODE_MAIN_TYPE.equals(mainTypeName);
   }
 
+  /**
+   * GWT <= 1.5
+   */
+  @Deprecated
   public static boolean isGwtShell(ILaunchConfiguration config) throws CoreException {
     String mainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
     return GWT_SHELL_MAIN_TYPE.equals(mainTypeName);
   }
 
+  /**
+   * GWT >= 1.6 TO 2.0
+   */
+  @Deprecated
   public static boolean isHostedMode(ILaunchConfiguration config) throws CoreException {
     String mainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
     return HOSTED_MODE_MAIN_TYPE.equals(mainTypeName);
+  }
+
+  /**
+   * GWT >= 2.7
+   */
+  public static boolean isSuperDevModeCodeServer(ILaunchConfiguration config) throws CoreException {
+    String mainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
+    return SUPERDEVMODE_CODESERVER_MAIN_TYPE.equals(mainTypeName);
   }
 
 }
