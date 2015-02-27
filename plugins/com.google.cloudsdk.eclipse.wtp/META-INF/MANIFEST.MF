@@ -18,6 +18,7 @@ Require-Bundle: com.google.gdt.eclipse.maven,
  org.eclipse.m2e.wtp,
  org.eclipse.ui.workbench,
  org.eclipse.wst.common.project.facet.core,
+ org.eclipse.wst.common.project.facet.ui,
  org.eclipse.wst.server.core,
  org.eclipse.wst.server.ui
 Import-Package: com.google.common.annotations,

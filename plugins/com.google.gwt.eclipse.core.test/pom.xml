@@ -27,6 +27,7 @@
             <exclude>**/JsniFormattingUtilTest.java</exclude>
             <exclude>**/JsniMethodBodyCompletionProposalComputerTest.java</exclude>
             <exclude>**/JavaCompilationParticipantTest.java</exclude>
+            <exclude>**/JavaQueryParticipantTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>

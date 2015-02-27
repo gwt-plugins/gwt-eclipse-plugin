@@ -39,6 +39,8 @@ import java.util.List;
  * Test cases for the {@link JavaQueryParticipant} class.
  */
 public class JavaQueryParticipantTest extends AbstractGWTPluginTestCase {
+  // NOTE: This test is disabled in the pom.xml file.
+  // See https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329 for details.
 
   private class TestMatch extends Match {
     public TestMatch(IRegion region) {
@@ -330,7 +332,7 @@ public class JavaQueryParticipantTest extends AbstractGWTPluginTestCase {
         "  }",
         "",
         "  private int getNumber(int val) {",
-        "    return val;", 
+        "    return val;",
         "  }",
         "",
         "private int getNumber(long val) {",
@@ -344,14 +346,14 @@ public class JavaQueryParticipantTest extends AbstractGWTPluginTestCase {
         };
 
     String[] class2Source = new String[] {
-        "package com.hello.client;", 
-        "", 
+        "package com.hello.client;",
+        "",
         "public class A {",
-        "  public static class B {", 
+        "  public static class B {",
         "    public static int getNumber() {",
         "      return 7;",
-        "    }", 
-        "  }", 
+        "    }",
+        "  }",
         "}"
         };
 
@@ -403,6 +405,7 @@ public class JavaQueryParticipantTest extends AbstractGWTPluginTestCase {
     final List<Match> matches = new ArrayList<Match>();
 
     ISearchRequestor requestor = new ISearchRequestor() {
+      @Override
       public void reportMatch(Match match) {
         matches.add(match);
       }

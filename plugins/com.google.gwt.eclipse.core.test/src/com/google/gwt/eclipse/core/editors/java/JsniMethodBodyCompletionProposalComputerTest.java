@@ -14,6 +14,7 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.editors.java;
 
+import com.google.gcp.eclipse.testing.TestUtil;
 import com.google.gdt.eclipse.core.JavaProjectUtilities;
 import com.google.gdt.eclipse.core.pde.BundleUtilities;
 import com.google.gwt.eclipse.core.GWTPlugin;
