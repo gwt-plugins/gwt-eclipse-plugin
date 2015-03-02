@@ -1,0 +1,149 @@
+{
+   "flags":[
+      {
+         "name":"admin-host",
+         "supportsArgument":"true",
+         "description":"The host and port on which to start the admin server (in the format host:port)"
+      },
+      {
+         "name":"allow-skipped-files",
+         "supportsArgument":"false",
+         "description":"Make files specified in the app.yaml \"skip_files\" or \"static\" clauses readable by the application."
+      },
+      {
+         "name":"api-host",
+         "supportsArgument":"true",
+         "description":"The host and port on which to start the API server (in the format host:port)"
+      },
+      {
+         "name":"appidentity-email-address",
+         "supportsArgument":"true",
+         "description":"Email address associated with a service account that has a downloadable key. May be None for no local application identity."
+      },
+      {
+         "name":"appidentity-private-key-path",
+         "supportsArgument":"true",
+         "description":"Path to private key file associated with service account (.pem format). Must be set if appidentity-email-address is set."
+      },
+      {
+         "name":"auth-domain",
+         "supportsArgument":"true",
+         "description":"Name of the authorization domain to use"
+      },
+      {
+         "name":"blobstore-path",
+         "supportsArgument":"true",
+         "description":"Path to directory used to store blob contents (defaults to a subdirectory of --storage-path if not set)"
+      },
+      {
+         "name":"clear-datastore",
+         "supportsArgument":"false",
+         "description":"Clear the datastore on startup"
+      },
+      {
+         "name":"datastore-consistency-policy",
+         "supportsArgument":"true",
+         "description":"The policy to apply when deciding whether a datastore write should appear in global queries"
+      },
+      {
+         "name":"datastore-path",
+         "supportsArgument":"true",
+         "description":"Path to a file used to store datastore contents (defaults to a file in --storage-path if not set)"
+      },
+      {
+         "name":"default-gcs-bucket-name",
+         "supportsArgument":"true",
+         "description":"Default Google Cloud Storage bucket name"
+      },
+      {
+         "name":"docker-host",
+         "supportsArgument":"true",
+         "description":"DEPRECATED. Please use the DOCKER_HOST environment variable. instead"
+      },
+      {
+         "name":"enable-mvm-logs",
+         "supportsArgument":"true",
+         "description":"Enable logs collection and display in local Admin Console for Managed VM modules."
+      },
+      {
+         "name":"enable-sendmail",
+         "supportsArgument":"false",
+         "description":"Use the \"sendmail\" tool to transmit e-mail sent using the Mail API (ignored if --smtp-host is set)"
+      },
+      {
+         "name":"host",
+         "supportsArgument":"true",
+         "description":"The host and port on which to start the local web server (in the format host:port"
+      },
+      {
+         "name":"jvm-flag",
+         "supportsArgument":"true",
+         "description":"Additional arguments to pass to the java command when launching an instance of the app. May be specified more than once. Example: --jvm-flag=-Xmx1024m --jvm-flag=-Xms256m"
+      },
+      {
+         "name":"log-level",
+         "supportsArgument":"true",
+         "description":"The minimum verbosity of logs from your app that will be displayed in the terminal. (debug, info, warning, critical, error) Defaults to current verbosity setting."
+      },
+      {
+         "name":"logs-path",
+         "supportsArgument":"true",
+         "description":"Path to a file used to store request logs (defaults to a file in --storage-path if not set)"
+      },
+      {
+         "name":"max-module-instances",
+         "supportsArgument":"true",
+         "description":"The maximum number of runtime instances that can be started for a particular module - the value can be an integer, in which case all modules are limited to that number of instances, or a comma-separated list of module:max_instances, e.g. default:5,backend:3"
+      },
+      {
+         "name":"php-executable-path",
+         "supportsArgument":"true",
+         "description":"The full path to the PHP executable to use to run your PHP module."
+      },
+      {
+         "name":"python-startup-script",
+         "supportsArgument":"true",
+         "description":"The script to run at the startup of new Python runtime instances (useful for tools such as debuggers)"
+      },
+      {
+         "name":"require-indexes",
+         "supportsArgument":"false",
+         "description":"Generate an error on datastore queries that require a composite index not found in index.yaml"
+      },
+      {
+         "name":"show-mail-body",
+         "supportsArgument":"false",
+         "description":"Logs the contents of e-mails sent using the Mail API"
+      },
+      {
+         "name":"smtp-allow-tls",
+         "supportsArgument":"false",
+         "description":"Allow TLS to be used when the SMTP server announces TLS support (ignored if --smtp-host is not set)"
+      },
+      {
+         "name":"smtp-host",
+         "supportsArgument":"true",
+         "description":"The host and port of an SMTP server to use to transmit e-mail sent using the Mail API, in the format host:port"
+      },
+      {
+         "name":"smtp-password",
+         "supportsArgument":"true",
+         "description":"Password to use when connecting to the SMTP server specified with --smtp-host"
+      },
+      {
+         "name":"smtp-user",
+         "supportsArgument":"true",
+         "description":"Username to use when connecting to the SMTP server specified with --smtp-host"
+      },
+      {
+         "name":"storage-path",
+         "supportsArgument":"true",
+         "description":"The default location for storing application data. Can be overridden for specific kinds of data using --datastore-path, --blobstore-path, and/or --logs-path"
+      },
+      {
+         "name":"use-mtime-file-watcher",
+         "supportsArgument":"false",
+         "description":"Use mtime polling for detecting source code changes - useful if modifying code from a remote machine using a distributed file system"
+      }
+   ]
+}

@@ -111,6 +111,22 @@
       </launchConfigurationType>
    </extension>
    <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            configTypeID="com.google.cloudsdk.CloudSdkLaunchConfigurationType"
+            icon="icons/cloud-sdk_16X16.png"
+            id="com.google.cloudsdk.ExternalLaunchConfigurationTypeImage">
+      </launchConfigurationTypeImage>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            class="com.google.cloudsdk.eclipse.wtp.ui.CloudSdkLaunchConfigurationTabGroup"
+            id="com.google.cloudsdk.server.launchConfigurationTabGroup"
+            type="com.google.cloudsdk.CloudSdkLaunchConfigurationType">
+      </launchConfigurationTabGroup>
+   </extension>
+   <extension
          point="org.eclipse.wst.server.ui.serverImages">
       <image
             icon="icons/cloud-sdk_16X16.png"

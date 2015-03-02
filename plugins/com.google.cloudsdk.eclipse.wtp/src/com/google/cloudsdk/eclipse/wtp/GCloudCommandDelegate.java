@@ -105,6 +105,7 @@ public class GCloudCommandDelegate {
    * @param port the debug port
    * @return a gcloud app run command
    */
+  // TODO: update the command to include the CloudSdkServer.SERVER_PROGRAM_FLAGS set by the user.
   public static String createAppRunCommand(String sdkLocation, String runnables, String mode,
       String apiHost, int port) throws NullPointerException, InvalidPathException {
 

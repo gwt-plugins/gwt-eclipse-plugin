@@ -38,6 +38,7 @@ import java.util.List;
 @SuppressWarnings("restriction") // For FacetUtil
 public class CloudSdkServer extends ServerDelegate {
   public static final String SERVER_TYPE_ID = "com.google.cloudsdk.server.id";
+  public static final String SERVER_PROGRAM_FLAGS = CloudSdkPlugin.PLUGIN_ID + ".SERVER_FLAGS";
   public static final String DEFAULT_HOST = "localhost";
   public static final int DEFAULT_API_PORT = 8188;
   public static final int DEFAULT_ADMIN_PORT = 8000;
