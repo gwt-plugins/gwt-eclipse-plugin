@@ -85,11 +85,37 @@
          point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
    </extension>
    <extension
+         point="org.eclipse.wst.server.core.serverTypes">
+      <serverType
+            behaviourClass="com.google.cloudsdk.eclipse.wtp.server.CloudSdkServerBehaviour"
+            class="com.google.cloudsdk.eclipse.wtp.server.CloudSdkServer"
+            description="%serverTypeDescription"
+            id="com.google.cloudsdk.server.id"
+            initialState="stopped"
+            launchConfigId="com.google.cloudsdk.CloudSdkLaunchConfigurationType"
+            launchModes="run,debug,profile"
+            name="%serverTypeName"
+            runtime="true"
+            runtimeTypeId="com.google.cloudsdk.runtime.id1"
+            startBeforePublish="false"
+            supportsRemoteHosts="false">
+      </serverType>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            delegate="com.google.cloudsdk.eclipse.wtp.server.CloudSdkLaunchConfigurationDelegate"
+            id="com.google.cloudsdk.CloudSdkLaunchConfigurationType"
+            modes="run, debug, profile"
+            name="%serverTypeName">
+      </launchConfigurationType>
+   </extension>
+      <extension
          point="org.eclipse.wst.server.ui.serverImages">
       <image
             icon="icons/cloud-sdk_16X16.png"
             id="com.google.cloudsdk.image"
-            typeIds="com.google.cloudsdk.runtime.id1">
+            typeIds="com.google.cloudsdk.runtime.id1,com.google.cloudsdk.server.id">
       </image>
    </extension>
    <extension
