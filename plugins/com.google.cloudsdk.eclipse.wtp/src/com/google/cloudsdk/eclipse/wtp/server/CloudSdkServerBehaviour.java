@@ -18,9 +18,12 @@ import com.google.common.io.ByteStreams;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugEvent;
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.model.ServerBehaviourDelegate;
@@ -89,32 +92,51 @@ public class CloudSdkServerBehaviour extends ServerBehaviourDelegate {
    * Terminates the Cloud SDK server instance, stops the ping thread and removes debug listener.
    */
   protected void terminate() {
-    if (getServer().getServerState() == IServer.STATE_STOPPED) {
+    int serverState = getServer().getServerState();
+    if ((serverState == IServer.STATE_STOPPED) || (serverState == IServer.STATE_STOPPING)) {
       return;
     }
 
-    setServerState(IServer.STATE_STOPPING);
-    stopDevAppServer(); // sends a "quit" message to port
-    ILaunch launch = getServer().getLaunch();
-    if (launch != null) {
-      try {
+    try {
+      setServerState(IServer.STATE_STOPPING);
+      stopDevAppServer(); // sends a "quit" message to port
+      ILaunch launch = getServer().getLaunch();
+      if (launch != null) {
         launch.terminate();
-      } catch (Throwable e) {
-        CloudSdkPlugin.logError("Error terminating the Cloud SDK server", e);
       }
-    }
 
-    if (pingThread != null) {
-      pingThread.stop();
-      pingThread = null;
-    }
+      if (pingThread != null) {
+        pingThread.stop();
+        pingThread = null;
+      }
 
-    if (processListener != null) {
-      DebugPlugin.getDefault().removeDebugEventListener(processListener);
-      processListener = null;
-    }
+      if (processListener != null) {
+        DebugPlugin.getDefault().removeDebugEventListener(processListener);
+        processListener = null;
+      }
 
-    setServerState(IServer.STATE_STOPPED);
+      // Terminate the remote debugger
+      CloudSdkServer server = CloudSdkServer.getCloudSdkServer(getServer());
+      ILaunchConfigurationWorkingCopy remoteDebugLaunchConfig = server.getRemoteDebugLaunchConfig();
+      if (remoteDebugLaunchConfig != null) {
+        ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+        for (ILaunch aLaunch : manager.getLaunches()) {
+          if (aLaunch.getLaunchConfiguration().equals(remoteDebugLaunchConfig)) {
+            try {
+              aLaunch.terminate();
+              manager.removeLaunch(aLaunch);
+              break;
+            } catch (DebugException e) {
+              CloudSdkPlugin.logError(e);
+            }
+          }
+        }
+      }
+
+      setServerState(IServer.STATE_STOPPED);
+    } catch (Throwable e) {
+      CloudSdkPlugin.logError("Error terminating the Cloud SDK server", e);
+    }
   }
 
   /**

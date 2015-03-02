@@ -110,7 +110,7 @@
             name="%serverTypeName">
       </launchConfigurationType>
    </extension>
-      <extension
+   <extension
          point="org.eclipse.wst.server.ui.serverImages">
       <image
             icon="icons/cloud-sdk_16X16.png"

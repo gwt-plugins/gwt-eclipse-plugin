@@ -15,6 +15,8 @@ package com.google.cloudsdk.eclipse.wtp;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.ByteStreams;
 
+import org.eclipse.debug.core.ILaunchManager;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -91,6 +93,53 @@ public class GCloudCommandDelegate {
     return pattern.matcher(output).find();
   }
 
+  /**
+   * Creates a gcloud app run command. If {@code mode} is {@link ILaunchManager#DEBUG_MODE},
+   * it configures the server to be run in debug mode using the "--jvm-flag" and also
+   * configures a debugger to be attached to the Cloud SDK server through {@code port}.
+   *
+   * @param sdkLocation the location of the Cloud SDK
+   * @param runnables the application directory of the module to be run on the server
+   * @param mode the launch mode
+   * @param apiHost The host and port on which to start the API server (in the format host:port)
+   * @param port the debug port
+   * @return a gcloud app run command
+   */
+  public static String createAppRunCommand(String sdkLocation, String runnables, String mode,
+      String apiHost, int port) throws NullPointerException, InvalidPathException {
+
+    if (!(new File(sdkLocation)).exists()) {
+      throw new InvalidPathException(sdkLocation, "Path does not exist");
+    }
+
+    if (!(new File(runnables)).exists()) {
+      throw new InvalidPathException(runnables, "Path does not exist");
+    }
+
+    if (apiHost == null) {
+      throw new NullPointerException("API host cannot be null");
+    }
+
+    StringBuilder builder = new StringBuilder();
+    builder.append(sdkLocation);
+    builder.append("/bin/gcloud preview app run ");
+    builder.append(runnables);
+    builder.append(" --api-host ");
+    builder.append(apiHost);
+
+    if ((mode != null) && mode.equals(ILaunchManager.DEBUG_MODE)) {
+      // TODO: Check if debug port has been set
+      builder.append(" --jvm-flag=-Xdebug");
+      builder.append(" --jvm-flag=-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=");
+      builder.append(port);
+    }
+
+    return builder.toString();
+  }
+
+  /**
+   * Note: this method waits until the completion of the process.
+   */
   private static String getProcessOutput(Process process) throws IOException, InterruptedException {
     InputStream diffStream = process.getInputStream();
     ByteArrayOutputStream bos = new ByteArrayOutputStream();

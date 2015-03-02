@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jst.server.core.IEnterpriseApplication;
 import org.eclipse.jst.server.core.IWebModule;
 import org.eclipse.wst.server.core.IModule;
@@ -42,6 +43,8 @@ public class CloudSdkServer extends ServerDelegate {
   public static final int DEFAULT_ADMIN_PORT = 8000;
 
   private static final String ATTR_CLOUD_SDK_SERVER_MODULES = "cloudsdk-server-modules-list";
+
+  private ILaunchConfigurationWorkingCopy remoteDebugLaunchConfig;
 
   /**
    * Returns a {@link CloudSdkServer} instance associated with the {@code server} or
@@ -151,6 +154,7 @@ public class CloudSdkServer extends ServerDelegate {
     }
   }
 
+
   // TODO: allow the user to specify API host and port and returns those if they exist.
   /**
    * @return Returns the default host and port on which to start the API server
@@ -179,6 +183,14 @@ public class CloudSdkServer extends ServerDelegate {
    */
   public int getAdminPort() {
     return DEFAULT_ADMIN_PORT;
+  }
+
+  public void setRemoteDebugLaunchConfig(ILaunchConfigurationWorkingCopy wc) {
+    remoteDebugLaunchConfig = wc;
+  }
+
+  public ILaunchConfigurationWorkingCopy getRemoteDebugLaunchConfig() {
+    return remoteDebugLaunchConfig;
   }
 
   private IModule[] doGetParentModules(IModule module) {

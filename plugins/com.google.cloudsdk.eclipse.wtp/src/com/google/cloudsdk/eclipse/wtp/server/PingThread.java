@@ -39,7 +39,6 @@ public final class PingThread {
   private IServer server;
   private CloudSdkServerBehaviour behaviour;
 
-
   /**
    * Create a new PingThread.
    *

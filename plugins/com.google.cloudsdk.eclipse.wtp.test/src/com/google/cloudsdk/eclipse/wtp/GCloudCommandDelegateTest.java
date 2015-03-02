@@ -14,6 +14,10 @@ package com.google.cloudsdk.eclipse.wtp;
 
 import junit.framework.TestCase;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.InvalidPathException;
+
 /**
  * Unit tests for {@link GCloudCommandDelegate}
  */
@@ -37,6 +41,53 @@ public class GCloudCommandDelegateTest extends TestCase {
 
     assertFalse(GCloudCommandDelegate.isComponentInstalled(output1,
         "Invalid component name"));
+  }
+
+  public void testCreateAppRunCommand() throws IOException {
+    File sdkLocationFile = File.createTempFile("tmp-cloud-sdk-", "");
+    String sdkLocation = sdkLocationFile.getAbsolutePath();
+
+    File runnablesFile = File.createTempFile("tmp-project-", "");
+    String runnables = runnablesFile.getAbsolutePath();
+
+    String retVal1 = "";
+    try {
+      retVal1 = GCloudCommandDelegate.createAppRunCommand(null, null, null, null, 0);
+    } catch (NullPointerException e) {
+      // We're expecting the exception, so do nothing
+    }
+    assertEquals("", retVal1);
+
+    String retVal2 = "";
+    try {
+      retVal2 = GCloudCommandDelegate.createAppRunCommand(sdkLocation, "fakeLocation", null, null,
+          0);
+    } catch (InvalidPathException e) {
+      // We're expecting the exception, so do nothing
+    }
+    assertEquals("", retVal2);
+
+    String retVal3 = "";
+    try {
+      retVal3 = GCloudCommandDelegate.createAppRunCommand(sdkLocation, runnables, null, null, 0);
+    } catch (NullPointerException e) {
+      // We're expecting the exception, so do nothing
+    }
+    assertEquals("", retVal3);
+
+    String retVal4 =
+        GCloudCommandDelegate.createAppRunCommand(sdkLocation, runnables, "run", "1234", 2345);
+    assertEquals(sdkLocation + "/bin/gcloud preview app run " + runnables + " --api-host 1234",
+        retVal4);
+
+    String retVal5 =
+        GCloudCommandDelegate.createAppRunCommand(sdkLocation, runnables, "debug", "1234", 2345);
+    assertEquals(sdkLocation + "/bin/gcloud preview app run " + runnables + " --api-host 1234 "
+        + "--jvm-flag=-Xdebug --jvm-flag=-Xrunjdwp:transport=dt_socket,server=y,suspend=y,"
+        + "address=2345", retVal5);
+
+    sdkLocationFile.delete();
+    runnablesFile.delete();
   }
 
   private String createOutput(String status) {

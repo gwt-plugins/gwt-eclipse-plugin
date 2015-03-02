@@ -9,6 +9,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: com.google.cloudsdk.eclipse.wtp.CloudSdkPlugin
 Require-Bundle: com.google.gdt.eclipse.maven,
+ com.google.guava,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.debug.core,
@@ -24,7 +25,4 @@ Require-Bundle: com.google.gdt.eclipse.maven,
  org.eclipse.wst.common.project.facet.ui,
  org.eclipse.wst.server.core,
  org.eclipse.wst.server.ui
-Import-Package: com.google.common.annotations,
- com.google.common.base,
- com.google.common.io
 Export-Package: com.google.cloudsdk.eclipse.wtp
