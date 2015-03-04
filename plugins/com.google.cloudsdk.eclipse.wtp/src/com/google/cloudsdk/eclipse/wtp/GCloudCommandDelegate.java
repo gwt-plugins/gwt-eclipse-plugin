@@ -14,7 +14,10 @@ package com.google.cloudsdk.eclipse.wtp;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.ByteStreams;
+import com.google.gdt.eclipse.core.OSUtilities;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchManager;
 
 import java.io.ByteArrayOutputStream;
@@ -30,10 +33,15 @@ import java.util.regex.Pattern;
 public class GCloudCommandDelegate {
   public static final String APP_ENGINE_COMPONENT_NAME = "App Engine Command Line Interface";
   public static final String CLOUD_SDK_COMPONENT_NAME = "Cloud SDK for Java Developers";
-  public static final String GET_VERSION_CMD = "/bin/gcloud version";
+  public static final String GCLOUD_CMD = OSUtilities.isWindows() ? "gcloud.cmd" : "gcloud";
+  public static final String GCLOUD_DIR = File.separator + "bin" + File.separator + GCLOUD_CMD;
+  public static final String GET_VERSION_CMD = GCLOUD_DIR + " version";
   // TODO: Update this command to specify the json format (--format json) when that feature
   // becomes available
-  public static final String GET_COMPONENTS_LIST_CMD = "/bin/gcloud components list";
+  public static final String GET_COMPONENTS_LIST_CMD = GCLOUD_DIR + " components list";
+  public static final String NO_USERS_MESSAGE = "No credentialed accounts.";
+  public static final String AVAILABLE_USERS_LIST_PREFIX = "Credentialed accounts:";
+  public static final String GET_AUTH_LIST_CMD = GCLOUD_DIR + " auth list";
 
   /**
    * Returns true if the Cloud SDK and the App Engine component have been installed.
@@ -91,6 +99,47 @@ public class GCloudCommandDelegate {
     Pattern pattern =
         Pattern.compile("\\|\\s*(Update Available|Installed)\\s*\\|\\s*" + componentName);
     return pattern.matcher(output).find();
+  }
+
+  /**
+   * Returns true if one or more accounts have been logged in to gcloud otherwise returns false.
+   *
+   * @param project an Eclipse project
+   * @param serverRuntime a Cloud SDK runtime
+   * @return
+   * @throws IOException if an I/O error occurs
+   * @throws InterruptedException if the thread for the gcloud process is interrupted
+   */
+  public static boolean hasLoggedInUsers(IProject project,
+      org.eclipse.wst.server.core.IRuntime serverRuntime) throws IOException, InterruptedException {
+    if (project == null) {
+      throw new NullPointerException("Select a valid project");
+    }
+
+    if (serverRuntime == null) {
+      throw new NullPointerException("Select a valid runtime for project " + project.getName());
+    }
+
+    IPath sdkLocation = serverRuntime.getLocation();
+    String command = sdkLocation + GET_AUTH_LIST_CMD;
+    Process process = Runtime.getRuntime().exec(command);
+    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    ByteStreams.copy(process.getInputStream(), bos);
+    process.waitFor();
+    String output = new String(bos.toByteArray());
+
+    // Get error output
+    ByteArrayOutputStream bosError = new ByteArrayOutputStream();
+    ByteStreams.copy(process.getErrorStream(), bosError);
+    String error = new String(bosError.toByteArray());
+
+    if (error.contains(NO_USERS_MESSAGE)) {
+      return false;
+    } else if (output.contains(AVAILABLE_USERS_LIST_PREFIX)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**
