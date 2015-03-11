@@ -1,2 +1,4 @@
-This appengine-java-sdk-<major>.<minor>.<micro>.zip file is simply an SDK downloaded from
-the Google website (currently https://cloud.google.com/appengine/downloads).
+Set a system environmental variable for GAE_HOME to the SDK or Maven will provide it through the pom.xml.  
+
+Download the SDK from: https://cloud.google.com/appengine/downloads
+The file will look like: appengine-java-sdk-<major>.<minor>.<micro>.zip 
