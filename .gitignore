@@ -2,3 +2,14 @@
 bin/
 proxy_bin/
 target/
+
+#trunk is maven
+/.project
+/.settings
+
+#gpe-repo is maven
+/gpe-repo/.settings
+/gpe-repo/.project
+
+#TODO remove files at somepoint
+/plugins/com.google.gcp.eclipse.testing/resources/appengine-java-sdk*
