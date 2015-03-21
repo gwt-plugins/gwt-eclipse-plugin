@@ -50,28 +50,25 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * A server for the ViewerService. The Development Mode server implements a
- * ViewerService client, which makes requests to this server.
+ * A server for the ViewerService. The Development Mode server implements a ViewerService client,
+ * which makes requests to this server.
  */
 public class ViewerServiceServer implements RequestProcessor {
 
   /**
-   * This struct is used to store information about a logging handle. Each
-   * handle corresponds to a particular log branch entry (which may be the root
-   * log entry in some cases), and a module name.
-   * 
-   * The module name is necessary because multiple log handles can be mapped to
-   * the same physical logger. This happens when multiple modules are loaded in
-   * the same browser tab. In this case, the log entries that are created must
-   * specify the module for which the log message was intended. This struct
-   * provides that information.
+   * This struct is used to store information about a logging handle. Each handle corresponds to a
+   * particular log branch entry (which may be the root log entry in some cases), and a module name.
+   *
+   * The module name is necessary because multiple log handles can be mapped to the same physical
+   * logger. This happens when multiple modules are loaded in the same browser tab. In this case,
+   * the log entries that are created must specify the module for which the log message was
+   * intended. This struct provides that information.
    */
   private static class LogHandleInfo {
     private final ModuleHandle moduleHandle;
     private final LogEntry<IModelNode> logBranch;
 
-    public LogHandleInfo(ModuleHandle moduleHandle,
-        LogEntry<IModelNode> logBranch) {
+    public LogHandleInfo(ModuleHandle moduleHandle, LogEntry<IModelNode> logBranch) {
       this.moduleHandle = moduleHandle;
       this.logBranch = logBranch;
     }
@@ -87,22 +84,24 @@ public class ViewerServiceServer implements RequestProcessor {
       helpInfoURL = msgLogData.getHelpInfo().getUrl();
     }
 
-    boolean needsAttention = msgLogData.hasNeedsAttention()
-        ? msgLogData.getNeedsAttention() : false;
+    boolean needsAttention =
+        msgLogData.hasNeedsAttention() ? msgLogData.getNeedsAttention() : false;
 
-    LogEntry.Data logEntryData = new LogEntry.Data(msgLogData.getSummary(),
-        msgLogData.getDetails(), msgLogData.getLevel(), helpInfoURL,
-        helpInfoText, System.currentTimeMillis(), needsAttention);
+    LogEntry.Data logEntryData =
+        new LogEntry.Data(msgLogData.getSummary(), msgLogData.getDetails(), msgLogData.getLevel(),
+            helpInfoURL, helpInfoText, System.currentTimeMillis(), needsAttention);
 
     return logEntryData;
   }
 
   private final Object privateInstanceLock = new Object();
   private final AtomicInteger nextLoggerHandleId = new AtomicInteger(1);
-  private final ConcurrentHashMap<Integer, LogHandleInfo> loggingHandleMap = new ConcurrentHashMap<Integer, LogHandleInfo>();
+  private final ConcurrentHashMap<Integer, LogHandleInfo> loggingHandleMap =
+      new ConcurrentHashMap<Integer, LogHandleInfo>();
   private MessageTransport transport = null;
   private LaunchConfiguration launchConfiguration = null;
 
+  @Override
   public Response execute(Request request) throws Exception {
     try {
       ViewerRequest viewerRequest = request.getViewerRequest();
@@ -130,7 +129,8 @@ public class ViewerServiceServer implements RequestProcessor {
             return processAddLogEntry(request.getViewerRequest().getAddLogEntry());
 
           case DISCONNECT_LOG:
-            return processDisconnectLog(request.getViewerRequest().getDisconnectLog().getLogHandle());
+            return processDisconnectLog(request.getViewerRequest().getDisconnectLog()
+                .getLogHandle());
 
           default: {
             break;
@@ -172,8 +172,7 @@ public class ViewerServiceServer implements RequestProcessor {
 
   private int createLoggingHandleAndAddToMap(ModuleHandle moduleHandle,
       Log<? extends IModelNode> newLog) {
-    return createLoggingHandleAndAddToMap(moduleHandle,
-        newLog.getRootLogEntry());
+    return createLoggingHandleAndAddToMap(moduleHandle, newLog.getRootLogEntry());
   }
 
   @SuppressWarnings("unchecked")
@@ -181,8 +180,7 @@ public class ViewerServiceServer implements RequestProcessor {
       LogEntry<? extends IModelNode> newLog) {
     int handle = nextLoggerHandleId.getAndIncrement();
     // TODO: Can we improve type safety here?
-    LogHandleInfo logInfo = new LogHandleInfo(moduleHandle,
-        (LogEntry<IModelNode>) newLog);
+    LogHandleInfo logInfo = new LogHandleInfo(moduleHandle, (LogEntry<IModelNode>) newLog);
     loggingHandleMap.put(Integer.valueOf(handle), logInfo);
     return handle;
   }
@@ -207,24 +205,25 @@ public class ViewerServiceServer implements RequestProcessor {
    * NOTE: This method is likely to move/change in the future. See
    * http://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=10
    */
-  private void performDevModeServiceCapabilityExchange(
-      final DevModeServiceClient client) {
+  private void performDevModeServiceCapabilityExchange(final DevModeServiceClient client) {
     Thread t = new Thread(new Runnable() {
+      @Override
       public void run() {
         boolean supportsRestart = false;
         try {
-          List<DevModeResponse.CapabilityExchange.Capability> supportedDevModeServerCapabilities = client.checkCapabilities();
-          supportsRestart = DevModeServiceClient.checkCapability(
-              supportedDevModeServerCapabilities,
-              DevModeRequest.RequestType.RESTART_WEB_SERVER);
+          List<DevModeResponse.CapabilityExchange.Capability> supportedDevModeServerCapabilities =
+              client.checkCapabilities();
+          supportsRestart =
+              DevModeServiceClient.checkCapability(supportedDevModeServerCapabilities,
+                  DevModeRequest.RequestType.RESTART_WEB_SERVER);
 
         } catch (Exception e) {
-          Activator.getDefault().getLog().log(
-              new Status(
-                  IStatus.ERROR,
-                  Activator.PLUGIN_ID,
-                  "Unable to determine whether or not the web server supports restarts.",
-                  e));
+          Activator
+              .getDefault()
+              .getLog()
+              .log(
+                  new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                      "Unable to determine whether or not the web server supports restarts.", e));
         }
         if (supportsRestart) {
           getLaunchConfiguration().setSupportsRestartWebServer();
@@ -252,34 +251,35 @@ public class ViewerServiceServer implements RequestProcessor {
     }
 
     throw new IllegalArgumentException(
-        "Unknown Log Type: The ViewerService cannot add logs of type " + type == null
-            ? "(unknown)" : type.name());
+        "Unknown Log Type: The ViewerService cannot add logs of type " + type == null ? "(unknown)"
+            : type.name());
   }
 
   private Response processAddLogBranch(ViewerRequest.AddLogBranch addLogBranch) {
-    LogHandleInfo logHandleInfo = loggingHandleMap.get(Integer.valueOf(addLogBranch.getParentLogHandle()));
+    LogHandleInfo logHandleInfo =
+        loggingHandleMap.get(Integer.valueOf(addLogBranch.getParentLogHandle()));
     if (logHandleInfo == null) {
       throw new IllegalArgumentException("Log has not been registered");
     }
 
     LogEntry.Data logEntryData = createLogEntryDataFromLogEntryMessage(addLogBranch.getLogData());
-    LogEntry<IModelNode> newLog = new LogEntry<IModelNode>(logEntryData,
-        addLogBranch.getIndexInParent(), logHandleInfo.moduleHandle);
+    LogEntry<IModelNode> newLog =
+        new LogEntry<IModelNode>(logEntryData, addLogBranch.getIndexInParent(),
+            logHandleInfo.moduleHandle);
 
     // Log this event
     Data parentLogData = logHandleInfo.logBranch.getLogData();
     LogSniffer.log(
         "AddLogBranch<{0}>: idx({1,number,#}) lvl({2}) attn({3}) label({4}) plabel({5})",
         getLaunchConfiguration().getName(), addLogBranch.getIndexInParent(),
-        logEntryData.getLogLevel(), logEntryData.getAttentionLevel(),
-        logEntryData.getLabel(),
+        logEntryData.getLogLevel(), logEntryData.getAttentionLevel(), logEntryData.getLabel(),
         (parentLogData != null) ? parentLogData.getLabel() : "");
 
     logHandleInfo.logBranch.addChild(newLog);
 
-    int handle = createLoggingHandleAndAddToMap(logHandleInfo.moduleHandle,
-        newLog);
-    ViewerResponse.AddLogBranch.Builder addLogBranchResponseBuilder = ViewerResponse.AddLogBranch.newBuilder();
+    int handle = createLoggingHandleAndAddToMap(logHandleInfo.moduleHandle, newLog);
+    ViewerResponse.AddLogBranch.Builder addLogBranchResponseBuilder =
+        ViewerResponse.AddLogBranch.newBuilder();
     addLogBranchResponseBuilder.setLogHandle(handle);
 
     ViewerResponse.Builder viewerResponseBuilder = ViewerResponse.newBuilder();
@@ -292,21 +292,20 @@ public class ViewerServiceServer implements RequestProcessor {
   private Response processAddLogEntry(ViewerRequest.AddLogEntry addLogEntry) {
     LogHandleInfo logHandleInfo = loggingHandleMap.get(Integer.valueOf(addLogEntry.getLogHandle()));
     if (logHandleInfo == null) {
-      throw new IllegalArgumentException("Log for handle "
-          + addLogEntry.getLogHandle() + " has not been registered");
+      throw new IllegalArgumentException("Log for handle " + addLogEntry.getLogHandle()
+          + " has not been registered");
     }
 
     LogEntry.Data logEntryData = createLogEntryDataFromLogEntryMessage(addLogEntry.getLogData());
-    LogEntry<IModelNode> newLogEntry = new LogEntry<IModelNode>(logEntryData,
-        addLogEntry.getIndexInLog(), logHandleInfo.moduleHandle);
+    LogEntry<IModelNode> newLogEntry =
+        new LogEntry<IModelNode>(logEntryData, addLogEntry.getIndexInLog(),
+            logHandleInfo.moduleHandle);
 
     // Log this event
     Data parentLogData = logHandleInfo.logBranch.getLogData();
-    LogSniffer.log(
-        "AddLogEntry<{0}>: idx({1,number,#}) lvl({2}) attn({3}) label({4}) plabel({5})",
+    LogSniffer.log("AddLogEntry<{0}>: idx({1,number,#}) lvl({2}) attn({3}) label({4}) plabel({5})",
         getLaunchConfiguration().getName(), addLogEntry.getIndexInLog(),
-        logEntryData.getLogLevel(), logEntryData.getAttentionLevel(),
-        logEntryData.getLabel(),
+        logEntryData.getLogLevel(), logEntryData.getAttentionLevel(), logEntryData.getLabel(),
         (parentLogData != null) ? parentLogData.getLabel() : "");
 
     logHandleInfo.logBranch.addChild(newLogEntry);
@@ -320,9 +319,9 @@ public class ViewerServiceServer implements RequestProcessor {
     ModuleHandle moduleHandle = null;
 
     // See if we can find a browser tab which matches the given criteria
-    BrowserTab tab = launchConfiguration.findBrowserTab(
-        moduleLog.getUserAgent(), moduleLog.getUrl(), moduleLog.getTabKey(),
-        moduleLog.getSessionKey());
+    BrowserTab tab =
+        launchConfiguration.findBrowserTab(moduleLog.getUserAgent(), moduleLog.getUrl(),
+            moduleLog.getTabKey(), moduleLog.getSessionKey());
 
     if (tab == null) {
       // We couldn't find an existing browser tab; create a new one
@@ -332,19 +331,17 @@ public class ViewerServiceServer implements RequestProcessor {
         iconBytes = moduleLog.getIcon().toByteArray();
       }
 
-      BrowserTab.Info newTabInfo = new BrowserTab.Info(moduleLog.getTabKey(),
-          moduleLog.getUserAgent(), moduleLog.getUrl(),
-          moduleLog.getRemoteHost(), moduleLog.getSessionKey(), iconBytes);
+      BrowserTab.Info newTabInfo =
+          new BrowserTab.Info(moduleLog.getTabKey(), moduleLog.getUserAgent(), moduleLog.getUrl(),
+              moduleLog.getRemoteHost(), moduleLog.getSessionKey(), iconBytes);
       tab = launchConfiguration.addBrowserTab(newTabInfo, moduleLog.getName());
       moduleHandle = tab.getModules().get(0);
     } else {
-      moduleHandle = tab.addModule(moduleLog.getName(),
-          moduleLog.getSessionKey());
+      moduleHandle = tab.addModule(moduleLog.getName(), moduleLog.getSessionKey());
     }
 
     /*
-     * TODO: Consider moving this logging handle logic into the BrowserTab
-     * class.
+     * TODO: Consider moving this logging handle logic into the BrowserTab class.
      */
 
     // Create a logging handle for the new module logger
@@ -361,18 +358,17 @@ public class ViewerServiceServer implements RequestProcessor {
   }
 
   /**
-   * TODO: Should we somehow be asking the Development Mode View what its
-   * capabilities are (instead of assuming what they are)? If we do that, we'll
-   * have to change the server implementation so that it only process messages
-   * for which the Dev Mode View has capabilities.
-   * 
-   * The capabilities reported back by this method are a basic set of
-   * capabilities that must be present in order to do anything at all. As a
-   * result, we don't need to query the view for its capability set at this
-   * time.
+   * TODO: Should we somehow be asking the Development Mode View what its capabilities are (instead
+   * of assuming what they are)? If we do that, we'll have to change the server implementation so
+   * that it only process messages for which the Dev Mode View has capabilities.
+   *
+   * The capabilities reported back by this method are a basic set of capabilities that must be
+   * present in order to do anything at all. As a result, we don't need to query the view for its
+   * capability set at this time.
    */
   private Response processCapabilityExchange() {
-    ViewerResponse.CapabilityExchange.Builder capabilityExchangeBuilder = ViewerResponse.CapabilityExchange.newBuilder();
+    ViewerResponse.CapabilityExchange.Builder capabilityExchangeBuilder =
+        ViewerResponse.CapabilityExchange.newBuilder();
 
     Capability.Builder c1 = Capability.newBuilder();
     c1.setCapability(RequestType.CAPABILITY_EXCHANGE);
@@ -403,10 +399,9 @@ public class ViewerServiceServer implements RequestProcessor {
 
   private Response processDisconnectLog(int logHandle) {
     /*
-     * TODO: It is probably
-     * no longer the case that messages for a disconnected logger can come over
-     * the wire. As such, it is probably safe to remove logging handles from the
-     * map on disconnection.
+     * TODO: It is probably no longer the case that messages for a disconnected logger can come over
+     * the wire. As such, it is probably safe to remove logging handles from the map on
+     * disconnection.
      */
     LogHandleInfo logHandleInfo = loggingHandleMap.get(Integer.valueOf(logHandle));
     if (logHandleInfo == null) {
@@ -415,19 +410,19 @@ public class ViewerServiceServer implements RequestProcessor {
 
     // Log this event
     Data logData = logHandleInfo.logBranch.getLogData();
-    LogSniffer.log("DisconnectLog: label({0})",
-        (logData != null) ? logData.getLabel() : "");
+    LogSniffer.log("DisconnectLog: label({0})", (logData != null) ? logData.getLabel() : "");
 
     IModelNode entity = logHandleInfo.logBranch.getLog().getEntity();
     if (entity instanceof BrowserTab) {
       BrowserTab tab = (BrowserTab) entity;
       if (!tab.removeModule(logHandleInfo.moduleHandle)) {
-        Activator.getDefault().getLog().log(
-            new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                "Request to unload module "
+        Activator
+            .getDefault()
+            .getLog()
+            .log(
+                new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Request to unload module "
                     + logHandleInfo.moduleHandle.getName()
-                    + ". This module has not been loaded in browser tab "
-                    + tab.getName()));
+                    + ". This module has not been loaded in browser tab " + tab.getName()));
       }
     }
 
@@ -455,13 +450,12 @@ public class ViewerServiceServer implements RequestProcessor {
     }
 
     WebAppDebugModel model = WebAppDebugModel.getInstance();
-    LaunchConfiguration lc = model.addOrReturnExistingLaunchConfiguration(
-        launch, clientId, null);
+    LaunchConfiguration lc = model.addOrReturnExistingLaunchConfiguration(launch, clientId, null);
     lc.setLaunchUrls(initialize.getStartupURLsList());
     setLaunchConfiguration(lc);
     DevModeServiceClient devModeServiceClient = new DevModeServiceClient(getTransport());
-    DevModeServiceClientManager.getInstance().putClient(
-        getLaunchConfiguration(), devModeServiceClient);
+    DevModeServiceClientManager.getInstance().putClient(getLaunchConfiguration(),
+        devModeServiceClient);
     performDevModeServiceCapabilityExchange(devModeServiceClient);
 
     return buildResponse(null);

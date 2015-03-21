@@ -1,13 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: com.google.gwt.eclipse.core.GWTPlugin
-Bundle-ClassPath: .,
- libs/gwt-dev-tools.jar
+Bundle-ClassPath: libs/gwt-dev-tools.jar,.
 Bundle-Localization: plugin
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: com.google.gwt.eclipse.core;singleton:=true
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: %providerName
 Bundle-Version: 0.0.0.qualifier
 Export-Package: com.google.gwt.eclipse.core,
@@ -24,6 +23,7 @@ Export-Package: com.google.gwt.eclipse.core,
  com.google.gwt.eclipse.core.formatter,
  com.google.gwt.eclipse.core.launch,
  com.google.gwt.eclipse.core.launch.processors,
+ com.google.gwt.eclipse.core.launch.processors.codeserver,
  com.google.gwt.eclipse.core.launch.ui,
  com.google.gwt.eclipse.core.launch.util,
  com.google.gwt.eclipse.core.markers,
@@ -69,7 +69,7 @@ Export-Package: com.google.gwt.eclipse.core,
  com.google.gwt.eclipse.core.validators.rpc,
  com.google.gwt.eclipse.core.wizards,
  com.google.gwt.eclipse.core.wizards.rpc
-Require-Bundle: com.google.gdt.eclipse.core,
+Require-Bundle: com.google.gdt.eclipse.core;visibility:=reexport,
  com.google.gdt.eclipse.platform,
  com.google.gwt.eclipse.libs,
  javax.servlet,
@@ -96,9 +96,11 @@ Require-Bundle: com.google.gdt.eclipse.core,
  org.eclipse.wst.css.core,
  org.eclipse.wst.css.ui,
  org.eclipse.wst.jsdt.core,
+ org.eclipse.wst.jsdt.manipulation,
  org.eclipse.wst.jsdt.ui,
  org.eclipse.wst.sse.core,
  org.eclipse.wst.sse.ui,
  org.eclipse.wst.validation,
  org.eclipse.wst.xml.core,
- org.eclipse.wst.xml.ui
+ org.eclipse.wst.xml.ui,
+ com.google.gwt.eclipse.libs

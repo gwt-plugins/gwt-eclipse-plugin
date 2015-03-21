@@ -43,7 +43,7 @@ public class SuperDevModeCodeServerMainTypeProcessor implements ILaunchConfigura
    * Possible main types for a launch.
    */
   public enum MainType {
-    GWT_SUPERDEVMODE(GwtLaunchConfigurationProcessorUtilities.SUPERDEVMODE_MODE_MAIN_TYPE);
+    GWT_SUPERDEVMODE(GwtLaunchConfigurationProcessorUtilities.SUPERDEVMODE_CODESERVER_MAIN_TYPE);
 
     public final String mainTypeName;
 

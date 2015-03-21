@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -17,6 +17,7 @@ package com.google.gdt.eclipse.core.sdk;
 import com.google.gdt.eclipse.core.ClasspathUtilities;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.sdk.SdkSetSerializer.SdkSerializationException;
+import com.google.gdt.eclipse.core.sdk.SdkSortComparator.SortBy;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -26,17 +27,18 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Manages a set of {@link Sdk}s and fires off events whenever the set is
  * changed.
- * 
+ *
  * @param <T> the type of {@link Sdk} being managed
  */
 public class SdkManager<T extends Sdk> {
   /**
-   * 
+   *
    * @param <T> the type of {@link Sdk} associated with the update
    */
   public static class SdkUpdate<T extends Sdk> {
@@ -76,7 +78,7 @@ public class SdkManager<T extends Sdk> {
   }
 
   /**
-   * 
+   *
    * @param <T> the type of {@link Sdk} associated with this update event
    */
   public static class SdkUpdateEvent<T extends Sdk> {
@@ -98,7 +100,7 @@ public class SdkManager<T extends Sdk> {
     }
   }
   /**
-   * 
+   *
    * @param <T> the type of {@link Sdk} associated with this listener
    */
   public interface SdkUpdateListener<T extends Sdk> {
@@ -116,11 +118,11 @@ public class SdkManager<T extends Sdk> {
     /**
      * Iterates through all of the sdkUpdateEvents and checks to see if a new
      * default SDK was chosen. If so, this value is recorded.
-     * 
+     *
      * Also looks for cases where new SDKs were added (which could also
      * correspond to adding a different SDK with the same name after removing
      * it).
-     * 
+     *
      * @param sdkUpdateEvent
      */
     public SdkUpdateEventProcessor(SdkUpdateEvent<T> sdkUpdateEvent) {
@@ -139,16 +141,16 @@ public class SdkManager<T extends Sdk> {
     /**
      * Given a java project that is using container-based SDKs, determine
      * whether the sdk updates will have caused its SDK to change.
-     * 
+     *
      * If the default SDK has changed and this project is using the default SDK,
      * then the updated SDK is returned.
-     * 
+     *
      * If an SDK has been added with the same name of an existing SDK, and this
      * project is using an SDK with the same name, then the 'new' SDK with the
      * same name is returned.
-     * 
+     *
      * Otherwise, null is returned.
-     * 
+     *
      * @param project the Java project
      */
     public T getUpdatedSdkForProject(IJavaProject project) throws JavaModelException {
@@ -236,6 +238,21 @@ public class SdkManager<T extends Sdk> {
 
     // Return a copy so that our version is not modified
     return new SdkSet<T>(sdkSetCache);
+  }
+
+  public List<T> getSdksSortedList() {
+    SdkSet<T> sdkset = getSdks();
+
+    ArrayList<T> sdklist = new ArrayList<T>();
+    if (sdkset != null && !sdkset.isEmpty()) {
+      sdklist = new ArrayList<T>(sdkset);
+    }
+
+    // Sort the sdks list by version
+    SdkSortComparator sdkSortComparator = new SdkSortComparator(SortBy.VERSION);
+    Collections.sort(sdklist, sdkSortComparator);
+
+    return sdklist;
   }
 
   public void removeSdkUpdateListener(SdkUpdateListener<T> sdkUpdateListener) {

@@ -1,16 +1,14 @@
 /*******************************************************************************
  * Copyright 2013 Google Inc. All Rights Reserved.
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.wizards;
 
@@ -41,7 +39,7 @@ import java.io.IOException;
  * the App Engine API. User should be logged in before opening this dialog. If user is not logged in
  * before opening this dialog, user will be prompted to log in when they attempt to create a new app
  * id.
- * 
+ *
  * NOTE: This class is unused, because we've disabled the ability to create App Ids on the
  * service side. We'll re-enable this once an updated project creation API exists.
  */
@@ -60,7 +58,7 @@ public class CreateAppIdDialog extends TitleAreaDialog {
 
   /**
    * Constructor.
-   * 
+   *
    * NOTE: This constructor is private, because we've disabled the ability to create App Ids on the
    * service side. We'll re-enable this once an updated project creation API exists.
    */
@@ -121,6 +119,7 @@ public class CreateAppIdDialog extends TitleAreaDialog {
     gd1.horizontalSpan = 2;
     newAppIdText.setLayoutData(gd1);
     newAppIdText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         newAppIdCopy = newAppIdText.getText();
         updateControls();

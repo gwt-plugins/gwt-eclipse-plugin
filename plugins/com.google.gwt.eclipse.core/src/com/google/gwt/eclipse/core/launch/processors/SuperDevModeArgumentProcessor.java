@@ -200,7 +200,7 @@ public class SuperDevModeArgumentProcessor implements ILaunchConfigurationProces
     try {
       IType type =
           javaProject
-              .findType(GwtLaunchConfigurationProcessorUtilities.SUPERDEVMODE_MODE_MAIN_TYPE);
+              .findType(GwtLaunchConfigurationProcessorUtilities.SUPERDEVMODE_CODESERVER_MAIN_TYPE);
       if (type != null) {
         alreadyExists = true;
       }
