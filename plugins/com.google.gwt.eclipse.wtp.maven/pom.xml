@@ -5,22 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.google.gwt.eclipse</groupId>
-        <artifactId>gwt-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+      <groupId>com.google.eclipse.gpe</groupId>
+      <artifactId>trunk</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <relativePath>../../</relativePath>
     </parent>
 
+    <groupId>com.google.eclipse.gpe</groupId>
     <artifactId>com.google.gwt.eclipse.wtp.maven</artifactId>
+    <version>0.0.0.qualifier</version>
     <packaging>eclipse-plugin</packaging>
-    <version>0.0.1.qualifier</version>
-
-    <name>Google GWT WTP Maven Plugin</name>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.eclipse.tycho</groupId>
-                <artifactId>tycho-source-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+    
 </project>
