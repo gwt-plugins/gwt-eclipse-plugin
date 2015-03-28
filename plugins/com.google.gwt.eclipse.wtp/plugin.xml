@@ -8,7 +8,7 @@
     <preset id="com.google.gwt.facet.preset.gwtonly">
       <label>GWT Project</label>
       <description>Enables GWT project runtime.</description>
-      <facet id="jst.java" version="1.7,1.8"/>
+      <facet id="jst.java" version="1.6,1.7,1.8"/>
       <facet id="com.google.gwt.facet" version="1.0"/>
     </preset>
     
@@ -23,7 +23,7 @@
     
     <!-- Version -->
     <project-facet-version facet="com.google.gwt.facet" version="1.0">
-      <requires facet="java" version="[1.7"/>
+      <requires facet="java" version="[1.6"/>
       <requires facet="jst.web" version="[2.2"/>
     </project-facet-version>
   

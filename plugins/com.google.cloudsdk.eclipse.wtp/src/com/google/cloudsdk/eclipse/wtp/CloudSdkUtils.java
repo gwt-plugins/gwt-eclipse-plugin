@@ -84,6 +84,9 @@ public class CloudSdkUtils {
    */
   public static boolean hasCloudSdkFacet(IProject project) throws CoreException {
     IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+    if (facetedProject == null) {
+      return false;
+    }
     IProjectFacet facetOfInterest =
         ProjectFacetsManager.getProjectFacet(CloudSdkUtils.CLOUD_SDK_FACET_ID);
     return facetedProject.hasProjectFacet(facetOfInterest);

@@ -24,22 +24,19 @@ import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IDelegate;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
-public final class GwtFacetInstallSdkDelegate implements IDelegate, IGwtFacetConstants {
+public final class GwtFacetInstallSdkDelegate implements IDelegate,
+    IGwtFacetConstants {
 
   private IProject project;
-  private GWTJarsRuntime runtime;
+  private IDataModel dataModel;
 
   @Override
-  public void execute(final IProject project, final IProjectFacetVersion version,
-      final Object config, final IProgressMonitor monitor) throws CoreException {
+  public void execute(final IProject project,
+      final IProjectFacetVersion version, final Object config,
+      final IProgressMonitor monitor) throws CoreException {
     this.project = project;
 
-    IDataModel dataModel = (IDataModel) config;
-
-    runtime = (GWTJarsRuntime) dataModel.getProperty(GWT_SDK);
-
-    GwtWtpPlugin.logMessage("GwtFacetInstallSdkDelegate: selected runtime version="
-        + runtime.getVersion());
+    dataModel = (IDataModel) config;
 
     // Standard project GWT facet install
     if (!isMavenProject(dataModel)) {
@@ -47,8 +44,7 @@ public final class GwtFacetInstallSdkDelegate implements IDelegate, IGwtFacetCon
       GwtWtpPlugin.logMessage(message);
       installGwtFacet();
     } else {
-      String message =
-          "GwtFacetInstallSdkDelegate: Maven detected, skipping standard GWT classpath container.";
+      String message = "GwtFacetInstallSdkDelegate: Maven detected, skipping standard GWT classpath container.";
       GwtWtpPlugin.logMessage(message);
     }
   }
@@ -57,14 +53,23 @@ public final class GwtFacetInstallSdkDelegate implements IDelegate, IGwtFacetCon
    * Configure a standard GWT classpath container for Facet.
    */
   private void installGwtFacet() {
+    GWTJarsRuntime runtime = (GWTJarsRuntime) dataModel.getProperty(GWT_SDK);
+    if (runtime == null) { // no sdks have been installed.
+      // TODO add a warning dialog with link to preferences
+      GwtWtpPlugin
+          .logMessage("No GWT sdks have been added to the preferences. Add a GWT SDK.");
+      return;
+    }
+
+    GwtWtpPlugin
+        .logMessage("GwtFacetInstallSdkDelegate: selected runtime version="
+            + runtime.getVersion());
 
     GWTProjectPropertyPage projectProperty = new GWTProjectPropertyPage();
 
-
-    // TODO extract to this class, having problems with exporting/importing UpdateType?
+    // TODO extract to this class, having problems with exporting/importing
+    // UpdateType?
     projectProperty.createGwtSdkContainerForFacet(project, runtime);
-
-
   }
 
   private static boolean isMavenProject(IDataModel model) {

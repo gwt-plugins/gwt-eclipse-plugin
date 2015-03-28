@@ -121,6 +121,20 @@ public final class LaunchConfigurationProcessorUtilities {
     }
   }
 
+  public static String getArgValue(List<String> args, String argName, String defaultValue) {
+    int argIndex = args.indexOf(argName);
+    if (argIndex == -1) {
+      return defaultValue;
+    }
+
+    String value = LaunchConfigurationProcessorUtilities.getArgValue(args, argIndex + 1);
+    if (value == null) {
+      return defaultValue;
+    }
+
+    return value;
+  }
+
   /**
    * Returns a {@link ClassLoader} that contains all of the entries returned by
    * {@link #getClasspath(ILaunchConfiguration)}.

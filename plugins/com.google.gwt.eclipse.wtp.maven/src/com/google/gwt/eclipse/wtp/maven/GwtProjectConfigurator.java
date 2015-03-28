@@ -68,6 +68,7 @@ public class GwtProjectConfigurator extends WTPProjectConfigurator {
   private static boolean isGwtProject(Model pom) {
     List<Plugin> plugins = pom.getBuild().getPlugins();
     for (Plugin plugin : plugins) {
+      // TODO add multiple gwt plugins
       if (Constants.GWT_MAVEN_PLUGIN_ARTIFACT_ID.equals(plugin.getArtifactId())) {
         return true;
       }
