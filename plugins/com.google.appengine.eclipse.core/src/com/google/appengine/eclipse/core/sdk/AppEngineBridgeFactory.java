@@ -49,8 +49,7 @@ public class AppEngineBridgeFactory {
     private AppEngineBridge bridge;
     private long sdkLocationLastModified;
 
-    private BridgeCacheEntry(AppEngineBridge bridge,
-        long sdkLocationLastModified) {
+    private BridgeCacheEntry(AppEngineBridge bridge, long sdkLocationLastModified) {
       this.bridge = bridge;
       this.sdkLocationLastModified = sdkLocationLastModified;
     }
@@ -67,8 +66,7 @@ public class AppEngineBridgeFactory {
   private static final Map<IPath, BridgeCacheEntry> pathToBridgeCacheEntryMap =
       new HashMap<IPath, BridgeCacheEntry>();
 
-  public static synchronized AppEngineBridge getAppEngineBridge(
-      IPath sdkLocation) throws CoreException {
+  public static synchronized AppEngineBridge getAppEngineBridge(IPath sdkLocation) throws CoreException {
     File sdkDir = sdkLocation.toFile();
     if (sdkDir.exists()) {
       if (sdkDir.isFile()) {
@@ -84,15 +82,13 @@ public class AppEngineBridgeFactory {
 
     long sdkLocationLastModified = sdkDir.lastModified();
     BridgeCacheEntry bridgeCacheEntry = pathToBridgeCacheEntryMap.get(sdkLocation);
-    if (bridgeCacheEntry == null
-        || bridgeCacheEntry.getSdkLocationLastModified() != sdkLocationLastModified) {
+    if (bridgeCacheEntry == null || bridgeCacheEntry.getSdkLocationLastModified() != sdkLocationLastModified) {
       /*
        * If we have no bridge info or if the directory where the sdk was
        * installed was modified then we create a new bridge and record the
        * current timestamp of the directory.
        */
-      bridgeCacheEntry = new BridgeCacheEntry(createBridge(sdkLocation),
-          sdkLocationLastModified);
+      bridgeCacheEntry = new BridgeCacheEntry(createBridge(sdkLocation), sdkLocationLastModified);
       pathToBridgeCacheEntryMap.put(sdkLocation, bridgeCacheEntry);
     }
 
