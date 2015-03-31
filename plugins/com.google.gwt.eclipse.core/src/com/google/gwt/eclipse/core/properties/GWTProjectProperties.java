@@ -49,6 +49,8 @@ public final class GWTProjectProperties {
 
   private static final String GWT_COMPILE_SETTINGS_XML = "gwtCompileSettings";
 
+  private static final String SYNC_CODESERVER_RUNNING =  "gwtSyncCodeServer";
+
   /**
    * Returns the default set of entry point modules for a project. This set
    * contains all modules defined in source (.gwt.xml) in the project.
@@ -75,9 +77,7 @@ public final class GWTProjectProperties {
    * Returns the user-specified set of entry point modules.
    */
   public static List<String> getDefinedEntryPointModules(IProject project) {
-    String rawPropVal = getProjectProperties(project).get(ENTRY_POINT_MODULES,
-        null);
-
+    String rawPropVal = getProjectProperties(project).get(ENTRY_POINT_MODULES, null);
     return PropertiesUtilities.deserializeStrings(rawPropVal);
   }
 
@@ -115,8 +115,37 @@ public final class GWTProjectProperties {
       // Use default GWT compilation settings
       settings = new GWTCompileSettings(project);
     }
-        
+
     return settings;
+  }
+
+  /**
+   * GWT Facet sync running the server with the code server.
+   *
+   * @param project
+   * @param syncCodeServer true to run code server with the web server
+   * @throws BackingStoreException
+   */
+  public static void setFacetSyncCodeServer(IProject project, Boolean syncCodeServer) throws BackingStoreException {
+    IEclipsePreferences prefs = getProjectProperties(project);
+    prefs.put(SYNC_CODESERVER_RUNNING, syncCodeServer.toString());
+    prefs.flush();
+  }
+
+  /**
+   * GWT Facet sync running the server with the code server.
+   *
+   * @param project
+   * @return true to sync with server
+   */
+  public static Boolean getFacetSyncCodeServer(IProject project) {
+    IEclipsePreferences prefs = getProjectProperties(project);
+    String valueStr = prefs.get(SYNC_CODESERVER_RUNNING, null);
+    Boolean b = null;
+    if (valueStr != null) {
+      b = Boolean.valueOf(valueStr);
+    }
+    return b;
   }
 
   public static void setEntryPointModules(IProject project, List<String> modules)
@@ -170,7 +199,7 @@ public final class GWTProjectProperties {
 
   /**
    * Computes the inherited modules closure recursively.
-   * 
+   *
    * @param javaProject the associated Java project
    * @param module the module being explored
    * @param explored a set of previously explored modules
@@ -221,7 +250,7 @@ public final class GWTProjectProperties {
   /**
    * Returns the list of entry points for a given module and all its
    * (transitively) inherited dependencies.
-   * 
+   *
    * @param javaProject the associated Java project
    * @param module the module to evaluate
    * @param inheritedModulesCache a cache for (module -> directly inherited

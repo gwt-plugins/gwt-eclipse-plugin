@@ -54,6 +54,7 @@ import org.osgi.framework.BundleContext;
 import com.google.gwt.eclipse.core.launch.GWTLaunchConstants;
 import com.google.gwt.eclipse.core.launch.GwtSuperDevModeLaunchConfiguration;
 import com.google.gwt.eclipse.core.launch.util.GwtSuperDevModeCodeServerLaunchUtil;
+import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
 import com.google.gwt.eclipse.oophm.model.LaunchConfiguration;
 import com.google.gwt.eclipse.oophm.model.WebAppDebugModel;
 import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
@@ -400,6 +401,12 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
 
     if (!hasGwtFacet(project)) {
       logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Does not have a GWT Facet.");
+      return;
+    }
+
+    if (GWTProjectProperties.getFacetSyncCodeServer(project) != null
+        && GWTProjectProperties.getFacetSyncCodeServer(project) == false) {
+      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: GWT Facet project properties, the code server sync is off.");
       return;
     }
 

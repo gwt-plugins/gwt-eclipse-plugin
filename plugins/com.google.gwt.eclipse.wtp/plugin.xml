@@ -2,6 +2,25 @@
 <?eclipse version="3.0"?>
 <plugin>  
 
+  <!-- Is gwt facet -->
+  <extension point="org.eclipse.core.expressions.definitions">
+    <definition id="com.google.gwt.eclipse.wtp.isGWTFacet">
+	<and>
+	   <adapt type="org.eclipse.core.resources.IProject">
+	       <test property="org.eclipse.core.resources.projectNature"
+	             value="org.eclipse.jdt.core.javanature">
+	       </test>
+	   </adapt>
+       <adapt type="org.eclipse.core.resources.IProject">
+         <test property="org.eclipse.wst.common.project.facet.core.projectFacet"
+               value="com.google.gwt.facet">
+         </test>
+      </adapt>
+	</and>
+    </definition>
+  </extension>  	
+
+  <!-- GWT Facet -->
   <extension point="org.eclipse.wst.common.project.facet.core.facets">
   
     <!-- Preset -->
@@ -70,5 +89,28 @@
         class="com.google.gwt.eclipse.wtp.facet.GwtLaunchableAdapterDelegate"
         typeIds="*" priority="1000" />
    </extension>
-
+   
+  <!-- GWT Facet Properties -->
+  <extension
+	     point="org.eclipse.ui.propertyPages">
+	  <!-- GWT -->
+	  <page
+	        class="com.google.gwt.eclipse.wtp.properties.ui.GWTRootProjectPropertyPage"
+	        id="com.google.gwt.eclipse.wtp.properties.ui.gwtRootProjectPropertyPage"
+	        name="GWT">
+	     <enabledWhen>
+	        <reference definitionId="com.google.gwt.eclipse.wtp.isGWTFacet"/>
+	     </enabledWhen>
+	  </page>
+	  <!-- GWT Facet -->
+	  <page
+	        category="com.google.gwt.eclipse.wtp.properties.ui.gwtRootProjectPropertyPage" 
+	        class="com.google.gwt.eclipse.wtp.properties.ui.GWTFacetProjectPropertyPage"
+	        id="com.google.gwt.eclipse.wtp.properties.ui.gwtFacetProjectPropertyPage" 
+	        name="GWT Facet">
+	     <enabledWhen>
+	       <reference definitionId="com.google.gwt.eclipse.wtp.isGWTFacet"/> 
+	     </enabledWhen>
+	  </page>	
+  </extension>
 </plugin>

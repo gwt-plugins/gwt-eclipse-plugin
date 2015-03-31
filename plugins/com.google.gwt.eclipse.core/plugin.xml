@@ -687,6 +687,8 @@
             class="com.google.gwt.eclipse.core.editors.java.JsniMethodBodyCompletionProposalComputer">
       </javaCompletionProposalComputer>
    </extension>
+   
+   <!-- deprecated - will be off during app engine facet use --> 
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
