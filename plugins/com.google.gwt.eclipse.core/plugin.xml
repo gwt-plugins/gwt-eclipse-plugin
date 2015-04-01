@@ -729,7 +729,7 @@
             objectClass="org.eclipse.core.resources.IProject">
          <action
                class="com.google.gwt.eclipse.core.actions.GWTCompileToolbarAction"
-               icon="icons/gwt-compile_small.png"
+               icon="icons/gwt_16x16.png"
                id="com.google.gwt.eclipse.core.actions.GWTCompileProjectAction"
                label="GWT Compile"
                menubarPath="com.google.gdt.eclipse.suite.popupMenu.project/actionsContent">
@@ -1013,7 +1013,7 @@
              locationURI="menu:com.google.gdt.eclipse.suite.GDTPulldown?after=toolbarGroup.compile">
           <command
                 commandId="com.google.gwt.eclipse.core.gwtCompileProject"
-                icon="icons/gwt-compile_small.png"
+                icon="icons/gwt_16x16.png"
                 label="GWT Compile Project..."
                 style="push"
                 tooltip="GWT Compile Project">

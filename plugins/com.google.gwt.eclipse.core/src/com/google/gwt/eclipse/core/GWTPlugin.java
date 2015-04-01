@@ -63,8 +63,9 @@ public class GWTPlugin extends AbstractGooglePlugin {
 
   static {
     PluginProperties props = new PluginProperties(GWTPlugin.class);
-    SDK_DOWNLOAD_URL = props.getProperty("gwtplugin.sdk_download_url",
-        "http://code.google.com/webtoolkit/download.html");
+    SDK_DOWNLOAD_URL =
+        props.getProperty("gwtplugin.sdk_download_url",
+            "http://code.google.com/webtoolkit/download.html");
   }
 
   public static Shell getActiveWorkbenchShell() {
@@ -84,11 +85,11 @@ public class GWTPlugin extends AbstractGooglePlugin {
   }
 
   public static String getName() {
-    return (String) getDefault().getBundle().getHeaders().get(Constants.BUNDLE_NAME);
+    return getDefault().getBundle().getHeaders().get(Constants.BUNDLE_NAME);
   }
 
   public static String getVersion() {
-    return (String) getDefault().getBundle().getHeaders().get(Constants.BUNDLE_VERSION);
+    return getDefault().getBundle().getHeaders().get(Constants.BUNDLE_VERSION);
   }
 
   private final WebInfFolderUpdater webInfFolderUpdater = new WebInfFolderUpdater() {
@@ -103,8 +104,7 @@ public class GWTPlugin extends AbstractGooglePlugin {
     }
   };
 
-  public GWTPlugin() {
-  }
+  public GWTPlugin() {}
 
   @Override
   public void start(BundleContext context) throws Exception {
@@ -113,9 +113,9 @@ public class GWTPlugin extends AbstractGooglePlugin {
 
     // Load problem severities
     GdtProblemSeverities.getInstance().addProblemTypeEnums(
-        new Class<?>[] {
-            GWTProblemType.class, RemoteServiceProblemType.class, UiBinderJavaProblemType.class,
-            ClientBundleProblemType.class, UiBinderTemplateProblemType.class});
+        new Class<?>[] {GWTProblemType.class, RemoteServiceProblemType.class,
+            UiBinderJavaProblemType.class, ClientBundleProblemType.class,
+            UiBinderTemplateProblemType.class});
 
     addLaunchListener();
 
@@ -162,8 +162,8 @@ public class GWTPlugin extends AbstractGooglePlugin {
   protected void initializeImageRegistry(ImageRegistry reg) {
     super.initializeImageRegistry(reg);
 
-    reg.put(GWTImages.GWT_ICON, imageDescriptorFromPath("icons/gwt_small.png"));
-    reg.put(GWTImages.GWT_LOGO, imageDescriptorFromPath("icons/gwt_large.png"));
+    reg.put(GWTImages.GWT_ICON, imageDescriptorFromPath("icons/gwt_16x16.png"));
+    reg.put(GWTImages.GWT_LOGO, imageDescriptorFromPath("icons/gwt_75x46.png"));
     reg.put(GWTImages.JAVA_ICON, imageDescriptorFromPath("icons/jcu_obj.gif"));
 
     reg.put(GWTImages.JSNI_DEFAULT_METHOD_SMALL, imageDescriptorFromPath("icons/methdef_obj.gif"));
@@ -189,7 +189,7 @@ public class GWTPlugin extends AbstractGooglePlugin {
     reg.put(GWTImages.NEW_MODULE_LARGE, imageDescriptorFromPath("icons/gwt-new-module_large.png"));
     reg.put(GWTImages.NEW_MODULE_SMALL, imageDescriptorFromPath("icons/gwt-new-module_small.png"));
     reg.put(GWTImages.MODULE_ICON, imageDescriptorFromPath("icons/gwt-module-file_small.gif"));
-    reg.put(GWTImages.GWT_COMPILE_LARGE, imageDescriptorFromPath("icons/gwt-compile_large.png"));
+    reg.put(GWTImages.GWT_COMPILE_LARGE, imageDescriptorFromPath("icons/gwt_75x46.png"));
     reg.put(GWTImages.NEW_CLIENT_BUNDLE_LARGE,
         imageDescriptorFromPath("icons/gwt-new-clientbundle_large.png"));
     reg.put(GWTImages.NEW_CLIENT_BUNDLE_SMALL,
@@ -203,13 +203,13 @@ public class GWTPlugin extends AbstractGooglePlugin {
   }
 
   private void addLaunchListener() {
-    DebugPlugin.getDefault().getLaunchManager().addLaunchListener(
-        SpeedTracerLaunchListener.INSTANCE);
+    DebugPlugin.getDefault().getLaunchManager()
+        .addLaunchListener(SpeedTracerLaunchListener.INSTANCE);
   }
 
   private void removeLaunchListener() {
-    DebugPlugin.getDefault().getLaunchManager().removeLaunchListener(
-        SpeedTracerLaunchListener.INSTANCE);
+    DebugPlugin.getDefault().getLaunchManager()
+        .removeLaunchListener(SpeedTracerLaunchListener.INSTANCE);
   }
 
 }

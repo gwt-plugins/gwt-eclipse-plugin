@@ -20,6 +20,10 @@
     </definition>
   </extension>  	
 
+  <extension point="org.eclipse.wst.common.project.facet.ui.images">
+    <image facet="com.google.gwt.facet" path="icons/gwt_16x16.png"/>
+  </extension>
+
   <!-- GWT Facet -->
   <extension point="org.eclipse.wst.common.project.facet.core.facets">
   
@@ -36,7 +40,7 @@
       <category>com.google.gwt.facet</category>
       <label>GWT</label>
       <description>
-        Enables GWT SDK use for project.
+        Enables GWT SDK use for the project.
       </description>
     </project-facet>  
     
