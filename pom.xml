@@ -309,4 +309,11 @@
       </properties>
     </profile>
   </profiles>
+  
+  <distributionManagement>
+    <repository>
+      <id>maven-repository</id>
+      <url>file://${basedir}/../gpe-repo/target/distribution</url>
+    </repository>
+  </distributionManagement>
 </project>

@@ -15,13 +15,11 @@
    </copyright>
 
    <license>
-<![CDATA[
       @FEATURE_LICENSE@
-]]>
    </license>
 
    <url>
-      <update label="Google Update Site for Eclipse 4.4" url="@FEATURE_UPDATE_SITE_URL@"/>
+      <update label="Google Update Site for Eclipse 4.4"/>
    </url>
 
    <requires>
@@ -127,7 +125,7 @@
          version="0.0.0.qualifier"
          unpack="false"/>
 
-    <plugin
+   <plugin
          id="com.google.appengine.eclipse.webtools"
          download-size="0"
          install-size="0"
@@ -148,7 +146,6 @@
          version="0.0.0.qualifier"
          unpack="false"/>
 
-   <!-- This plug-in is compatible with Eclipse 4.4 as well -->
    <plugin
          id="com.google.appengine.eclipse.wtp.jpa.e43"
          download-size="0"
@@ -208,7 +205,7 @@
    <plugin
          id="com.google.gdt.eclipse.login"
          download-size="0"
-         install-size="0" 
+         install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
@@ -266,6 +263,20 @@
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gwt.eclipse.wtp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gwt.eclipse.wtp.maven"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

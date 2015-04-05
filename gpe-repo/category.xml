@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-    <feature url="../features/com.google.appengine.eclipse.wtp.maven.feature"
-        id="com.google.appengine.eclipse.wtp.maven.feature" version="0.0.0.qualifier">
-        <category name="GPE" />
-    </feature>
-    <feature url="../features/com.google.gdt.eclipse.mobile.android.feature"
-        id="com.google.gdt.eclipse.mobile.android.feature" version="0.0.0.qualifier">
-        <category name="GPE" />
-    </feature>
-    <feature url="../features/com.google.gdt.eclipse.suite.e44.feature"
-        id="com.google.gdt.eclipse.suite.e44.feature" version="0.0.0.qualifier">
-        <category name="GPE" />
-    </feature>
-    <category-def name="GPE" label="Google Plugin for Eclipse" />
+   <feature url="../features/com.google.appengine.eclipse.wtp.maven.feature" id="com.google.appengine.eclipse.wtp.maven.feature" version="0.0.0.qualifier">
+      <category name="GPE"/>
+   </feature>
+   <feature url="../features/com.google.gdt.eclipse.suite.e44.feature" id="com.google.gdt.eclipse.suite.e44.feature" version="0.0.0.qualifier">
+      <category name="GPE"/>
+   </feature>
+   <category-def name="GPE" label="Google Plugin for Eclipse"/>
 </site>

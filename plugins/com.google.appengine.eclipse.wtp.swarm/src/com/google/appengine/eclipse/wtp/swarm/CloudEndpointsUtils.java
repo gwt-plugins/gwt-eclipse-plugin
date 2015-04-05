@@ -46,6 +46,7 @@ public final class CloudEndpointsUtils {
   public static SwarmServiceCreator createServiceCreator(IProject project, List<IType> entityList)
       throws CoreException {
     String appId = ProjectUtils.getAppId(project);
+    // TODO fix , does this use the facet?
     IPath gaeSdkPath = ProjectUtils.getGaeSdkLocation(project);
     if (gaeSdkPath == null) {
       throw new CoreException(StatusUtilities.newErrorStatus(

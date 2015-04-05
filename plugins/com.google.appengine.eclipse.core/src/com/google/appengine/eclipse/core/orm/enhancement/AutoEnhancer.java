@@ -53,7 +53,7 @@ import java.util.Set;
  * Performs enhancement of classes in response to build events. This builder
  * supports incremental and full builds. It also checks for project settings
  * that limit the number of classes that it will try to enhance.
- * 
+ *
  * NOTE: This builder assumes that the Java builder has already executed by the
  * time this builder kicks off.
  */
@@ -156,21 +156,21 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
 
     return null;
   }
-  
+
   /**
    * Verifies that a given {@code IJavaProject} has a valid GAE SDK. If the project has a GAE facet
    * (<em>not</em> a GAE nature), and the primary runtime defined in that facet is installed, that
    * runtime's SDK is examined by calling {@link GaeSdk#validate()}.
    * Otherwise, {@link GaeSdk#getFactory()} is called to find a GAE SDK; if one is found, it is
    * examined by calling {@link GaeSdk#validate()}, otherwise validation fails.
-   * 
+   *
    * @param javaProject the given {@code IJavaProject}
    * @return {@code true} if validation succeeds, {@code} false if it fails
    */
   private boolean hasValidSdk(IJavaProject javaProject) {
     try {
       IProject eclipseProject = javaProject.getProject();
-      
+
       // Identify the facet that we are looking for, if any.
       IProjectFacet gaeFacet = null;
       if (ProjectFacetsManager.isProjectFacetDefined(AppEngineCoreConstants.GAE_WAR_FACET_ID)) {
@@ -179,13 +179,18 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
           AppEngineCoreConstants.GAE_EAR_FACET_ID)) {
         gaeFacet = ProjectFacetsManager.getProjectFacet(AppEngineCoreConstants.GAE_EAR_FACET_ID);
       }
-      
+
       // Check whether the project has that facet, and if so, whether its primary runtime is one of
       // the installed runtimes. If so, set the variable sdk to that runtime's SDK.
       GaeSdk sdk = null;
       IFacetedProject facetedProject = ProjectFacetsManager.create(eclipseProject);
       if (gaeFacet != null && facetedProject != null && facetedProject.hasProjectFacet(gaeFacet)) {
-        String facetedProjectRuntimeName = facetedProject.getPrimaryRuntime().getName();
+        // TODO why is faceted project broken?
+        org.eclipse.wst.common.project.facet.core.runtime.IRuntime primRunTime = facetedProject.getPrimaryRuntime();
+        if (primRunTime == null) {
+          return false;
+        }
+        String facetedProjectRuntimeName = primRunTime.getName();
         IRuntime[] runtimes = ServerCore.getRuntimes();
         for (IRuntime runtime : runtimes) {
           String runtimeName = runtime.getName();
@@ -195,12 +200,12 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
           }
         }
       }
-      
+
       // Otherwise, try to find an SDK by using GaeSdk.findSdkFor.
       if (sdk == null) {
         sdk = GaeSdk.findSdkFor(javaProject);
       }
-      
+
       return sdk != null && sdk.validate().isOK();
     } catch (CoreException e) {
       AppEngineCorePluginLog.logError(e, "Error trying to validate App Engine SDK");
@@ -231,6 +236,7 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
           outputLocation);
       if (outputFolder.exists()) {
         outputFolder.accept(new IResourceProxyVisitor() {
+          @Override
           public boolean visit(IResourceProxy proxy) throws CoreException {
             if (proxy.getType() != IResource.FILE) {
               return true;
@@ -257,6 +263,7 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
       IResourceDelta delta) throws CoreException {
     final Set<String> pathsToEnhance = new HashSet<String>();
     IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
+      @Override
       public boolean visit(IResourceDelta delta) throws CoreException {
         // We get deltas for removed resources when the user changes the build
         // output location and selects Yes when asked whether the old output
@@ -293,7 +300,7 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
    * Determines the path of the Java source file that produced the given class
    * file path. We don't know which source folder contains the original Java
    * source, so we'll just try each of them until we find it.
-   * 
+   *
    * @return the path of the Java source file, or <code>null</code> if a
    *         corresponding Java source file could not be found under any of the
    *         project's source folders.
