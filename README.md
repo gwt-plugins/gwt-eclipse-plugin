@@ -8,10 +8,10 @@ The GWT Plugin for Eclipse repository.
 
 ### Update Sites
 * [Snapshot Update Site](http://storage.googleapis.com/gwt-eclipse-plugin/snapshot)
-* [Release Update Site - Kepler](http://storage.googleapis.com/gwt-eclipse-plugin/release/kepler)
+* [Release Update Site - Luna](http://storage.googleapis.com/gwt-eclipse-plugin/release/luna)
 
 #### Install
-* Download Eclipse Kepler Java EE
+* Download Eclipse Luna Java EE
 * Goto &gt; Help &gt; Install New Software &gt; Add Update URL
 * Select features from update site and install them
 
