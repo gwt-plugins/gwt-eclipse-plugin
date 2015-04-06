@@ -12,7 +12,7 @@ The GWT Plugin for Eclipse repository.
 
 #### Install
 * Download Eclipse Kepler Java EE
-* Goto &gt; Help &gt; Install New Software &gt; Add Update URL &gt;
+* Goto &gt; Help &gt; Install New Software &gt; Add Update URL &gt; Install
 
 ##Repository manifest 
 * [common/](common/) - `com.google.gdt.googleapi.core` common library.
