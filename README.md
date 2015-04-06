@@ -1,5 +1,5 @@
-#Google Plug-in for Eclipse (GPE)
-The Google Plug-in for Eclipse repository. 
+#GWT Eclipse Plugin
+The GWT Plugin for Eclipse repository. 
 
 ##Links
 
