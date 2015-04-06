@@ -131,7 +131,6 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       try {
         processLauncherEvent(events[i]);
       } catch (CoreException e) {
-        // TODO(${user}): Auto-generated catch block
         e.printStackTrace();
       }
     }
@@ -200,6 +199,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     streamMonitor.addListener(consoleStreamListener);
   }
 
+  // TODO fire gwt sdm start/stop event
   private void addServerUrlsToDevModeView(ILaunch launch) {
     IServer server = getServerFromLaunchConfig(launch);
     if (server == null) {
@@ -248,6 +248,8 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     // gaePort.getPort());
     // launchUrls.add(gaeUrl);
     // }
+
+    // TODO fire gwt sdm start/stop event
   }
 
   private String getPath(IServer server, IModule rootMod) {
