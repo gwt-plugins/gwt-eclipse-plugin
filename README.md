@@ -1,6 +1,15 @@
 #Google Plug-in for Eclipse (GPE)
 The Google Plug-in for Eclipse repository. 
 
+##Links
+
+### Build Server
+* [Team City](http://23.251.152.235:8080/)
+
+### Update Sites
+* [Snapshot Update Site](http://storage.googleapis.com/gwt-eclipse-plugin/snapshot)
+* [Release Update Site - Kepler](http://storage.googleapis.com/gwt-eclipse-plugin/release/kepler)
+
 ##Repository manifest 
 * [common/](common/) - `com.google.gdt.googleapi.core` common library.
 * [eclipse/](eclipse/) - Eclipse settings resources such as code style imports.
