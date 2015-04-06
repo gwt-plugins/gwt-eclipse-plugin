@@ -12,26 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.google.gwt.eclipse.wtp.maven;
+package com.google.gwt.eclipse.wtp.test;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.m2e.core.project.IMavenProjectFacade;
-import org.eclipse.m2e.wtp.facets.AbstractFacetDetector;
-import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
-import java.util.Map;
+/**
+ *
+ */
+public class GwtFacetTest {
 
-public class GwtFacetDetector extends AbstractFacetDetector {
-
-  /**
-   * Not applicable, it will always use version 1.
-   */
-  @Override
-  public IProjectFacetVersion findFacetVersion(IMavenProjectFacade arg0, Map<?, ?> arg1,
-      IProgressMonitor arg2) throws CoreException {
-
-    return null;
+  public void testGwtFacetDetection() {
+    // TODO
   }
 
+  
 }

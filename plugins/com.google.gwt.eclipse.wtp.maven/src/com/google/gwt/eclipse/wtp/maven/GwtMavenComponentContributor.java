@@ -14,26 +14,26 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.wtp.maven;
 
+import java.util.Map;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.m2e.core.internal.embedder.DefaultMavenComponentContributor;
 import org.eclipse.m2e.core.internal.lifecyclemapping.LifecycleMappingFactory;
 
-import java.util.Map;
-
-/**
- *
- */
-@SuppressWarnings("restriction") // DefaultMavenComponentContributor
+@SuppressWarnings("restriction")
+// DefaultMavenComponentContributor
 public class GwtMavenComponentContributor extends DefaultMavenComponentContributor {
 
   @Override
   public void contribute(IMavenComponentBinder binder) {
-    System.out.println("com.google.gwt.eclipse.wtp.maven.GwtMavenComponentContributor.contribute(IMavenComponentBinder)");
-    Map<String, IConfigurationElement> configuratorMap =  LifecycleMappingFactory.getProjectConfiguratorExtensions();
+    System.out
+        .println("com.google.gwt.eclipse.wtp.maven.GwtMavenComponentContributor.contribute(IMavenComponentBinder)");
+    Map<String, IConfigurationElement> configuratorMap = LifecycleMappingFactory.getProjectConfiguratorExtensions();
 
     super.contribute(binder);
     // A series of calls like:
-    // binder.bind(RepositoryListener.class, EclipseRepositoryListener.class, EclipseRepositoryListener.ROLE_HINT);
+    // binder.bind(RepositoryListener.class, EclipseRepositoryListener.class,
+    // EclipseRepositoryListener.ROLE_HINT);
   }
 
 }

@@ -29,8 +29,8 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import java.util.Set;
 
 /**
- * Provides a method for determining whether an GWT facet (for either war or ear packaging) should
- * be added to a given project, and if so, adding it.
+ * Provides a method for determining whether an GWT facet (for either war or ear
+ * packaging) should be added to a given project, and if so, adding it.
  */
 @SuppressWarnings("restriction")
 public class GwtFacetManager {
@@ -38,9 +38,12 @@ public class GwtFacetManager {
   /**
    * Adds the GWT facet to a given {@code IFacetedProject}.
    *
-   * @param pom the Maven model for the project
-   * @param facetedProject the given project, expected to be an GWT project
-   * @param monitor a progress monitor for the operation
+   * @param pom
+   *          the Maven model for the project
+   * @param facetedProject
+   *          the given project, expected to be an GWT project
+   * @param monitor
+   *          a progress monitor for the operation
    */
   public void addGwtFacet(Model pom, IFacetedProject facetedProject, IProgressMonitor monitor) {
     try {
@@ -49,6 +52,7 @@ public class GwtFacetManager {
         addFacetToProject(facetOfInterest, facetedProject, monitor);
       }
     } catch (EarlyExit e) {
+      GwtMavenPlugin.logError("GwtFacetManager.addGwtFacet(): Error adding gwt facet. Exiting.", e);
       return;
     }
   }
@@ -56,19 +60,19 @@ public class GwtFacetManager {
   private static IProjectFacet getFacetForPackaging(String packaging) throws EarlyExit {
     String facetIdOfInterest;
     switch (packaging) {
-      case "war":
-        facetIdOfInterest = Constants.GAE_WAR_FACET_ID;
-        break;
-      default:
-        GwtMavenPlugin.logError("Unexpected packaging \"" + packaging + "\" for a project using "
-            + Constants.GWT_MAVEN_PLUGIN_ARTIFACT_ID, null);
-        throw new EarlyExit();
+    case "war":
+      facetIdOfInterest = Constants.GAE_WAR_FACET_ID;
+      break;
+    default:
+      GwtMavenPlugin.logError("GwtFacetManager.getFacetForPackaging(): Unexpected packaging \"" + packaging
+          + "\" for a project using " + Constants.GWT_MAVEN_PLUGIN_ARTIFACT_ID + ". Not a War. Exiting.", null);
+      throw new EarlyExit();
     }
     return ProjectFacetsManager.getProjectFacet(facetIdOfInterest);
   }
 
-  private static void addFacetToProject(IProjectFacet facetOfInterest,
-      IFacetedProject facetedProject, IProgressMonitor monitor) throws EarlyExit {
+  private static void addFacetToProject(IProjectFacet facetOfInterest, IFacetedProject facetedProject,
+      IProgressMonitor monitor) throws EarlyExit {
     IFacetedProjectWorkingCopy workingCopy = facetedProject.createWorkingCopy();
     // default facet version is 1.0 (facet version does not reflect sdk version)
     workingCopy.addProjectFacet(facetOfInterest.getDefaultVersion());
@@ -78,23 +82,27 @@ public class GwtFacetManager {
     try {
       workingCopy.commitChanges(monitor);
     } catch (CoreException e) {
-      GwtMavenPlugin.logError("Error committing addition of " + facetOfInterest.getId()
-          + " facet to project", e);
+      String facetId = "";
+      if (facetOfInterest != null) {
+        facetId = facetOfInterest.getId();
+      }
+      GwtMavenPlugin.logError("GwtFacetManager.addFacetToProject() Error committing addition of (facetId=" + facetId
+          + ") facet to project. Exiting.", e);
       throw new EarlyExit();
     }
   }
 
   /**
-   * Sets a property that will be read by GwtFacetInstallDelegate to decide whether or not to create
-   * a WTP classpath container with GAE SDK dependencies. A property value of true indicates that we
-   * should not create the WTP classpath container, because we will be using the Maven classpath
+   * Sets a property that will be read by GwtFacetInstallDelegate to decide
+   * whether or not to create a WTP classpath container with GAE SDK
+   * dependencies. A property value of true indicates that we should not create
+   * the WTP classpath container, because we will be using the Maven classpath
    * container.
    *
    * @param facet
    * @param workingCopy
    */
-  private static void markToUseMavenDependencies(IProjectFacet facet,
-      IFacetedProjectWorkingCopy workingCopy) {
+  private static void markToUseMavenDependencies(IProjectFacet facet, IFacetedProjectWorkingCopy workingCopy) {
     Object config = workingCopy.getProjectFacetAction(facet).getConfig();
     IDataModel model = (IDataModel) config;
     model.addNestedModel(GwtWtpPlugin.USE_MAVEN_DEPS_PROPERTY_NAME + ".model", new DataModelImpl(
@@ -110,7 +118,9 @@ public class GwtFacetManager {
 
   @SuppressWarnings("serial")
   private static class EarlyExit extends Exception {
-    public EarlyExit() {}
+    public EarlyExit() {
+      GwtMavenPlugin.logError("GwtFacetManager.EarlyExit(): Exittied gwt facet addition.", null);
+    }
   }
 
 }

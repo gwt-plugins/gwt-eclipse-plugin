@@ -131,7 +131,6 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       try {
         processLauncherEvent(events[i]);
       } catch (CoreException e) {
-        // TODO(${user}): Auto-generated catch block
         e.printStackTrace();
       }
     }
@@ -200,6 +199,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     streamMonitor.addListener(consoleStreamListener);
   }
 
+  // TODO fire gwt sdm start/stop event
   private void addServerUrlsToDevModeView(ILaunch launch) {
     IServer server = getServerFromLaunchConfig(launch);
     if (server == null) {
@@ -248,6 +248,8 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     // gaePort.getPort());
     // launchUrls.add(gaeUrl);
     // }
+
+    // TODO fire gwt sdm start/stop event
   }
 
   private String getPath(IServer server, IModule rootMod) {
@@ -294,7 +296,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
   }
 
   protected void possiblyTerminateLaunchConfiguration(DebugEvent event) {
-    logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Stopping GWT Super Dev Mode Code Server.");
+    logMessage("posiblyTerminateGwtSuperDevModeCodeServer: Stopping GWT Super Dev Mode Code Server.");
 
     RuntimeProcess serverRuntimeProcess = (RuntimeProcess) event.getSource();
     ILaunch serverLaunch = serverRuntimeProcess.getLaunch();
@@ -326,6 +328,11 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       ILaunchConfigurationType sdmcodeServerType = launchManager
           .getLaunchConfigurationType(GwtSuperDevModeLaunchConfiguration.TYPE_ID);
       ILaunch[] launches = launchManager.getLaunches();
+      
+      if (launches == null || launches.length == 0) {
+        logMessage("possiblyRemoveLaunchConfiguration: Launches is empty or null. Can't find the GWT sdm launch config");
+        return;
+      }
 
       for (ILaunch launch : launches) {
         ILaunchConfiguration launchConfig = launch.getLaunchConfiguration();
