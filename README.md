@@ -10,6 +10,10 @@ The GWT Plugin for Eclipse repository.
 * [Snapshot Update Site](http://storage.googleapis.com/gwt-eclipse-plugin/snapshot)
 * [Release Update Site - Kepler](http://storage.googleapis.com/gwt-eclipse-plugin/release/kepler)
 
+#### Install
+* Download Eclipse Kepler Java EE
+* Goto &gt; Help &gt; Install New Software &gt; Add Update URL &gt;
+
 ##Repository manifest 
 * [common/](common/) - `com.google.gdt.googleapi.core` common library.
 * [eclipse/](eclipse/) - Eclipse settings resources such as code style imports.
