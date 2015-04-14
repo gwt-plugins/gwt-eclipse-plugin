@@ -1,4 +1,4 @@
-#GWT Eclipse Plugin
+#GWT Plugin for Eclipse
 The GWT Plugin for Eclipse repository. 
 
 ##Repository manifest 
