@@ -1,6 +1,14 @@
 #GWT Eclipse Plugin
 The GWT Plugin for Eclipse repository. 
 
+##Repository manifest 
+* [common/](common/) - `com.google.gdt.googleapi.core` common library.
+* [eclipse/](eclipse/) - Eclipse settings resources such as code style imports.
+* [features/](features/) - Eclipse features for plug-in by Eclipse platform version.
+* [plugins/](plugins/) - Eclipse plug-ins.
+* [tools/](tools/) - Third party tools to for working on this project.
+
+
 ##Links
 
 ### Build Server
@@ -14,13 +22,6 @@ The GWT Plugin for Eclipse repository.
 * Download Eclipse Luna Java EE
 * Goto &gt; Help &gt; Install New Software &gt; Add Update URL
 * Select features from update site and install them
-
-##Repository manifest 
-* [common/](common/) - `com.google.gdt.googleapi.core` common library.
-* [eclipse/](eclipse/) - Eclipse settings resources such as code style imports.
-* [features/](features/) - Eclipse features for plug-in by Eclipse platform version.
-* [plugins/](plugins/) - Eclipse plug-ins.
-* [tools/](tools/) - Third party tools to for working on this project.
 
 #GPE V2
 
