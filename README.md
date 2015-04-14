@@ -29,6 +29,20 @@ The GWT Plugin for Eclipse repository.
 1. Classic launchers are deprecated. The SDM launcher is replacing the classic dev mode launcher.
 2. GWT Nature is being replaced by GWT Facet
 
+## Environment Variables
+Update your .bashrc (or equivalent) file with the following Environment Variables.
+For Eclipse to pick up these variables, it may be required to run it from a terminal
+window instead of from the launcher.
+
+* export GWT_HOME=`<path to GWT SDK>` i.e. /opt/gwt-2.6.1
+* export GWT_VERSION=`<version number>` i.e. 2.6.1
+* export GWT_ROOT=`<local path>/gwt/trunk`
+* export GWT_TOOLS=`<local path>/gwt/tools`
+* export GAE_HOME=`<path to GAE SDK>` i.e. /opt/appengine-java-sdk-1.9.6
+* export JDK_HOME=`<path to JDK>` i.e. /usr/lib/jvm/java-7-oracle
+* export JAVA_HOME=`<path to JDK>` i.e. /usr/lib/jvm/java-7-oracle 
+
+
 ## TODOs
 1. On app engine server start add base url to development tools
 2. On sdm start/stop with server runtime, fire custom event for external listeners
