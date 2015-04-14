@@ -42,6 +42,15 @@ window instead of from the launcher.
 * export JDK_HOME=`<path to JDK>` i.e. /usr/lib/jvm/java-7-oracle
 * export JAVA_HOME=`<path to JDK>` i.e. /usr/lib/jvm/java-7-oracle 
 
+Buildagent Example
+```
+export GAE_TOOLS_JAR=/buildagents/sdks/gae/appengine-java-sdk-1.9.18/lib/appengine-tools-api.jar
+export GAE_HOME=/buildagents/sdks/gae/appengine-java-sdk-1.9.18
+export GWT_TOOLS=/buildagents/svn/gwttools
+export GWT_ROOT=/buildagents/git/gwt
+export GWT_HOME=/buildagents/sdks/gwt/gwt-2.7.0
+export DISPLAY=:1
+```
 
 ## TODOs
 1. On app engine server start add base url to development tools
