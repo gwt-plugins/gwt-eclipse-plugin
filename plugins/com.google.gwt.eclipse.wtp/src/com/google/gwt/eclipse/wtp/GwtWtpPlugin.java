@@ -296,7 +296,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
   }
 
   protected void possiblyTerminateLaunchConfiguration(DebugEvent event) {
-    logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Stopping GWT Super Dev Mode Code Server.");
+    logMessage("posiblyTerminateGwtSuperDevModeCodeServer: Stopping GWT Super Dev Mode Code Server.");
 
     RuntimeProcess serverRuntimeProcess = (RuntimeProcess) event.getSource();
     ILaunch serverLaunch = serverRuntimeProcess.getLaunch();
@@ -328,6 +328,11 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       ILaunchConfigurationType sdmcodeServerType = launchManager
           .getLaunchConfigurationType(GwtSuperDevModeLaunchConfiguration.TYPE_ID);
       ILaunch[] launches = launchManager.getLaunches();
+      
+      if (launches == null || launches.length == 0) {
+        logMessage("possiblyRemoveLaunchConfiguration: Launches is empty or null. Can't find the GWT sdm launch config");
+        return;
+      }
 
       for (ILaunch launch : launches) {
         ILaunchConfiguration launchConfig = launch.getLaunchConfiguration();

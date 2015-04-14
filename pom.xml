@@ -57,8 +57,12 @@
     <module>plugins/com.google.gwt.eclipse.oophm</module>
     <module>plugins/com.google.gwt.eclipse.oophm.test</module>
     <module>plugins/com.google.gwt.eclipse.testing</module>
+
     <module>plugins/com.google.gwt.eclipse.wtp</module>
     <module>plugins/com.google.gwt.eclipse.wtp.maven</module>
+
+    <module>plugins/com.google.gwt.eclipse.wtp.test</module>
+    <module>plugins/com.google.gwt.eclipse.wtp.maven.test</module>
   </modules>
 
   <properties>
