@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.google.eclipse.gpe</groupId>
   <artifactId>trunk</artifactId>
@@ -8,7 +8,9 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>gpe-repo</module>
+    <module>resources</module>
+    <module>repo</module>
+    
     <module>features/com.google.appengine.eclipse.wtp.maven.feature</module>
     <module>features/com.google.gdt.eclipse.mobile.android.feature</module>
     <module>features/com.google.gdt.eclipse.suite.e44.feature</module>
@@ -84,7 +86,11 @@
     <comparator.repo>https://dl.google.com/eclipse/plugin/4.4</comparator.repo>
 
     <!-- OS-specific JVM flags, empty for the default case but redefined below -->
-    <os-jvm-flags/>
+    <os-jvm-flags />
+
+    <!-- resources -->
+    <appengine.version>1.9.19</appengine.version>
+    <gwt.version>2.7.0</gwt.version>
   </properties>
 
   <repositories>
@@ -107,6 +113,22 @@
 
   <build>
     <plugins>
+      <!-- Notify about possibly plugin updates -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>2.1</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>display-dependency-updates</goal>
+              <goal>display-plugin-updates</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>
@@ -117,7 +139,6 @@
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
-        <version>${tycho.version}</version>
         <configuration>
           <filters>
             <filter>
@@ -211,7 +232,7 @@
 
     <pluginManagement>
       <plugins>
-       <plugin>
+        <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>target-platform-configuration</artifactId>
           <version>${tycho.version}</version>
@@ -224,48 +245,16 @@
             <showWarnings>true</showWarnings>
           </configuration>
         </plugin>
-        <!-- Reenable when the Git repo becomes the source of truth
-        <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-packaging-plugin</artifactId>
-          <version>${tycho.version}</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.eclipse.tycho.extras</groupId>
-              <artifactId>tycho-buildtimestamp-jgit</artifactId>
-              <version>${tycho-extras.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.eclipse.tycho.extras</groupId>
-              <artifactId>tycho-sourceref-jgit</artifactId>
-              <version>${tycho-extras.version}</version>
-            </dependency>
-          </dependencies>
-          <configuration>
-            <strictBinIncludes>false</strictBinIncludes>
-            <format>'v'yyyyMMdd-HHmm</format>
-            <timestampProvider>jgit</timestampProvider>
-            <jgit.ignore>
-              pom.xml
-            </jgit.ignore>
-            <jgit.dirtyWorkingTree>${jgit.dirtyWorkingTree}</jgit.dirtyWorkingTree>
-            <sourceReferences>
-              <generate>true</generate>
-            </sourceReferences>
-            <archive>
-              <addMavenDescriptor>false</addMavenDescriptor>
-            </archive>
-            <additionalFileSets>
-              <fileSet>
-                <directory>${project.build.directory}</directory>
-                <includes>
-                  <include>.api_description</include>
-                </includes>
-              </fileSet>
-            </additionalFileSets>
-          </configuration>
-        </plugin>
-         -->
+
+        <!-- <plugin> <groupId>org.eclipse.tycho</groupId> <artifactId>tycho-packaging-plugin</artifactId> <version>${tycho.version}</version> 
+          <dependencies> <dependency> <groupId>org.eclipse.tycho.extras</groupId> <artifactId>tycho-buildtimestamp-jgit</artifactId> 
+          <version>${tycho-extras.version}</version> </dependency> <dependency> <groupId>org.eclipse.tycho.extras</groupId> <artifactId>tycho-sourceref-jgit</artifactId> 
+          <version>${tycho-extras.version}</version> </dependency> </dependencies> <configuration> <strictBinIncludes>false</strictBinIncludes> 
+          <format>'v'yyyyMMdd-HHmm</format> <timestampProvider>jgit</timestampProvider> <jgit.ignore> pom.xml </jgit.ignore> <jgit.dirtyWorkingTree>${jgit.dirtyWorkingTree}</jgit.dirtyWorkingTree> 
+          <sourceReferences> <generate>true</generate> </sourceReferences> <archive> <addMavenDescriptor>false</addMavenDescriptor> 
+          </archive> <additionalFileSets> <fileSet> <directory>${project.build.directory}</directory> <includes> <include>.api_description</include> 
+          </includes> </fileSet> </additionalFileSets> </configuration> </plugin> -->
+
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-surefire-plugin</artifactId>
@@ -298,6 +287,33 @@
             </baselineRepositories>
           </configuration>
         </plugin>
+        
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <versionRange>[2.1,)</versionRange>
+                    <goals>
+                      <goal>display-plugin-updates</goal>
+                      <goal>display-dependency-updates</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -306,18 +322,13 @@
     <profile>
       <id>macosx-jvm-flags</id>
       <activation>
-        <os><family>mac</family></os>
+        <os>
+          <family>mac</family>
+        </os>
       </activation>
       <properties>
         <os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
       </properties>
     </profile>
   </profiles>
-  
-  <distributionManagement>
-    <repository>
-      <id>maven-repository</id>
-      <url>file://${basedir}/../gpe-repo/target/distribution</url>
-    </repository>
-  </distributionManagement>
 </project>

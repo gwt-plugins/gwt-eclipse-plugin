@@ -10,7 +10,7 @@
     <relativePath>../</relativePath>
   </parent>
 
-  <artifactId>google-plugin-eclipse.repo</artifactId>
+  <artifactId>repo</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>eclipse-repository</packaging>
 
