@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.osgi.framework.Bundle;
 
 import java.net.URI;
 
@@ -41,21 +42,20 @@ public class GwtRuntimeTestUtilities {
    * {@code GWT_HOME} to the location where it is extracted.
    */
   public static void addDefaultRuntime() throws Exception {
-    String gwtHome = System.getenv("GWT_HOME");
-    if (gwtHome == null) {
+    String gwtHomePath = System.getenv("GWT_HOME");
+    if (gwtHomePath == null) {
       System.out.println("The GWT_HOME environment variable is not set, using test bundle version");
-      gwtHome = TestEnvironmentUtil.installTestSdk(
-          GwtTestingPlugin.getDefault().getBundle(),
-          Path.fromPortableString("/resources/gwt-2.7.0.zip")).toOSString();
-      TestEnvironmentUtil.updateEnvironmentVariable("GWT_HOME", gwtHome);
-      System.out.println("The GWT_HOME environment variable is now set");
+      gwtHomePath = getGwtTestSdkPath();
+      TestEnvironmentUtil.updateEnvironmentVariable("GWT_HOME", gwtHomePath);
+      System.out.println("The GWT_HOME environment variable is now set. GWT_HOME=" + gwtHomePath);
     }
 
     SdkSet<GWTRuntime> sdkSet = GWTPreferences.getSdks();
     if (sdkSet.getDefault() == null) {
       assert (sdkSet.size() == 0);
 
-      GWTRuntime sdk = GWTRuntime.getFactory().newInstance("Default GWT SDK", new Path(gwtHome));
+      GWTRuntime sdk =
+          GWTRuntime.getFactory().newInstance("Default GWT SDK", new Path(gwtHomePath));
       IStatus status = sdk.validate();
       if (!status.isOK()) {
         throw new CoreException(status);
@@ -66,11 +66,24 @@ public class GwtRuntimeTestUtilities {
     }
   }
 
+  /**
+   * Get the gwt zip path.
+   */
+  private static String getGwtTestSdkPath() {
+    Bundle bundle = GwtTestingPlugin.getDefault().getBundle();
+    String basePath =
+        GwtRuntimeTestUtilities.class.getProtectionDomain().getCodeSource().getLocation()
+            .getPath();
+    String version = TestEnvironmentUtil.getMavenPropertyVersionFor("gwt.version");
+    String pathToZip = basePath + "../../resources/target/resources/gwt-" + version + ".zip";
+    String gwtHomePath = TestEnvironmentUtil.installTestSdk(bundle, pathToZip).toOSString();
+    return gwtHomePath;
+  }
+
   public static GWTJarsRuntime getDefaultRuntime() throws Exception {
     SdkSet<GWTRuntime> sdkSet = GWTPreferences.getSdks();
     if (sdkSet.getDefault() == null) {
-      throw new Exception(
-          "No default runtime has been set! "
+      throw new Exception("No default runtime has been set! "
           + "Did you forget to call GwtRuntimeTestUtilities.addDefaultRuntime()?");
     }
 

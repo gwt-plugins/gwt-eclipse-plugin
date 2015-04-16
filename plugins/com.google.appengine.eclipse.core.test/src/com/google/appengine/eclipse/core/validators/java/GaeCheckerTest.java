@@ -56,7 +56,7 @@ public class GaeCheckerTest extends TestCase {
         throws CoreException {
       GaeProject gaeProject = GaeProjectTestUtil.createGaeProject("TestProject");
       javaProject = gaeProject.getJavaProject();
-      javaProject.setOption(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
+      javaProject.setOption(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5); // TODO change to 1_7?
 
       if (forceResolvedClassPath) {
         // Force the classpath containers to be resolved

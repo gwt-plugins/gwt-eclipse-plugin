@@ -89,7 +89,15 @@
     <os-jvm-flags />
 
     <!-- resources -->
+    <!-- 
+    Used In:
+    GaeProjectTestUtil.java
+     -->
     <appengine.version>1.9.19</appengine.version>
+    <!-- 
+    Used In: 
+    GwtRuntimeTestUtilities.java
+     -->
     <gwt.version>2.7.0</gwt.version>
   </properties>
 
