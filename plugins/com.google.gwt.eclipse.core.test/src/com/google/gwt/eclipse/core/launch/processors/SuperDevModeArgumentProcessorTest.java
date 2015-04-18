@@ -19,9 +19,16 @@ import com.google.gdt.eclipse.core.jobs.JobsUtilities;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorTestingHelper;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.core.natures.NatureUtils;
+import com.google.gdt.eclipse.core.projects.ProjectUtilities;
+import com.google.gdt.eclipse.suite.wizards.WebAppProjectCreator;
+import com.google.gwt.eclipse.core.launch.GWTLaunchConfigurationWorkingCopy;
+import com.google.gwt.eclipse.core.projects.GwtEnablingProjectCreationParticipant;
+import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
 import com.google.gwt.eclipse.core.util.GwtVersionUtil;
+import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
+import com.google.gwt.eclipse.testing.TestUtilities;
 
 import junit.framework.TestCase;
 
@@ -39,6 +46,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -53,8 +61,6 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
 
   @Override
   public void setUp() throws Exception {
-    // TODO(tparker): Re-enable this when tests are moved to Maven/Tycho
-/*
     TestUtilities.setUp();
 
     // Create a default standard Java project
@@ -72,25 +78,20 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
     List<String> modules = GWTProjectProperties.getEntryPointModules(helper.getProject());
     GWTLaunchConfigurationWorkingCopy.setEntryPointModules(helper.getLaunchConfig(), modules,
         Collections.<String>emptyList());
-*/
+
   }
 
   @Override
   protected void tearDown() throws Exception {
     super.tearDown();
 
-    // TODO(tparker): Re-enable the tests below when tests are moved to Maven/Tycho
-//    helper.tearDown();
-  }
-
-  public void testNothing() {
-    // TODO(tparker): Re-enable the tests below when tests are moved to Maven/Tycho
+    helper.tearDown();
   }
 
   /**
    * Test a GWT 2.4 project that no errors return
    */
-  public void DISABLE_testNoErrorsWithSuperDevModeProcessorInGwt24() throws Exception {
+  public void testNoErrorsWithSuperDevModeProcessorInGwt24() throws Exception {
     // Given a GWT 2.4 Maven project
     createMavenProject("2.4.0");
 
@@ -114,7 +115,7 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
   /**
    * Test a GWT 2.5 project that no errors return
    */
-  public void DISABLE_testNoErrorsWithSuperDevModeProcessorInGwt25() throws Exception {
+  public void testNoErrorsWithSuperDevModeProcessorInGwt25() throws Exception {
     // Given a GWT 2.5 Maven project
     createMavenProject("2.5.1");
 
@@ -130,7 +131,7 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
     Assert.assertFalse(GwtVersionUtil.isGwtVersionlessThan25(javaProject));
     // And then programArgs should not exist for -superDevMode and -nosuperDevMode
     Assert.assertEquals("Args: " + programArgs, -1, programArgs.indexOf("-superDevMode"));
-    Assert.assertEquals("Args: " + programArgs, -1, programArgs.indexOf("-nosuperDevMode") == -1);
+    Assert.assertEquals("Args: " + programArgs, -1, programArgs.indexOf("-nosuperDevMode"));
     // And then no errors will have been thrown
     Assert.assertNull(error);
   }
@@ -138,7 +139,7 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
   /**
    * Test a GWT 2.6 project that no errors return
    */
-  public void DISABLE_testNoErrorsWithSuperDevModeProcessorInGwt26() throws Exception {
+  public void testNoErrorsWithSuperDevModeProcessorInGwt26() throws Exception {
     // Given a GWT 2.6 Maven project
     createMavenProject("2.6.1");
 
@@ -153,8 +154,8 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
     // Then verify
     Assert.assertFalse(GwtVersionUtil.isGwtVersionlessThan25(javaProject));
     // And then programArgs should not exist for -superDevMode and -nosuperDevMode
-    Assert.assertEquals("Args: " + programArgs, -1, programArgs.indexOf("-superDevMode") == -1);
-    Assert.assertEquals("Args: " + programArgs, -1, programArgs.indexOf("-nosuperDevMode") == -1);
+    Assert.assertEquals("Args: " + programArgs, -1, programArgs.indexOf("-superDevMode"));
+    Assert.assertEquals("Args: " + programArgs, -1, programArgs.indexOf("-nosuperDevMode"));
     // And then no errors will have been thrown
     Assert.assertNull(error);
   }
@@ -162,7 +163,7 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
   /**
    * Test a GWT 2.7 project that no errors return
    */
-  public void DISABLE_testNoErrorsWithSuperDevModeProcessorInGwt27() throws Exception {
+  public void testNoErrorsWithSuperDevModeProcessorInGwt27() throws Exception {
     // Given a GWT 2.7 Maven project
     createMavenProject("2.7.0");
 
@@ -177,8 +178,8 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
     // Then verify
     Assert.assertFalse(GwtVersionUtil.isGwtVersionlessThan25(javaProject));
     // And then programArgs should not exist for -superDevMode and -nosuperDevMode
-    Assert.assertEquals("Args: " + programArgs, -1, programArgs.indexOf("-superDevMode") == -1);
-    Assert.assertEquals("Args: " + programArgs, -1, programArgs.indexOf("-nosuperDevMode") == -1);
+    Assert.assertEquals("Args: " + programArgs, -1, programArgs.indexOf("-superDevMode"));
+    Assert.assertEquals("Args: " + programArgs, -1, programArgs.indexOf("-nosuperDevMode"));
     // And then no errors will have been thrown
     Assert.assertNull(error);
   }
