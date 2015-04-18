@@ -6,7 +6,6 @@ package com.google.gwt.eclipse.testing;
 import com.google.gdt.eclipse.core.ResourceUtils;
 import com.google.gdt.eclipse.core.jobs.JobsUtilities;
 import com.google.gdt.eclipse.core.natures.NatureUtils;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
 
 import org.eclipse.core.resources.IProject;
@@ -16,18 +15,18 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IProjectConfigurationManager;
-import org.junit.Assert;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 /**
  * Maven unit testing utilities.
  */
-public class MavenTestingUtilities {
+public class GwtMavenTestingUtilities {
 
   // Copied from Maven2Utils to avoid the extra dependency
   private static final String MAVEN2_NATURE_ID = "org.eclipse.m2e.core.maven2Nature";
@@ -59,7 +58,8 @@ public class MavenTestingUtilities {
     JobsUtilities.waitForIdle();
 
     // Provide a pom.xml for a bare-bones configuration to convert standard project to Maven nature
-    InputStream pomxmlStream = MavenTestingUtilities.class.getResourceAsStream("/../resources/pom.xml");
+    URL url = GwtTestingPlugin.getDefault().getBundle().getResource("resources/pom.xml");
+    InputStream pomxmlStream = url.openStream();
     pomxmlStream = changeGwtSdkVersionInPom(pomxmlStream, withGwtSdkVersion);
     ResourceUtils.createFile(project.getFullPath().append("pom.xml"), pomxmlStream);
 
@@ -71,10 +71,6 @@ public class MavenTestingUtilities {
     IProjectConfigurationManager projectConfig = MavenPlugin.getProjectConfigurationManager();
     projectConfig.updateProjectConfiguration(project, new NullProgressMonitor());
     JobsUtilities.waitForIdle();
-
-    // Verify the expected GWT SDK version exists in project configuration
-     GWTRuntime gwtSdk = GWTRuntime.findSdkFor(JavaCore.create(project));
-     Assert.assertEquals(withGwtSdkVersion, gwtSdk.getVersion());
   }
 
   /**

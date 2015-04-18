@@ -21,7 +21,7 @@ import com.google.gdt.eclipse.core.sdk.SdkClasspathContainer.Type;
 import com.google.gdt.eclipse.core.sdk.SdkSet;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
-import com.google.gwt.eclipse.testing.TestUtilities;
+import com.google.gwt.eclipse.testing.GwtTestUtilities;
 
 import junit.framework.TestCase;
 
@@ -176,7 +176,7 @@ public class GWTRuntimeTest extends TestCase {
   @Override
   protected void setUp() throws Exception {
     ProjectTestUtil.setAutoBuilding(false);
-    TestUtilities.setUp();
+    GwtTestUtilities.setUp();
     GwtRuntimeTestUtilities.addDefaultRuntime();
   }
 

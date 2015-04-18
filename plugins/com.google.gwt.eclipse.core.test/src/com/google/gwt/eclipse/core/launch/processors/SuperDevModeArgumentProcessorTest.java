@@ -23,8 +23,8 @@ import com.google.gwt.eclipse.core.projects.GwtEnablingProjectCreationParticipan
 import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
 import com.google.gwt.eclipse.core.util.GwtVersionUtil;
 import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
-import com.google.gwt.eclipse.testing.MavenTestingUtilities;
-import com.google.gwt.eclipse.testing.TestUtilities;
+import com.google.gwt.eclipse.testing.GwtMavenTestingUtilities;
+import com.google.gwt.eclipse.testing.GwtTestUtilities;
 
 import junit.framework.TestCase;
 
@@ -41,12 +41,11 @@ import java.util.List;
  */
 public class SuperDevModeArgumentProcessorTest extends TestCase {
 
-  private final LaunchConfigurationProcessorTestingHelper helper =
-      new LaunchConfigurationProcessorTestingHelper();
+  private final LaunchConfigurationProcessorTestingHelper helper = new LaunchConfigurationProcessorTestingHelper();
 
   @Override
   public void setUp() throws Exception {
-    TestUtilities.setUp();
+    GwtTestUtilities.setUp();
 
     // Create a default standard Java project
     ProjectUtilities.setWebAppProjectCreatorFactory(WebAppProjectCreator.FACTORY);
@@ -55,14 +54,13 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
     GwtRuntimeTestUtilities.addDefaultRuntime();
 
     // Turn on the GWT Nature which uses the default container
-    helper.setUp(SuperDevModeArgumentProcessorTest.class.getSimpleName(),
-        new GwtEnablingProjectCreationParticipant());
+    helper.setUp(SuperDevModeArgumentProcessorTest.class.getSimpleName(), new GwtEnablingProjectCreationParticipant());
 
     // Persist the module entry points, like GWTSettingsTab
     // This is required for the super dev mode linker validation in GWT 2.5 to < 2.7
     List<String> modules = GWTProjectProperties.getEntryPointModules(helper.getProject());
     GWTLaunchConfigurationWorkingCopy.setEntryPointModules(helper.getLaunchConfig(), modules,
-        Collections.<String>emptyList());
+        Collections.<String> emptyList());
   }
 
   @Override
@@ -77,11 +75,10 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
    */
   public void testNoErrorsWithSuperDevModeProcessorInGwt24() throws Exception {
     // Given a GWT 2.4 Maven project
-    MavenTestingUtilities.createMavenProject(helper.getProject(), "2.4.0");
+    GwtMavenTestingUtilities.createMavenProject(helper.getProject(), "2.4.0");
 
     // When the Super Dev Mode processor validation is called, no errors should return
-    List<String> programArgs =
-        LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
+    List<String> programArgs = LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
     ILaunchConfigurationWorkingCopy launchConfig = helper.getLaunchConfig();
     IJavaProject javaProject = JavaCore.create(helper.getProject());
     SuperDevModeArgumentProcessor sdmArgProcessor = new SuperDevModeArgumentProcessor();
@@ -101,11 +98,10 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
    */
   public void testNoErrorsWithSuperDevModeProcessorInGwt25() throws Exception {
     // Given a GWT 2.5 Maven project
-    MavenTestingUtilities.createMavenProject(helper.getProject(), "2.5.1");
+    GwtMavenTestingUtilities.createMavenProject(helper.getProject(), "2.5.1");
 
     // When the Super Dev Mode processor validation is called for the project
-    List<String> programArgs =
-        LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
+    List<String> programArgs = LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
     ILaunchConfigurationWorkingCopy launchConfig = helper.getLaunchConfig();
     IJavaProject javaProject = JavaCore.create(helper.getProject());
     SuperDevModeArgumentProcessor sdmArgProcessor = new SuperDevModeArgumentProcessor();
@@ -125,11 +121,10 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
    */
   public void testNoErrorsWithSuperDevModeProcessorInGwt26() throws Exception {
     // Given a GWT 2.6 Maven project
-    MavenTestingUtilities.createMavenProject(helper.getProject(), "2.6.1");
+    GwtMavenTestingUtilities.createMavenProject(helper.getProject(), "2.6.1");
 
     // When the Super Dev Mode processor validation is called for the project
-    List<String> programArgs =
-        LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
+    List<String> programArgs = LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
     ILaunchConfigurationWorkingCopy launchConfig = helper.getLaunchConfig();
     IJavaProject javaProject = JavaCore.create(helper.getProject());
     SuperDevModeArgumentProcessor sdmArgProcessor = new SuperDevModeArgumentProcessor();
@@ -149,11 +144,10 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
    */
   public void testNoErrorsWithSuperDevModeProcessorInGwt27() throws Exception {
     // Given a GWT 2.7 Maven project
-    MavenTestingUtilities.createMavenProject(helper.getProject(), "2.7.0");
+    GwtMavenTestingUtilities.createMavenProject(helper.getProject(), "2.7.0");
 
     // When the Super Dev Mode processor validation is called for the project
-    List<String> programArgs =
-        LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
+    List<String> programArgs = LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
     ILaunchConfigurationWorkingCopy launchConfig = helper.getLaunchConfig();
     IJavaProject javaProject = JavaCore.create(helper.getProject());
     SuperDevModeArgumentProcessor sdmArgProcessor = new SuperDevModeArgumentProcessor();
@@ -167,6 +161,5 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
     // And then no errors will have been thrown
     Assert.assertNull(error);
   }
-
 
 }

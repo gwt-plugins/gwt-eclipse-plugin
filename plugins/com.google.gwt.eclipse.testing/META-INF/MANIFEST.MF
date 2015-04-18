@@ -17,4 +17,6 @@ Require-Bundle: com.google.gcp.eclipse.testing,
  org.eclipse.debug.ui,
  org.eclipse.jdt.core,
  org.eclipse.m2e.core,
- org.junit
+ org.junit,
+ org.eclipse.wst.common.project.facet.core,
+ com.google.gwt.eclipse.wtp
