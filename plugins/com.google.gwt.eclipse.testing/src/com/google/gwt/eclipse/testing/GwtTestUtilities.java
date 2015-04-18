@@ -29,7 +29,7 @@ import org.eclipse.jdt.core.JavaCore;
 /**
  * Utility methods for most tests.
  */
-public class TestUtilities {
+public class GwtTestUtilities {
   /**
    * Models a simple condition checker.
    */

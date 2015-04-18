@@ -87,7 +87,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
   }
 
   public static void logError(String msg, Throwable e) {
-    msg = msg == null ? "Google GWT Error" : "Google GWT: " + msg;
+    msg = msg == null ? "GWT Error" : "GWT: " + msg;
     Status status = new Status(IStatus.ERROR, PLUGIN_ID, 1, msg, e);
     getInstance().getLog().log(status);
   }

@@ -9,6 +9,8 @@
     <name>gwt-gpe-test-gwt27</name>
     <description>Basic GWT Maven setup. For testing GPE with GWT 2.7.</description>
 
+    <!-- This pom will be used to convert a standard project to a maven project -->
+
     <properties>
         <!-- GWT -->
         <gwt.version>2.7.0</gwt.version>

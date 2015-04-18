@@ -17,7 +17,7 @@ package com.google.gwt.eclipse.core.runtime;
 import com.google.gcp.eclipse.testing.ProjectTestUtil;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
-import com.google.gwt.eclipse.testing.TestUtilities;
+import com.google.gwt.eclipse.testing.GwtTestUtilities;
 
 import junit.framework.TestCase;
 
@@ -57,7 +57,7 @@ public class GwtCapabilityCheckerTest extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
     ProjectTestUtil.setAutoBuilding(false);
-    TestUtilities.setUp();
+    GwtTestUtilities.setUp();
     GwtRuntimeTestUtilities.addDefaultRuntime();
   }
 

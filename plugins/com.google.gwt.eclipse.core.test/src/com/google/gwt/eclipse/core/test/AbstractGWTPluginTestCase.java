@@ -23,7 +23,7 @@ import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
 import com.google.gwt.eclipse.core.runtime.tools.NewProjectCreatorTool;
 import com.google.gwt.eclipse.core.util.Util;
 import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
-import com.google.gwt.eclipse.testing.TestUtilities;
+import com.google.gwt.eclipse.testing.GwtTestUtilities;
 
 import junit.framework.TestCase;
 
@@ -215,7 +215,7 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
   protected void setUp() throws Exception {
     super.setUp();
 
-    TestUtilities.setUp();
+    GwtTestUtilities.setUp();
 
     if (requiresGWTProjects()) {
       importGWTProjects();

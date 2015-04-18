@@ -20,7 +20,7 @@ import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.core.properties.WebAppProjectProperties;
 import com.google.gwt.eclipse.core.projects.GwtEnablingProjectCreationParticipant;
 import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
-import com.google.gwt.eclipse.testing.TestUtilities;
+import com.google.gwt.eclipse.testing.GwtTestUtilities;
 
 import junit.framework.TestCase;
 
@@ -38,7 +38,7 @@ public class RemoteUiArgumentProcessorTest extends TestCase {
 
   @Override
   public void setUp() throws Exception {
-    TestUtilities.setUp();
+    GwtTestUtilities.setUp();
 
     GwtRuntimeTestUtilities.addDefaultRuntime();
 

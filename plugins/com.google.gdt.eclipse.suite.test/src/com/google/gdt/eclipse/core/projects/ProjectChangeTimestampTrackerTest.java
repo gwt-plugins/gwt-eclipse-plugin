@@ -76,7 +76,7 @@ public class ProjectChangeTimestampTrackerTest extends TestCase {
 
   @Override
   protected void setUp() throws Exception {
-//    TestUtilities.setUp();
+//    GwtTestUtilities.setUp();
 //
 //    GaeSdkTestUtilities.addDefaultSdk();
 //    GwtRuntimeTestUtilities.addDefaultRuntime();
