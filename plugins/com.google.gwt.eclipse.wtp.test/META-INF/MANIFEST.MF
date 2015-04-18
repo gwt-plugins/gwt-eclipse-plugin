@@ -6,3 +6,4 @@ Bundle-SymbolicName: com.google.gwt.eclipse.wtp.test
 Bundle-Vendor: Google, Inc.
 Bundle-Version: 0.0.0.qualifier
 Fragment-Host: com.google.gwt.eclipse.core
+Require-Bundle: com.google.gwt.eclipse.testing

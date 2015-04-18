@@ -15,14 +15,15 @@
 package com.google.gwt.eclipse.wtp.test;
 
 
+
 /**
  *
  */
 public class GwtFacetTest {
 
   public void testGwtFacetDetection() {
-    // TODO
+
   }
 
-  
+
 }
