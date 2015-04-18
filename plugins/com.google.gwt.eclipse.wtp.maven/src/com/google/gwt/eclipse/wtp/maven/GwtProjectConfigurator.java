@@ -37,9 +37,8 @@ import java.util.List;
 public class GwtProjectConfigurator extends WTPProjectConfigurator {
 
   @Override
-  public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor)
-      throws CoreException {
-    // Given pom.xml configuration
+  public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
+    // Given a pom.xml configuration
     Model pom = request.getMavenProject().getModel();
 
     // When the GWT plugin exists in POM
@@ -48,32 +47,28 @@ public class GwtProjectConfigurator extends WTPProjectConfigurator {
       IFacetedProject facetedProject = ProjectFacetsManager.create(eclipseProject);
 
       // Then add GWT facet
-      new GwtFacetManager().addGwtFacet(pom, facetedProject, monitor);
+      new GwtMavenFacetManager().addGwtFacet(pom, facetedProject, monitor);
     }
   }
 
   @Override
-  public AbstractBuildParticipant getBuildParticipant(IMavenProjectFacade projectFacade,
-      MojoExecution execution, IPluginExecutionMetadata executionMetadata) {
+  public AbstractBuildParticipant getBuildParticipant(IMavenProjectFacade projectFacade, MojoExecution execution,
+      IPluginExecutionMetadata executionMetadata) {
     GwtMavenPlugin.logInfo("GwtProjectConfigurator.getBuildParticipant invoked");
 
     return super.getBuildParticipant(projectFacade, execution, executionMetadata);
   }
 
   /**
-   * TODO ****** only turn on with facet flag????? *****
-   *
-   * TODO consider using Thomas maven plugin too?
+   * Returns true if the gwt-mave-plugin plugin exists.
    */
   private static boolean isGwtProject(Model pom) {
     List<Plugin> plugins = pom.getBuild().getPlugins();
     for (Plugin plugin : plugins) {
-      // TODO add multiple gwt plugins
       if (Constants.GWT_MAVEN_PLUGIN_ARTIFACT_ID.equals(plugin.getArtifactId())) {
         return true;
       }
     }
-
     return false;
   }
 

@@ -28,8 +28,8 @@ public class GwtFacetDetector extends AbstractFacetDetector {
    * Not applicable, it will always use version 1.
    */
   @Override
-  public IProjectFacetVersion findFacetVersion(IMavenProjectFacade arg0, Map<?, ?> arg1,
-      IProgressMonitor arg2) throws CoreException {
+  public IProjectFacetVersion findFacetVersion(IMavenProjectFacade arg0, Map<?, ?> arg1, IProgressMonitor arg2)
+      throws CoreException {
 
     return null;
   }

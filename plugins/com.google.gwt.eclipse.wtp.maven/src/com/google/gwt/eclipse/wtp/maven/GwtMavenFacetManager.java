@@ -14,6 +14,7 @@ package com.google.gwt.eclipse.wtp.maven;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.gwt.eclipse.wtp.GwtWtpPlugin;
+import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
 
 import org.apache.maven.model.Model;
 import org.eclipse.core.runtime.CoreException;
@@ -33,7 +34,7 @@ import java.util.Set;
  * packaging) should be added to a given project, and if so, adding it.
  */
 @SuppressWarnings("restriction")
-public class GwtFacetManager {
+public class GwtMavenFacetManager {
 
   /**
    * Adds the GWT facet to a given {@code IFacetedProject}.
@@ -47,34 +48,32 @@ public class GwtFacetManager {
    */
   public void addGwtFacet(Model pom, IFacetedProject facetedProject, IProgressMonitor monitor) {
     try {
-      IProjectFacet facetOfInterest = getFacetForPackaging(pom.getPackaging());
-      if (!facetedProject.hasProjectFacet(facetOfInterest)) {
-        addFacetToProject(facetOfInterest, facetedProject, monitor);
+      IProjectFacet gwtProjectFacet = ProjectFacetsManager.getProjectFacet(IGwtFacetConstants.GWT_FACET_ID);
+
+      // If the facet is already installed, skip it.
+      if (!facetedProject.hasProjectFacet(gwtProjectFacet)) {
+        addFacetToProject(gwtProjectFacet, facetedProject, monitor);
+      } else {
+        GwtMavenPlugin
+            .logInfo("GwtMavenFacetManager.addGwtFacet(): The GWT facet has already been installed. Exiting.");
       }
     } catch (EarlyExit e) {
-      GwtMavenPlugin.logError("GwtFacetManager.addGwtFacet(): Error adding gwt facet. Exiting.", e);
+      GwtMavenPlugin.logError("GwtMavenFacetManager.addGwtFacet(): Error adding gwt facet. Exiting.", e);
       return;
     }
   }
 
-  private static IProjectFacet getFacetForPackaging(String packaging) throws EarlyExit {
-    String facetIdOfInterest;
-    switch (packaging) {
-    case "war":
-      facetIdOfInterest = Constants.GAE_WAR_FACET_ID;
-      break;
-    default:
-      GwtMavenPlugin.logError("GwtFacetManager.getFacetForPackaging(): Unexpected packaging \"" + packaging
-          + "\" for a project using " + Constants.GWT_MAVEN_PLUGIN_ARTIFACT_ID + ". Not a War. Exiting.", null);
-      throw new EarlyExit();
-    }
-    return ProjectFacetsManager.getProjectFacet(facetIdOfInterest);
-  }
-
-  private static void addFacetToProject(IProjectFacet facetOfInterest, IFacetedProject facetedProject,
-      IProgressMonitor monitor) throws EarlyExit {
+  /**
+   * Add GWT facet to project.
+   * 
+   * Note: Default facet version is 1.0 (facet version does not reflect sdk
+   * version)
+   * 
+   * @throws EarlyExit
+   */
+  private void addFacetToProject(IProjectFacet facetOfInterest, IFacetedProject facetedProject, IProgressMonitor monitor)
+      throws EarlyExit {
     IFacetedProjectWorkingCopy workingCopy = facetedProject.createWorkingCopy();
-    // default facet version is 1.0 (facet version does not reflect sdk version)
     workingCopy.addProjectFacet(facetOfInterest.getDefaultVersion());
 
     markToUseMavenDependencies(facetOfInterest, workingCopy);
@@ -86,8 +85,9 @@ public class GwtFacetManager {
       if (facetOfInterest != null) {
         facetId = facetOfInterest.getId();
       }
-      GwtMavenPlugin.logError("GwtFacetManager.addFacetToProject() Error committing addition of (facetId=" + facetId
-          + ") facet to project. Exiting.", e);
+      String message = "GwtMavenFacetManager.addFacetToProject() Error committing addition of (facetId=" + facetId
+          + ") facet to project. Exiting.";
+      GwtMavenPlugin.logError(message, e);
       throw new EarlyExit();
     }
   }
@@ -102,7 +102,7 @@ public class GwtFacetManager {
    * @param facet
    * @param workingCopy
    */
-  private static void markToUseMavenDependencies(IProjectFacet facet, IFacetedProjectWorkingCopy workingCopy) {
+  private void markToUseMavenDependencies(IProjectFacet facet, IFacetedProjectWorkingCopy workingCopy) {
     Object config = workingCopy.getProjectFacetAction(facet).getConfig();
     IDataModel model = (IDataModel) config;
     model.addNestedModel(GwtWtpPlugin.USE_MAVEN_DEPS_PROPERTY_NAME + ".model", new DataModelImpl(
@@ -119,7 +119,7 @@ public class GwtFacetManager {
   @SuppressWarnings("serial")
   private static class EarlyExit extends Exception {
     public EarlyExit() {
-      GwtMavenPlugin.logError("GwtFacetManager.EarlyExit(): Exittied gwt facet addition.", null);
+      GwtMavenPlugin.logError("GwtMavenFacetManager.EarlyExit(): Exittied gwt facet addition.", null);
     }
   }
 

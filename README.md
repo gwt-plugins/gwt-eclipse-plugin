@@ -26,6 +26,18 @@ The GWT Plugin for Eclipse repository.
 ##Configuration
 TODO
 
+##Contributing
+Please provide a unit test(s) for any patch and if one doesn't exist it may not get merged.
+
+1. Sign the CLA before pulling.
+2. Please provide unit tests when submitting a patch.
+3. If a patch is fixing something that already exists and it doesn't have a unit test, please write one.
+4. Please do not code dump, that is create large pulls. If for some reason it's large please sync with the owners.
+5. Please provide amble context with processes, method names, classnames and variable names. 
+
+### Formatting
+* 2/2 spacing
+* 120 characters for lines and comments
 
 #GPE V1
 

@@ -80,18 +80,20 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     return INSTANCE;
   }
 
-  public static void logMessage(String mess) {
-    logMessage(mess, null);
+  public static void logMessage(String msg) {
+    msg = msg == null ? "GWT" : "GWT: " + msg;
+    Status status = new Status(IStatus.INFO, PLUGIN_ID, 1, msg, null);
+    getInstance().getLog().log(status);
   }
 
-  public static void logMessage(String msg, Throwable e) {
+  public static void logError(String msg, Throwable e) {
     msg = msg == null ? "Google GWT Error" : "Google GWT: " + msg;
     Status status = new Status(IStatus.ERROR, PLUGIN_ID, 1, msg, e);
     getInstance().getLog().log(status);
   }
 
   public static void logMessage(Throwable e) {
-    logMessage(null, e);
+    logError(null, e);
   }
 
   private IDebugEventSetListener processListener;
@@ -289,7 +291,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     try {
       server = ServerUtil.getServer(launchConfig);
     } catch (CoreException e) {
-      logMessage("getServerFromLaunchConfig: Getting the WTP server error.", e);
+      logError("getServerFromLaunchConfig: Getting the WTP server error.", e);
       return null;
     }
     return server;
@@ -313,7 +315,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     try {
       serverType = serverLaunchConfig.getType();
     } catch (CoreException e) {
-      logMessage("possiblyRemoveLaunchConfiguration: Could not retrieve the launch config type.", e);
+      logError("possiblyRemoveLaunchConfiguration: Could not retrieve the launch config type.", e);
     }
 
     String serverLaunchId;
@@ -351,7 +353,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       }
     } catch (CoreException e) {
       e.printStackTrace();
-      logMessage("possiblyRemoveLaunchConfiguration: Couldn't stop the Super Dev Mode Code Server.", e);
+      logError("possiblyRemoveLaunchConfiguration: Couldn't stop the Super Dev Mode Code Server.", e);
     }
   }
 
@@ -365,7 +367,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       launchConfigWorkingCopy.setAttribute(GWTLaunchConstants.SUPERDEVMODE_LAUNCH_ID, launcherId);
       launchConfigWorkingCopy.doSave();
     } catch (CoreException e) {
-      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Couldn't add server Launcher Id attribute.", e);
+      logError("posiblyLaunchGwtSuperDevModeCodeServer: Couldn't add server Launcher Id attribute.", e);
     }
 
     return launcherId;
@@ -391,7 +393,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     try {
       server = ServerUtil.getServer(launchConfig);
     } catch (CoreException e) {
-      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Getting the WTP server error.", e);
+      logError("posiblyLaunchGwtSuperDevModeCodeServer: Getting the WTP server error.", e);
       return;
     }
 
@@ -465,7 +467,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     try {
       launchConfigAttributes = serverLaunchConfig.getAttributes();
     } catch (CoreException e) {
-      logMessage(
+      logError(
           "posiblyLaunchGwtSuperDevModeCodeServer > getLauncherDirFromServerLaunchConfigAttributes: can't find launcher directory in ATTR_VM_ARGUMENTS.",
           e);
     }
@@ -546,7 +548,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     try {
       hasFacet = FacetedProjectFramework.hasProjectFacet(project, IGwtFacetConstants.GWT_FACET_ID);
     } catch (CoreException e) {
-      logMessage("hasGetFacet: Error, can't figure GWT facet.", e);
+      logError("hasGetFacet: Error, can't figure GWT facet.", e);
     }
 
     return hasFacet;
@@ -558,12 +560,12 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
 
     for (String[] command : commandsToExecuteAtExit) {
       try {
-        logMessage(">>> " + command[0], null);
+        logError(">>> " + command[0], null);
         BufferedReader input = new BufferedReader(new InputStreamReader(Runtime.getRuntime().exec(command)
             .getInputStream()));
         String line = null;
         while ((line = input.readLine()) != null) {
-          logMessage(">>> " + line, null);
+          logError(">>> " + line, null);
         }
         input.close();
       } catch (Throwable ex) {
