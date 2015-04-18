@@ -17,4 +17,5 @@ Require-Bundle: com.google.appengine.eclipse.core,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
  org.eclipse.jface.text,
- org.eclipse.swt
+ org.eclipse.swt,
+ org.eclipse.m2e.maven.runtime

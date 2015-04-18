@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
+import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.BackingStoreException;
 
 import java.io.FileNotFoundException;
@@ -49,18 +50,19 @@ public class GaeProjectTestUtil {
    * variable to point at it.
    */
   public static void addDefaultSdk() throws CoreException {
-    String gaeHome = System.getenv("GAE_HOME");
-    if (gaeHome == null) {
+    String gaeHomePath = System.getenv("GAE_HOME");
+    if (gaeHomePath == null) {
       System.out.println("The GAE_HOME environment variable is not set, using test bundle version");
-      gaeHome = installGaeTestSdk().toOSString();
-      TestEnvironmentUtil.updateEnvironmentVariable("GAE_HOME", gaeHome);
+      gaeHomePath = getGaeTestSdkPath().toOSString();
+      TestEnvironmentUtil.updateEnvironmentVariable("GAE_HOME", gaeHomePath);
+      System.out.println("The GAE_HOME enviroment variable was set. GAE_HOME=" + gaeHomePath);
     }
 
     SdkSet<GaeSdk> sdkSet = GaePreferences.getSdks();
     if (sdkSet.getDefault() == null) {
       assert (sdkSet.size() == 0);
 
-      GaeSdk sdk = GaeSdk.getFactory().newInstance("Default GAE SDK", Path.fromOSString(gaeHome));
+      GaeSdk sdk = GaeSdk.getFactory().newInstance("Default GAE SDK", Path.fromOSString(gaeHomePath));
       IStatus status = sdk.validate();
       if (!status.isOK()) {
         if (dependenciesPluginIsRunning()) {
@@ -84,11 +86,16 @@ public class GaeProjectTestUtil {
    * Installs the AppEngine SDK that is bundled with this plug-in and returns the absolute path
    * where it was installed.
    */
-  public static IPath installGaeTestSdk() {
-    return TestEnvironmentUtil.installTestSdk(
-        TestingPlugin.getDefault().getBundle(),
-        Path.fromPortableString("/resources/appengine-java-sdk-1.9.17.zip"));
+  public static IPath getGaeTestSdkPath() {
+    Bundle bundle = TestingPlugin.getDefault().getBundle();
+    String basePath =
+        GaeProjectTestUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+    String version = TestEnvironmentUtil.getMavenPropertyVersionFor("appengine.version");
+    String pathToZip =
+        basePath + "../../resources/target/resources/appengine-java-sdk-" + version + ".zip";
+    return TestEnvironmentUtil.installTestSdk(bundle, pathToZip);
   }
+
   /**
    * Removes the default GAE SDK.
    */
@@ -114,9 +121,9 @@ public class GaeProjectTestUtil {
 
       UpdateWebInfFolderCommand webInfFolderUpdateCommand =
           new AppEngineUpdateWebInfFolderCommand(javaProject, GaePreferences.getDefaultSdk());
-      AppEngineUpdateProjectSdkCommand command = new AppEngineUpdateProjectSdkCommand(javaProject,
-          null, GaePreferences.getDefaultSdk(), UpdateType.DEFAULT_CONTAINER,
-          webInfFolderUpdateCommand);
+      AppEngineUpdateProjectSdkCommand command =
+          new AppEngineUpdateProjectSdkCommand(javaProject, null, GaePreferences.getDefaultSdk(),
+              UpdateType.DEFAULT_CONTAINER, webInfFolderUpdateCommand);
       command.execute();
     } catch (BackingStoreException | FileNotFoundException e) {
       throw new CoreException(TestingPlugin.createError(e));

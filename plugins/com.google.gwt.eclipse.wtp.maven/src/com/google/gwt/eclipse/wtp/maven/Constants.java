@@ -12,9 +12,6 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.wtp.maven;
 
-import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
-
-
 public class Constants {
 
   /**
@@ -23,15 +20,9 @@ public class Constants {
   public static final String GWT_GROUP_ID = "com.google.gwt";
 
   /**
-   * org.codehaus.mojo:gwt-maven-plugin
-   *
-   * TODO consider Thomas maven plugin too
+   * GWT Maven Plugins:
+   * org.codehaus.mojo:gwt-maven-plugin, net.ltgt.gwt.maven:gwt-maven-plugin
    */
   public static final String GWT_MAVEN_PLUGIN_ARTIFACT_ID = "gwt-maven-plugin";
-
-  /**
-   * Facet ID
-   */
-  public static final String GAE_WAR_FACET_ID = IGwtFacetConstants.GWT_FACET_ID;
 
 }

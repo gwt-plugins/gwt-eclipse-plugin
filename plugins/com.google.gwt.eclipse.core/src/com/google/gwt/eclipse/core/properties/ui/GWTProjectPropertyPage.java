@@ -34,7 +34,6 @@ import com.google.gwt.eclipse.core.runtime.GWTProjectsRuntime;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateProjectSdkCommand;
-import com.google.gwt.eclipse.core.sdk.GWTUpdateWebInfFolderCommand;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -280,7 +279,7 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
     updateControls();
   }
 
-  private IEditorReference[] getOpenJavaEditors(IProject project) {
+  public static IEditorReference[] getOpenJavaEditors(IProject project) {
     List<IEditorReference> projectOpenJavaEditors = new ArrayList<IEditorReference>();
     try {
       IWorkbenchPage page = JavaPlugin.getActivePage();
@@ -345,7 +344,7 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
     GWTPluginLog.logInfo("Removed GWT from project " + getProject().getName() + ".");
   }
 
-  private void reopenWithGWTJavaEditor(IEditorReference[] openEditors) {
+  public static void reopenWithGWTJavaEditor(IEditorReference[] openEditors) {
     IWorkbenchPage page = JavaPlugin.getActivePage();
 
     for (IEditorReference editorRef : openEditors) {
@@ -442,6 +441,7 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
       FileNotFoundException, CoreException {
     IJavaProject javaProject = JavaCore.create(project);
 
+    // TODO this causes some issue with dialog popup and war output folder selection
     WebAppProjectProperties.maybeSetWebAppPropertiesForDynamicWebProject(project);
 
     // if (sdkSelectionBlock.hasSdkChanged() &&
@@ -485,9 +485,6 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
     }
   }
 
-
-
-
   public void removeGWTSdkForFacet(IProject project) throws BackingStoreException, CoreException {
     GWTNature.removeNatureFromProject(project);
 
@@ -497,107 +494,6 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
     GWTProjectProperties.setFileNamesCopiedToWebInfLib(project, Collections.<String>emptyList());
 
     GWTPluginLog.logInfo("Removed GWT from project " + project.getName() + ".");
-  }
-
-
-
-  public void createGwtSdkContainerForFacet(IProject project, GWTRuntime newSdk) {
-
-    try {
-      addGwtSdkContainer(project, newSdk);
-    } catch (FileNotFoundException e1) {
-      // TODO(${user}): Auto-generated catch block
-      e1.printStackTrace();
-    } catch (CoreException e1) {
-      // TODO(${user}): Auto-generated catch block
-      e1.printStackTrace();
-    } catch (BackingStoreException e1) {
-      // TODO(${user}): Auto-generated catch block
-      e1.printStackTrace();
-    }
-
-
-    try {
-      initGwtNatureForFacet(project);
-    } catch (CoreException e) {
-      // TODO(${user}): Auto-generated catch block
-      e.printStackTrace();
-    }
-
-    GWTPluginLog.logInfo("Created GWT SDK container for facet in project " + project.getName()
-        + ".");
-  }
-
-  private void addGwtSdkContainer(IProject project, GWTRuntime newSdk)
-      throws FileNotFoundException, CoreException, BackingStoreException {
-    IJavaProject javaProject = JavaCore.create(project);
-
-    GWTUpdateWebInfFolderCommand updateWebInfCommand =
-        new GWTUpdateWebInfFolderCommand(javaProject, newSdk);
-
-    GWTRuntime oldSdk = GWTRuntime.findSdkFor(javaProject);
-
-
-    UpdateType updateType = UpdateType.NAMED_CONTAINER;
-
-    GWTUpdateProjectSdkCommand command =
-        new GWTUpdateProjectSdkCommand(javaProject, oldSdk, newSdk, updateType, updateWebInfCommand);
-    command.execute();
-  }
-
-  private void initGwtNatureForFacet(IProject project) throws CoreException {
-    GWTNature.addNatureToProject(project);
-
-    GWTPluginLog.logInfo("Added GWTNature to project " + project.getName() + ".");
-
-    // Need to rebuild to get GWT errors to appear
-    BuilderUtilities.scheduleRebuild(project);
-
-    // only prompt to reopen editors if the transition from disabled -> enabled
-    // if (!initialUseGWT && useGWT) {
-    // Get the list of Java editors opened on files in this project
-    IEditorReference[] openEditors = getOpenJavaEditors(project);
-    if (openEditors.length > 0) {
-      MessageDialog dlg =
-          new MessageDialog(GWTPlugin.getActiveWorkbenchShell(), GWTPlugin.getName(), null,
-              "GWT editing functionality, such as syntax-colored JSNI blocks, "
-                  + "will only be enabled after you re-open your Java editors.\n\nDo "
-                  + "you want to re-open your editors now?", MessageDialog.QUESTION, new String[] {
-                  "Re-open Java editors", "No"}, 0);
-      if (dlg.open() == IDialogConstants.OK_ID) {
-        reopenWithGWTJavaEditor(openEditors);
-      }
-    }
-    // }
-  }
-
-
-
-  // TODO not used
-  private UpdateType getUpdateType(IJavaProject javaProject, GWTRuntime newSdk) {
-    UpdateType updateType = UpdateType.NAMED_CONTAINER;
-
-    if (hasSdkChanged(javaProject, newSdk)) {
-      System.out.println("----->>>>> hasSdkChanged = true");
-      GWTRuntime oldSdk = GWTRuntime.findSdkFor(javaProject);
-      updateType = GWTUpdateProjectSdkCommand.computeUpdateType(oldSdk, newSdk, false);
-    }
-
-    return updateType;
-  }
-
-  // TODO not used
-  private boolean hasSdkChanged(IJavaProject javaProject, GWTRuntime newSdk) {
-    GWTRuntime registeredRuntime = GWTRuntime.findSdkFor(javaProject);
-    if (registeredRuntime == null) {
-      return false;
-    }
-
-    if (newSdk.equals(registeredRuntime)) {
-      return true;
-    }
-
-    return false;
   }
 
 }
