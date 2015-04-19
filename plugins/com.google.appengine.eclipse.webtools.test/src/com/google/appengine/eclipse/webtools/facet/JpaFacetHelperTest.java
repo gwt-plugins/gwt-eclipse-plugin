@@ -139,7 +139,7 @@ public class JpaFacetHelperTest extends TestCase {
     JpaProjectManager manager =
         (JpaProjectManager) ResourcesPlugin.getWorkspace().getAdapter(JpaProjectManager.class);
     for (int i = 0; manager.getJpaProjectsSize() == 0 && i < 4; i++) {
-      TestUtil.delay(250);
+      TestUtil.delay(1000); // TODO was 250, but maven keeps having issues, so adding delay. (4/19/2014)
     }
     assertTrue("Failed to create a JPA project in a timely manner",
         manager.getJpaProjectsSize() > 0);
