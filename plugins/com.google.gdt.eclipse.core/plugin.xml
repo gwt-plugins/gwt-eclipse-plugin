@@ -29,7 +29,7 @@
       <page
             class="com.google.gdt.eclipse.core.properties.ui.CoreProjectPropertyPage"
             id="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage"
-            name="%gpe.menu.label">
+            name="Google Classic">
          <enabledWhen>
             <reference definitionId="com.google.gdt.eclipse.core.isGpeSelected"/>
          </enabledWhen>
