@@ -14,6 +14,7 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.launch.processors;
 
+import com.google.gdt.eclipse.core.jobs.JobsUtilities;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorTestingHelper;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.core.projects.ProjectUtilities;
@@ -22,8 +23,8 @@ import com.google.gwt.eclipse.core.launch.GWTLaunchConfigurationWorkingCopy;
 import com.google.gwt.eclipse.core.projects.GwtEnablingProjectCreationParticipant;
 import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
 import com.google.gwt.eclipse.core.util.GwtVersionUtil;
-import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
 import com.google.gwt.eclipse.testing.GwtMavenTestingUtilities;
+import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
 import com.google.gwt.eclipse.testing.GwtTestUtilities;
 
 import junit.framework.TestCase;
@@ -81,6 +82,7 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
     List<String> programArgs = LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
     ILaunchConfigurationWorkingCopy launchConfig = helper.getLaunchConfig();
     IJavaProject javaProject = JavaCore.create(helper.getProject());
+    JobsUtilities.waitForIdle();
     SuperDevModeArgumentProcessor sdmArgProcessor = new SuperDevModeArgumentProcessor();
     String error = sdmArgProcessor.validate(launchConfig, javaProject, programArgs, null);
 
@@ -104,6 +106,7 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
     List<String> programArgs = LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
     ILaunchConfigurationWorkingCopy launchConfig = helper.getLaunchConfig();
     IJavaProject javaProject = JavaCore.create(helper.getProject());
+    JobsUtilities.waitForIdle();
     SuperDevModeArgumentProcessor sdmArgProcessor = new SuperDevModeArgumentProcessor();
     String error = sdmArgProcessor.validate(launchConfig, javaProject, programArgs, null);
 
@@ -127,6 +130,7 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
     List<String> programArgs = LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
     ILaunchConfigurationWorkingCopy launchConfig = helper.getLaunchConfig();
     IJavaProject javaProject = JavaCore.create(helper.getProject());
+    JobsUtilities.waitForIdle();
     SuperDevModeArgumentProcessor sdmArgProcessor = new SuperDevModeArgumentProcessor();
     String error = sdmArgProcessor.validate(launchConfig, javaProject, programArgs, null);
 
@@ -150,6 +154,7 @@ public class SuperDevModeArgumentProcessorTest extends TestCase {
     List<String> programArgs = LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
     ILaunchConfigurationWorkingCopy launchConfig = helper.getLaunchConfig();
     IJavaProject javaProject = JavaCore.create(helper.getProject());
+    JobsUtilities.waitForIdle();
     SuperDevModeArgumentProcessor sdmArgProcessor = new SuperDevModeArgumentProcessor();
     String error = sdmArgProcessor.validate(launchConfig, javaProject, programArgs, null);
 
