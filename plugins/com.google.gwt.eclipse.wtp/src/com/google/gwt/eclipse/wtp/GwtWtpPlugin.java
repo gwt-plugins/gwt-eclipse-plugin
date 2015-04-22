@@ -51,6 +51,7 @@ import org.eclipse.wst.server.core.ServerUtil;
 import org.eclipse.wst.server.core.model.IURLProvider;
 import org.osgi.framework.BundleContext;
 
+import com.google.appengine.eclipse.wtp.server.GaeServer;
 import com.google.gwt.eclipse.core.launch.GWTLaunchConstants;
 import com.google.gwt.eclipse.core.launch.GwtSuperDevModeLaunchConfiguration;
 import com.google.gwt.eclipse.core.launch.util.GwtSuperDevModeCodeServerLaunchUtil;
@@ -239,17 +240,17 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       }
     }
 
-    // TODO consider a feature that adds the appengine dashboard url
+    // TODO extract, consider a plugin that does this, that adds the appengine dashboard url
+    // TODO or possibly do a extension query
     // Add App Engine url to DevModeView
     // See OpenLocalAdminConsoleHandler
-    // if (server.getName().contains("Google")) {
-    // GaeServer gaeServer = GaeServer.getGaeServer(server);
-    // String gaeHost = server.getHost();
-    // ServerPort gaePort = gaeServer.getMainPort();
-    // String gaeUrl = String.format("http://%s:%s/_ah/admin", gaeHost,
-    // gaePort.getPort());
-    // launchUrls.add(gaeUrl);
-    // }
+    if (server.getName().contains("Google")) {
+      GaeServer gaeServer = GaeServer.getGaeServer(server);
+      String gaeHost = server.getHost();
+      ServerPort gaePort = gaeServer.getMainPort();
+      String gaeUrl = String.format("http://%s:%s/_ah/admin", gaeHost, gaePort.getPort());
+      launchUrls.add(gaeUrl);
+    }
 
     // TODO fire gwt sdm start/stop event
   }

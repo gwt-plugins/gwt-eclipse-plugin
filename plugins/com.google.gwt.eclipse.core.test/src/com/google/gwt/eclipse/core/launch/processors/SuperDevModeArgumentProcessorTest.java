@@ -22,8 +22,8 @@ import com.google.gwt.eclipse.core.launch.GWTLaunchConfigurationWorkingCopy;
 import com.google.gwt.eclipse.core.projects.GwtEnablingProjectCreationParticipant;
 import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
 import com.google.gwt.eclipse.core.util.GwtVersionUtil;
-import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
 import com.google.gwt.eclipse.testing.GwtMavenTestingUtilities;
+import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
 import com.google.gwt.eclipse.testing.GwtTestUtilities;
 
 import junit.framework.TestCase;

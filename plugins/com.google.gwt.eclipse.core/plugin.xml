@@ -43,6 +43,7 @@
             id="com.google.gwt.eclipse.core.gwtProjectValidator">
       </builder>
    </extension>
+
    <extension
          point="org.eclipse.ui.newWizards">
       <category
@@ -85,6 +86,7 @@
             name="UiBinder">
       </wizard>
    </extension>
+
    <extension
          point="org.eclipse.ui.editorActions">
       <editorContribution
@@ -695,7 +697,7 @@
             category="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage"
             class="com.google.gwt.eclipse.core.properties.ui.GWTProjectPropertyPage"
             id="com.google.gwt.eclipse.core.properties.ui.gwtProjectPropertyPage"
-            name="Web Toolkit">
+            name="GWT Classic">
          <enabledWhen>
             <reference definitionId="com.google.gdt.eclipse.core.isGpeSelected"/>
          </enabledWhen>

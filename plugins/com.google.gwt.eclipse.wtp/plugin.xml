@@ -111,7 +111,7 @@
 	        category="com.google.gwt.eclipse.wtp.properties.ui.gwtRootProjectPropertyPage" 
 	        class="com.google.gwt.eclipse.wtp.properties.ui.GWTFacetProjectPropertyPage"
 	        id="com.google.gwt.eclipse.wtp.properties.ui.gwtFacetProjectPropertyPage" 
-	        name="GWT Facet">
+	        name="Facet Settings">
 	     <enabledWhen>
 	       <reference definitionId="com.google.gwt.eclipse.wtp.isGWTFacet"/> 
 	     </enabledWhen>
