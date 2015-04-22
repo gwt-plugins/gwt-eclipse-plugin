@@ -7,11 +7,11 @@
       plugin="com.google.gdt.eclipse.suite">
 
    <description>
-      Support for the development of Google Cloud Platform-based Projects in Eclipse 4.4
+      Support for the development of GWT Projects in Eclipse 4.4
    </description>
 
    <copyright>
-      Copyright 2009 - 2014
+      Copyright 2009 - 2015
    </copyright>
 
    <license>
@@ -19,7 +19,7 @@
    </license>
 
    <url>
-      <update label="Google Update Site for Eclipse 4.4"/>
+      <update label="GWT Eclipse Plugin Site for Eclipse 4.4" url="http://storage.googleapis.com/gwt-eclipse-plugin/snapshot"/>
    </url>
 
    <requires>
