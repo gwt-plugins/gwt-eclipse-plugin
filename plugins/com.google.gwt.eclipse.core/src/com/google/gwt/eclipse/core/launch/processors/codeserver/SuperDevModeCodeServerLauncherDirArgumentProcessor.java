@@ -15,6 +15,7 @@ package com.google.gwt.eclipse.core.launch.processors.codeserver;
 import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
+import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.launch.GWTLaunchConfiguration;
 import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.nature.GWTNature;
@@ -53,37 +54,43 @@ public class SuperDevModeCodeServerLauncherDirArgumentProcessor implements
       return;
     }
 
-    int argIndex = programArgs.indexOf(LAUNCHERDIR_ARG);
-
-    // This is created in the GWT WTP facet and started by WTP server
-    String launcherDir = GWTLaunchConfiguration.getSuperDevModeCodeServerLauncherDir(launchConfig);
-
     // Skip if arg already exists, developer entered or this previously added it.
-    if (argIndex > -1 && (launcherDir == null || launcherDir.isEmpty())) {
+    int argIndex = programArgs.indexOf(LAUNCHERDIR_ARG);
+    if (argIndex > -1) {
       return;
     }
 
     // Path to the output war directory
     String pathToWarOutDir = null;
 
-    // TODO possibly prompt for directory
-    IPath path = WebAppUtilities.getWarOutLocationOrPrompt(javaProject.getProject());
-    if (path != null) {
-      pathToWarOutDir = path.toFile().getAbsolutePath();
-    }
-
+    // 1. First check if the launcherDir is coming from a Server launching this
     // Override the path with the launcher configuration stored attribute.
     // This is activated in the GWT WTP plugin.
+    // This is created in the GWT WTP facet and started by WTP server
+    String launcherDir = GWTLaunchConfiguration.getSuperDevModeCodeServerLauncherDir(launchConfig);
     if (launcherDir != null) {
       pathToWarOutDir = launcherDir;
     }
 
+    // 2. The classic launch configuration will provide the output war, and if not ask for it.
+    // Only try this if the server didn't provide it
     if (pathToWarOutDir == null) {
-      // Not a WTP project or classic launcher config
-      // TODO, should it prompt for one?
+      IPath path = WebAppUtilities.getWarOutLocationOrPrompt(javaProject.getProject());
+      if (path != null) {
+        pathToWarOutDir = path.toFile().getAbsolutePath();
+      }
+    }
+
+    // Not a WTP project or classic launcher config
+    // TODO, should it prompt for one?
+    if (pathToWarOutDir == null) {
+      String msg =
+          "SuperDevModeCodeServerLauncherDirArgumentProcessor > update: couldn't not determin pathtoWarOutDir.";
+      GWTPluginLog.logWarning(msg);
       return;
     }
 
+    // Then remove previous arg and replace it with launcherDir arg
     int insertionIndex =
         LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(programArgs,
             argIndex, true);
@@ -91,14 +98,12 @@ public class SuperDevModeCodeServerLauncherDirArgumentProcessor implements
     // Add the args to the list
     programArgs.add(insertionIndex, LAUNCHERDIR_ARG);
     programArgs.add(insertionIndex + 1, pathToWarOutDir);
-
-    // TODO commit working addition?
   }
 
   @Override
   public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject,
       List<String> programArgs, List<String> vmArgs) throws CoreException {
-    // TODO Possibly verify if actual directory exists.
+    // TODO Possibly verify if actual war output directory exists.
     return null;
   }
 
