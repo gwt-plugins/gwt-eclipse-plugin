@@ -25,8 +25,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
  * A classpath container for the App Engine SDK.
  */
 public class GaeSdkContainer extends SdkClasspathContainer<GaeSdk> {
-  public static final String CONTAINER_ID = AppEngineCorePlugin.PLUGIN_ID
-      + ".GAE_CONTAINER";
+  public static final String CONTAINER_ID = AppEngineCorePlugin.PLUGIN_ID + ".GAE_CONTAINER";
   public static final Path CONTAINER_PATH = new Path(CONTAINER_ID);
 
   public static Path getDefaultSdkContainerPath() {
@@ -37,8 +36,8 @@ public class GaeSdkContainer extends SdkClasspathContainer<GaeSdk> {
     return CONTAINER_PATH.isPrefixOf(path);
   }
 
-  public GaeSdkContainer(IPath path, GaeSdk sdk,
-      IClasspathEntry[] classpathEntries, String description) {
+  public GaeSdkContainer(IPath path, GaeSdk sdk, IClasspathEntry[] classpathEntries,
+      String description) {
     super(path, sdk, classpathEntries, description);
-  }  
+  }
 }

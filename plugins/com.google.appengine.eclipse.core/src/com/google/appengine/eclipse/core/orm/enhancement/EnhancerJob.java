@@ -14,12 +14,16 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.core.orm.enhancement;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import com.google.appengine.eclipse.core.AppEngineCorePlugin;
+import com.google.appengine.eclipse.core.AppEngineCorePluginLog;
+import com.google.appengine.eclipse.core.sdk.GaeSdk;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.gdt.eclipse.core.ProcessUtilities;
+import com.google.gdt.eclipse.core.console.MessageConsoleUtilities;
+import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
+import com.google.gdt.eclipse.core.extensions.ExtensionQueryWithElement;
+import com.google.gdt.eclipse.maven.MavenUtils;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -35,25 +39,22 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.ui.console.MessageConsole;
 
-import com.google.appengine.eclipse.core.AppEngineCorePlugin;
-import com.google.appengine.eclipse.core.AppEngineCorePluginLog;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Lists;
-import com.google.gdt.eclipse.core.ProcessUtilities;
-import com.google.gdt.eclipse.core.console.MessageConsoleUtilities;
-import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
-import com.google.gdt.eclipse.core.extensions.ExtensionQueryWithElement;
-import com.google.gdt.eclipse.maven.MavenUtils;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Job that performs a datanucleus enhancement on a set <code>.class</code> files.
  */
 public class EnhancerJob extends WorkspaceJob {
-  
+
   private static final Pattern DATANUCLEUS_JAR_PATTERN =
       Pattern.compile(
           "datanucleus/datanucleus-(?<part>[a-z\\-]+)/(?<version>[^/]+)/datanucleus-\\k<part>-\\k<version>\\.jar$");
-  
+
   private static final Set<String> DATANUCLEUS_PARTS_PACKAGED_WITH_APP_ENGINE =
       ImmutableSet.of("api-jdo", "api-jpa", "appengine", "core");
 
@@ -98,7 +99,7 @@ public class EnhancerJob extends WorkspaceJob {
     return MavenUtils.hasMavenNature(javaProject.getProject()) ?
         removeDatanucleusJars(unfilteredClasspath) : unfilteredClasspath;
   }
-  
+
   private static final List<String> removeDatanucleusJars(List<String> input) {
     List<String> result = Lists.newArrayListWithCapacity(input.size());
     for (String classpathItem : input) {
@@ -134,8 +135,11 @@ public class EnhancerJob extends WorkspaceJob {
 
   private final Set<String> pathsToEnhance;
 
-  public EnhancerJob(IJavaProject javaProject, Set<String> pathsToEnhance) {
+  private GaeSdk sdk;
+
+  public EnhancerJob(IJavaProject javaProject, Set<String> pathsToEnhance, GaeSdk sdk) {
     super(NAME);
+    this.sdk = sdk;
     this.javaProject = javaProject;
     this.pathsToEnhance = pathsToEnhance;
   }
@@ -144,6 +148,12 @@ public class EnhancerJob extends WorkspaceJob {
   public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 
     List<String> classpath = buildClasspath(javaProject);
+
+    // Workaround, when using maven project, the tools api jar isn't in rumtime classpath
+    if (sdk != null && MavenUtils.hasMavenNature(javaProject.getProject())) {
+      IPath toolApiJarPath = sdk.getInstallationPath().append(GaeSdk.APPENGINE_TOOLS_API_JAR_PATH);
+      classpath.add(toolApiJarPath.toPortableString());
+    }
 
     try {
       List<String> commands = new ArrayList<String>();
@@ -175,7 +185,7 @@ public class EnhancerJob extends WorkspaceJob {
       int exitCode =
           ProcessUtilities.launchProcessAndActivateOnError(
               commands, projectLocation.toFile(), messageConsole);
-      
+
       if (exitCode != 0) {
         AppEngineCorePluginLog.logError(
             "Datanucleus enhancer terminated with exit code " + exitCode

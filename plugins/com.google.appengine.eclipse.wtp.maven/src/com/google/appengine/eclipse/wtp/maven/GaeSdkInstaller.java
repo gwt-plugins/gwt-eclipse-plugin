@@ -14,12 +14,14 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.maven;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import com.google.appengine.eclipse.core.preferences.GaePreferences;
+import com.google.appengine.eclipse.core.sdk.GaeSdk;
+import com.google.common.collect.Lists;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.Files;
+import com.google.gdt.eclipse.core.sdk.SdkManager;
+import com.google.gdt.eclipse.core.sdk.SdkSet;
+import com.google.gdt.eclipse.core.sdk.SdkUtils;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.repository.ArtifactRepositoryPolicy;
@@ -42,14 +44,12 @@ import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.embedder.IMaven;
 import org.eclipse.m2e.core.internal.embedder.MavenImpl;
 
-import com.google.appengine.eclipse.core.preferences.GaePreferences;
-import com.google.appengine.eclipse.core.sdk.GaeSdk;
-import com.google.common.collect.Lists;
-import com.google.common.io.ByteStreams;
-import com.google.common.io.Files;
-import com.google.gdt.eclipse.core.sdk.SdkManager;
-import com.google.gdt.eclipse.core.sdk.SdkSet;
-import com.google.gdt.eclipse.core.sdk.SdkUtils;
+import java.io.File;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * Provides a method to obtain a {@link GaeSdk} corresponding to the appengine-maven-plugin version
@@ -60,9 +60,9 @@ public class GaeSdkInstaller {
 
   private static final String APPENGINE_MAVEN_PLUGIN_KEY =
       "com.google.appengine:appengine-maven-plugin";
-  
+
   private static final String MIN_APPENGINE_MAVEN_PLUGIN_VERSION = "1.8.4";
-  
+
   /**
    * Template for the path of the highest-level directory within the local Maven repository
    * designated for a particular version of the GAE Java SDK. The first {@code %s} is to be replaced
@@ -70,9 +70,9 @@ public class GaeSdkInstaller {
    * by the version number (e.g., "1.8.9"). When a new SDK version is fetched from a remote
    * repository, its zip file is placed in this directory.
    */
-  private static final String SDK_VERSION_PATH_TEMPLATE =
+  public static final String SDK_VERSION_PATH_TEMPLATE =
       "%s/com/google/appengine/appengine-java-sdk/%s";
-  
+
   /**
    * Template for the root of the actual GAE Java SDK within the local Maven repository. The first
    * {@code %s} is to be replaced by a substituted instance of {@link SDK_VERSION_PATH_TEMPLATE} and
@@ -86,8 +86,8 @@ public class GaeSdkInstaller {
   private static final String MAVEN_GAE_GROUP_ID = "com.google.appengine";
   private static final String MAVEN_GAE_JAVA_SDK_ARTIFACT_ID = "appengine-java-sdk";
   private static final String MAVEN_GAE_JAVA_SDK_ARTIFACT_EXTENSION = "zip";
-  
-  private final RepositorySystem repositorySystem; 
+
+  private final RepositorySystem repositorySystem;
 
   public GaeSdkInstaller() {
     MavenImpl maven = (MavenImpl) MavenPlugin.getMaven();
@@ -100,16 +100,16 @@ public class GaeSdkInstaller {
     }
     repositorySystem = newRepoSystem;
   }
-  
+
   /**
    * Ensures that an appropriate {@link GaeSdk} for a specified Maven POM is registered with GPE as
    * the default GAE SDK, and returns it. The {@code GaeSdk} corresponds to a GAE SDK with the same
    * version as the appengine-maven-plugin version specified in the POM plugins, installed in the
    * local Maven repository. If there is not already a GAE SDK of the required version installed in
    * the local Maven repository, it is fetched from a remote repository.
-   * 
+   *
    * <p>Local and remote repository locations are obtained from the {@link MavenPlugin}.
-   * 
+   *
    * @param pom the specified Maven POM
    * @return the {@code GaeSdk}
    * @throws CoreException if there is an error registering the {@code GaeSdk} with GPE
@@ -123,7 +123,7 @@ public class GaeSdkInstaller {
     sdkManager.setSdks(sdks);
     return requiredSdk;
   }
-  
+
   /**
    * Obtains a {@link GaeSdk} object for a specified version of the GAE SDK, installed in the local
    * Maven repository, preferably from among the {@code GaeSdk} objects contained in a specified
@@ -131,7 +131,7 @@ public class GaeSdkInstaller {
    * location in the local Maven repository, it is fetched from a remote repository and installed
    * there. If a {@code GaeSdk} for an SDK in that location is not found in the specified
    * {@code SdkSet}, a new {@code GaeSdk} is created and added to that {@code SdkSet}.
-   * 
+   *
    * @param sdkVersion the specified GAE SDK version
    * @param sdks the specified {@code SdkSet}
    * @return
@@ -156,7 +156,7 @@ public class GaeSdkInstaller {
     sdks.add(newSdk);
     return newSdk;
   }
-  
+
   private String getAppengineMavenPluginVersion(Model pom) {
     Plugin appengineMavenPlugin =
         pom.getBuild().getPluginsAsMap().get(APPENGINE_MAVEN_PLUGIN_KEY);
@@ -169,12 +169,12 @@ public class GaeSdkInstaller {
       return appengineMavenPlugin.getVersion();
     }
   }
-  
+
   /**
    * Ensures that a GAE SDK with a given version is installed in the local Maven repository, and
    * returns its path. If the GAE SDK was not previously installed in the local Maven repository,
-   * it is fetched from a remote repository and installed locally. 
-   * 
+   * it is fetched from a remote repository and installed locally.
+   *
    * @param version the given version
    * @return the path, or {@code null} if an error is encountered
    */
@@ -182,8 +182,7 @@ public class GaeSdkInstaller {
     try {
       IMaven maven = MavenPlugin.getMaven();
       String localRepositoryRoot = maven.getLocalRepository().getBasedir() + '/';
-      String sdkVersionPath =
-          String.format(SDK_VERSION_PATH_TEMPLATE, localRepositoryRoot, version);
+      String sdkVersionPath = String.format(SDK_VERSION_PATH_TEMPLATE, localRepositoryRoot, version);
       String sdkPath = String.format(SDK_PATH_TEMPLATE, sdkVersionPath, version);
       File sdkDirectory = new File(sdkPath);
       if (!sdkDirectory.exists()) {
@@ -196,7 +195,7 @@ public class GaeSdkInstaller {
       return null;
     }
   }
-  
+
   private void fetchSdkFromRemoteRepository(String version, List<RemoteRepository> repositories) {
     RepositorySystemSession session =
         MavenPlugin.getMaven()
@@ -216,14 +215,14 @@ public class GaeSdkInstaller {
       AppEngineMavenPlugin.logError("Error downloading SDK from remote repository", e);
     }
   }
-  
+
   /**
    * Converts a list of remote-repository specifications from their representation in the
    * {@code org.apache.maven} framework (as reported by {@link IMaven.getArtifactRepositories()})
    * to their representation in the {@code org.eclipse.aether} framework (as used in an
    * {@link ArtifactRequest} submitted to
    * {@link RepositorySystem.resolveArtifact(RepositorySystemSession, ArtifactRequest)}.
-   * 
+   *
    * @param allRepositories
    *     a list of {@code org.apache.maven.artifact.repository.ArtifactRepository} objects
    * @return a list of corresponding {@code org.eclipse.aether.repository.RemoteRepository} objects
@@ -236,7 +235,7 @@ public class GaeSdkInstaller {
     }
     return result;
   }
-  
+
   private static RemoteRepository toAetherRepository(ArtifactRepository repository) {
     RemoteRepository.Builder resultBuilder =
         new RemoteRepository.Builder(repository.getId(), "default", repository.getUrl());
@@ -249,15 +248,15 @@ public class GaeSdkInstaller {
     resultBuilder.setRepositoryManager(false);
     return resultBuilder.build();
   }
-  
+
   private static RepositoryPolicy toAetherRepositoryPolicy(ArtifactRepositoryPolicy policy) {
-    return 
+    return
         policy == null ?
             null
             : new RepositoryPolicy(
                 policy.isEnabled(), policy.getUpdatePolicy(), policy.getChecksumPolicy());
   }
-  
+
   private static org.eclipse.aether.repository.Proxy toAetherProxy(
       org.apache.maven.repository.Proxy mavenProxy) {
     return
@@ -272,7 +271,7 @@ public class GaeSdkInstaller {
                     .addPassword(mavenProxy.getPassword())
                     .build());
   }
-  
+
   private static org.eclipse.aether.repository.Authentication toAetherAuthentication(
       org.apache.maven.artifact.repository.Authentication authentication) {
     return
@@ -284,12 +283,12 @@ public class GaeSdkInstaller {
                   .addPrivateKey(authentication.getPrivateKey(), authentication.getPassphrase())
                   .build();
   }
-  
+
   private static void unzip(String sdkVersionPath, String version) {
     String zipFilePath = sdkVersionPath + "/appengine-java-sdk-" + version + ".zip";
     String destinationPathString = sdkVersionPath + "/appengine-java-sdk";
     try {
-      
+
       try (ZipFile zipFile = new ZipFile(zipFilePath)) {
         Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
         while (zipEntries.hasMoreElements()) {
@@ -304,8 +303,8 @@ public class GaeSdkInstaller {
           }
         }
       }
-      
-    } catch (IOException e) {      
+
+    } catch (IOException e) {
       AppEngineMavenPlugin.logError("Error unzipping downloaded SDK archive " + zipFilePath, e);
     }
   }

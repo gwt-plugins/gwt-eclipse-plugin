@@ -108,6 +108,8 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
 
   private IJavaProject javaProject;
 
+  private GaeSdk sdk;
+
   @Override
   // Overrides an Eclipse API method with a raw parameter type
   protected IProject[] build(
@@ -148,7 +150,7 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
     }
 
     if (!pathsToEnhance.isEmpty()) {
-      Job job = new EnhancerJob(javaProject, pathsToEnhance);
+      Job job = new EnhancerJob(javaProject, pathsToEnhance, sdk);
       job.setPriority(Job.SHORT);
       job.setRule(ResourcesPlugin.getWorkspace().getRoot());
       job.schedule();
@@ -182,7 +184,6 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
 
       // Check whether the project has that facet, and if so, whether its primary runtime is one of
       // the installed runtimes. If so, set the variable sdk to that runtime's SDK.
-      GaeSdk sdk = null;
       IFacetedProject facetedProject = ProjectFacetsManager.create(eclipseProject);
       if (gaeFacet != null && facetedProject != null && facetedProject.hasProjectFacet(gaeFacet)) {
         // TODO why is faceted project broken?

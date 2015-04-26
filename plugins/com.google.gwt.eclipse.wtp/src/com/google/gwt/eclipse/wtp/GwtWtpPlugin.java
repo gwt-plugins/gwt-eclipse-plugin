@@ -428,8 +428,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Couldn't get working directory for launcherDir.");
     }
 
-    // Classic launch config isn't providing a launcherDir, lets check the
-    // server properties
+    // Classic launch config isn't providing a launcherDir, lets check the server properties
     if (launcherDir == null) {
       launcherDir = getLauncherDirFromServerLaunchConfigAttributes(server, launchConfig);
     }
