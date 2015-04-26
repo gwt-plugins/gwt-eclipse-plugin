@@ -24,6 +24,7 @@ import com.google.gdt.eclipse.core.sdk.AbstractSdk;
 import com.google.gdt.eclipse.core.sdk.SdkClasspathContainer;
 import com.google.gdt.eclipse.core.sdk.SdkFactory;
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
+import com.google.gdt.eclipse.maven.MavenUtils;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -53,27 +54,24 @@ import java.util.Set;
 import javax.management.ReflectionException;
 
 /**
- * Represents a GAE SDK and provides a URLClassLoader that can be used to load
- * the API classes.
+ * Represents a GAE SDK and provides a URLClassLoader that can be used to load the API classes.
  */
 public class GaeSdk extends AbstractSdk {
 
   /**
-   * Interface used by extensions that provide their own implementation of a GAE
-   * SDK finder.
+   * Interface used by extensions that provide their own implementation of a GAE SDK finder.
    */
   public interface ISdkPath {
 
     /**
-     * Given an IProject, attempts to return the absolute path to the associated
-     * full SDK.
+     * Given an IProject, attempts to return the absolute path to the associated full SDK.
      */
     IPath getSdkInstallationPath(IProject project) throws IOException, InterruptedException;
   }
 
   /**
-   * Models a {@link GaeSdk} that is on a project's classpath either as a
-   * classpath container or as raw jars.
+   * Models a {@link GaeSdk} that is on a project's classpath either as a classpath container or as
+   * raw jars.
    */
   public static class ProjectBoundSdk extends GaeSdk {
 
@@ -97,8 +95,8 @@ public class GaeSdk extends AbstractSdk {
         IClasspathEntry[] rawClasspath = javaProject.getRawClasspath();
         List<IClasspathEntry> classpathContainerEntries = new ArrayList<IClasspathEntry>();
         for (IClasspathEntry rawClasspathEntry : rawClasspath) {
-          if (SdkClasspathContainer.isContainerClasspathEntry(
-              GaeSdkContainer.CONTAINER_ID, rawClasspathEntry)) {
+          if (SdkClasspathContainer.isContainerClasspathEntry(GaeSdkContainer.CONTAINER_ID,
+              rawClasspathEntry)) {
             classpathContainerEntries.add(rawClasspathEntry);
           }
         }
@@ -108,8 +106,8 @@ public class GaeSdk extends AbstractSdk {
 
         IPath installationPath = getInstallationPath();
         IClasspathEntry[] classpathEntries = new GaeSdk("", installationPath).getClasspathEntries();
-        ArrayList<IClasspathEntry> arrayList = new ArrayList<IClasspathEntry>(
-            Arrays.asList(rawClasspath));
+        ArrayList<IClasspathEntry> arrayList =
+            new ArrayList<IClasspathEntry>(Arrays.asList(rawClasspath));
         arrayList.retainAll(Arrays.asList(classpathEntries));
         // Keep only the classpath entries that are on the raw classpath
         return arrayList.toArray(NO_ICLASSPATH_ENTRIES);
@@ -121,22 +119,18 @@ public class GaeSdk extends AbstractSdk {
     }
 
     /**
-     * If the SDK "looks" like it has the structure of a valid GAE SDK (i.e. has
-     * the appropriate libaries in their correct directories under the SDK
-     * installation root), then the path to the root of the SDK installation is
-     * returned.
+     * If the SDK "looks" like it has the structure of a valid GAE SDK (i.e. has the appropriate
+     * libaries in their correct directories under the SDK installation root), then the path to the
+     * root of the SDK installation is returned.
      *
-     * If the SDK is not in the correct structure of a valid GAE SDK, but has
-     * one or more of the appropriate libraries on the project's build path,
-     * then the path to this library is returned.
+     * If the SDK is not in the correct structure of a valid GAE SDK, but has one or more of the
+     * appropriate libraries on the project's build path, then the path to this library is returned.
      *
      * In all other cases, <code>null</code> is returned.
      *
-     * TODO: Clean up the interaction between the
-     * {@link #findSdkFor(IJavaProject)} method and this method; it is
-     * confusing, at best, and it makes the contract of
-     * {@link com.google.gdt.eclipse.core.sdk.Sdk#getInstallationPath()}
-     * unclear.
+     * TODO: Clean up the interaction between the {@link #findSdkFor(IJavaProject)} method and this
+     * method; it is confusing, at best, and it makes the contract of
+     * {@link com.google.gdt.eclipse.core.sdk.Sdk#getInstallationPath()} unclear.
      */
     @Override
     public IPath getInstallationPath() {
@@ -146,15 +140,22 @@ public class GaeSdk extends AbstractSdk {
         // Check for a type that lives appengine-api-*.jar
         IType gaeMarkerType = javaProject.findType(GAE_MARKER_TYPE);
         if (gaeMarkerType != null) {
-          IPackageFragmentRoot packageFragmentRoot = (IPackageFragmentRoot) gaeMarkerType.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+          IPackageFragmentRoot packageFragmentRoot =
+              (IPackageFragmentRoot) gaeMarkerType.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
           fragmentRootPath = packageFragmentRoot.getPath();
 
-          if (fragmentRootPath.segmentCount() > 1
-              && (fragmentRootPath.removeLastSegments(1).addTrailingSeparator().toPortableString().endsWith(
-              SDK_LIB_USER_DIR_PORTABLE_SUBPATH)
-              || fragmentRootPath.removeLastSegments(
-                  1).addTrailingSeparator().toPortableString().endsWith(
-                  SDK_LIB_IMPL_DIR_PORTABLE_SUBPATH))) {
+          // Used for maven path, this may not be the best method (might be considered to be a workaround)
+          // See: GaeSdkInstaller.mavenRepositorySdkPath(...)
+          if (fragmentRootPath.segmentCount() > 3 && MavenUtils.hasMavenNature(javaProject.getProject())) {
+            String version = fragmentRootPath.removeLastSegments(1).removeFirstSegments(fragmentRootPath.segments().length - 2).toPortableString();
+            String sdkPath = String.format("appengine-java-sdk/%s/appengine-java-sdk/appengine-java-sdk-%s", version, version); // from GaeSdkInstaller
+            installPath = fragmentRootPath.removeLastSegments(3).addTrailingSeparator().append(sdkPath);
+
+          } else if (fragmentRootPath.segmentCount() > 1
+              && (fragmentRootPath.removeLastSegments(1).addTrailingSeparator().toPortableString()
+                  .endsWith(SDK_LIB_USER_DIR_PORTABLE_SUBPATH) || fragmentRootPath
+                  .removeLastSegments(1).addTrailingSeparator().toPortableString()
+                  .endsWith(SDK_LIB_IMPL_DIR_PORTABLE_SUBPATH))) {
             // Should live in SDK_ROOT/lib/user or SDK_ROOT/lib/impl
             installPath = fragmentRootPath.removeLastSegments(3);
           }
@@ -162,11 +163,13 @@ public class GaeSdk extends AbstractSdk {
           // Check for a type that lives in appengine-tools-api.jar
           gaeMarkerType = javaProject.findType(GAE_TOOLS_MARKER_TYPE);
           if (gaeMarkerType != null) {
-            IPackageFragmentRoot packageFragmentRoot = (IPackageFragmentRoot) gaeMarkerType.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+            IPackageFragmentRoot packageFragmentRoot =
+                (IPackageFragmentRoot) gaeMarkerType
+                    .getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
             fragmentRootPath = packageFragmentRoot.getPath();
             if (fragmentRootPath.segmentCount() > 1
-                && fragmentRootPath.removeLastSegments(1).addTrailingSeparator().toPortableString().endsWith(
-                SDK_LIB_DIR_PORTABLE_SUBPATH)) {
+                && fragmentRootPath.removeLastSegments(1).addTrailingSeparator().toPortableString()
+                    .endsWith(SDK_LIB_DIR_PORTABLE_SUBPATH)) {
               // Should live in SDK_ROOT/lib
               installPath = fragmentRootPath.removeLastSegments(2);
             }
@@ -196,7 +199,9 @@ public class GaeSdk extends AbstractSdk {
     }
   }
 
-  /** List of locations to search for source code attachment. */
+  /**
+   * List of locations to search for source code attachment.
+   * */
   private static final String[] SOURCE_LOCATIONS = {"src/orm", "src/user"};
 
   /**
@@ -204,19 +209,20 @@ public class GaeSdk extends AbstractSdk {
    */
   public static final String GAE_MARKER_TYPE =
       "com.google.appengine.api.datastore.DatastoreService";
+
   /**
    * appengine-tools-api marker type.
    */
   public static final String GAE_TOOLS_MARKER_TYPE = "com.google.appengine.tools.info.SdkInfo";
 
-  public static final IPath APPENGINE_TOOLS_API_JAR_PATH = new Path(
-      "lib/appengine-tools-api.jar");
+  public static final IPath APPENGINE_TOOLS_API_JAR_PATH = new Path("lib/appengine-tools-api.jar");
 
 
   // TODO: Get this info from the Appengine SDK info.
   public static final Set<String> GAE_DATANUCLEUS_FILES = Sets.newHashSet(
-      "datanucleus-appengine-1.0.10.final.jar", "datanucleus-core-1.1.5.jar", "datanucleus-jpa-1.1.5.jar",
-      "geronimo-jpa_3.0_spec-1.1.1.jar", "geronimo-jta_1.1_spec-1.1.1.jar", "jdo2-api-2.3-eb.jar");
+      "datanucleus-appengine-1.0.10.final.jar", "datanucleus-core-1.1.5.jar",
+      "datanucleus-jpa-1.1.5.jar", "geronimo-jpa_3.0_spec-1.1.1.jar",
+      "geronimo-jta_1.1_spec-1.1.1.jar", "jdo2-api-2.3-eb.jar");
 
   private static final SdkFactory<GaeSdk> factory = new SdkFactory<GaeSdk>() {
     @Override
@@ -228,15 +234,14 @@ public class GaeSdk extends AbstractSdk {
   private static final File[] NO_FILES = new File[0];
 
   /**
-   * Returns a {@link GaeSdk} associated with the project or <code>null</code>
-   * if the project was not associated with an
-   * {@link com.google.gdt.eclipse.core.sdk.Sdk}.
+   * Returns a {@link GaeSdk} associated with the project or <code>null</code> if the project was
+   * not associated with an {@link com.google.gdt.eclipse.core.sdk.Sdk}.
    *
    * @param javaProject project that might be associated with a {@link GaeSdk}
    * @return {@link GaeSdk} instance associated with the project or <code>null
    *         </code>
-   * @throws JavaModelException if this project does not exist or if an
-   *           exception occurs while accessing its corresponding resource
+   * @throws JavaModelException if this project does not exist or if an exception occurs while
+   *         accessing its corresponding resource
    */
   public static GaeSdk findSdkFor(IJavaProject javaProject) throws JavaModelException {
     ExtensionQuery<GaeSdk.ISdkPath> extQuery =
@@ -267,16 +272,16 @@ public class GaeSdk extends AbstractSdk {
    * Create an array of class path entries for given <code>classpathFiles</code> attempting to bind
    * source archive. TODO: move to {@link SdkUtils}?
    */
-  public static IClasspathEntry[] getClasspathEntries(List<File> classpathFiles, IPath installationPath) {
-
-    IPath javadocLocation = installationPath.append(
-        new Path("docs/javadoc"));
+  public static IClasspathEntry[] getClasspathEntries(List<File> classpathFiles,
+      IPath installationPath) {
+    IPath javadocLocation = installationPath.append(new Path("docs/javadoc"));
     IClasspathAttribute[] extraAttributes = new IClasspathAttribute[0];
 
     if (javadocLocation.toFile().exists()) {
-      extraAttributes = new IClasspathAttribute[] {JavaCore.newClasspathAttribute(
-          IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME,
-          javadocLocation.toFile().toURI().toString())};
+      extraAttributes =
+          new IClasspathAttribute[] {JavaCore.newClasspathAttribute(
+              IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, javadocLocation.toFile().toURI()
+                  .toString())};
     }
 
     List<IClasspathEntry> buildpath = new ArrayList<IClasspathEntry>();
@@ -294,8 +299,8 @@ public class GaeSdk extends AbstractSdk {
         }
       }
 
-      buildpath.add(JavaCore.newLibraryEntry(path, sourcePath, null,
-          new IAccessRule[0], extraAttributes, false));
+      buildpath.add(JavaCore.newLibraryEntry(path, sourcePath, null, new IAccessRule[0],
+          extraAttributes, false));
     }
 
     return buildpath.toArray(NO_ICLASSPATH_ENTRIES);
@@ -305,13 +310,11 @@ public class GaeSdk extends AbstractSdk {
     return factory;
   }
 
-  private static void validateAllFilesExist(List<File> files)
-      throws CoreException {
+  private static void validateAllFilesExist(List<File> files) throws CoreException {
     for (File file : files) {
       if (!file.exists()) {
-        throw new CoreException(new Status(IStatus.ERROR,
-            AppEngineCorePlugin.PLUGIN_ID, "SDK is missing file "
-                + file.getAbsolutePath()));
+        throw new CoreException(new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID,
+            "SDK is missing file " + file.getAbsolutePath()));
       }
     }
   }
@@ -328,7 +331,7 @@ public class GaeSdk extends AbstractSdk {
 
   public AppEngineBridge getAppEngineBridgeForDeploy() throws CoreException {
     // Only supports GAE SDK 1.4.3 and later.
-     return AppEngineBridgeFactory.getAppEngineBridge(getInstallationPath());
+    return AppEngineBridgeFactory.getAppEngineBridge(getInstallationPath());
   }
 
   /**
@@ -348,7 +351,8 @@ public class GaeSdk extends AbstractSdk {
   @Override
   public IClasspathEntry[] getClasspathEntries() {
     try {
-      AppEngineBridge appEngineBridge = AppEngineBridgeFactory.getAppEngineBridge(getInstallationPath());
+      AppEngineBridge appEngineBridge =
+          AppEngineBridgeFactory.getAppEngineBridge(getInstallationPath());
       List<File> classpathFiles = null;
       try {
         classpathFiles = appEngineBridge.getBuildclasspathFiles();
@@ -364,12 +368,13 @@ public class GaeSdk extends AbstractSdk {
 
   /**
    * Get classpath entries depending on the datanucleus version.
+   *
    * @param javaProject Project for which the classpath entries are required.
    */
   public IClasspathEntry[] getClasspathEntries(IJavaProject javaProject) {
     try {
-      AppEngineBridge appEngineBridge = AppEngineBridgeFactory.getAppEngineBridge(
-          getInstallationPath());
+      AppEngineBridge appEngineBridge =
+          AppEngineBridgeFactory.getAppEngineBridge(getInstallationPath());
       List<File> classpathFiles = null;
       if (!getCapabilities().contains(GaeSdkCapability.OPTIONAL_USER_LIB)) {
         classpathFiles = appEngineBridge.getBuildclasspathFiles();
@@ -430,7 +435,8 @@ public class GaeSdk extends AbstractSdk {
   @Override
   public File[] getWebAppClasspathFiles(IProject project) {
     try {
-      AppEngineBridge appEngineBridge = AppEngineBridgeFactory.getAppEngineBridge(getInstallationPath());
+      AppEngineBridge appEngineBridge =
+          AppEngineBridgeFactory.getAppEngineBridge(getInstallationPath());
       List<File> userLibFiles = null;
       if (!getCapabilities().contains(GaeSdkCapability.OPTIONAL_USER_LIB)) {
         userLibFiles = new ArrayList<File>(appEngineBridge.getUserLibFiles());
@@ -451,8 +457,8 @@ public class GaeSdk extends AbstractSdk {
               // The project was created with v1 datanucleus files.
               datanucleusVersion = "v1";
             }
-            List<File> someUserLibFiles = appEngineBridge.getUserLibFiles(
-                "datanucleus", datanucleusVersion);
+            List<File> someUserLibFiles =
+                appEngineBridge.getUserLibFiles("datanucleus", datanucleusVersion);
             if (someUserLibFiles != null) {
               userLibFiles.addAll(someUserLibFiles);
             }
@@ -505,8 +511,7 @@ public class GaeSdk extends AbstractSdk {
         }
         for (String toolsLibName : appEngineBridge.getToolsLibNames()) {
           for (String toolsLibVersion : appEngineBridge.getToolsLibVersions(toolsLibName)) {
-            validateAllFilesExist(
-                appEngineBridge.getToolsLibFiles(toolsLibName, toolsLibVersion));
+            validateAllFilesExist(appEngineBridge.getToolsLibFiles(toolsLibName, toolsLibVersion));
           }
         }
       }
@@ -516,8 +521,7 @@ public class GaeSdk extends AbstractSdk {
       return e.getStatus();
     } catch (RuntimeException e) {
       logValidationException(e);
-      return new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID,
-          e.getLocalizedMessage(), e);
+      return new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID, e.getLocalizedMessage(), e);
     } catch (ReflectionException e) {
       logValidationException(e);
       return new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID, e.getLocalizedMessage(),
