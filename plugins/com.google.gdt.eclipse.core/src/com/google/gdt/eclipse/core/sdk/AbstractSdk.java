@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
  * This class provides a skeletal implementation of the {@link Sdk} interface.
  */
 public abstract class AbstractSdk implements Sdk {
+
   protected static final IClasspathEntry[] NO_ICLASSPATH_ENTRIES = new IClasspathEntry[0];
 
   private final IPath location;
@@ -45,8 +46,7 @@ public abstract class AbstractSdk implements Sdk {
     Sdk otherSdk = (Sdk) obj;
     // FIXME: If version is dynamic then it could change which would violate the
     // equals contract
-    return locationsEqual(otherSdk) && namesEqual(otherSdk)
-        && versionsEqual(otherSdk);
+    return locationsEqual(otherSdk) && namesEqual(otherSdk) && versionsEqual(otherSdk);
   }
 
   @Override
@@ -100,18 +100,16 @@ public abstract class AbstractSdk implements Sdk {
   }
 
   private boolean locationsEqual(Sdk otherSdk) {
-    return (getInstallationPath() == null
-        ? otherSdk.getInstallationPath() == null
+    return (getInstallationPath() == null ? otherSdk.getInstallationPath() == null
         : getInstallationPath().equals(otherSdk.getInstallationPath()));
   }
 
   private boolean namesEqual(Sdk otherSdk) {
-    return (getName() == null ? otherSdk.getName() == null : getName().equals(
-        otherSdk.getName()));
+    return (getName() == null ? otherSdk.getName() == null : getName().equals(otherSdk.getName()));
   }
 
   private boolean versionsEqual(Sdk otherSdk) {
-    return (getVersion() == null ? otherSdk.getVersion() == null
-        : getVersion().equals(otherSdk.getVersion()));
+    return (getVersion() == null ? otherSdk.getVersion() == null : getVersion().equals(
+        otherSdk.getVersion()));
   }
 }

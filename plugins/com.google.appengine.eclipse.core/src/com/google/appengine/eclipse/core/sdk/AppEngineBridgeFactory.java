@@ -148,6 +148,7 @@ public class AppEngineBridgeFactory {
       // TODO: Figure out why closing the loader causes PDE runs to fail.
       //bridgeClassLoader.close();
       AppEngineBridge bridge = (AppEngineBridge) clazz.newInstance();
+      bridge.setSdkLocation(sdkLocation);
       return bridge;
     } catch (Throwable e) {
       // Catch Throwable if anything happens while trying to create the bridge.

@@ -58,35 +58,32 @@ import java.util.Set;
 import javax.management.ReflectionException;
 
 /**
- * The implementation of the bridging layer between the GAE Plugin and the App
- * Engine SDK. This class will be loaded in an isolated classloader along with
- * the App Engine SDK. The parent classloader of this isolated classloader will
- * be that of the GAE Plugin.
+ * The implementation of the bridging layer between the GAE Plugin and the App Engine SDK. This
+ * class will be loaded in an isolated classloader along with the App Engine SDK. The parent
+ * classloader of this isolated classloader will be that of the GAE Plugin.
  */
 public class AppEngineBridgeImpl implements AppEngineBridge {
 
   private static final class DeployUpdateListener implements UpdateListener {
 
     /**
-     * Class for getting headers representing different stages of deployments
-     * bassed on console messages from the gae sdk.
+     * Class for getting headers representing different stages of deployments bassed on console
+     * messages from the gae sdk.
      */
     private static class MessageHeaders {
 
       // Headers should go in the order specified in this array.
-      private static final
-          PrefixHeaderPair[] prefixHeaderPairs = new PrefixHeaderPair[] {
-              new PrefixHeaderPair("Preparing to deploy", null,
-                  "Created staging directory", "Scanning files on local disk"),
-              new PrefixHeaderPair(
-                  "Deploying", null, "Uploading"), new PrefixHeaderPair(
-                  "Verifying availability", "Verifying availability of",
-                  "Will check again in 1 seconds."), new PrefixHeaderPair(
-                  "Updating datastore", null, "Uploading index")};
+      private static final PrefixHeaderPair[] prefixHeaderPairs = new PrefixHeaderPair[] {
+          new PrefixHeaderPair("Preparing to deploy", null, "Created staging directory",
+              "Scanning files on local disk"),
+          new PrefixHeaderPair("Deploying", null, "Uploading"),
+          new PrefixHeaderPair("Verifying availability", "Verifying availability of",
+              "Will check again in 1 seconds."),
+          new PrefixHeaderPair("Updating datastore", null, "Uploading index")};
 
       /*
-       * The headers should go in the sequence specified in the array, so keep
-       * track of which header we're currently looking for.
+       * The headers should go in the sequence specified in the array, so keep track of which header
+       * we're currently looking for.
        */
       private int currentPrefixHeaderPair;
 
@@ -94,8 +91,7 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
         PrefixHeaderPair php = prefixHeaderPairs[currentPrefixHeaderPair];
         for (String prefix : php.msgPrefixes) {
           if (msg.startsWith(prefix)) {
-            currentPrefixHeaderPair = (currentPrefixHeaderPair + 1)
-                % prefixHeaderPairs.length;
+            currentPrefixHeaderPair = (currentPrefixHeaderPair + 1) % prefixHeaderPairs.length;
             return php;
           }
         }
@@ -104,8 +100,8 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
     }
 
     /**
-     * Class for holding the different gae sdk messages that are associated with
-     * different "headers", representing the stages of deployment.
+     * Class for holding the different gae sdk messages that are associated with different
+     * "headers", representing the stages of deployment.
      */
     private static class PrefixHeaderPair {
       // the header that should be displayed on the console
@@ -119,8 +115,7 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
       // "verifying availability of "backend""
       final String taskHeader;
 
-      PrefixHeaderPair(
-          String header, String taskHeader, String... msgPrefixes) {
+      PrefixHeaderPair(String header, String taskHeader, String... msgPrefixes) {
         this.msgPrefixes = msgPrefixes;
         this.header = header;
         if (taskHeader == null) {
@@ -132,10 +127,9 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
     }
 
     /**
-     * Attempts to reflectively call getDetails() on the event object received
-     * by the onFailure or onSuccess callback. That method is only supported by
-     * App Engine SDK 1.2.1 or later. If we are able to call getDetails we
-     * return the details message; otherwise we return <code>null</code>.
+     * Attempts to reflectively call getDetails() on the event object received by the onFailure or
+     * onSuccess callback. That method is only supported by App Engine SDK 1.2.1 or later. If we are
+     * able to call getDetails we return the details message; otherwise we return <code>null</code>.
      */
     private static String getDetailsIfSupported(Object updateEvent) {
       try {
@@ -156,14 +150,14 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
     }
 
     /**
-     * Reflectively checks to see if an exception is a JspCompilationException,
-     * which is only supported by App Engine SDK 1.2.1 or later.
+     * Reflectively checks to see if an exception is a JspCompilationException, which is only
+     * supported by App Engine SDK 1.2.1 or later.
      */
     private static boolean isJspCompilationException(Throwable ex) {
       if (ex != null) {
         try {
-          Class<?> jspCompilationExceptionClass = Class.forName(
-              "com.google.appengine.tools.admin.JspCompilationException");
+          Class<?> jspCompilationExceptionClass =
+              Class.forName("com.google.appengine.tools.admin.JspCompilationException");
           return jspCompilationExceptionClass.isAssignableFrom(ex.getClass());
         } catch (ClassNotFoundException e) {
           // Expected on App Engine SDK 1.2.0; no need to log
@@ -184,9 +178,8 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
 
     private IStatus status = Status.OK_STATUS;
 
-    private DeployUpdateListener(IProgressMonitor monitor,
-        DeploymentSet deploymentSet, PrintWriter outputWriter,
-        PrintWriter errorWriter) {
+    private DeployUpdateListener(IProgressMonitor monitor, DeploymentSet deploymentSet,
+        PrintWriter outputWriter, PrintWriter errorWriter) {
       this.monitor = monitor;
       this.outputWriter = outputWriter;
       this.errorWriter = errorWriter;
@@ -203,8 +196,9 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
       monitor.done();
 
       // Create status object and print error message to the writer
-      status = new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID,
-          event.getFailureMessage(), event.getCause());
+      status =
+          new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID, event.getFailureMessage(),
+              event.getCause());
       outputWriter.println(event.getFailureMessage());
 
       // Only print the details for JSP compilation errors
@@ -237,8 +231,7 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
       // Check for user cancellation
       if (monitor.isCanceled()) {
         event.cancel();
-        status = new Status(
-            IStatus.CANCEL, AppEngineCorePlugin.PLUGIN_ID, "User cancelled");
+        status = new Status(IStatus.CANCEL, AppEngineCorePlugin.PLUGIN_ID, "User cancelled");
         outputWriter.println(status.getMessage());
       }
     }
@@ -276,8 +269,8 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
   }
 
   private enum Lib {
-    TOOLS("getOptionalToolsLib", "getOptionalToolsLibs"),
-    USER("getOptionalUserLib", "getOptionalUserLibs");
+    TOOLS("getOptionalToolsLib", "getOptionalToolsLibs"), USER("getOptionalUserLib",
+        "getOptionalUserLibs");
 
     private final String getOptionalLib;
     private final String getOptionalLibs;
@@ -298,41 +291,34 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
 
   private static class VersionComparator implements Comparator<String> {
     @Override
-    public int compare(String version1, String version2)
-        throws NumberFormatException {
+    public int compare(String version1, String version2) throws NumberFormatException {
       return SdkUtils.compareVersionStrings(version1, version2);
     }
   }
 
   private static final String APPENGINE_API_JAR_NAME_REGEX = "appengine-api-.*sdk.*\\.jar";
 
-  private static final IPath APPENGINE_TOOLS_API_JAR_PATH = new Path(
-      "lib/appengine-tools-api.jar");
+  private static final IPath APPENGINE_TOOLS_API_JAR_PATH = new Path("lib/appengine-tools-api.jar");
 
   // FIXME: Change this to the proper value once App Engine starts reporting
   // version information correctly.
   private static final String MIN_SUPPORTED_VERSION = "0.0.0";
 
-  private static final VersionComparator
-      VERSION_COMPARATOR = new VersionComparator();
+  private static final VersionComparator VERSION_COMPARATOR = new VersionComparator();
 
   // package protected for testing
-  static AppAdmin createAppAdmin(final DeployOptions options)
-      throws IOException {
+  static AppAdmin createAppAdmin(final DeployOptions options) throws IOException {
     AppAdminFactory appAdminFactory = new AppAdminFactory();
 
     if (options.getJavaExecutableOSPath() != null) {
-      appAdminFactory.setJavaExecutable(
-          new File(options.getJavaExecutableOSPath()));
+      appAdminFactory.setJavaExecutable(new File(options.getJavaExecutableOSPath()));
     }
 
     if (options.getJavaCompilerExecutableOSPath() != null) {
-      appAdminFactory.setJavaCompiler(
-          new File(options.getJavaCompilerExecutableOSPath()));
+      appAdminFactory.setJavaCompiler(new File(options.getJavaCompilerExecutableOSPath()));
     }
 
-    Application app = Application.readApplication(
-        options.getDeployFolderOSPath());
+    Application app = Application.readApplication(options.getDeployFolderOSPath());
 
     PrintWriter errorWriter = new PrintWriter(options.getErrorStream(), true);
     ConnectOptions appEngineConnectOptions = new ConnectOptions();
@@ -344,8 +330,7 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
     }
     appAdminFactory.setJarSplittingEnabled(true);
 
-    AppAdmin appAdmin = appAdminFactory.createAppAdmin(
-        appEngineConnectOptions, app, errorWriter);
+    AppAdmin appAdmin = appAdminFactory.createAppAdmin(appEngineConnectOptions, app, errorWriter);
 
     return appAdmin;
   }
@@ -362,31 +347,31 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
     }
   }
 
+  private IPath sdkLocation;
+
   public AppEngineBridgeImpl() throws CoreException {
     if (!hasSdkInfo() || !isCompatibleVersion()) {
-      throw new CoreException(StatusUtilities.newErrorStatus((
-          "App Engine SDK version must be greater than " + MIN_SUPPORTED_VERSION
-          + " in order to work with this plugin."),
-          AppEngineCorePlugin.PLUGIN_ID));
+      throw new CoreException(
+          StatusUtilities.newErrorStatus(("App Engine SDK version must be greater than "
+              + MIN_SUPPORTED_VERSION + " in order to work with this plugin."),
+              AppEngineCorePlugin.PLUGIN_ID));
     }
   }
 
   @Override
-  public IStatus deploy(final IProgressMonitor monitor, DeployOptions options)
-      throws IOException {
+  public IStatus deploy(final IProgressMonitor monitor, DeployOptions options) throws IOException {
 
     /*
-     * Note that we're using the same consoleOutputStream for both the output of
-     * the update check, and deploy output. This should be safe, because both of
-     * these operations are synchronous, so the same thread is being used.
+     * Note that we're using the same consoleOutputStream for both the output of the update check,
+     * and deploy output. This should be safe, because both of these operations are synchronous, so
+     * the same thread is being used.
      *
-     * TODO: Should we do the update check in a separate thread? If the update
-     * check hangs, then the deployment will not occur.
+     * TODO: Should we do the update check in a separate thread? If the update check hangs, then the
+     * deployment will not occur.
      */
     UpdateCheck updateCheck = new UpdateCheck(SdkInfo.getDefaultServer());
     if (updateCheck.allowedToCheckForUpdates()) {
-      updateCheck.maybePrintNagScreen(
-          new PrintStream(options.getOutputStream(), true));
+      updateCheck.maybePrintNagScreen(new PrintStream(options.getOutputStream(), true));
     }
 
     AppAdmin appAdmin = null;
@@ -395,13 +380,11 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
     } catch (AppEngineConfigException e) {
 
       /*
-       * When reading an Application, the bundled tools jar will be (should be)
-       * whatever the current version is, so it knows to look for the
-       * backends.xml file. But if the SDK version for this project is old, then
-       * there won't be a backends.xsd file to validate the backends.xml file.
-       * This shows up as a SAXParseException wrapped in a
-       * AppEngineConfigException. Deployment should still work if the SDK for
-       * this project is old and there is no backends.xml file.
+       * When reading an Application, the bundled tools jar will be (should be) whatever the current
+       * version is, so it knows to look for the backends.xml file. But if the SDK version for this
+       * project is old, then there won't be a backends.xsd file to validate the backends.xml file.
+       * This shows up as a SAXParseException wrapped in a AppEngineConfigException. Deployment
+       * should still work if the SDK for this project is old and there is no backends.xml file.
        */
 
       if (e.getCause() instanceof SAXParseException) {
@@ -409,11 +392,9 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
 
         // have to check what the message says to distinguish a file-not-found
         // problem from some other xml problem.
-        if (msg.contains("Failed to read schema document")
-            && msg.contains("backends.xsd")) {
+        if (msg.contains("Failed to read schema document") && msg.contains("backends.xsd")) {
           return new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID,
-              "Deploying a project with backends requires App Engine SDK 1.5.0 or greater.",
-              e);
+              "Deploying a project with backends requires App Engine SDK 1.5.0 or greater.", e);
         } else {
           throw e;
         }
@@ -424,31 +405,28 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
 
     DeploymentSet deploymentSet = options.getDeploymentSet();
 
-    DeployUpdateListener deployUpdateListener = new DeployUpdateListener(
-        monitor, deploymentSet,
-        new PrintWriter(options.getOutputStream(), true),
-        new PrintWriter(options.getErrorStream(), true));
+    DeployUpdateListener deployUpdateListener =
+        new DeployUpdateListener(monitor, deploymentSet, new PrintWriter(options.getOutputStream(),
+            true), new PrintWriter(options.getErrorStream(), true));
 
     try {
 
       if (deploymentSet.getDeployFrontend()) {
         deployUpdateListener.setDeploymentUnitName("frontend");
-        deployUpdateListener.println(
-            "\n------------ Deploying frontend ------------");
+        deployUpdateListener.println("\n------------ Deploying frontend ------------");
         appAdmin.update(deployUpdateListener);
       }
 
       for (String backendName : deploymentSet.getBackendNames()) {
         deployUpdateListener.setDeploymentUnitName(backendName);
-        deployUpdateListener.println("\n------------ Deploying backend \""
-            + backendName + "\" ------------");
+        deployUpdateListener.println("\n------------ Deploying backend \"" + backendName
+            + "\" ------------");
         appAdmin.updateBackend(backendName, deployUpdateListener);
       }
 
       return deployUpdateListener.getStatus();
     } catch (AdminException e) {
-      return new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID,
-          e.getLocalizedMessage(), e);
+      return new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID, e.getLocalizedMessage(), e);
     }
   }
 
@@ -479,8 +457,23 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
      * this work, we need to re-enable IRuntimeEntryResolvers. Just to get things going, we'll put
      * appengine-tools-api.jar on the build path.
      */
-    classpathFiles.add(new Path(SdkInfo.getSdkRoot().getAbsolutePath()).append(
-        APPENGINE_TOOLS_API_JAR_PATH).toFile());
+
+    // original
+    String sdkRootPath = SdkInfo.getSdkRoot().getAbsolutePath();
+    IPath sdkApiJarPath = new Path(sdkRootPath).append(APPENGINE_TOOLS_API_JAR_PATH);
+
+    // workaround - accomodate maven sdk path
+    IPath sdkLocation = getSdkLocation();
+    if (sdkLocation != null) {
+      IPath customSdkPath = sdkLocation.append(APPENGINE_TOOLS_API_JAR_PATH);
+      if (new File(customSdkPath.toPortableString()).exists()) {
+        sdkApiJarPath = customSdkPath;
+      }
+    }
+
+    classpathFiles.add(sdkApiJarPath.toFile());
+
+
     classpathFiles.addAll(getLatestUserLibFiles(getDatanucleusFiles));
     return classpathFiles;
   }
@@ -503,6 +496,19 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
         break;
       }
     }
+
+    // workaround
+    if (appengineApiJarFile == null) {
+      // workaround - accomodate maven sdk path
+      IPath sdkLocation = getSdkLocation();
+      if (sdkLocation != null) {
+        IPath customSdkPath = sdkLocation.append(APPENGINE_TOOLS_API_JAR_PATH);
+        if (new File(customSdkPath.toPortableString()).exists()) {
+          appengineApiJarFile = customSdkPath.toFile();
+        }
+      }
+    }
+
     if (appengineApiJarFile != null) {
       userLibFiles.add(appengineApiJarFile);
     } else {
@@ -537,8 +543,7 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
   public List<File> getToolsLibFiles() {
     List<File> toolLibFiles = new ArrayList<File>();
     // FIXME: We should really be getting this list straight from SdkInfo
-    getLibs(new File(SdkInfo.getSdkRoot(), "lib" + File.separator + "tools"),
-        toolLibFiles);
+    getLibs(new File(SdkInfo.getSdkRoot(), "lib" + File.separator + "tools"), toolLibFiles);
     return toolLibFiles;
   }
 
@@ -608,12 +613,12 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
   }
 
   private List<String> getLibVersions(String libName, Lib lib) throws ReflectionException {
-      Method getVersions = getMethod(getOptionalLibClass(), "getVersions");
-      Method getOptionalLib = getMethod(SdkInfo.class, lib.getOptionalLib(), String.class);
-      Object x = invoke(getOptionalLib, null, libName);
-      @SuppressWarnings("unchecked")
-      List<String> libVersions = (List<String>) invoke(getVersions, x);
-      return libVersions;
+    Method getVersions = getMethod(getOptionalLibClass(), "getVersions");
+    Method getOptionalLib = getMethod(SdkInfo.class, lib.getOptionalLib(), String.class);
+    Object x = invoke(getOptionalLib, null, libName);
+    @SuppressWarnings("unchecked")
+    List<String> libVersions = (List<String>) invoke(getVersions, x);
+    return libVersions;
   }
 
   private Method getMethod(Class<?> clazz, String method, Class<?>... parameterTypes)
@@ -632,8 +637,8 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
       return SdkInfo.class.getClassLoader()
           .loadClass("com.google.appengine.tools.info.OptionalLib");
     } catch (ClassNotFoundException e) {
-      throw new ReflectionException(
-          e, "Unable to load Optional Lib Class. Check if GAE SDK is up to date.");
+      throw new ReflectionException(e,
+          "Unable to load Optional Lib Class. Check if GAE SDK is up to date.");
     }
   }
 
@@ -662,7 +667,16 @@ public class AppEngineBridgeImpl implements AppEngineBridge {
   private boolean isCompatibleVersion() {
     Version sdkVersion = SdkInfo.getLocalVersion();
 
-    return VERSION_COMPARATOR.compare(
-        sdkVersion.getRelease(), MIN_SUPPORTED_VERSION) >= 0;
+    return VERSION_COMPARATOR.compare(sdkVersion.getRelease(), MIN_SUPPORTED_VERSION) >= 0;
+  }
+
+  @Override
+  public void setSdkLocation(IPath sdkLocation) {
+    this.sdkLocation = sdkLocation;
+  }
+
+  @Override
+  public IPath getSdkLocation() {
+    return sdkLocation;
   }
 }
