@@ -48,7 +48,7 @@ Please provide a unit test(s) for any patch and if one doesn't exist it may not 
 
 ### Update Sites
 * [Snapshot Update Site](http://storage.googleapis.com/gwt-eclipse-plugin/snapshot)
-* [Release Update Site - Luna](http://storage.googleapis.com/gwt-eclipse-plugin/release/luna)
+* [Release Update Site](http://storage.googleapis.com/gwt-eclipse-plugin/release)
 
 #### Install
 * Download Eclipse Luna Java EE

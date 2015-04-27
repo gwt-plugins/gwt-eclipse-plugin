@@ -71,7 +71,7 @@ public class AnalyticsPingManager implements PingManager {
   }
 
   private static final String ANALYTICS_COLLECTION_URL = "http://www.google-analytics.com/collect";
-  private static final String GPE_ANALYTICS_ID = "UA-62291716-1";
+  private static final String GPE_ANALYTICS_ID = "UA-62291716-1"; // Changed to the GWT Eclipse Plugin
   private static final String APPLICATION_NAME = "GWT Eclipse Plugin";
 
   // Fixed-value query parameters present in every ping, and their fixed values:

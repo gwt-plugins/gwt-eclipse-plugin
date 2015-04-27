@@ -4,4 +4,5 @@
 cd repository
 
 # upload snapshot
-gsutil cp -r . gs://gwt-eclipse-plugin/release/kepler
+# http://storage.googleapis.com/gwt-eclipse-plugin/release
+gsutil cp -r . gs://gwt-eclipse-plugin/release
