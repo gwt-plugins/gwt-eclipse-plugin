@@ -7,7 +7,7 @@
       plugin="com.google.gdt.eclipse.suite">
 
    <description>
-      Support for the development of GWT Projects in Eclipse 4.4
+      Support for the development of GWT Projects in Eclipse
    </description>
 
    <copyright>
@@ -19,7 +19,7 @@
    </license>
 
    <url>
-      <update label="GWT Eclipse Plugin Site for Eclipse 4.4" url="http://storage.googleapis.com/gwt-eclipse-plugin/snapshot"/>
+      <update label="GWT Eclipse Plugin Site for Eclipse" url="http://storage.googleapis.com/gwt-eclipse-plugin/release"/>
    </url>
 
    <requires>
