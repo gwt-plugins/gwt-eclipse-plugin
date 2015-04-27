@@ -219,4 +219,9 @@ public interface AppEngineBridge {
   List<String> getUserLibVersions(String libName) throws ReflectionException;
 
   Set<String> getWhiteList();
+
+
+  void setSdkLocation(IPath sdkLocation);
+
+  IPath getSdkLocation();
 }
