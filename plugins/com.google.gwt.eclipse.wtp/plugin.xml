@@ -26,28 +26,21 @@
 
   <!-- GWT Facet -->
   <extension point="org.eclipse.wst.common.project.facet.core.facets">
-  
-    <!-- Preset -->
-    <preset id="com.google.gwt.facet.preset.gwtonly">
-      <label>GWT Project</label>
-      <description>Enables GWT project runtime.</description>
-      <facet id="jst.java" version="1.6,1.7,1.8"/>
-      <facet id="com.google.gwt.facet" version="1.0"/>
-    </preset>
     
     <!-- Facet -->   
     <project-facet id="com.google.gwt.facet">
-      <category>com.google.gwt.facet</category>
       <label>GWT</label>
-      <description>
-        Enables GWT SDK use for the project.
-      </description>
+      <description>Enables GWT SDK use for the project.</description>
     </project-facet>  
     
     <!-- Version -->
     <project-facet-version facet="com.google.gwt.facet" version="1.0">
-      <requires facet="java" version="[1.6"/>
-      <requires facet="jst.web" version="[2.2"/>
+      <constraint>
+	 	<and>
+	       <requires facet="jst.web" version="[2.5"></requires>
+	       <requires facet="jst.java" version="[5.0"></requires>
+	 	</and>
+      </constraint>
     </project-facet-version>
   
   	<!-- Install -->
@@ -69,7 +62,8 @@
 		  type="uninstall">
 		<delegate class="com.google.gwt.eclipse.wtp.facet.GwtFacetUninstallDelegate"/>
 	</action>
-  </extension>
+  </extension> <!-- End of org.eclipse.wst.common.project.facet.core.facets -->
+
 
   <!-- Wizards -->
   <extension point="org.eclipse.wst.common.project.facet.ui.wizardPages">
@@ -86,7 +80,7 @@
     </startup>
   </extension>
   
-  <!-- won't work -->
+  <!-- TODO won't work -->
   <extension point="org.eclipse.wst.server.core.launchableAdapters">
       <launchableAdapter
         id="com.google.gwt.server.http.web"
@@ -116,5 +110,13 @@
 	       <reference definitionId="com.google.gwt.eclipse.wtp.isGWTFacet"/> 
 	     </enabledWhen>
 	  </page>	
+  </extension>
+  
+  <!-- Allows facet to work with runtime -->
+  <extension point="org.eclipse.wst.common.project.facet.core.runtimes">
+    <supported>
+	  <runtime-component any="true"></runtime-component>
+	  <facet id="com.google.gwt.facet" version="[1.0"></facet>
+	</supported>
   </extension>
 </plugin>
