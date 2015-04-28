@@ -50,6 +50,9 @@ Please provide a unit test(s) for any patch and if one doesn't exist it may not 
 * [Snapshot Update Site](http://storage.googleapis.com/gwt-eclipse-plugin/snapshot)
 * [Release Update Site](http://storage.googleapis.com/gwt-eclipse-plugin/release)
 
+### Resource Location
+* [Cloud Storage Browser for the Sites](https://console.developers.google.com/project/gxt-compute/storage/browser/gwt-eclipse-plugin/)
+
 #### Install
 * Download Eclipse Luna Java EE
 * Goto &gt; Help &gt; Install New Software &gt; Add Update URL
