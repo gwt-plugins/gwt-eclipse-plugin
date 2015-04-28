@@ -15,7 +15,7 @@
             category="com.google.gdt.eclipse.suite.preferences.ui.googlePreferences"
             class="com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage"
             id="com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage"
-            name="Web Toolkit">
+            name="GWT">
       </page>
       <page
             category="com.google.gdt.eclipse.suite.preferences.ui.googlePreferences"
