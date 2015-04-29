@@ -37,7 +37,7 @@
     <project-facet-version facet="com.google.gwt.facet" version="1.0">
       <constraint>
 	 	<and>
-	       <requires facet="jst.web" version="[2.5"></requires>
+	 	   <!-- Only require the bare minimum -->
 	       <requires facet="jst.java" version="[5.0"></requires>
 	 	</and>
       </constraint>
