@@ -14,15 +14,6 @@ The GWT Plugin for Eclipse repository.
 1. Classic launchers are deprecated. The SDM launcher is replacing the classic dev mode launcher.
 2. GWT Nature is being replaced by GWT Facet
 
-## TODOs
-1. On app engine server start add base url to development tools
-2. On sdm start/stop with server runtime, fire custom event for external listeners
-3. On sdm start, start sdbg if installed, automatically
-4. JPA facet always gets enabled, causes auto enhancing to go even tho project doesn't have it
-5. Consider adding the DevMode launcher as a server runtime
-6. New application creator that supports both maven and standard. 
-7. Server runtime configuration wizard for project
-
 ##Configuration
 TODO
 
