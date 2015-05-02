@@ -6,5 +6,8 @@
    <feature url="../features/com.google.gdt.eclipse.suite.e44.feature" id="com.google.gdt.eclipse.suite.e44.feature" version="0.0.0.qualifier">
       <category name="GPE"/>
    </feature>
+   <feature url="features/com.google.gwt.eclipse.sdkbundle.feature_0.0.0.qualifier.jar" id="com.google.gwt.eclipse.sdkbundle.feature" version="0.0.0.qualifier">
+      <category name="GPE"/>
+   </feature>
    <category-def name="GPE" label="Google Plugin for Eclipse"/>
 </site>
