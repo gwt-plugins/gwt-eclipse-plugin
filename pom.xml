@@ -69,7 +69,9 @@
     <module>plugins/com.google.gwt.eclipse.wtp.test</module>
     <module>plugins/com.google.gwt.eclipse.wtp.maven.test</module>
 
+    <!-- SDK Bundles -->
     <module>plugins/com.google.gwt.eclipse.sdkbundle</module>
+    <module>plugins/com.google.appengine.eclipse.sdkbundle</module>
     
   </modules>
 
@@ -98,6 +100,7 @@
 
     <!-- Development build resources -->
     <!-- Used In: GaeProjectTestUtil.java -->
+    <!-- Used In: App Engine SDK bundle. TODO pass along the variable in the SDK bundle -->
     <appengine.version>1.9.19</appengine.version>
     <!-- Used In: GwtRuntimeTestUtilities.java -->
     <gwt.version>2.7.0</gwt.version>

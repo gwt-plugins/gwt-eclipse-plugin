@@ -62,7 +62,7 @@
             <configuration>
               <!-- GWT 2.7.0 SDK zip -->
               <url>http://goo.gl/t7FQSn</url>
-              <unpack>false</unpack>
+              <unpack>true</unpack>
               <overwrite>true</overwrite>
               <outputFileName>gwt-${gwt.version}.zip</outputFileName>
               <outputDirectory>${project.build.directory}/resources</outputDirectory>

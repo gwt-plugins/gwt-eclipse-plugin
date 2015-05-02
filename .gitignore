@@ -14,7 +14,9 @@ target/
 #TODO remove files at somepoint
 /plugins/com.google.gcp.eclipse.testing/resources/appengine-java-sdk*
 
-gwt-2.6.1/
+#SDK Bundles
+#TODO changing to variables
 gwt-2.7.0/
-gwt-2.6.1.zip
 gwt-2.7.0.zip
+appengine-java-sdk-1.9.19/
+appengine-java-sdk-1.9.19.zip

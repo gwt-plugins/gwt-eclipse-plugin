@@ -10,31 +10,29 @@
     <relativePath>../../</relativePath>
   </parent>
 
-  <artifactId>com.google.gwt.eclipse.sdkbundle</artifactId>
+  <artifactId>com.google.appengine.eclipse.sdkbundle</artifactId>
   <version>0.0.0.qualifier</version>
   <packaging>eclipse-plugin</packaging>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <version>1.2.1</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.6</version>
         <executions>
           <execution>
-            <id>get-gwt</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
+            <id>unzip</id>
+            <phase>process-resources</phase>
             <configuration>
-              <!-- GWT 2.7.0 SDK zip -->
-              <url>http://goo.gl/t7FQSn</url>
-              <unpack>true</unpack>
-              <overwrite>true</overwrite>
-              <outputFileName>gwt-${gwt.version}.zip</outputFileName>
-              <outputDirectory>${basedir}</outputDirectory>
+              <tasks>
+                <!-- Version found in trunk pom.xml, zip found in the ./resources/target/resources/ -->
+                <unzip src="${basedir}/../../resources/target/resources/appengine-java-sdk-${appengine.version}.zip" dest="${basedir}" />
+              </tasks>
             </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
