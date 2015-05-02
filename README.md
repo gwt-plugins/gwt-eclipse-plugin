@@ -15,7 +15,10 @@ The GWT Plugin for Eclipse repository.
 2. GWT Nature is being replaced by GWT Facet
 
 ##Configuration
-TODO
+1. Clone Project
+2. `mvn clean verify -DskipTests` - this will download the two sdks needed for `GWT_HOME` and `GAE_HOME`
+3. Create the enviromental vars
+4. Install dependent plugin features needed in IDE
 
 ##Contributing
 Please provide a unit test(s) for any patch and if one doesn't exist it may not get merged.
