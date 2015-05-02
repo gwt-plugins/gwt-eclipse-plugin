@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.google.gwt.eclipse.sdkbundle.feature"
+      label="%featureName"
+      version="0.0.0.qualifier"
+      provider-name="%providerName">
+
+   <description>
+      GWT SDK Bundles
+   </description>
+
+   <copyright>
+      Copyright 2015
+   </copyright>
+
+   <license>
+      @FEATURE_LICENSE@
+   </license>
+
+   <url>
+      <update label="GWT Plugin for Eclipse Update Site" url="@FEATURE_UPDATE_SITE_URL@" />
+   </url>
+
+   <plugin
+         id="com.google.gwt.eclipse.sdkbundle"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+</feature>

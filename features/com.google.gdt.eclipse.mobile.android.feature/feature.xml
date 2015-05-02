@@ -14,17 +14,14 @@
    </copyright>
 
    <license>
-<![CDATA[
       @FEATURE_LICENSE@
-]]>
    </license>
 
    <url>
-      <update url="@FEATURE_UPDATE_SITE_URL@"/>
+      <update label="Android" url="@FEATURE_UPDATE_SITE_URL@" />
    </url>
 
    <requires>
-      <import feature="com.android.ide.eclipse.adt.feature" version="23.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.expressions"/>
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.jface"/>
@@ -47,6 +44,7 @@
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="com.google.gdt.eclipse.appengine.swarm_backend"/>
+      <import feature="com.android.ide.eclipse.adt.feature" version="23.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

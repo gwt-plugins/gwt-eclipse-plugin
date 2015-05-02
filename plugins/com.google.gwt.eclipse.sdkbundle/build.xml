@@ -1,0 +1,55 @@
+<project name="com.google.gwt.eclipse.sdkbundle"
+         default="build"
+         basedir=".">
+
+    <!-- Project-specific properties -->
+    <property name="plugin_name"
+              value="com.google.gwt.eclipse.sdkbundle" />
+    <property name="project.tail" value="plugins/${plugin_name}" />
+
+    <import file="${build.project.dir}/common.ant.xml" />
+    <property name="plugin.version" value="${gwt.sdkbundle.version}" />
+    <import file="${build.project.dir}/plugins/plugins.common.ant.xml" />
+
+    <target name="build">
+        <copy.plugin.src />
+
+        <!-- Expand our SDK into the output directory -->
+        <unzip src="${gwt.sdk}" dest="${project.build}/__tmp__" />
+
+        <!-- Figure out root directory name; assumes that the archive has all files under a
+		     single root directory. -->
+        <dirset id="gwt.sdk.rootdir.fileset"
+                dir="${project.build}/__tmp__">
+            <depth max="0" />
+            <include name="*" />
+        </dirset>
+
+        <condition property="gwt.sdk.rootdir.fileset.size">
+            <resourcecount count="1" refid="gwt.sdk.rootdir.fileset" />
+        </condition>
+
+        <fail unless="gwt.sdk.rootdir.fileset.size"
+              message="Archive file ${gwt.sdk} must have only one top-level directory." />
+
+        <property name="gwt.sdk.basename"
+                  refid="gwt.sdk.rootdir.fileset" />
+
+        <!-- Move the archive's root directory into plugin's root directory -->
+        <move file="${project.build}/__tmp__/${gwt.sdk.basename}"
+              todir="${pde.src.path}" />
+        <delete dir="${project.build}/__tmp__" failonerror="false" />
+
+        <!-- Update the build file to resolve the linked resource to a final location -->
+        <replace file="${pde.src.path}/build.properties"
+                 token="GWT_HOME"
+                 value="${gwt.sdk.basename}" />
+
+        <replace file="${pde.src.path}/SdkBundleRegistrant.properties"
+                 token="GWT_HOME"
+                 value="${gwt.sdk.basename}" />
+
+        <gwt.plugin.eclipseantrunner builddir="." buildfile="build.xml" buildtarget="buildInEclipse" />
+    </target>
+
+</project>

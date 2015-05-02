@@ -12,8 +12,10 @@
     <module>repo</module>
 
     <module>features/com.google.appengine.eclipse.wtp.maven.feature</module>
-    <module>features/com.google.gdt.eclipse.mobile.android.feature</module>
     <module>features/com.google.gdt.eclipse.suite.e44.feature</module>
+    <module>features/com.google.gwt.eclipse.sdkbundle.feature</module>
+    <!-- <module>features/com.google.gdt.eclipse.mobile.android.feature</module> -->
+    
     <module>plugins/com.google.appengine.eclipse.core</module>
     <module>plugins/com.google.appengine.eclipse.core.test</module>
     <module>plugins/com.google.appengine.eclipse.core.test.swtbot</module>
@@ -45,7 +47,7 @@
     <module>plugins/com.google.gdt.eclipse.managedapis</module>
     <module>plugins/com.google.gdt.eclipse.managedapis.test</module>
     <module>plugins/com.google.gdt.eclipse.maven</module>
-    <module>plugins/com.google.gdt.eclipse.mobile.android</module>
+    <!-- <module>plugins/com.google.gdt.eclipse.mobile.android</module> -->
     <module>plugins/com.google.gdt.eclipse.platform</module>
     <module>plugins/com.google.gdt.eclipse.suite</module>
     <module>plugins/com.google.gdt.eclipse.suite.test</module>
@@ -66,6 +68,11 @@
 
     <module>plugins/com.google.gwt.eclipse.wtp.test</module>
     <module>plugins/com.google.gwt.eclipse.wtp.maven.test</module>
+
+    <!-- SDK Bundles -->
+    <module>plugins/com.google.gwt.eclipse.sdkbundle</module>
+    <module>plugins/com.google.appengine.eclipse.sdkbundle</module>
+    
   </modules>
 
   <properties>
@@ -80,7 +87,7 @@
     <swtbotVersion>2.2.1</swtbotVersion>
 
     <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
-    <adt-repo.url>http://dl-ssl.google.com/android/eclipse/</adt-repo.url>
+    <!-- <adt-repo.url>http://dl-ssl.google.com/android/eclipse/</adt-repo.url> -->
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/${swtbotVersion}/</swtbot-repo.url>
 
@@ -91,19 +98,20 @@
     <!-- OS-specific JVM flags, empty for the default case but redefined below -->
     <os-jvm-flags />
 
-    <!-- build resources -->
+    <!-- Development build resources -->
     <!-- Used In: GaeProjectTestUtil.java -->
+    <!-- Used In: App Engine SDK bundle. TODO pass along the variable in the SDK bundle -->
     <appengine.version>1.9.19</appengine.version>
     <!-- Used In: GwtRuntimeTestUtilities.java -->
     <gwt.version>2.7.0</gwt.version>
   </properties>
 
   <repositories>
-    <repository>
+    <!-- <repository>
       <id>android</id>
       <url>${adt-repo.url}</url>
       <layout>p2</layout>
-    </repository>
+    </repository> -->
     <repository>
       <id>eclipse</id>
       <url>${eclipse-repo.url}</url>

@@ -1,0 +1,57 @@
+<project name="com.google.appengine.eclipse.sdkbundle"
+         default="build"
+         basedir=".">
+
+    <!-- Project-specific properties -->
+    <property name="gwt.plugin.root" location="../.." />
+    <property name="plugin_name"
+              value="com.google.appengine.eclipse.sdkbundle" />
+    <property name="project.tail" value="plugins/${plugin_name}" />
+
+    <import file="${build.project.dir}/common.ant.xml" />
+    <property name="plugin.version" value="${gae.sdkbundle.version}" />
+    <import file="${build.project.dir}/plugins/plugins.common.ant.xml" />
+
+    <target name="build">
+        <copy.plugin.src />
+
+        <!-- Expand our SDK into a temporary directory -->
+        <!-- NOTE: If this is failing to build, ensure that your appengine zip 
+				file does not itself include a META-INF directory. -->
+        <unzip src="${gae.sdk}" dest="${project.build}/__tmp__" />
+
+        <!-- Figure out root directory name; assumes that the archive has all files under a
+		     single root directory. -->
+        <dirset id="gae.sdk.rootdir.fileset" dir="${project.build}/__tmp__">
+            <depth max="0" />
+            <include name="*" />
+        </dirset>
+
+        <condition property="gae.sdk.rootdir.fileset.size">
+            <resourcecount count="1" refid="gae.sdk.rootdir.fileset" />
+        </condition>
+
+        <fail unless="gae.sdk.rootdir.fileset.size"
+              message="Archive file ${gae.sdk} must have only one top-level directory." />
+
+        <property name="gae.sdk.basename" refid="gae.sdk.rootdir.fileset" />
+
+        <!-- Move the zip's root directory into plugin's root directory -->
+        <move file="${project.build}/__tmp__/${gae.sdk.basename}"
+              todir="${pde.src.path}" />
+        <delete dir="${project.build}/__tmp__" failonerror="false" />
+
+        <!-- Update the build file to resolve the linked resource to a final location -->
+        <replace file="${pde.src.path}/build.properties"
+                 token="GAE_HOME"
+                 value="${gae.sdk.basename}" />
+
+        <replace file="${pde.src.path}/SdkBundleRegistrant.properties"
+                 token="GAE_HOME"
+                 value="${gae.sdk.basename}" />
+
+        <gwt.plugin.eclipseantrunner builddir="."
+                                     buildfile="build.xml"
+                                     buildtarget="buildInEclipse" />
+    </target>
+</project>

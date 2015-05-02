@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: GWT SDK
+Bundle-SymbolicName: com.google.gwt.eclipse.sdkbundle;singleton:=true
+Bundle-Version: 0.0.0.qualifier
+Bundle-Vendor: Google, Inc.
+Require-Bundle: org.eclipse.core.runtime,
+ com.google.gwt.eclipse.core;visibility:=reexport
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Eclipse-BundleShape: dir

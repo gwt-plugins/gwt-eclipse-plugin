@@ -47,11 +47,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <!-- TODO resources tycho should copy from src/main/resources, remove this later 
-      <plugin> <artifactId>maven-resources-plugin</artifactId> <version>2.7</version> <executions> <execution> <id>copy-resources</id> 
-        <phase>install</phase> <goals> <goal>copy-resources</goal> </goals> <configuration> <outputDirectory>${project.build.directory}/repository</outputDirectory> 
-        <resources> <resource> <directory>site</directory> </resource> </resources> </configuration> </execution> </executions> </plugin> -->
     </plugins>
   </build>
 
