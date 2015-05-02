@@ -8,12 +8,16 @@
   <packaging>pom</packaging>
 
   <modules>
+    <!-- GWT_HOME and GAE_HOME SDKs downloaded here -->
     <module>resources</module>
+    <!-- Use `mvn package` - repository located in ./repo/target/repository -->
     <module>repo</module>
 
+    <!-- Features located in ./repo/category.xml -->
     <module>features/com.google.appengine.eclipse.wtp.maven.feature</module>
     <module>features/com.google.gdt.eclipse.suite.e44.feature</module>
     <module>features/com.google.gwt.eclipse.sdkbundle.feature</module>
+    <module>features/com.google.appengine.eclipse.sdkbundle.feature</module>
     <!-- <module>features/com.google.gdt.eclipse.mobile.android.feature</module> -->
     
     <module>plugins/com.google.appengine.eclipse.core</module>
@@ -49,12 +53,15 @@
     <module>plugins/com.google.gdt.eclipse.maven</module>
     <!-- <module>plugins/com.google.gdt.eclipse.mobile.android</module> -->
     <module>plugins/com.google.gdt.eclipse.platform</module>
+    
+    <!-- Run the Eclipse Application from the suite -->
     <module>plugins/com.google.gdt.eclipse.suite</module>
     <module>plugins/com.google.gdt.eclipse.suite.test</module>
     <module>plugins/com.google.gdt.eclipse.suite.test.swtbot</module>
     <module>plugins/com.google.gdt.eclipse.suite.update</module>
     <module>plugins/com.google.gdt.eclipse.swtbot</module>
     
+    <!-- GWT -->
     <module>plugins/com.google.gwt.eclipse.core</module>
     <module>plugins/com.google.gwt.eclipse.core.test</module>
     <module>plugins/com.google.gwt.eclipse.core.test.swtbot</module>
@@ -63,9 +70,9 @@
     <module>plugins/com.google.gwt.eclipse.oophm.test</module>
     <module>plugins/com.google.gwt.eclipse.testing</module>
 
+    <!-- GWT Facet -->
     <module>plugins/com.google.gwt.eclipse.wtp</module>
     <module>plugins/com.google.gwt.eclipse.wtp.maven</module>
-
     <module>plugins/com.google.gwt.eclipse.wtp.test</module>
     <module>plugins/com.google.gwt.eclipse.wtp.maven.test</module>
 
