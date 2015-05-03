@@ -85,3 +85,7 @@ Require-Bundle: com.google.gdt.eclipse.platform,
  org.eclipse.wst.sse.ui,
  org.eclipse.wst.xml.core,
  org.eclipse.wst.xml.ui
+Import-Package: com.github.sdbg.ui;resolution:=optional
+
+
+

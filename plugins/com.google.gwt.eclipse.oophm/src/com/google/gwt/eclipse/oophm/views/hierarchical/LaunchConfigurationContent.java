@@ -24,8 +24,12 @@ import com.google.gwt.eclipse.oophm.model.SpeedTracerLaunchConfiguration;
 import com.google.gwt.eclipse.oophm.model.WebAppDebugModelEvent;
 import com.google.gwt.eclipse.oophm.model.WebAppDebugModelListenerAdapter;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -198,7 +202,7 @@ public class LaunchConfigurationContent extends Composite {
 
   private final Clipboard clipboard = new Clipboard(Display.getCurrent());
   private final TextTransfer textTransferInstance = TextTransfer.getInstance();
-  private final LaunchConfiguration launchConfigurationModelObject;
+  private final LaunchConfiguration launchConfiguration;
   private TreeViewer viewer;
   private BrowserMenuPopulator browserMenuPopulator = new BrowserMenuPopulator(
       new BrowserMenuPopulator.DefaultBrowserProvider() {
@@ -221,7 +225,7 @@ public class LaunchConfigurationContent extends Composite {
   public LaunchConfigurationContent(final Composite parent,
       LaunchConfiguration launchConfigurationModelObject) {
     super(parent, SWT.NONE);
-    this.launchConfigurationModelObject = launchConfigurationModelObject;
+    this.launchConfiguration = launchConfigurationModelObject;
     GridLayout layout = new GridLayout();
     setLayout(layout);
     setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -253,7 +257,7 @@ public class LaunchConfigurationContent extends Composite {
       @Override
       public void menuAboutToShow(IMenuManager manager) {
 
-        if (launchConfigurationModelObject instanceof SpeedTracerLaunchConfiguration) {
+        if (launchConfiguration instanceof SpeedTracerLaunchConfiguration) {
           manager.add(new Action("&Open") {
             @Override
             public void run() {
@@ -261,7 +265,7 @@ public class LaunchConfigurationContent extends Composite {
             }
           });
         } else {
-          populateBrowserActions(manager);
+          populateBrowserActions(launchConfiguration, manager);
           manager.add(new Separator());
         }
 
@@ -284,15 +288,16 @@ public class LaunchConfigurationContent extends Composite {
 
     viewer.setLabelProvider(new LabelProvider());
     viewer.setContentProvider(new ContentProvider(launchUrlsCaptionLabel));
-    viewer.setInput(launchConfigurationModelObject);
+    viewer.setInput(launchConfiguration);
 
     viewer.addDoubleClickListener(new IDoubleClickListener() {
       @Override
       public void doubleClick(DoubleClickEvent event) {
-        if (launchConfigurationModelObject instanceof SpeedTracerLaunchConfiguration) {
+        if (launchConfiguration instanceof SpeedTracerLaunchConfiguration) {
           launchSpeedTracer();
         } else {
-          browserMenuPopulator.openDefaultBrowser(getSelectedUrl());
+          browserMenuPopulator
+              .openDefaultBrowser(getProject(launchConfiguration), getSelectedUrl());
         }
       }
     });
@@ -306,7 +311,7 @@ public class LaunchConfigurationContent extends Composite {
 
   private void launchSpeedTracer() {
     try {
-      ILaunch launch = launchConfigurationModelObject.getLaunch();
+      ILaunch launch = launchConfiguration.getLaunch();
       ILaunchConfiguration config = launch.getLaunchConfiguration();
       if (config != null) {
         if (!SpeedTracerBrowserUtilities.ensureChromeConfiguredOrPrompt(
@@ -322,8 +327,36 @@ public class LaunchConfigurationContent extends Composite {
     }
   }
 
-  private void populateBrowserActions(IMenuManager manager) {
-    browserMenuPopulator.populate(manager, getSelectedUrl());
+  private void populateBrowserActions(LaunchConfiguration launchConfig, IMenuManager manager) {
+    browserMenuPopulator.populate(getProject(launchConfig), manager, getSelectedUrl());
+  }
+
+  private IResource getProject(LaunchConfiguration launchConfig) {
+    if (launchConfig == null) {
+      return null;
+    }
+
+    ILaunch launch = launchConfig.getLaunch();
+    if (launch == null) {
+      return null;
+    }
+
+    ILaunchConfiguration lc = launch.getLaunchConfiguration();
+    if (lc == null) {
+      return null;
+    }
+
+    IJavaProject project;
+    try {
+      project = JavaRuntime.getJavaProject(lc);
+    } catch (CoreException e) {
+      return null;
+    }
+    if (project == null) {
+      return null;
+    }
+
+    return project.getResource();
   }
 
 }
