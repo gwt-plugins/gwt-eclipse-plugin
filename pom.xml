@@ -97,6 +97,7 @@
     <!-- <adt-repo.url>http://dl-ssl.google.com/android/eclipse/</adt-repo.url> -->
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/${swtbotVersion}/</swtbot-repo.url>
+    <sdbg.url>http://storage.googleapis.com/gwt-eclipse-plugin/release</sdbg.url>
 
     <!-- <comparator.repo>https://dl.google.com/eclipse/plugin/4.4</comparator.repo> TODO GPE remove later -->
     <!-- TODO maybe add release version to url -->
@@ -127,6 +128,11 @@
     <repository>
       <id>swtbot</id>
       <url>${swtbot-repo.url}</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
+      <id>sdbg</id>
+      <url>${sdbg.url}</url>
       <layout>p2</layout>
     </repository>
   </repositories>
