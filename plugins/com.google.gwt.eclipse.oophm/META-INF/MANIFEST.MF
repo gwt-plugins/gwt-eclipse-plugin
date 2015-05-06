@@ -25,4 +25,6 @@ Require-Bundle: com.google.gdt.eclipse.core,
  org.eclipse.jdt.debug.ui,
  org.eclipse.jdt.ui,
  org.eclipse.ui.views.properties.tabbed,
- org.eclipse.ui.console
+ org.eclipse.ui.console,
+ com.google.gdt.eclipse.platform,
+ org.eclipse.jdt.launching

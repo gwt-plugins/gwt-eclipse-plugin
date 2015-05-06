@@ -18,8 +18,10 @@ import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.JavaUtilities;
 import com.google.gdt.eclipse.core.SWTUtilities;
 import com.google.gdt.eclipse.core.StringUtilities;
+import com.google.gdt.eclipse.core.sdbg.DebugLauncherUtils;
 import com.google.gdt.eclipse.core.ui.AddBrowserDialog;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IMenuManager;
@@ -43,8 +45,7 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import java.util.List;
 
 /**
- * Populates a {@link IMenuManager} with browser choices in "Open" and
- * "Open With" menu items.
+ * Populates a {@link IMenuManager} with browser choices in "Open" and "Open With" menu items.
  */
 public class BrowserMenuPopulator {
 
@@ -60,17 +61,25 @@ public class BrowserMenuPopulator {
     void setDefaultBrowserName(String browserName);
   }
 
+  protected static final String CHROME_SDBG = "CHROME_SDBG";
+
   private final DefaultBrowserProvider defaultProvider;
+
+  private IProject project;
 
   public BrowserMenuPopulator(DefaultBrowserProvider defaultProvider) {
     this.defaultProvider = defaultProvider;
   }
 
-  public void openDefaultBrowser(String url) {
+  public void openDefaultBrowser(IProject resource, String url) {
+    this.project = resource;
+
     openBrowser(getDefaultBrowserName(), url);
   }
 
-  public void populate(IMenuManager menu, final String url) {
+  public void populate(final IProject project, IMenuManager menu, final String url) {
+    this.project = project;
+
     menu.add(new Action("&Open") {
       @Override
       public void run() {
@@ -78,22 +87,21 @@ public class BrowserMenuPopulator {
       }
     });
 
-    MenuManager openWithMenuManager = new MenuManager("Open Wit&h");
+    // Open With:
+    MenuManager openWithMenuManager = new MenuManager("Open wit&h");
     openWithMenuManager.add(new ContributionItem() {
       @Override
       public void fill(Menu menu, int index) {
         Menu openWithMenu = menu;
-
         for (final String browserName : BrowserUtilities.getBrowserNames()) {
           final MenuItem item = new MenuItem(openWithMenu, SWT.RADIO);
           // Add a keyboard accelerator
           item.setText("&" + browserName);
-          item.setSelection(JavaUtilities.equalsWithNullCheck(browserName,
-              getDefaultBrowserName()));
+          item.setSelection(JavaUtilities.equalsWithNullCheck(browserName, getDefaultBrowserName()));
           item.addListener(SWT.Selection, new Listener() {
+            @Override
             public void handleEvent(Event event) {
-              // The previously selected item will get a callback too, hence the
-              // selection check
+              // The previously selected item will get a callback too, hence the selection check
               if (item.getSelection()) {
                 openBrowser(browserName, url);
                 defaultProvider.setDefaultBrowserName(browserName);
@@ -107,9 +115,9 @@ public class BrowserMenuPopulator {
         MenuItem configureItem = new MenuItem(openWithMenu, SWT.NONE);
         configureItem.setText("&Add a Browser");
         configureItem.addListener(SWT.Selection, new Listener() {
+          @Override
           public void handleEvent(Event event) {
-            AddBrowserDialog addBrowserDialog = new AddBrowserDialog(
-                SWTUtilities.getShell());
+            AddBrowserDialog addBrowserDialog = new AddBrowserDialog(SWTUtilities.getShell());
             if (addBrowserDialog.open() == Window.OK) {
               String browserName = addBrowserDialog.getBrowserName();
               openBrowser(browserName, url);
@@ -121,6 +129,16 @@ public class BrowserMenuPopulator {
     });
 
     menu.add(openWithMenuManager);
+
+    if (DebugLauncherUtils.hasChromeLauncher()) {
+       menu.add(new Action("&Open with Chrome Javascript Debugger (SDBG)") {
+        @Override
+        public void run() {
+          DebugLauncherUtils.launchChrome(project, "run", url);
+          defaultProvider.setDefaultBrowserName(CHROME_SDBG);
+        }
+      });
+    }
   }
 
   private String getDefaultBrowserName() {
@@ -137,36 +155,12 @@ public class BrowserMenuPopulator {
 
   private void openBrowser(String browserName, String url) {
     if (StringUtilities.isEmpty(browserName)) {
+      findBrowser();
+      return;
+    }
 
-      MessageDialog md = new MessageDialog(SWTUtilities.getShell(),
-          "No browsers found", null, null, MessageDialog.ERROR,
-          new String[]{"Ok"}, 0) {
-
-        @Override
-        protected Control createMessageArea(Composite parent) {
-          super.createMessageArea(parent);
-          Link link = new Link(parent, SWT.NONE);
-
-          link.setText("There are no browsers defined, please add one (Right-click on URL -> "
-              + "Open with -> Add a Browser, or <a href=\"#\">Window -> Preferences -> General -> Web Browser</a>).");
-          link.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-              PreferenceDialog dialog = PreferencesUtil.createPreferenceDialogOn(
-                  Display.getCurrent().getActiveShell(),
-                  "org.eclipse.ui.browser.preferencePage",
-                  new String[]{"org.eclipse.ui.browser.preferencePage"}, null);
-
-              if (dialog != null) {
-                dialog.open();
-              }
-            }
-          });
-          return parent;
-        }
-      };
-      md.open();
-
+    if (browserName.equals(CHROME_SDBG)) {
+      DebugLauncherUtils.launchChrome(project,"run", url);
       return;
     }
 
@@ -176,4 +170,39 @@ public class BrowserMenuPopulator {
       CorePluginLog.logError(t, "Could not open the browser.");
     }
   }
+
+  /**
+   * Find a browser to open url
+   */
+  private void findBrowser() {
+    MessageDialog md =
+        new MessageDialog(SWTUtilities.getShell(), "No browsers found", null, null,
+            MessageDialog.ERROR, new String[] {"Ok"}, 0) {
+
+          @Override
+          protected Control createMessageArea(Composite parent) {
+            super.createMessageArea(parent);
+            Link link = new Link(parent, SWT.NONE);
+
+            link.setText("There are no browsers defined, please add one (Right-click on URL -> "
+                + "Open with -> Add a Browser, or <a href=\"#\">Window -> Preferences -> General -> Web Browser</a>).");
+            link.addSelectionListener(new SelectionAdapter() {
+              @Override
+              public void widgetSelected(SelectionEvent e) {
+                PreferenceDialog dialog =
+                    PreferencesUtil.createPreferenceDialogOn(Display.getCurrent().getActiveShell(),
+                        "org.eclipse.ui.browser.preferencePage",
+                        new String[] {"org.eclipse.ui.browser.preferencePage"}, null);
+
+                if (dialog != null) {
+                  dialog.open();
+                }
+              }
+            });
+            return parent;
+          }
+        };
+    md.open();
+  }
+
 }

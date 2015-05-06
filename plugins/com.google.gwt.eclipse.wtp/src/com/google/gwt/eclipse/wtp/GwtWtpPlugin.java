@@ -99,6 +99,10 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
 
   private IDebugEventSetListener processListener;
   private IStreamListener consoleStreamListener;
+  
+  /**
+   * Observe the console to notify SDM has launched
+   */
   private IStreamMonitor streamMonitor;
 
   public GwtWtpPlugin() {
@@ -157,19 +161,21 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
         .getLaunchConfigurationType(GwtSuperDevModeLaunchConfiguration.TYPE_ID);
 
     if (launchType.equals(sdmCodeServerType) && event.getKind() == DebugEvent.CREATE) {
+      // Start: Observe the console for SDM launching
       processSdmCodeServerLauncher(event);
 
     } else if (launchType.equals(sdmCodeServerType) && event.getKind() == DebugEvent.TERMINATE) {
+      // Stop: Observe the console for SDM terminating
       processSdmCodeServerTerminate(event);
 
     } else {
 
       if (event.getKind() == DebugEvent.CREATE) {
-        // Start
+        // Start: Delineate event for Server Launching and then possibly launch SDM 
         posiblyLaunchGwtSuperDevModeCodeServer(event);
 
       } else if (event.getKind() == DebugEvent.TERMINATE) {
-        // Stop
+        // Stop: Delineate event for Server Launching and then possibly terminate SDM 
         possiblyTerminateLaunchConfiguration(event);
       }
     }
@@ -251,8 +257,6 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       String gaeUrl = String.format("http://%s:%s/_ah/admin", gaeHost, gaePort.getPort());
       launchUrls.add(gaeUrl);
     }
-
-    // TODO fire gwt sdm start/stop event
   }
 
   private String getPath(IServer server, IModule rootMod) {
