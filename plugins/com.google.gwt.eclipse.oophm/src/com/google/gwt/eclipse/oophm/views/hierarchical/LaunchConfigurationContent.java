@@ -24,7 +24,7 @@ import com.google.gwt.eclipse.oophm.model.SpeedTracerLaunchConfiguration;
 import com.google.gwt.eclipse.oophm.model.WebAppDebugModelEvent;
 import com.google.gwt.eclipse.oophm.model.WebAppDebugModelListenerAdapter;
 
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -331,7 +331,7 @@ public class LaunchConfigurationContent extends Composite {
     browserMenuPopulator.populate(getProject(launchConfig), manager, getSelectedUrl());
   }
 
-  private IResource getProject(LaunchConfiguration launchConfig) {
+  private IProject getProject(LaunchConfiguration launchConfig) {
     if (launchConfig == null) {
       return null;
     }
@@ -356,7 +356,7 @@ public class LaunchConfigurationContent extends Composite {
       return null;
     }
 
-    return project.getResource();
+    return project.getProject();
   }
 
 }

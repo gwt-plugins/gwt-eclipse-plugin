@@ -18,9 +18,10 @@ import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.JavaUtilities;
 import com.google.gdt.eclipse.core.SWTUtilities;
 import com.google.gdt.eclipse.core.StringUtilities;
+import com.google.gdt.eclipse.core.sdbg.DebugLauncherUtils;
 import com.google.gdt.eclipse.core.ui.AddBrowserDialog;
 
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IMenuManager;
@@ -64,23 +65,20 @@ public class BrowserMenuPopulator {
 
   private final DefaultBrowserProvider defaultProvider;
 
-  /**
-   * The project
-   */
-  private IResource resource;
+  private IProject project;
 
   public BrowserMenuPopulator(DefaultBrowserProvider defaultProvider) {
     this.defaultProvider = defaultProvider;
   }
 
-  public void openDefaultBrowser(IResource resource, String url) {
-    this.resource = resource;
+  public void openDefaultBrowser(IProject resource, String url) {
+    this.project = resource;
 
     openBrowser(getDefaultBrowserName(), url);
   }
 
-  public void populate(final IResource resource, IMenuManager menu, final String url) {
-    this.resource = resource;
+  public void populate(final IProject project, IMenuManager menu, final String url) {
+    this.project = project;
 
     menu.add(new Action("&Open") {
       @Override
@@ -132,11 +130,11 @@ public class BrowserMenuPopulator {
 
     menu.add(openWithMenuManager);
 
-    if (SdbgUtils.hasSdbgInstalled()) {
+    if (DebugLauncherUtils.hasChromeLauncher()) {
        menu.add(new Action("&Open with Chrome Javascript Debugger (SDBG)") {
         @Override
         public void run() {
-          SdbgUtils.openChrome(resource, "run", url);
+          DebugLauncherUtils.launchChrome(project, "run", url);
           defaultProvider.setDefaultBrowserName(CHROME_SDBG);
         }
       });
@@ -162,7 +160,7 @@ public class BrowserMenuPopulator {
     }
 
     if (browserName.equals(CHROME_SDBG)) {
-      SdbgUtils.openChrome(resource,"run", url);
+      DebugLauncherUtils.launchChrome(project,"run", url);
       return;
     }
 
@@ -205,6 +203,6 @@ public class BrowserMenuPopulator {
           }
         };
     md.open();
-
   }
+
 }
