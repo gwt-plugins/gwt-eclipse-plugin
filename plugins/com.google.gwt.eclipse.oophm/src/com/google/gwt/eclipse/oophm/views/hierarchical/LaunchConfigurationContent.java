@@ -160,7 +160,7 @@ public class LaunchConfigurationContent extends Composite {
         viewer.getTree().setEnabled(isServing);
 
         if (isServing) {
-          launchUrlsCaptionLabel.setText("Double-click to open a URL or right-click for more options).");
+          launchUrlsCaptionLabel.setText("Double-click to open a URL or right-click for more options.");
           launchUrlsCaptionLabel.getParent().layout();
         } else {
           launchUrlsCaptionLabel.setText("Development mode is loading...");
