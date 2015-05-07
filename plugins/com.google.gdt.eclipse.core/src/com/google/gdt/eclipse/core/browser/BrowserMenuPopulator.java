@@ -15,13 +15,17 @@
 package com.google.gdt.eclipse.core.browser;
 
 import com.google.gdt.eclipse.core.CorePluginLog;
+import com.google.gdt.eclipse.core.IDebugLaunch;
 import com.google.gdt.eclipse.core.JavaUtilities;
 import com.google.gdt.eclipse.core.SWTUtilities;
 import com.google.gdt.eclipse.core.StringUtilities;
-import com.google.gdt.eclipse.core.sdbg.DebugLauncherUtils;
 import com.google.gdt.eclipse.core.ui.AddBrowserDialog;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.IMenuManager;
@@ -61,7 +65,7 @@ public class BrowserMenuPopulator {
     void setDefaultBrowserName(String browserName);
   }
 
-  protected static final String CHROME_SDBG = "CHROME_SDBG";
+  protected static final String EXTENSION_LAUNCH = "CHROME_SDBG";
 
   private final DefaultBrowserProvider defaultProvider;
 
@@ -71,8 +75,8 @@ public class BrowserMenuPopulator {
     this.defaultProvider = defaultProvider;
   }
 
-  public void openDefaultBrowser(IProject resource, String url) {
-    this.project = resource;
+  public void openDefaultBrowser(IProject project, String url) {
+    this.project = project;
 
     openBrowser(getDefaultBrowserName(), url);
   }
@@ -130,14 +134,69 @@ public class BrowserMenuPopulator {
 
     menu.add(openWithMenuManager);
 
-    if (DebugLauncherUtils.hasChromeLauncher()) {
-       menu.add(new Action("&Open with Chrome Javascript Debugger (SDBG)") {
-        @Override
-        public void run() {
-          DebugLauncherUtils.launchChrome(project, "run", url);
-          defaultProvider.setDefaultBrowserName(CHROME_SDBG);
-        }
-      });
+    // Registered launchers will be added to the menu
+    addDebugLauncherMenus(menu, url);
+  }
+
+  private void addDebugLauncherMenus(IMenuManager menu, String url) {
+    IExtensionPoint extensionPoint =
+        Platform.getExtensionRegistry().getExtensionPoint(IDebugLaunch.EXTENSION_ID);
+    IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
+    if (elements == null || elements.length == 0) {
+      return;
+    }
+
+    for (IConfigurationElement element : elements) {
+      try {
+        IDebugLaunch debugLaunch = (IDebugLaunch) element.createExecutableExtension("class");
+        String label = element.getAttribute("label");
+
+        addDebugLauncherMenu(menu, label, debugLaunch, url);
+      } catch (CoreException e) {
+        CorePluginLog.logError("Could not add launcher menu.", e);
+      }
+    }
+  }
+
+  private void addDebugLauncherMenu(IMenuManager menu, final String label,
+      final IDebugLaunch debugLaunch, final String url) {
+    if (debugLaunch == null) {
+      CorePluginLog.logError("Could not add debug launch.");
+      return;
+    }
+
+    String menuName = "Open with " + label;
+
+    menu.add(new Action("&" + menuName) {
+      @Override
+      public void run() {
+        debugLaunch.launch(project, url, "run");
+        defaultProvider.setDefaultBrowserName(EXTENSION_LAUNCH + "_" + label);
+      }
+    });
+  }
+
+  private void launchExtension(String browserName, String url) throws CoreException {
+    if (browserName == null || browserName.isEmpty()) {
+      return;
+    }
+
+    browserName = browserName.replace(EXTENSION_LAUNCH + "_", "");
+
+    IExtensionPoint extensionPoint =
+        Platform.getExtensionRegistry().getExtensionPoint(IDebugLaunch.EXTENSION_ID);
+    IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
+    if (elements == null || elements.length == 0) {
+      return;
+    }
+
+    for (IConfigurationElement element : elements) {
+      IDebugLaunch debugLaunch = (IDebugLaunch) element.createExecutableExtension("class");
+      String label = element.getAttribute("label");
+
+      if (debugLaunch != null && label != null && label.equals(browserName)) {
+        debugLaunch.launch(project, url, "run");
+      }
     }
   }
 
@@ -153,17 +212,27 @@ public class BrowserMenuPopulator {
     return browserName;
   }
 
+  /**
+   * Open browser or launch an extension launcher
+   */
   private void openBrowser(String browserName, String url) {
+    // No browser stated, find the default browser
     if (StringUtilities.isEmpty(browserName)) {
       findBrowser();
       return;
     }
 
-    if (browserName.equals(CHROME_SDBG)) {
-      DebugLauncherUtils.launchChrome(project,"run", url);
+    // The extension was used to launch, re-use it.
+    if (browserName.contains(EXTENSION_LAUNCH)) {
+      try {
+        launchExtension(browserName, url);
+      } catch (CoreException e) {
+        CorePluginLog.logError("Couldn't use the extension to launch.");
+      }
       return;
     }
 
+    // Browser was specificed, use it to launch url.
     try {
       BrowserUtilities.launchBrowser(browserName, url);
     } catch (Throwable t) {
