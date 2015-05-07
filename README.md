@@ -33,6 +33,10 @@ Please provide a unit test(s) for any patch and if one doesn't exist it may not 
 * 2/2 spacing
 * 120 characters for lines and comments
 
+##Flags
+
+* Jpa facet will turn on if the artifact `<groupId>javax.jdo</groupId> <artifactId>jdo-api</artifactId>` exists.
+
 #GPE V1
 
 ##Links
