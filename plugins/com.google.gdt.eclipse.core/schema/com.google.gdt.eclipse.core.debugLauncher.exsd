@@ -55,8 +55,15 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="com.google.gdt.eclipse.core.sdbg.IDebugLaunch:"/>
+                  <meta.attribute kind="java" basedOn="com.google.gdt.eclipse.core.IDebugLaunch:"/>
                </appInfo>
+            </annotation>
+         </attribute>
+         <attribute name="label" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
             </annotation>
          </attribute>
       </complexType>
