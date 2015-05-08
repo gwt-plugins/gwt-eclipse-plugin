@@ -449,7 +449,16 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     String launcherId = setLauncherIdToWtpRunTimeLaunchConfig(launchConfig);
 
     logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Launching GWT Super Dev Mode CodeServer.");
-
+    
+    // Just in case
+    if (launchMode == null) {
+      launchMode = "run";
+    }
+    
+    if (launcherId == null) {
+      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: No launcherId.");
+    }
+    
     // Creates ore launches an existing Super Dev Mode Code Server process
     GwtSuperDevModeCodeServerLaunchUtil.launch(project, launchMode, launcherDir, launcherId);
   }
