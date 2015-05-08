@@ -53,11 +53,10 @@ public class GwtSuperDevModeCodeServerLaunchUtil {
    * Create a new GWT SDM Code Server Configuration. This will occur when running the debug
    * configuration from shortcut.
    */
-  public static ILaunchConfiguration createLaunchConfig(String launchConfigName,
-      final IProject project) throws CoreException, OperationCanceledException {
+  public static ILaunchConfiguration createLaunchConfig(String launchConfigName, final IProject project)
+      throws CoreException, OperationCanceledException {
     ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-    ILaunchConfigurationType type =
-        manager.getLaunchConfigurationType(GwtSuperDevModeLaunchConfiguration.TYPE_ID);
+    ILaunchConfigurationType type = manager.getLaunchConfigurationType(GwtSuperDevModeLaunchConfiguration.TYPE_ID);
     ILaunchConfigurationWorkingCopy launchConfig = type.newInstance(null, launchConfigName);
 
     // Project name
@@ -86,12 +85,11 @@ public class GwtSuperDevModeCodeServerLaunchUtil {
     GWTLaunchConfigurationWorkingCopy.setSuperDevModeEnabled(launchConfig, true);
 
     // Update program arg for - main type
-    LaunchConfigurationProcessorUtilities.updateViaProcessor(
-        new SuperDevModeCodeServerMainTypeProcessor(), launchConfig);
+    LaunchConfigurationProcessorUtilities.updateViaProcessor(new SuperDevModeCodeServerMainTypeProcessor(),
+        launchConfig);
 
     // Update program arg for - GWT module
-    LaunchConfigurationProcessorUtilities.updateViaProcessor(new ModuleArgumentProcessor(),
-        launchConfig);
+    LaunchConfigurationProcessorUtilities.updateViaProcessor(new ModuleArgumentProcessor(), launchConfig);
   }
 
   /**
@@ -102,8 +100,7 @@ public class GwtSuperDevModeCodeServerLaunchUtil {
    *         </code> if none
    * @throws CoreException
    */
-  private static ILaunchConfiguration findLaunchConfiguration(IProject project)
-      throws CoreException {
+  private static ILaunchConfiguration findLaunchConfiguration(IProject project) throws CoreException {
     ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
     ILaunchConfigurationType typeid =
         launchManager.getLaunchConfigurationType(GwtSuperDevModeLaunchConfiguration.TYPE_ID);
@@ -118,8 +115,8 @@ public class GwtSuperDevModeCodeServerLaunchUtil {
    *
    * @return the found or newly created launch configuration
    */
-  private static ILaunchConfiguration findOrCreateLaunchConfiguration(IProject project,
-      String launcherDir, String launcherId) throws CoreException, OperationCanceledException {
+  private static ILaunchConfiguration findOrCreateLaunchConfiguration(IProject project, String launcherDir,
+      String launcherId) throws CoreException, OperationCanceledException {
     ILaunchConfiguration config = findLaunchConfiguration(project);
     if (config == null) {
       config = createNewLaunchConfiguration(project);
@@ -134,8 +131,8 @@ public class GwtSuperDevModeCodeServerLaunchUtil {
   /**
    * Add or modify the launcherDir program argument in the launch config.
    */
-  private static ILaunchConfiguration addOrModifyLauncherArgs(ILaunchConfiguration config,
-      String launcherDir, String launcherId) throws CoreException {
+  private static ILaunchConfiguration addOrModifyLauncherArgs(ILaunchConfiguration config, String launcherDir,
+      String launcherId) throws CoreException {
     ILaunchConfigurationWorkingCopy launchConfigWc = config.getWorkingCopy();
 
     if (launcherDir != null) {
@@ -172,11 +169,9 @@ public class GwtSuperDevModeCodeServerLaunchUtil {
    * @param launcherId - provide an launch id to reference launch,
    *        GWTLaunchConstants.SUPERDEVMODE_LAUNCH_ID
    */
-  public static void launch(IProject project, String launchMode, String launcherDir,
-      String launcherId) {
+  public static void launch(IProject project, String launchMode, String launcherDir, String launcherId) {
     try {
-      ILaunchConfiguration launchConfig =
-          findOrCreateLaunchConfiguration(project, launcherDir, launcherId);
+      ILaunchConfiguration launchConfig = findOrCreateLaunchConfiguration(project, launcherDir, launcherId);
 
       // TODO check for running or terminated launcher and restart it
 
@@ -184,13 +179,12 @@ public class GwtSuperDevModeCodeServerLaunchUtil {
     } catch (CoreException e) {
       CorePluginLog.logError(e, "CoreException: Aborting GWT Super Dev Mode Code Server launcher.");
     } catch (OperationCanceledException e) {
-      CorePluginLog.logError(e,
-          "OperationCancelException: Aborting GWT Super Dev Mode Code Server launcher.");
+      CorePluginLog.logError(e, "OperationCancelException: Aborting GWT Super Dev Mode Code Server launcher.");
     }
   }
 
-  private static ILaunchConfiguration searchMatchingConfigWithProject(IProject project,
-      ILaunchConfiguration[] configs) throws CoreException {
+  private static ILaunchConfiguration searchMatchingConfigWithProject(IProject project, ILaunchConfiguration[] configs)
+      throws CoreException {
     List<ILaunchConfiguration> candidates = new ArrayList<ILaunchConfiguration>();
     for (ILaunchConfiguration config : configs) {
       if (LaunchConfigurationUtilities.getProjectName(config).equals(project.getName())) {
@@ -210,13 +204,12 @@ public class GwtSuperDevModeCodeServerLaunchUtil {
   /**
    * Create a new launch configuration.
    */
-  private static ILaunchConfiguration createNewLaunchConfiguration(IProject project)
-      throws CoreException, OperationCanceledException {
+  private static ILaunchConfiguration createNewLaunchConfiguration(IProject project) throws CoreException,
+      OperationCanceledException {
     String initialName = calculateLaunchConfigName(project);
 
     // Create a new launch config
-    ILaunchConfiguration launchConfig =
-        GwtSuperDevModeCodeServerLaunchUtil.createLaunchConfig(initialName, project);
+    ILaunchConfiguration launchConfig = GwtSuperDevModeCodeServerLaunchUtil.createLaunchConfig(initialName, project);
 
     return launchConfig;
   }

@@ -108,7 +108,7 @@
     <!-- Development build resources -->
     <!-- Used In: GaeProjectTestUtil.java -->
     <!-- Used In: App Engine SDK bundle. TODO pass along the variable in the SDK bundle -->
-    <appengine.version>1.9.19</appengine.version>
+    <appengine.version>1.9.20</appengine.version>
     <!-- Used In: GwtRuntimeTestUtilities.java -->
     <gwt.version>2.7.0</gwt.version>
   </properties>
