@@ -37,14 +37,14 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Processes the GWT modules at the end of the program args. It works backwards,
- * checking if each argument is a module.
+ * Processes the GWT modules at the end of the program args. It works backwards, checking if each
+ * argument is a module.
  */
 public class ModuleArgumentProcessor implements ILaunchConfigurationProcessor {
 
   private static class ModuleParser {
-    private static ModuleParser parse(List<String> args, Set<String> possibleModules) {
 
+    private static ModuleParser parse(List<String> args, Set<String> possibleModules) {
       List<Integer> moduleIndices = new ArrayList<Integer>();
       List<String> modules = new ArrayList<String>();
 
@@ -69,8 +69,8 @@ public class ModuleArgumentProcessor implements ILaunchConfigurationProcessor {
     }
 
     /**
-     * Each item of this list is _not_ the index of the corresponding item in
-     * {@link #modules} (i.e. the orderings are different.)
+     * Each item of this list is _not_ the index of the corresponding item in {@link #modules} (i.e.
+     * the orderings are different.)
      */
     private final List<Integer> moduleIndices;
 
@@ -82,11 +82,10 @@ public class ModuleArgumentProcessor implements ILaunchConfigurationProcessor {
 
       Collections.sort(moduleIndices);
     }
+
   }
 
-  public static List<String> getDefaultModules(
-      IProject project, ILaunchConfiguration configuration) {
-
+  public static List<String> getDefaultModules(IProject project, ILaunchConfiguration configuration) {
     List<String> modules = getExtensionDefaultModules(project, configuration);
 
     if (modules.isEmpty()) {
@@ -96,18 +95,17 @@ public class ModuleArgumentProcessor implements ILaunchConfigurationProcessor {
     return modules;
   }
 
-  public static List<String> getModules(
-      List<String> args, ILaunchConfiguration config, IProject project) throws CoreException {
+  public static List<String> getModules(List<String> args, ILaunchConfiguration config, IProject project)
+      throws CoreException {
     return ModuleParser.parse(args, getAllPossibleModules(config, project)).modules;
   }
 
-  private static boolean doesGwtMainTypeTakeModuleArguments(ILaunchConfiguration config)
-      throws CoreException {
+  private static boolean doesGwtMainTypeTakeModuleArguments(ILaunchConfiguration config) throws CoreException {
     return !GwtLaunchConfigurationProcessorUtilities.isGwtShell(config);
   }
 
-  private static Set<String> getAllPossibleModules(
-      ILaunchConfiguration configuration, IProject project) throws CoreException {
+  private static Set<String> getAllPossibleModules(ILaunchConfiguration configuration, IProject project)
+      throws CoreException {
     Set<String> possibleModules = new HashSet<String>();
     possibleModules.addAll(getExtensionDefaultModules(project, configuration));
     possibleModules.addAll(GWTLaunchConfiguration.getEntryPointModules(configuration));
@@ -116,17 +114,13 @@ public class ModuleArgumentProcessor implements ILaunchConfigurationProcessor {
     return possibleModules;
   }
 
-  private static List<String> getExtensionDefaultModules(IProject project,
-      ILaunchConfiguration configuration) {
-
-    ExtensionQuery<ModuleInfo> extQuery = new ExtensionQuery<ModuleInfo>(
-        GWTPlugin.PLUGIN_ID, "moduleInfo", "class");
+  private static List<String> getExtensionDefaultModules(IProject project, ILaunchConfiguration configuration) {
+    ExtensionQuery<ModuleInfo> extQuery = new ExtensionQuery<ModuleInfo>(GWTPlugin.PLUGIN_ID, "moduleInfo", "class");
 
     List<ExtensionQuery.Data<ModuleInfo>> moduleInfos = extQuery.getData();
     for (ExtensionQuery.Data<ModuleInfo> moduleInfo : moduleInfos) {
       try {
-        String[] startupModules = moduleInfo.getExtensionPointData().getStartupModules(
-            project, configuration);
+        String[] startupModules = moduleInfo.getExtensionPointData().getStartupModules(project, configuration);
 
         if (startupModules != null && startupModules.length > 0) {
           return Arrays.asList(startupModules);
@@ -141,8 +135,7 @@ public class ModuleArgumentProcessor implements ILaunchConfigurationProcessor {
     return Collections.emptyList();
   }
 
-  private static void removeModules(
-      List<String> programArgs, ModuleParser parser, List<String> modulesToKeep) {
+  private static void removeModules(List<String> programArgs, ModuleParser parser, List<String> modulesToKeep) {
     for (int i = parser.moduleIndices.size() - 1; i >= 0; i--) {
       int moduleIndex = parser.moduleIndices.get(i).intValue();
       if (modulesToKeep == null || !modulesToKeep.contains(programArgs.get(moduleIndex))) {
@@ -151,11 +144,12 @@ public class ModuleArgumentProcessor implements ILaunchConfigurationProcessor {
     }
   }
 
-  public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject,
-      List<String> programArgs, List<String> vmArgs) throws CoreException {
-
+  @Override
+  public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject, List<String> programArgs,
+      List<String> vmArgs) throws CoreException {
     IProject project = javaProject.getProject();
     List<String> persistedModules = GWTLaunchConfiguration.getEntryPointModules(launchConfig);
+
     if (persistedModules.isEmpty()) {
       persistedModules = getDefaultModules(project, launchConfig);
     }
@@ -179,8 +173,9 @@ public class ModuleArgumentProcessor implements ILaunchConfigurationProcessor {
     }
   }
 
-  public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject,
-      List<String> programArgs, List<String> vmArgs) throws CoreException {
+  @Override
+  public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject, List<String> programArgs,
+      List<String> vmArgs) throws CoreException {
     return null;
   }
 }
