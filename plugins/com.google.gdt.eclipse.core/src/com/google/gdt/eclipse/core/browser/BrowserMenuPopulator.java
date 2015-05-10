@@ -170,7 +170,7 @@ public class BrowserMenuPopulator {
     menu.add(new Action("&" + menuName) {
       @Override
       public void run() {
-        debugLaunch.launch(project, url, "run");
+        debugLaunch.launch(project, url, "debug");
         defaultProvider.setDefaultBrowserName(EXTENSION_LAUNCH + "_" + label);
       }
     });
@@ -195,7 +195,7 @@ public class BrowserMenuPopulator {
       String label = element.getAttribute("label");
 
       if (debugLaunch != null && label != null && label.equals(browserName)) {
-        debugLaunch.launch(project, url, "run");
+        debugLaunch.launch(project, url, "debug");
       }
     }
   }
