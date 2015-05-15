@@ -21,9 +21,9 @@ import com.google.gdt.eclipse.core.launch.UpdateLaunchConfigurationDialogBatcher
 import com.google.gdt.eclipse.core.natures.NatureUtils;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.launch.processors.LaunchConfigurationUpdater;
+import com.google.gdt.eclipse.suite.utils.GwtFacetUtils;
 import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.nature.GWTNature;
-import com.google.gwt.eclipse.wtp.utils.GwtFacetUtils;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
