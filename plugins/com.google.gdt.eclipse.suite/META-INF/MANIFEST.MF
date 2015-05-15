@@ -42,4 +42,5 @@ Require-Bundle: com.google.appengine.eclipse.core;visibility:=reexport,
  org.eclipse.wst.server.core,
  org.eclipse.wst.common.project.facet.core,
  com.google.gdt.eclipse.appengine.api,
- com.google.gdt.eclipse.platform
+ com.google.gdt.eclipse.platform,
+ com.google.gwt.eclipse.wtp

@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -43,10 +42,8 @@ import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.RuntimeProcess;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
 import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.IModule2;
-import org.eclipse.wst.server.core.IRuntime;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.ServerPort;
 import org.eclipse.wst.server.core.ServerUtil;
@@ -60,7 +57,7 @@ import com.google.gwt.eclipse.core.launch.util.GwtSuperDevModeCodeServerLaunchUt
 import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
 import com.google.gwt.eclipse.oophm.model.LaunchConfiguration;
 import com.google.gwt.eclipse.oophm.model.WebAppDebugModel;
-import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
+import com.google.gwt.eclipse.wtp.utils.GwtFacetUtils;
 
 /**
  * Google GWT WTP plug-in life-cycle.
@@ -417,7 +414,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       return;
     }
 
-    if (!hasGwtFacet(project)) {
+    if (!GwtFacetUtils.hasGwtFacet(project)) {
       logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Does not have a GWT Facet.");
       return;
     }
@@ -567,17 +564,6 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     }
 
     return modules[0].getProject();
-  }
-
-  private boolean hasGwtFacet(IProject project) {
-    boolean hasFacet = false;
-    try {
-      hasFacet = FacetedProjectFramework.hasProjectFacet(project, IGwtFacetConstants.GWT_FACET_ID);
-    } catch (CoreException e) {
-      logError("hasGetFacet: Error, can't figure GWT facet.", e);
-    }
-
-    return hasFacet;
   }
 
   @Override

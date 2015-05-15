@@ -23,6 +23,7 @@ import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.launch.processors.LaunchConfigurationUpdater;
 import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.nature.GWTNature;
+import com.google.gwt.eclipse.wtp.utils.GwtFacetUtils;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -201,6 +202,11 @@ public class WebAppMainTab extends JavaMainTab implements
       } catch (CoreException e) {
         GdtPlugin.getLogger().logError(e);
         isGwtOrGaeProject = false;
+      }
+
+      // Consider GWT Facet
+      if (!isGwtOrGaeProject) {
+        isGwtOrGaeProject = GwtFacetUtils.hasGwtFacet(project);
       }
 
       if (!isGwtOrGaeProject) {
