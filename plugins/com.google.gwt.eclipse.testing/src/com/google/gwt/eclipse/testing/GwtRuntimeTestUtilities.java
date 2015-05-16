@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.Path;
 import org.osgi.framework.Bundle;
 
 import java.net.URI;
+import java.nio.file.Paths;
 
 /**
  * Testing-related utility methods dealing with GWT runtime.
@@ -71,11 +72,15 @@ public class GwtRuntimeTestUtilities {
    */
   private static String getGwtTestSdkPath() {
     Bundle bundle = GwtTestingPlugin.getDefault().getBundle();
-    String basePath =
-        GwtRuntimeTestUtilities.class.getProtectionDomain().getCodeSource().getLocation()
-            .getPath();
+
+    // Maven compile uses a jar, and is in target
+    String basePath = Paths.get("").toAbsolutePath().toString();
+    if (basePath.endsWith("target")) {
+      basePath = basePath.replace("target/", "");
+    }
+
     String version = TestEnvironmentUtil.getMavenPropertyVersionFor("gwt.version");
-    String pathToZip = basePath + "../../resources/target/resources/gwt-" + version + ".zip";
+    String pathToZip = basePath + "/../../resources/target/resources/gwt-" + version + ".zip";
     String gwtHomePath = TestEnvironmentUtil.installTestSdk(bundle, pathToZip).toOSString();
     return gwtHomePath;
   }

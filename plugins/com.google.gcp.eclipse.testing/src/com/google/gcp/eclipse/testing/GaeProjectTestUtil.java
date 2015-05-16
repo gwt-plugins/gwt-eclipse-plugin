@@ -36,6 +36,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.service.prefs.BackingStoreException;
 
 import java.io.FileNotFoundException;
+import java.nio.file.Paths;
 
 /**
  * Testing-related utility methods dealing with GAE SDKs.
@@ -84,11 +85,18 @@ public class GaeProjectTestUtil {
    */
   public static IPath getGaeTestSdkPath() {
     Bundle bundle = TestingPlugin.getDefault().getBundle();
-    String basePath =
-        GaeProjectTestUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+
+    // Maven compile uses a jar, and is in target
+    String basePath = Paths.get("").toAbsolutePath().toString();
+    if (basePath.endsWith("target")) {
+      basePath = basePath.replace("target/", "");
+    }
+
     String version = TestEnvironmentUtil.getMavenPropertyVersionFor("appengine.version");
+
     String pathToZip =
-        basePath + "../../resources/target/resources/appengine-java-sdk-" + version + ".zip";
+        basePath + "/../../resources/target/resources/appengine-java-sdk-" + version + ".zip";
+
     return TestEnvironmentUtil.installTestSdk(bundle, pathToZip);
   }
 
