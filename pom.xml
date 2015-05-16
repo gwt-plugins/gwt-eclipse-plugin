@@ -294,7 +294,7 @@
           <artifactId>tycho-surefire-plugin</artifactId>
           <version>${tycho.version}</version>
           <configuration>
-            <argLine>-Dorg.eclipse.swtbot.search.timeout=90000 -Xms40m -Xmx1G ${os-jvm-flags}</argLine>
+            <argLine>-Dorg.eclipse.swtbot.search.timeout=120000 -Xms40m -Xmx1G ${os-jvm-flags}</argLine>
           </configuration>
         </plugin>
         <plugin>
