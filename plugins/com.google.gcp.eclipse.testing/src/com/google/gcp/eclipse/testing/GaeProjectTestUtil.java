@@ -56,6 +56,8 @@ public class GaeProjectTestUtil {
       gaeHomePath = getGaeTestSdkPath().toOSString();
       TestEnvironmentUtil.updateEnvironmentVariable("GAE_HOME", gaeHomePath);
       System.out.println("The GAE_HOME enviroment variable was set. GAE_HOME=" + gaeHomePath);
+    } else {
+      System.out.println("The GAE_HOME enviroment variable was set. GAE_HOME=" + gaeHomePath);
     }
 
     SdkSet<GaeSdk> sdkSet = GaePreferences.getSdks();
