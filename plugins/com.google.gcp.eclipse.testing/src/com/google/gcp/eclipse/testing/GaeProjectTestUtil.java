@@ -50,15 +50,9 @@ public class GaeProjectTestUtil {
    * variable to point at it.
    */
   public static void addDefaultSdk() throws CoreException {
-    String gaeHomePath = System.getenv("GAE_HOME");
-    if (gaeHomePath == null) {
-      System.out.println("The GAE_HOME environment variable is not set, using test bundle version");
-      gaeHomePath = getGaeTestSdkPath().toOSString();
-      TestEnvironmentUtil.updateEnvironmentVariable("GAE_HOME", gaeHomePath);
-      System.out.println("The GAE_HOME enviroment variable was set. GAE_HOME=" + gaeHomePath);
-    } else {
-      System.out.println("The GAE_HOME enviroment variable was set. GAE_HOME=" + gaeHomePath);
-    }
+    String gaeHomePath = getGaeTestSdkPath().toOSString();
+    TestEnvironmentUtil.updateEnvironmentVariable("GAE_HOME", gaeHomePath);
+    System.out.println("SETTING: GAE_HOME=" + gaeHomePath);
 
     SdkSet<GaeSdk> sdkSet = GaePreferences.getSdks();
     if (sdkSet.getDefault() == null) {
