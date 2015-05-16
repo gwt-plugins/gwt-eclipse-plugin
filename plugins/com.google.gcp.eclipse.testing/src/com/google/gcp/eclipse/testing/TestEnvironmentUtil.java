@@ -153,7 +153,7 @@ public class TestEnvironmentUtil {
       model = mavenreader.read(reader);
       model.setPomFile(new File(pomfile));
     } catch (Exception ex) {
-      throw new IllegalStateException("Can't find the pom.xml file");
+      throw new IllegalStateException("Can't find the pom.xml file. basePath=" + basePath + " pomFile=" + pomfile);
     }
 
     MavenProject project = new MavenProject(model);
