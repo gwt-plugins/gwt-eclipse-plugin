@@ -111,6 +111,9 @@
     <appengine.version>1.9.20</appengine.version>
     <!-- Used In: GwtRuntimeTestUtilities.java -->
     <gwt.version>2.7.0</gwt.version>
+    
+    <!-- Don't kill the test early -->
+    <surefire.timeout>120000</surefire.timeout>
   </properties>
 
   <repositories>
@@ -294,7 +297,7 @@
           <artifactId>tycho-surefire-plugin</artifactId>
           <version>${tycho.version}</version>
           <configuration>
-            <argLine>-Dorg.eclipse.swtbot.search.timeout=120000 -Xms40m -Xmx1G ${os-jvm-flags}</argLine>
+            <argLine>-Dorg.eclipse.swtbot.search.timeout=120000 -Xms128M -Xmx2G ${os-jvm-flags}</argLine>
           </configuration>
         </plugin>
         <plugin>

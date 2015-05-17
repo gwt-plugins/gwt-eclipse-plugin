@@ -43,13 +43,9 @@ public class GwtRuntimeTestUtilities {
    * {@code GWT_HOME} to the location where it is extracted.
    */
   public static void addDefaultRuntime() throws Exception {
-    String gwtHomePath = System.getenv("GWT_HOME");
-    if (gwtHomePath == null) {
-      System.out.println("The GWT_HOME environment variable is not set, using test bundle version");
-      gwtHomePath = getGwtTestSdkPath();
-      TestEnvironmentUtil.updateEnvironmentVariable("GWT_HOME", gwtHomePath);
-      System.out.println("The GWT_HOME environment variable is now set. GWT_HOME=" + gwtHomePath);
-    }
+    String gwtHomePath = getGwtTestSdkPath();
+    TestEnvironmentUtil.updateEnvironmentVariable("GWT_HOME", gwtHomePath);
+    System.out.println("SETTING: GWT_HOME=" + gwtHomePath);
 
     SdkSet<GWTRuntime> sdkSet = GWTPreferences.getSdks();
     if (sdkSet.getDefault() == null) {
