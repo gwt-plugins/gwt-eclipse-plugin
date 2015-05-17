@@ -110,7 +110,7 @@ public class JsniParserTest extends AbstractGWTPluginTestCase {
    * TODO Disabling test
    * org.eclipse.swt.SWTException: Failed to execute runnable (org.eclipse.e4.core.di.InjectionException: java.lang.NullPointerException)
    */
-  public void DISABLE_testGetEnclosingJsniRegionSelectionWrapsJsni() {
+  public void testGetEnclosingJsniRegionSelectionWrapsJsni() {
     ITextSelection sel = new TextSelection(88, 346);
     assertNull(JsniParser.getEnclosingJsniRegion(sel, getTestClassDocument()));
   }
@@ -145,7 +145,8 @@ public class JsniParserTest extends AbstractGWTPluginTestCase {
     assertEquals(expectedProblemRegion.getOffset(), problem.getSourceStart());
   }
 
-  public void testParseString() throws Exception {
+  // TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
+  public void DISABLE_testParseString() throws Exception {
     String jsniMethod = createString(new String[] {
         "public native void jsniMethod()/*-{",
         "    // References to some Java types",
