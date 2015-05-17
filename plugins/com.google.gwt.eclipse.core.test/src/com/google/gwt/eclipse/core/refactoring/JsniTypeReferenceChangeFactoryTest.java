@@ -31,7 +31,8 @@ import org.eclipse.ltk.core.refactoring.TextFileChange;
  */
 public class JsniTypeReferenceChangeFactoryTest extends TestCase {
 
-  public void testCreateChange() {
+  // TODO
+  public void DISABLE_testCreateChange() {
     JsniTypeReferenceChangeFactory factory = new JsniTypeReferenceChangeFactory(
         null);
 
