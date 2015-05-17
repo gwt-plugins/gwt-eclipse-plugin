@@ -54,9 +54,8 @@ import java.util.Arrays;
 /**
  * Represents a test case for the GWT plug-in.
  * <p>
- * Using this as a base class is discouraged, try achieving the same goals with
- * the various helper methods available (for example, classes like
- * {@link com.google.gdt.eclipse.core.JavaProjectUtilities} provide similar functionality.)
+ * Using this as a base class is discouraged, try achieving the same goals with the various helper methods available
+ * (for example, classes like {@link com.google.gdt.eclipse.core.JavaProjectUtilities} provide similar functionality.)
  */
 @SuppressWarnings("restriction")
 public abstract class AbstractGWTPluginTestCase extends TestCase {
@@ -87,8 +86,7 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
     }
 
     public void addToTestProject() throws Exception {
-      IProject testProject = Util.getWorkspaceRoot().getProject(
-          TEST_PROJECT_NAME);
+      IProject testProject = Util.getWorkspaceRoot().getProject(TEST_PROJECT_NAME);
       if (!testProject.exists()) {
         throw new Exception("The test project does not exist");
       }
@@ -102,8 +100,7 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
       String cuName = Signature.getSimpleName(typeName) + ".java";
 
       // If the package fragment already exists, this call does nothing
-      IPackageFragment pckg = pckgRoot.createPackageFragment(packageName,
-          false, null);
+      IPackageFragment pckg = pckgRoot.createPackageFragment(packageName, false, null);
 
       cu = pckg.createCompilationUnit(cuName, contents, true, null);
       JobsUtilities.waitForIdle();
@@ -142,14 +139,11 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
     return "Test" + (uniqueId++);
   }
 
-  private static File createFile(IPath workspaceRelativeAbsPathOfFile,
-      String contents) throws CoreException {
+  private static File createFile(IPath workspaceRelativeAbsPathOfFile, String contents) throws CoreException {
     // TODO: Convert to ResouceUtils.createFile
     Workspace workspace = (Workspace) ResourcesPlugin.getWorkspace();
-    File file = (File) workspace.newResource(workspaceRelativeAbsPathOfFile,
-        IResource.FILE);
-    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
-        contents.getBytes());
+    File file = (File) workspace.newResource(workspaceRelativeAbsPathOfFile, IResource.FILE);
+    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(contents.getBytes());
     file.create(byteArrayInputStream, false, null);
     JobsUtilities.waitForIdle();
     return file;
@@ -163,8 +157,7 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
     super(name);
   }
 
-  public File addFileToTestProjSrcPkg(String fileName, String[] contentArray)
-      throws CoreException {
+  public File addFileToTestProjSrcPkg(String fileName, String[] contentArray) throws CoreException {
     IPath pathToFile = getTestProject().getPath().append("src").append(fileName);
     File file = createFile(pathToFile, createString(contentArray));
     return file;
@@ -196,12 +189,10 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
   }
 
   /**
-   * Allows a test case to indicate that it requires that the GWT source
-   * projects (gwt-user, gwt-dev-<platform>) be imported before its tests are
-   * run. Once the GWT projects are imported into the test workspace, they will
-   * remain during subsequent tests. However, unless those later tests also
-   * require the GWT projects, they will be closed so they will not interfere
-   * with the tests which do not need them.
+   * Allows a test case to indicate that it requires that the GWT source projects (gwt-user, gwt-dev-<platform>) be
+   * imported before its tests are run. Once the GWT projects are imported into the test workspace, they will remain
+   * during subsequent tests. However, unless those later tests also require the GWT projects, they will be closed so
+   * they will not interfere with the tests which do not need them.
    */
   protected boolean requiresGWTProjects() {
     return false;
@@ -231,6 +222,17 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
     }
   }
 
+  @Override
+  protected void tearDown() throws Exception {
+    super.tearDown();
+
+    IProject project = Util.getWorkspaceRoot().getProject(TEST_PROJECT_NAME);
+    if (project.exists()) {
+      project.delete(true, true, null);
+      JobsUtilities.waitForIdle();
+    }
+  }
+
   private void addClassesToTestProject() throws Exception {
     TestClass[] classes = getTestClasses();
 
@@ -254,25 +256,20 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
   private void createTestProject() throws Exception {
     // Delete the test project if it already exists
     IProject project = Util.getWorkspaceRoot().getProject(TEST_PROJECT_NAME);
-    if (project.exists()) {
-      project.delete(true, true, null);
-      JobsUtilities.waitForIdle();
-    }
 
     String workspaceDir = Util.getWorkspaceRoot().getLocation().toOSString();
-    String outDir = workspaceDir + System.getProperty("file.separator")
-        + TEST_PROJECT_NAME;
+    String outDir = workspaceDir + System.getProperty("file.separator") + TEST_PROJECT_NAME;
 
     // Get the default GWT runtime
     GWTRuntime runtime = GWTPreferences.getDefaultRuntime();
     if (runtime == null) {
       throw new Exception("No default GWT SDK");
     }
-    IPath runtimePath = SdkClasspathContainer.computeQualifiedContainerPath(
-        GWTRuntimeContainer.CONTAINER_ID, runtime);
+    IPath runtimePath = SdkClasspathContainer.computeQualifiedContainerPath(GWTRuntimeContainer.CONTAINER_ID, runtime);
 
     // Use the New GWT Project wizard to create a test project
     JobsUtilities.waitForIdle();
+
     log("Creating new GWT project " + TEST_PROJECT_NAME);
     IProgressMonitor monitor = new NullProgressMonitor();
 
@@ -282,12 +279,10 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
     GWTRuntime runtime1 = sdkManager.findSdkForPath(runtimePath);
 
     /*
-     * FIXME: Use WebAppCreator here, or some portion of it (since WebAppCreator
-     * lives in the GDT Plugin, we cannot reference it from this test plugin).
-     * We need to get rid of NewProjectCreatorTool.
+     * FIXME: Use WebAppCreator here, or some portion of it (since WebAppCreator lives in the GDT Plugin, we cannot
+     * reference it from this test plugin). We need to get rid of NewProjectCreatorTool.
      */
-    NewProjectCreatorTool.createProject(monitor, runtime1,
-        SdkClasspathContainer.Type.NAMED, TEST_PROJECT_NAME,
+    NewProjectCreatorTool.createProject(monitor, runtime1, SdkClasspathContainer.Type.NAMED, TEST_PROJECT_NAME,
         TEST_PROJECT_MODULE_PACKAGE, outDir);
     log("Created project " + TEST_PROJECT_NAME);
   }
@@ -298,9 +293,7 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
     String gwtDevProjectName = "gwt-dev-" + platform;
 
     // Get the path to the Eclipse project files for GWT
-    IPath gwtProjectsDir =
-        URIUtil.toPath(workspace.getPathVariableManager().getURIValue("GWT_ROOT"))
-            .append("eclipse");
+    IPath gwtProjectsDir = URIUtil.toPath(workspace.getPathVariableManager().getURIValue("GWT_ROOT")).append("eclipse");
 
     // Import gwt-dev
     IPath gwtDevDir = gwtProjectsDir.append("dev").append(platform);
@@ -311,17 +304,14 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
     importProject("gwt-user", gwtUserDir);
   }
 
-  private void importProject(String projectName, IPath directory)
-      throws CoreException {
+  private void importProject(String projectName, IPath directory) throws CoreException {
     IProject project = Util.getWorkspaceRoot().getProject(projectName);
     if (!project.exists()) {
       log("Importing project " + projectName);
 
       IPath path = directory.append(IProjectDescription.DESCRIPTION_FILE_NAME);
-      IProjectDescription projectFile = ResourcesPlugin.getWorkspace().loadProjectDescription(
-          path);
-      IProjectDescription projectDescription = ResourcesPlugin.getWorkspace().newProjectDescription(
-          projectName);
+      IProjectDescription projectFile = ResourcesPlugin.getWorkspace().loadProjectDescription(path);
+      IProjectDescription projectDescription = ResourcesPlugin.getWorkspace().newProjectDescription(projectName);
       projectDescription.setLocation(path);
 
       project.create(projectFile, null);

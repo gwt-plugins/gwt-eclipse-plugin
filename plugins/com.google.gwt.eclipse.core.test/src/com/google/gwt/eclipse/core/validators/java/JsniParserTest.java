@@ -49,23 +49,21 @@ public class JsniParserTest extends AbstractGWTPluginTestCase {
   }
 
   public void DISABLE_testExtractMethodBody() {
-    String jsniBody = createString(new String[] {
-        "var num = obj.@com.hello.client.A$B::getNumber()();",
-        "num += obj.@com.hello.client.JsniParserTest::getNumber(IJ)(2);"});
+    String jsniBody = createString(new String[] { "var num = obj.@com.hello.client.A$B::getNumber()();",
+        "num += obj.@com.hello.client.JsniParserTest::getNumber(IJ)(2);" });
 
-    String jsniMethod = "public native void jsniMethod()/*-{" + jsniBody
-        + "}-*/;";
+    String jsniMethod = "public native void jsniMethod()/*-{" + jsniBody + "}-*/;";
 
     assertEquals(jsniBody, JsniParser.extractMethodBody(jsniMethod));
   }
 
-//TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
+  // TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
   public void DISABLE_testExtractMethodBodyWithEmptyBody() {
     String jsniMethod = "public native void jsniMethod()/*-{}-*/;";
     assertEquals("", JsniParser.extractMethodBody(jsniMethod));
   }
 
-//TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
+  // TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
   public void DISABLE_testExtractMethodBodyWithoutEndToken() {
     String jsniMethod = "public native void jsniMethod()/*-{ return; };";
     assertNull(JsniParser.extractMethodBody(jsniMethod));
@@ -79,8 +77,7 @@ public class JsniParserTest extends AbstractGWTPluginTestCase {
   public void DISABLE_testGetEnclosingJsniRegionSelectionInsideJsni() {
     IRegion selRegion = RegionConverter.convertWindowsRegion(169, 3, testClass.getContents());
     ITextSelection sel = new TextSelection(selRegion.getOffset(), selRegion.getLength());
-    ITypedRegion jsniRegion = JsniParser.getEnclosingJsniRegion(sel,
-        getTestClassDocument());
+    ITypedRegion jsniRegion = JsniParser.getEnclosingJsniRegion(sel, getTestClassDocument());
     assertNotNull(jsniRegion);
     assertEquals(GWTPartitions.JSNI_METHOD, jsniRegion.getType());
 
@@ -89,12 +86,11 @@ public class JsniParserTest extends AbstractGWTPluginTestCase {
     assertEquals(expectedJsniRegion.getLength(), jsniRegion.getLength());
   }
 
-  //TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
+  // TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
   public void DISABLE_testGetEnclosingJsniRegionSelectionIsJsni() {
     IRegion selRegion = RegionConverter.convertWindowsRegion(121, 234, testClass.getContents());
     ITextSelection sel = new TextSelection(selRegion.getOffset(), selRegion.getLength());
-    ITypedRegion jsniRegion = JsniParser.getEnclosingJsniRegion(sel,
-        getTestClassDocument());
+    ITypedRegion jsniRegion = JsniParser.getEnclosingJsniRegion(sel, getTestClassDocument());
     assertNotNull(jsniRegion);
     assertEquals(GWTPartitions.JSNI_METHOD, jsniRegion.getType());
     IRegion expectedJsniRegion = RegionConverter.convertWindowsRegion(121, 234, testClass.getContents());
@@ -102,21 +98,21 @@ public class JsniParserTest extends AbstractGWTPluginTestCase {
     assertEquals(expectedJsniRegion.getLength(), jsniRegion.getLength());
   }
 
-  //TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
+  // TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
   public void DISABLE_testGetEnclosingJsniRegionSelectionOutsideJsni() {
     ITextSelection sel = new TextSelection(76, 7);
     assertNull(JsniParser.getEnclosingJsniRegion(sel, getTestClassDocument()));
   }
 
-  //TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
+  // TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
   public void DISABLE_testGetEnclosingJsniRegionSelectionOverlapsJsni() {
     ITextSelection sel = new TextSelection(169, 265);
     assertNull(JsniParser.getEnclosingJsniRegion(sel, getTestClassDocument()));
   }
 
   /**
-   * TODO Disabling test
-   * org.eclipse.swt.SWTException: Failed to execute runnable (org.eclipse.e4.core.di.InjectionException: java.lang.NullPointerException)
+   * TODO Disabling test org.eclipse.swt.SWTException: Failed to execute runnable
+   * (org.eclipse.e4.core.di.InjectionException: java.lang.NullPointerException)
    */
   // TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
   public void DISABLE_testGetEnclosingJsniRegionSelectionWrapsJsni() {
@@ -148,30 +144,25 @@ public class JsniParserTest extends AbstractGWTPluginTestCase {
     List<GWTJavaProblem> problems = result.getProblems();
     assertEquals(1, problems.size());
     GWTJavaProblem problem = problems.get(0);
-    assertEquals(GWTProblemType.JSNI_JAVA_REF_UNRESOLVED_TYPE,
-        problem.getProblemType());
+    assertEquals(GWTProblemType.JSNI_JAVA_REF_UNRESOLVED_TYPE, problem.getProblemType());
     IRegion expectedProblemRegion = RegionConverter.convertWindowsRegion(184, 0, testClass.getContents());
     assertEquals(expectedProblemRegion.getOffset(), problem.getSourceStart());
   }
 
   // TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
   public void DISABLE_testParseString() throws Exception {
-    String jsniMethod = createString(new String[] {
-        "public native void jsniMethod()/*-{",
-        "    // References to some Java types",
-        "    var num = obj.@com.hello.client.A$B::getNumber()();",
+    String jsniMethod = createString(new String[] { "public native void jsniMethod()/*-{",
+        "    // References to some Java types", "    var num = obj.@com.hello.client.A$B::getNumber()();",
         "    num += obj.@com.hello.client.RefactorTest::getNumber(IJ)(2);",
-        "    num += obj.@com.hello.client.JsniParserTest::counter;", "  }-*/;"});
+        "    num += obj.@com.hello.client.JsniParserTest::counter;", "  }-*/;" });
 
     JsBlock js = JsniParser.parse(jsniMethod);
     assertNotNull(js);
   }
 
   public void DISABLE_testParseStringJavaScriptError() throws Exception {
-    String jsniMethod = createString(new String[] {
-        "public native void jsniMethod()/*-{",
-        "    // References to some Java types", "    *** // Syntax error",
-        "  }-*/;"});
+    String jsniMethod = createString(new String[] { "public native void jsniMethod()/*-{",
+        "    // References to some Java types", "    *** // Syntax error", "  }-*/;" });
 
     try {
       JsniParser.parse(jsniMethod);
@@ -189,30 +180,16 @@ public class JsniParserTest extends AbstractGWTPluginTestCase {
 
   @Override
   protected TestClass[] getTestClasses() {
-    String[] lines = new String[]{
-        "package com.hello.client;",
-        "",
-        "public class JsniParserTest {",
-        "",
-        "  private int counter;",
-        "",
-        "  public native void jsniMethod()/*-{",
-        "    // References to some Java types",
+    String[] lines = new String[] { "package com.hello.client;", "", "public class JsniParserTest {", "",
+        "  private int counter;", "", "  public native void jsniMethod()/*-{", "    // References to some Java types",
         "    var num = obj.@com.hello.client.A$B::getNumber()();",
         "    num += obj.@com.hello.client.JsniParserTest::getSum(II)(2, 2);",
-        "    num += obj.@com.hello.client.JsniParserTest::counter;",
-        "  }-*/;",
-        "",
-        "  public static int getSum(int op1, int op2) {",
-        "    return op1 + op2; ",
-        "  }",
-        "",
-        "}"
-        };
+        "    num += obj.@com.hello.client.JsniParserTest::counter;", "  }-*/;", "",
+        "  public static int getSum(int op1, int op2) {", "    return op1 + op2; ", "  }", "", "}" };
 
     testClass = new TestClass(lines, "JsniParserTest");
     testClassSource = createString(lines);
-    return new TestClass[] {testClass};
+    return new TestClass[] { testClass };
   }
 
   @Override
