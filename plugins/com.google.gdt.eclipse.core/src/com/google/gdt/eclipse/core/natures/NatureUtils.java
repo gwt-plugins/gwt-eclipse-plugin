@@ -30,10 +30,10 @@ public class NatureUtils {
   /**
    * Add the nature ID to the project unless it is already specified or the
    * project is not opened.
-   * 
+   *
    * @param project
    * @param natureId
-   * 
+   *
    * @throws CoreException See {@link IProject#hasNature(String)} for why this
    *           may be thrown.
    */
@@ -71,25 +71,26 @@ public class NatureUtils {
   /**
    * Returns <code>true</code> if the project is accessible and has the
    * specified nature ID.
-   * 
+   *
    * @param project
    * @param natureId
-   * 
+   *
    * @return <code>true</code> if the project is accessible and has the
    *         specified nature ID
    * @throws CoreException
    */
   public static boolean hasNature(IProject project, String natureId)
       throws CoreException {
+
     return project.isAccessible() && project.hasNature(natureId);
   }
 
   /**
    * Removes the nature ID from a project's description.
-   * 
+   *
    * @param project
    * @param natureId
-   * 
+   *
    * @throws CoreException
    */
   public static void removeNature(IProject project, String natureId)

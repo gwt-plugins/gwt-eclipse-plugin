@@ -22,6 +22,11 @@
         <version>${tycho.version}</version>
         <configuration>
           <useUIHarness>true</useUIHarness>
+          <useUIThread>false</useUIThread>
+          <product>org.eclipse.sdk.ide</product>
+          <application>org.eclipse.ui.ide.workbench</application>
+          <!-- TODO testings causing timeouts -->
+          <skipTests>true</skipTests>
         </configuration>
       </plugin>
     </plugins>

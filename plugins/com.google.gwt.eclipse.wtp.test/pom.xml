@@ -25,6 +25,8 @@
           <useUIThread>false</useUIThread>
           <product>org.eclipse.sdk.ide</product>
           <application>org.eclipse.ui.ide.workbench</application>
+          
+          <!-- Tycho isn't able to run this yet. -->
           <skipTests>true</skipTests>
         </configuration>
       </plugin>

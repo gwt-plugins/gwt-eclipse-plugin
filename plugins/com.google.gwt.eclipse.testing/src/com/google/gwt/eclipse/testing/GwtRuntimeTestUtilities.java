@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.Path;
 import org.osgi.framework.Bundle;
 
 import java.net.URI;
+import java.nio.file.Paths;
 
 /**
  * Testing-related utility methods dealing with GWT runtime.
@@ -42,13 +43,9 @@ public class GwtRuntimeTestUtilities {
    * {@code GWT_HOME} to the location where it is extracted.
    */
   public static void addDefaultRuntime() throws Exception {
-    String gwtHomePath = System.getenv("GWT_HOME");
-    if (gwtHomePath == null) {
-      System.out.println("The GWT_HOME environment variable is not set, using test bundle version");
-      gwtHomePath = getGwtTestSdkPath();
-      TestEnvironmentUtil.updateEnvironmentVariable("GWT_HOME", gwtHomePath);
-      System.out.println("The GWT_HOME environment variable is now set. GWT_HOME=" + gwtHomePath);
-    }
+    String gwtHomePath = getGwtTestSdkPath();
+    TestEnvironmentUtil.updateEnvironmentVariable("GWT_HOME", gwtHomePath);
+    System.out.println("SETTING: GWT_HOME=" + gwtHomePath);
 
     SdkSet<GWTRuntime> sdkSet = GWTPreferences.getSdks();
     if (sdkSet.getDefault() == null) {
@@ -71,11 +68,15 @@ public class GwtRuntimeTestUtilities {
    */
   private static String getGwtTestSdkPath() {
     Bundle bundle = GwtTestingPlugin.getDefault().getBundle();
-    String basePath =
-        GwtRuntimeTestUtilities.class.getProtectionDomain().getCodeSource().getLocation()
-            .getPath();
+
+    // Maven compile uses a jar, and is in target
+    String basePath = Paths.get("").toAbsolutePath().toString();
+    if (basePath.endsWith("target")) {
+      basePath = basePath.replace("target/", "");
+    }
+
     String version = TestEnvironmentUtil.getMavenPropertyVersionFor("gwt.version");
-    String pathToZip = basePath + "../../resources/target/resources/gwt-" + version + ".zip";
+    String pathToZip = basePath + "/../../resources/target/resources/gwt-" + version + ".zip";
     String gwtHomePath = TestEnvironmentUtil.installTestSdk(bundle, pathToZip).toOSString();
     return gwtHomePath;
   }

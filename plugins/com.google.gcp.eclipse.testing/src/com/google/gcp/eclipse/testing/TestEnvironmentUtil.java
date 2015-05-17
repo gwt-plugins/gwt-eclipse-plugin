@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
@@ -143,8 +144,12 @@ public class TestEnvironmentUtil {
   }
 
   public static String getMavenPropertyVersionFor(String key) {
-    String basePath =
-        TestEnvironmentUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+    // Maven compile uses a jar, and is in target
+    String basePath = Paths.get("").toAbsolutePath().toString();
+    if (basePath.endsWith("target")) {
+      basePath = basePath.replace("target/", "");
+    }
+
     String pomfile = basePath + "/../../pom.xml";
     Model model = null;
     MavenXpp3Reader mavenreader = new MavenXpp3Reader();
@@ -153,7 +158,7 @@ public class TestEnvironmentUtil {
       model = mavenreader.read(reader);
       model.setPomFile(new File(pomfile));
     } catch (Exception ex) {
-      throw new IllegalStateException("Can't find the pom.xml file");
+      throw new IllegalStateException("Can't find the pom.xml file. basePath=" + basePath + " pomFile=" + pomfile);
     }
 
     MavenProject project = new MavenProject(model);

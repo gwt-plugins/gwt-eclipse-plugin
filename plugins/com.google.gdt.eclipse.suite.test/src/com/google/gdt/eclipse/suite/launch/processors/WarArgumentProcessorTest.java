@@ -37,6 +37,7 @@ import java.util.List;
  * Tests the {@link WarArgumentProcessor}.
  */
 public class WarArgumentProcessorTest extends TestCase {
+
   private final LaunchConfigurationProcessorTestingHelper helper = new LaunchConfigurationProcessorTestingHelper();
 
   @Override
@@ -49,6 +50,12 @@ public class WarArgumentProcessorTest extends TestCase {
     helper.setUp(WarArgumentProcessorTest.class.getSimpleName(),
         new GwtEnablingProjectCreationParticipant(),
         new GaeEnablingProjectCreationParticipant());
+  }
+
+
+  @Override
+  protected void tearDown() throws Exception {
+    helper.tearDown();
   }
 
   public void testWarArgPresenceForNonWebAppProject() throws Exception {
@@ -73,11 +80,6 @@ public class WarArgumentProcessorTest extends TestCase {
     new WarArgumentProcessor().update(helper.getLaunchConfig(),
         JavaCore.create(helper.getProject()), args, null);
     assertFalse(args.indexOf("-war") >= 0);
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    helper.tearDown();
   }
 
 }

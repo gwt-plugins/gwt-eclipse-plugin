@@ -62,7 +62,8 @@
             <configuration>
               <!-- GWT 2.7.0 SDK zip -->
               <url>http://goo.gl/t7FQSn</url>
-              <unpack>true</unpack>
+              <!-- GWT_HOME wants the zip -->
+              <unpack>false</unpack>
               <overwrite>true</overwrite>
               <outputFileName>gwt-${gwt.version}.zip</outputFileName>
               <outputDirectory>${project.build.directory}/resources</outputDirectory>
@@ -82,6 +83,26 @@
             <configuration>
               <tasks>
                 <unzip src="${project.build.directory}/resources/appengine-java-sdk-${appengine.version}.zip" dest="${project.build.directory}/resources/" />
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <id>unzip</id>
+            <phase>process-resources</phase>
+            <configuration>
+              <tasks>
+                <unzip src="${project.build.directory}/resources/gwt-${gwt.version}.zip" dest="${project.build.directory}/resources/" />
               </tasks>
             </configuration>
             <goals>

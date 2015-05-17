@@ -42,7 +42,6 @@ import org.eclipse.debug.core.model.IStreamMonitor;
 import org.eclipse.debug.core.model.RuntimeProcess;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
 import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.IModule2;
 import org.eclipse.wst.server.core.IServer;
@@ -58,7 +57,7 @@ import com.google.gwt.eclipse.core.launch.util.GwtSuperDevModeCodeServerLaunchUt
 import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
 import com.google.gwt.eclipse.oophm.model.LaunchConfiguration;
 import com.google.gwt.eclipse.oophm.model.WebAppDebugModel;
-import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
+import com.google.gwt.eclipse.wtp.utils.GwtFacetUtils;
 
 /**
  * Google GWT WTP plug-in life-cycle.
@@ -87,6 +86,10 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     getInstance().getLog().log(status);
   }
 
+  public static void logError(String msg) {
+    logError(msg, null);
+  }
+
   public static void logError(String msg, Throwable e) {
     msg = msg == null ? "GWT Error" : "GWT: " + msg;
     Status status = new Status(IStatus.ERROR, PLUGIN_ID, 1, msg, e);
@@ -99,7 +102,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
 
   private IDebugEventSetListener processListener;
   private IStreamListener consoleStreamListener;
-  
+
   /**
    * Observe the console to notify SDM has launched
    */
@@ -110,9 +113,8 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
   }
 
   /**
-   * When a Server runtime server is started and terminated, and the project has
-   * a GWT Facet, start and stop the GWT Super Dev Mode Code Server with runtime
-   * server.
+   * When a Server runtime server is started and terminated, and the project has a GWT Facet, start and stop the GWT
+   * Super Dev Mode Code Server with runtime server.
    *
    * TODO if sdm starts, start the wtp server? <br/>
    * TODO if the sdm server stops on its own, stop the wtp server?
@@ -171,11 +173,11 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     } else {
 
       if (event.getKind() == DebugEvent.CREATE) {
-        // Start: Delineate event for Server Launching and then possibly launch SDM 
+        // Start: Delineate event for Server Launching and then possibly launch SDM
         posiblyLaunchGwtSuperDevModeCodeServer(event);
 
       } else if (event.getKind() == DebugEvent.TERMINATE) {
-        // Stop: Delineate event for Server Launching and then possibly terminate SDM 
+        // Stop: Delineate event for Server Launching and then possibly terminate SDM
         possiblyTerminateLaunchConfiguration(event);
       }
     }
@@ -335,7 +337,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       ILaunchConfigurationType sdmcodeServerType = launchManager
           .getLaunchConfigurationType(GwtSuperDevModeLaunchConfiguration.TYPE_ID);
       ILaunch[] launches = launchManager.getLaunches();
-      
+
       if (launches == null || launches.length == 0) {
         logMessage("possiblyRemoveLaunchConfiguration: Launches is empty or null. Can't find the GWT sdm launch config");
         return;
@@ -357,7 +359,6 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
         }
       }
     } catch (CoreException e) {
-      e.printStackTrace();
       logError("possiblyRemoveLaunchConfiguration: Couldn't stop the Super Dev Mode Code Server.", e);
     }
   }
@@ -385,8 +386,8 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
   /**
    * Possibly start the GWT Super Dev Mode CodeServer. <br/>
    * <br/>
-   * This starts as separate process, which allows for custom args modification.
-   * It adds a launcher id to both processes for reference.
+   * This starts as separate process, which allows for custom args modification. It adds a launcher id to both processes
+   * for reference. 1. Get it from classic launch config 2. Get it from server VM properties
    */
   protected void posiblyLaunchGwtSuperDevModeCodeServer(DebugEvent event) {
     RuntimeProcess runtimeProcess = (RuntimeProcess) event.getSource();
@@ -398,7 +399,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     try {
       server = ServerUtil.getServer(launchConfig);
     } catch (CoreException e) {
-      logError("posiblyLaunchGwtSuperDevModeCodeServer: Getting the WTP server error.", e);
+      logError("posiblyLaunchGwtSuperDevModeCodeServer: Could get the WTP server.", e);
       return;
     }
 
@@ -413,7 +414,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       return;
     }
 
-    if (!hasGwtFacet(project)) {
+    if (!GwtFacetUtils.hasGwtFacet(project)) {
       logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Does not have a GWT Facet.");
       return;
     }
@@ -424,21 +425,28 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       return;
     }
 
-    // Also used GaeServerBehaviour.setupLaunchConfig(...)
+    /**
+     * Get the war output path for the `-launcherDir` in SDM launcher
+     */
     String launcherDir = null;
+
+    // Get the the war output path from classic launch configuration working directory
+    // Also used GaeServerBehaviour.setupLaunchConfig(...)
     try {
       launcherDir = launchConfig.getAttribute(IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY, (String) null);
     } catch (CoreException e) {
-      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Couldn't get working directory for launcherDir.");
+      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Couldn't get working directory from launchConfig IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY.");
     }
 
-    // Classic launch config isn't providing a launcherDir, lets check the server properties
-    if (launcherDir == null) {
+    // Get the war output path from Server VM properties for working directory
+    if (launcherDir == null || launcherDir.isEmpty()) {
       launcherDir = getLauncherDirFromServerLaunchConfigAttributes(server, launchConfig);
     }
 
-    if (launcherDir == null) {
-      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: No -launcherDir arg is available, exiting.");
+    // Exit on error
+    if (launcherDir == null || launcherDir.isEmpty()) {
+      logError("posiblyLaunchGwtSuperDevModeCodeServer: No -launcherDir arg is available, EXITING. launcherDir="
+          + launcherDir);
       return;
     }
 
@@ -448,17 +456,17 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     // LauncherId used to reference and terminate the the process
     String launcherId = setLauncherIdToWtpRunTimeLaunchConfig(launchConfig);
 
-    logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Launching GWT Super Dev Mode CodeServer.");
-    
+    logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Launching GWT Super Dev Mode CodeServer. launcherId=" + launcherId + " launcherDir=" + launcherDir);
+
     // Just in case
     if (launchMode == null) {
       launchMode = "run";
     }
-    
+
     if (launcherId == null) {
       logMessage("posiblyLaunchGwtSuperDevModeCodeServer: No launcherId.");
     }
-    
+
     // Creates ore launches an existing Super Dev Mode Code Server process
     GwtSuperDevModeCodeServerLaunchUtil.launch(project, launchMode, launcherDir, launcherId);
   }
@@ -467,8 +475,10 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
    * Try to get the war output path from server launch config.
    * 
    * @param server
+   *          is the server launcher
    * @param serverLaunchConfig
-   * @return
+   *          server launcher config
+   * @return string path to the output war
    */
   private String getLauncherDirFromServerLaunchConfigAttributes(IServer server, ILaunchConfiguration serverLaunchConfig) {
     if (server == null || serverLaunchConfig == null) {
@@ -554,17 +564,6 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     }
 
     return modules[0].getProject();
-  }
-
-  private boolean hasGwtFacet(IProject project) {
-    boolean hasFacet = false;
-    try {
-      hasFacet = FacetedProjectFramework.hasProjectFacet(project, IGwtFacetConstants.GWT_FACET_ID);
-    } catch (CoreException e) {
-      logError("hasGetFacet: Error, can't figure GWT facet.", e);
-    }
-
-    return hasFacet;
   }
 
   @Override

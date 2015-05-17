@@ -18,5 +18,5 @@ target/
 #TODO changing to variables
 gwt-2.7.0/
 gwt-2.7.0.zip
-appengine-java-sdk-1.9.19/
-appengine-java-sdk-1.9.19.zip
+appengine-java-sdk-*/
+appengine-java-sdk-*.zip
