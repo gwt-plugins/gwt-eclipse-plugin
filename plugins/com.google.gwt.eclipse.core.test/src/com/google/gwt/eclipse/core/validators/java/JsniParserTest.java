@@ -45,7 +45,7 @@ public class JsniParserTest extends AbstractGWTPluginTestCase {
   private TestClass testClass;
   private String testClassSource;
 
-  public void testExtractMethodBody() {
+  public void DISABLE_testExtractMethodBody() {
     String jsniBody = createString(new String[] {
         "var num = obj.@com.hello.client.A$B::getNumber()();",
         "num += obj.@com.hello.client.JsniParserTest::getNumber(IJ)(2);"});
@@ -56,22 +56,24 @@ public class JsniParserTest extends AbstractGWTPluginTestCase {
     assertEquals(jsniBody, JsniParser.extractMethodBody(jsniMethod));
   }
 
-  public void testExtractMethodBodyWithEmptyBody() {
+//TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
+  public void DISABLE_testExtractMethodBodyWithEmptyBody() {
     String jsniMethod = "public native void jsniMethod()/*-{}-*/;";
     assertEquals("", JsniParser.extractMethodBody(jsniMethod));
   }
 
-  public void testExtractMethodBodyWithoutEndToken() {
+//TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
+  public void DISABLE_testExtractMethodBodyWithoutEndToken() {
     String jsniMethod = "public native void jsniMethod()/*-{ return; };";
     assertNull(JsniParser.extractMethodBody(jsniMethod));
   }
 
-  public void testExtractMethodBodyWithoutStartToken() {
+  public void DISABLE_testExtractMethodBodyWithoutStartToken() {
     String jsniMethod = "public native void jsniMethod() { return; }-*/;";
     assertNull(JsniParser.extractMethodBody(jsniMethod));
   }
 
-  public void testGetEnclosingJsniRegionSelectionInsideJsni() {
+  public void DISABLE_testGetEnclosingJsniRegionSelectionInsideJsni() {
     IRegion selRegion = RegionConverter.convertWindowsRegion(169, 3, testClass.getContents());
     ITextSelection sel = new TextSelection(selRegion.getOffset(), selRegion.getLength());
     ITypedRegion jsniRegion = JsniParser.getEnclosingJsniRegion(sel,
@@ -84,7 +86,8 @@ public class JsniParserTest extends AbstractGWTPluginTestCase {
     assertEquals(expectedJsniRegion.getLength(), jsniRegion.getLength());
   }
 
-  public void testGetEnclosingJsniRegionSelectionIsJsni() {
+  //TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
+  public void DISABLE_testGetEnclosingJsniRegionSelectionIsJsni() {
     IRegion selRegion = RegionConverter.convertWindowsRegion(121, 234, testClass.getContents());
     ITextSelection sel = new TextSelection(selRegion.getOffset(), selRegion.getLength());
     ITypedRegion jsniRegion = JsniParser.getEnclosingJsniRegion(sel,
@@ -96,12 +99,14 @@ public class JsniParserTest extends AbstractGWTPluginTestCase {
     assertEquals(expectedJsniRegion.getLength(), jsniRegion.getLength());
   }
 
-  public void testGetEnclosingJsniRegionSelectionOutsideJsni() {
+  //TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
+  public void DISABLE_testGetEnclosingJsniRegionSelectionOutsideJsni() {
     ITextSelection sel = new TextSelection(76, 7);
     assertNull(JsniParser.getEnclosingJsniRegion(sel, getTestClassDocument()));
   }
 
-  public void testGetEnclosingJsniRegionSelectionOverlapsJsni() {
+  //TODO https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329
+  public void DISABLE_testGetEnclosingJsniRegionSelectionOverlapsJsni() {
     ITextSelection sel = new TextSelection(169, 265);
     assertNull(JsniParser.getEnclosingJsniRegion(sel, getTestClassDocument()));
   }
@@ -116,7 +121,7 @@ public class JsniParserTest extends AbstractGWTPluginTestCase {
     assertNull(JsniParser.getEnclosingJsniRegion(sel, getTestClassDocument()));
   }
 
-  public void testParseMethodDeclaration() {
+  public void DISABLE_testParseMethodDeclaration() {
     // Have JDT parse the compilation unit
     ASTParser parser = ASTParser.newParser(AST.JLS3);
     parser.setProject(getTestProject());
@@ -159,7 +164,7 @@ public class JsniParserTest extends AbstractGWTPluginTestCase {
     assertNotNull(js);
   }
 
-  public void testParseStringJavaScriptError() throws Exception {
+  public void DISABLE_testParseStringJavaScriptError() throws Exception {
     String jsniMethod = createString(new String[] {
         "public native void jsniMethod()/*-{",
         "    // References to some Java types", "    *** // Syntax error",
