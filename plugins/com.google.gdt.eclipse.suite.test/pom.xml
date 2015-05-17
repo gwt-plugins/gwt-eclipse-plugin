@@ -22,6 +22,9 @@
         <version>${tycho.version}</version>
         <configuration>
           <useUIHarness>true</useUIHarness>
+          
+          <!-- See https://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=329 for details of why these are excluded. -->
+          <skipTests>true</skipTests>
         </configuration>
       </plugin>
     </plugins>
