@@ -41,12 +41,12 @@ public class LaunchConfigurationProcessorTestingHelper {
     return project;
   }
 
-  public void setUp(String projectName,
-      IWebAppProjectCreator.Participant... participants) throws Exception {
+  public void setUp(String projectName, IWebAppProjectCreator.Participant... participants) throws Exception {
     project = ProjectUtilities.createPopulatedProject(projectName, participants);
+
     JobsUtilities.waitForIdle();
-    launchConfig = LaunchConfigurationUtilities.getLaunchConfigurations(project).get(
-        0).getWorkingCopy();
+
+    launchConfig = LaunchConfigurationUtilities.getLaunchConfigurations(project).get(0).getWorkingCopy();
   }
 
   public void tearDown() throws CoreException {
