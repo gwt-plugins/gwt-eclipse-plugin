@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -61,7 +61,7 @@ import java.util.List;
 public class GdtPlugin extends AbstractGooglePlugin {
 
   public static final String PLUGIN_ID = GdtPlugin.class.getPackage().getName();
-  
+
   // The following constant is defined in org.eclipse.osgi.framework.internal.core.Constants through
   // Eclipse 4.3(Kepler), and in org.eclipse.osgi.framework.Constants starting in Eclipse 4.4(Luna).
   // TODO(nhcohen): Import this constant once all supported platforms define it in the same place.
@@ -83,7 +83,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
   // maybeAddNewWizardActionsToPerspective:
 //  /**
 //   * Wizards that we add to perspectives.
-//   * 
+//   *
 //   * TODO: If we add more wizards, this list should grow. Alternatively, we
 //   * could query the extension registry and add all GDT contributed wizards.
 //   */
@@ -102,11 +102,11 @@ public class GdtPlugin extends AbstractGooglePlugin {
 
   /**
    * Return the current eclipse version as a string.
-   * 
+   *
    * @return current eclipse version as a string.
    */
   public static String getEclipseVersion() {
-    return (String) ResourcesPlugin.getPlugin().getBundle().getHeaders().get(BUNDLE_VERSION);
+    return ResourcesPlugin.getPlugin().getBundle().getHeaders().get(BUNDLE_VERSION);
   }
 
   public static String getInstallationId() {
@@ -126,13 +126,13 @@ public class GdtPlugin extends AbstractGooglePlugin {
   }
 
   public static Version getVersion() {
-    return new Version((String) getDefault().getBundle().getHeaders().get(BUNDLE_VERSION));
+    return new Version(getDefault().getBundle().getHeaders().get(BUNDLE_VERSION));
   }
 
   private static void rebuildGoogleProjectIfPluginVersionChanged(IProject project) {
     try {
       // We're only worried about Google projects
-      if (NatureUtils.hasNature(project, GWTNature.NATURE_ID)
+      if (GWTNature.isGWTProject(project.getProject())
           || NatureUtils.hasNature(project, GaeNature.NATURE_ID)) {
         // Find the last plugin version that know the project was built with
         Version lastForcedRebuildAt = GdtPreferences.getVersionForLastForcedRebuild(project);
@@ -169,6 +169,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
     // when they're opened (but only if they are Google projects).
     if (closedProjectsInWorkspace) {
       workspace.addResourceChangeListener(new IResourceChangeListener() {
+        @Override
         public void resourceChanged(IResourceChangeEvent event) {
           IResourceDelta delta = event.getDelta();
           if (delta != null) {
@@ -200,15 +201,19 @@ public class GdtPlugin extends AbstractGooglePlugin {
   };
 
   private final IWindowListener windowListener = new IWindowListener() {
+    @Override
     public void windowActivated(IWorkbenchWindow window) {
     }
 
+    @Override
     public void windowClosed(IWorkbenchWindow window) {
     }
 
+    @Override
     public void windowDeactivated(IWorkbenchWindow window) {
     }
 
+    @Override
     public void windowOpened(IWorkbenchWindow window) {
       maybeAddNewWizardActionsToWindow(window);
     }
@@ -232,7 +237,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
   /**
    * If we haven't added them in the past, add the new wizard actions that this
    * to the perspective which is being displayed on the workbench page.
-   * 
+   *
    * Note: This method can only be called once the workbench has been started.
    */
   private void maybeAddNewWizardActionsToPerspective(WorkbenchPage page, IPerspectiveDescriptor desc) {
@@ -283,7 +288,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
    * <code>activeWorkbenchWindow</code>, if they've not been added already. Adds
    * listeners on the window so that the same is done whenever the user switches
    * perspectives in the window.
-   * 
+   *
    * Note: This method can only be called once the workbench has been started.
    */
   private void maybeAddNewWizardActionsToWindow(IWorkbenchWindow activeWorkbenchWindow) {
@@ -307,7 +312,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
    * workbench's active window, if they've not been added already. Adds
    * listeners on the workbench so that the same is done for any new workbench
    * windows that are created.
-   * 
+   *
    * Note: This method can only be called once the workbench has been started.
    */
   private void maybeAddNewWizardActionsToWorkbench() {
@@ -339,6 +344,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
      * necessary because the code in this method manipulates the Workbench UI.
      */
     Display.getDefault().asyncExec(new Runnable() {
+      @Override
       public void run() {
         maybeAddNewWizardActionsToWorkbench();
       }
@@ -350,7 +356,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
      * We've already loaded the specific problem type enums in the specific
      * plugin activators that define them (GWTPlugin.java,
      * AppEngineCorePlugin.java). Now we need to load the problem severities.
-     * 
+     *
      * There is a small window between the time that this plugin is loaded and a
      * plugin-specific builder (i.e. for GWT, or App Engine) can be invoked. It
      * may be the case that a user will get a problem marker that has a severity

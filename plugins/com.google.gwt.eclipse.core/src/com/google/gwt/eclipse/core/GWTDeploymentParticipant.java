@@ -45,16 +45,18 @@ public class GWTDeploymentParticipant implements DeploymentParticipant {
       GWTDeploymentParticipant.class.getName(),
       "previousDeploymentBuildProjectChangeStamp");
 
+  @Override
   public void deploySucceeded(IJavaProject javaProject,
       DeploymentSet deploymentSet, IPath warLocation,
       OutputStream consoleOutputStream, IProgressMonitor monitor) {
     // ignored
   }
 
+  @Override
   public void predeploy(IJavaProject javaProject, DeploymentSet deploymentSet,
       IPath warLocation, OutputStream consoleOutputStream,
       IProgressMonitor monitor) throws CoreException {
-    if (!javaProject.getProject().hasNature(GWTNature.NATURE_ID)) {
+    if (!GWTNature.isGWTProject(javaProject.getProject())) {
       // Only compile if the project has the GWT nature
       return;
     }

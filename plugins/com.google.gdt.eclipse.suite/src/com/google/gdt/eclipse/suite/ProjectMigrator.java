@@ -57,6 +57,7 @@ public class ProjectMigrator {
     // when they're opened (but only if they are Google projects).
     if (closedProjectsInWorkspace) {
       workspace.addResourceChangeListener(new IResourceChangeListener() {
+        @Override
         public void resourceChanged(IResourceChangeEvent event) {
           IResourceDelta delta = event.getDelta();
           if (delta != null) {
@@ -85,7 +86,7 @@ public class ProjectMigrator {
    * specifically that {@link ProjectMigrator#CURRENT_VERSION} has been bumped,
    * and that it will equal the projectVersion at the end of this method. Also
    * make sure you use "if" and not "else if".
-   * 
+   *
    * @param project
    * @param projectVersion
    */
@@ -144,7 +145,7 @@ public class ProjectMigrator {
    */
   private void safelyMigrateIfVersionChanged(IProject project) {
     try {
-      if (NatureUtils.hasNature(project, GWTNature.NATURE_ID)
+      if (GWTNature.isGWTProject(project.getProject())
           || NatureUtils.hasNature(project, GaeNature.NATURE_ID)) {
         int projectVersion = GdtPreferences.getProjectMigratorVersion(project);
         if (projectVersion != CURRENT_VERSION) {

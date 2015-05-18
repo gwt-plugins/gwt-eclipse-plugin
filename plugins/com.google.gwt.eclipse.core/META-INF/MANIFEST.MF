@@ -103,4 +103,5 @@ Require-Bundle: com.google.gdt.eclipse.core;visibility:=reexport,
  org.eclipse.wst.validation,
  org.eclipse.wst.xml.core,
  org.eclipse.wst.xml.ui,
- com.google.gwt.eclipse.libs
+ com.google.gwt.eclipse.libs,
+ org.eclipse.wst.common.project.facet.core

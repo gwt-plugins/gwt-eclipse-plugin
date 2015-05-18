@@ -36,9 +36,9 @@ public class GWTNatureTest extends AbstractGWTPluginTestCase {
     assertTrue(GWTNature.isGWTProject(project));
   }
 
-  public void testIsGWTProject() throws CoreException {
+  public void testIsGWTProject() {
     IProject project = getTestProject().getProject();
-    assertEquals(project.hasNature(GWTNature.NATURE_ID),
+    assertEquals(GWTNature.isGWTProject(project.getProject()),
         GWTNature.isGWTProject(project));
   }
 

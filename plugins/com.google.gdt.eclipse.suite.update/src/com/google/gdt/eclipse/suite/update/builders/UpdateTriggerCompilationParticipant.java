@@ -34,7 +34,7 @@ public class UpdateTriggerCompilationParticipant extends CompilationParticipant 
   public boolean isActive(IJavaProject project) {
     try {
       if (project.exists()) {
-        if (project.getProject().hasNature(GWTNature.NATURE_ID)
+        if (GWTNature.isGWTProject(project.getProject())
             || project.getProject().hasNature(GaeNature.NATURE_ID)) {
           GdtExtPlugin.getFeatureUpdateManager().checkForUpdates();
           return true;

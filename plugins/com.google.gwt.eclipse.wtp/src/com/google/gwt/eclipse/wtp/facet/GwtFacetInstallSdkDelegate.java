@@ -28,6 +28,7 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.gdt.eclipse.core.BuilderUtilities;
 import com.google.gdt.eclipse.core.sdk.UpdateProjectSdkCommand.UpdateType;
+import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.properties.ui.GWTProjectPropertyPage;
 import com.google.gwt.eclipse.core.runtime.GWTJarsRuntime;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
@@ -75,6 +76,20 @@ public final class GwtFacetInstallSdkDelegate implements IDelegate, IGwtFacetCon
         reopenFilesWithGwtEditor();
       }
     });
+    
+    installGwtNatureForProject();
+  }
+
+  /**
+   * Support the legacy GWT operations, actions... Be sure the nature is enabled.
+   * TODO change out nature for facet
+   */
+  private void installGwtNatureForProject() {
+    try {
+      GWTNature.addNatureToProject(project);
+    } catch (CoreException e) {
+      GwtWtpPlugin.logError("GwtFacetInstallSdkDelegate.addFacetToProject(): Error setting GWT Nature.", e);
+    }
   }
 
   private void reopenFilesWithGwtEditor() {

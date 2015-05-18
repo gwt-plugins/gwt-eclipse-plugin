@@ -220,14 +220,8 @@ public class JavaCompilationParticipant extends CompilationParticipant {
 
   @Override
   public boolean isActive(IJavaProject project) {
-    try {
-      boolean active = project.exists()
-          && project.getProject().hasNature(GWTNature.NATURE_ID);
-      return active;
-    } catch (CoreException e) {
-      GWTPluginLog.logError(e);
-      return false;
-    }
+    boolean active = project.exists() && GWTNature.isGWTProject(project.getProject());
+    return active;
   }
 
   @Override
@@ -381,13 +375,13 @@ public class JavaCompilationParticipant extends CompilationParticipant {
               problems.addAll(validationResult.getProblems());
 
               ClientBundleValidator cbv = new ClientBundleValidator();
-              ValidationResult cbvResult = cbv.validate((CompilationUnit) ast);
+              ValidationResult cbvResult = cbv.validate(ast);
               problems.addAll(cbvResult.getProblems());
 
               ValidationResult uivResult;
               if (UiBinderConstants.UI_BINDER_ENABLED) {
                 UiBinderJavaValidator uiv = new UiBinderJavaValidator(
-                    (CompilationUnit) ast,
+                    ast,
                     UiBinderReferenceManager.INSTANCE.getSubtypeToOwnerIndex(),
                     UiBinderReferenceManager.INSTANCE.getSubtypeToUiXmlIndex(),
                     UiBinderReferenceManager.INSTANCE.getUiXmlReferencedFieldIndex(),
@@ -439,7 +433,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
    * Re-validates the types which are current/former owner classes, and which
    * may need another validation pass (since they might not have been recognized
    * as owner classes on the first pass).
-   * 
+   *
    * @param preBuildOwnerIndex the pre-build owner types
    * @param validatedCompilationUnits units already validated
    */
