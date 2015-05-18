@@ -746,7 +746,6 @@ public class GWTSettingsTab extends JavaLaunchTab implements
    * If this project doesn't have the GWT nature, gray out all the controls recursively.
    */
   protected void maybeGrayControls(IJavaProject javaProject) {
-
     boolean isGWTProject = javaProject != null && GWTNature.isGWTProject(javaProject.getProject());
     String message =
         isGWTProject ? null

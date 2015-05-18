@@ -121,7 +121,7 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
       throws CoreException {
     IRuntimeClasspathEntry[] unresolvedClasspathEntries = super.computeUnresolvedClasspath(config);
     IJavaProject proj = JavaRuntime.getJavaProject(config);
-    if (proj == null || !proj.getProject().hasNature(GWTNature.NATURE_ID)) {
+    if (proj == null || !GWTNature.isGWTProject(proj.getProject())) {
       // Only GWT projects require source folders to be computed
       return unresolvedClasspathEntries;
     }

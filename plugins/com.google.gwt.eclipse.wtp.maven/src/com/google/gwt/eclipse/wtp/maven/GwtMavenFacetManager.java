@@ -13,6 +13,7 @@
 package com.google.gwt.eclipse.wtp.maven;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.wtp.GwtWtpPlugin;
 import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
 
@@ -89,6 +90,14 @@ public class GwtMavenFacetManager {
           + ") facet to project. Exiting.";
       GwtMavenPlugin.logError(message, e);
       throw new EarlyExit();
+    }
+    
+    // Support the legacy GWT operations, actions...
+    // TODO in the future depend on GWT facet entirely
+    try {
+      GWTNature.addNatureToProject(facetedProject.getProject());
+    } catch (CoreException e) {
+      GwtMavenPlugin.logError("GwtMavenFacetManager.addFacetToProject() Error setting GWT Nature.", e);
     }
   }
 

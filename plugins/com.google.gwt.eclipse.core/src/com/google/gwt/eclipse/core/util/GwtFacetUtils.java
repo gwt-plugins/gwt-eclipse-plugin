@@ -1,5 +1,4 @@
-package com.google.gdt.eclipse.suite.utils;
-
+package com.google.gwt.eclipse.core.util;
 import com.google.gdt.eclipse.core.CorePluginLog;
 
 import org.eclipse.core.resources.IProject;
@@ -9,8 +8,7 @@ import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
 public class GwtFacetUtils {
 
   /**
-   * Returns if this project has a GWT facet.
-   * TODO use extension point to get query GwtWtpPlugin...
+   * Returns if this project has a GWT facet. TODO use extension point to get query GwtWtpPlugin...
    *
    * @param project
    * @return if the project has a GWT facet.

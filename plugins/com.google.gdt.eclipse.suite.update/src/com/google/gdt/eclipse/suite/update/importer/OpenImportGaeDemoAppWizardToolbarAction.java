@@ -89,7 +89,7 @@ public class OpenImportGaeDemoAppWizardToolbarAction extends Action {
             GaeSdk sdk = GaeSdk.findSdkFor(javaProject);
             (new AppEngineUpdateWebInfFolderCommand(javaProject, sdk)).execute();
             // Also add GWT jars if the project has GWT nature.
-            if (project.hasNature(GWTNature.NATURE_ID)) {
+            if (GWTNature.isGWTProject(project.getProject())) {
               // Check that no GWT jars had been added just in case.
               if (GWTProjectProperties.getFileNamesCopiedToWebInfLib(project).isEmpty()) {
                 Sdk gwtSdk = GWTPreferences.getSdkManager()

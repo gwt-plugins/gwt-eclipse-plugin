@@ -79,6 +79,7 @@ public class GWTNature implements IProjectNature {
 
   private IProject project;
 
+  @Override
   public void configure() throws CoreException {
     BuilderUtilities.addBuilderToProject(project,
         WebAppProjectValidator.BUILDER_ID);
@@ -87,16 +88,19 @@ public class GWTNature implements IProjectNature {
     resetDefaultEditors();
   }
 
+  @Override
   public void deconfigure() throws CoreException {
     BuilderUtilities.removeBuilderFromProject(project,
         GWTProjectValidator.BUILDER_ID);
     WebAppProjectValidator.removeBuilderIfNoGwtOrAppEngineNature(project);
   }
 
+  @Override
   public IProject getProject() {
     return project;
   }
 
+  @Override
   public void setProject(IProject project) {
     this.project = project;
   }
