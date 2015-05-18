@@ -27,6 +27,7 @@ import com.google.gwt.eclipse.core.validators.java.JavaCompilationParticipant;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
 
 /**
  * Identifies a Java project as a GWT project.
@@ -40,9 +41,14 @@ public class GWTNature implements IProjectNature {
     NatureUtils.addNature(project, GWTNature.NATURE_ID);
   }
 
+  /**
+   * Returns if the GWT nature installed or if the GWT facet is enabled.
+   */
   public static boolean isGWTProject(IProject project) {
     try {
-      return project.isAccessible() && project.hasNature(GWTNature.NATURE_ID);
+      return project.isAccessible()
+          && (project.hasNature(GWTNature.NATURE_ID) || FacetedProjectFramework.hasProjectFacet(project,
+              "com.google.gwt.facet"));
     } catch (CoreException e) {
       GWTPluginLog.logError(e);
     }
@@ -50,8 +56,7 @@ public class GWTNature implements IProjectNature {
   }
 
   // TODO: do this in background (WorkspaceJob)?
-  public static void removeNatureFromProject(IProject project)
-      throws CoreException {
+  public static void removeNatureFromProject(IProject project) throws CoreException {
     if (!project.hasNature(GWTNature.NATURE_ID)) {
       return;
     }
@@ -81,17 +86,14 @@ public class GWTNature implements IProjectNature {
 
   @Override
   public void configure() throws CoreException {
-    BuilderUtilities.addBuilderToProject(project,
-        WebAppProjectValidator.BUILDER_ID);
-    BuilderUtilities.addBuilderToProject(project,
-        GWTProjectValidator.BUILDER_ID);
+    BuilderUtilities.addBuilderToProject(project, WebAppProjectValidator.BUILDER_ID);
+    BuilderUtilities.addBuilderToProject(project, GWTProjectValidator.BUILDER_ID);
     resetDefaultEditors();
   }
 
   @Override
   public void deconfigure() throws CoreException {
-    BuilderUtilities.removeBuilderFromProject(project,
-        GWTProjectValidator.BUILDER_ID);
+    BuilderUtilities.removeBuilderFromProject(project, GWTProjectValidator.BUILDER_ID);
     WebAppProjectValidator.removeBuilderIfNoGwtOrAppEngineNature(project);
   }
 
