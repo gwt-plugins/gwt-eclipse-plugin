@@ -1,34 +1,45 @@
 #GWT Plugin for Eclipse
 The GWT Plugin for Eclipse repository. 
 
-##Documentation
 
-* http://gwt-eclipse-plugin.github.io/gwt-eclipse-plugin/
- 
-##Build Server
+## Reference
+
+### Build Server
 
 * [Build Server](http://146.148.64.240:8080/)
 
-##Repository manifest 
+### Update Sites
+* [Snapshot Update Site](http://storage.googleapis.com/gwt-eclipse-plugin/snapshot)
+* [Release Update Site](http://storage.googleapis.com/gwt-eclipse-plugin/release)
+
+### Update Files
+* [Cloud Storage Browser for the Sites](https://console.developers.google.com/project/gxt-compute/storage/browser/gwt-eclipse-plugin/)
+
+###Documentation
+
+* http://gwt-eclipse-plugin.github.io/gwt-eclipse-plugin/
+ 
+###Repository manifest 
 * [common/](common/) - `com.google.gdt.googleapi.core` common library.
 * [eclipse/](eclipse/) - Eclipse settings resources such as code style imports.
 * [features/](features/) - Eclipse features for plug-in by Eclipse platform version.
 * [plugins/](plugins/) - Eclipse plug-ins.
 * [tools/](tools/) - Third party tools to for working on this project.
 
-#GPE V2
 
-## Development
+## GPE V2 Setup
+
+### Development
 1. Classic launchers are deprecated. The SDM launcher is replacing the classic dev mode launcher.
 2. GWT Nature is being replaced by GWT Facet
 
-##Configuration
+### Configuration
 1. Clone Project
 2. `mvn clean verify -DskipTests` - this will download the two sdks needed for `GWT_HOME` and `GAE_HOME`
 3. Create the enviromental vars
 4. Install dependent plugin features needed in IDE
 
-##Contributing
+### Contributing
 Please provide a unit test(s) for any patch and if one doesn't exist it may not get merged.
 
 1. Sign the CLA before pulling.
@@ -41,72 +52,12 @@ Please provide a unit test(s) for any patch and if one doesn't exist it may not 
 * 2/2 spacing
 * 120 characters for lines and comments
 
-##Flags
+### Flags
 
 * Jpa facet will turn on if the artifact `<groupId>javax.jdo</groupId> <artifactId>jdo-api</artifactId>` exists.
 
-#GPE V1
 
-##Links
-
-### Build Server
-* [Team City](http://23.251.152.235:8080/)
-
-### Update Sites
-* [Snapshot Update Site](http://storage.googleapis.com/gwt-eclipse-plugin/snapshot)
-* [Release Update Site](http://storage.googleapis.com/gwt-eclipse-plugin/release)
-
-### Resource Location
-* [Cloud Storage Browser for the Sites](https://console.developers.google.com/project/gxt-compute/storage/browser/gwt-eclipse-plugin/)
-
-#### Install
-* Download Eclipse Luna Java EE
-* Goto &gt; Help &gt; Install New Software &gt; Add Update URL
-* Select features from update site and install them
-
-#GPE V2
-
-## Development
-1. Classic launchers are deprecated. The SDM launcher is replacing the classic dev mode launcher.
-2. GWT Nature is being replaced by GWT Facet
-
-## Environment Variables
-Update your .bashrc (or equivalent) file with the following Environment Variables.
-For Eclipse to pick up these variables, it may be required to run it from a terminal
-window instead of from the launcher.
-
-* export GWT_HOME=`<path to GWT SDK>` i.e. /opt/gwt-2.6.1
-* export GWT_VERSION=`<version number>` i.e. 2.6.1
-* export GWT_ROOT=`<local path>/gwt/trunk`
-* export GWT_TOOLS=`<local path>/gwt/tools`
-* export GAE_HOME=`<path to GAE SDK>` i.e. /opt/appengine-java-sdk-1.9.6
-* export JDK_HOME=`<path to JDK>` i.e. /usr/lib/jvm/java-7-oracle
-* export JAVA_HOME=`<path to JDK>` i.e. /usr/lib/jvm/java-7-oracle 
-
-Buildagent Example
-```
-export GAE_TOOLS_JAR=/buildagents/sdks/gae/appengine-java-sdk-1.9.18/lib/appengine-tools-api.jar
-export GAE_HOME=/buildagents/sdks/gae/appengine-java-sdk-1.9.18
-export GWT_TOOLS=/buildagents/svn/gwttools
-export GWT_ROOT=/buildagents/git/gwt
-export GWT_HOME=/buildagents/sdks/gwt/gwt-2.7.0
-export DISPLAY=:1
-```
-
-## TODOs
-1. On app engine server start add base url to development tools
-2. On sdm start/stop with server runtime, fire custom event for external listeners
-3. On sdm start, start sdbg if installed, automatically
-4. JPA facet always gets enabled, causes auto enhancing to go even tho project doesn't have it
-5. Consider adding the DevMode launcher as a server runtime
-6. New application creator that supports both maven and standard. 
-7. Server runtime configuration wizard for project
-
-##Configuration
-TODO
-
-
-#GPE V1
+##GPE V1 Setup
 
 ##Configuring the Eclipse Workspace
 This file contains instructions on how to setup the Eclipse environment to
