@@ -17,7 +17,7 @@ The GWT Plugin for Eclipse repository.
 
 ###Documentation
 
-* http://gwt-eclipse-plugin.github.io/gwt-eclipse-plugin/
+* [GWT Plugins Documentation](http://gwt-plugins.github.io/documentation/)
  
 ###Repository manifest 
 * [common/](common/) - `com.google.gdt.googleapi.core` common library.
