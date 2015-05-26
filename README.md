@@ -6,7 +6,7 @@ The GWT Plugin for Eclipse repository.
 
 ### Build Server
 
-* [Build Server](http://146.148.64.240:8080/)
+* [Build Server](http://104.154.51.222/)
 
 ### Update Sites
 * [Snapshot Update Site](http://storage.googleapis.com/gwt-eclipse-plugin/snapshot)
