@@ -131,7 +131,7 @@ public final class GdtProblemSeverities {
       // Look up the problem enum type
       String problemTypeEnumTypeName = parts2[0];
       Class<? extends IGdtProblemType> problemTypeEnum = getProblemTypeEnum(problemTypeEnumTypeName);
-      if (problemTypeEnumTypeName == null) {
+      if (problemTypeEnum == null) {
         CorePluginLog.logError("Could not find problem enum type: " + problemTypeEnumTypeName);
         return;
       }
