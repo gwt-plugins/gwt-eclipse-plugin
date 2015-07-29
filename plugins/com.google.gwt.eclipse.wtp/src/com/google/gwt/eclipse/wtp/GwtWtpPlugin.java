@@ -413,6 +413,13 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Couldn't find project.");
       return;
     }
+    
+    // If the sync is off, ignore stopping the server
+    if (GWTProjectProperties.getFacetSyncCodeServer(project) != null
+        && GWTProjectProperties.getFacetSyncCodeServer(project) == false) {
+      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: GWT Facet project properties, the code server sync is off.");
+      return;
+    }
 
     if (!GwtFacetUtils.hasGwtFacet(project)) {
       logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Does not have a GWT Facet.");
