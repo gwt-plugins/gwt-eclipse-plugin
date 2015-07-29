@@ -120,7 +120,7 @@ public class AppEngineBridgeFactory {
          */
         bridgeJarURL = FileLocator.find(
             AppEngineCorePlugin.getDefault().getBundle(),
-            new Path("proxy_bin"), (Map<?, ?>) null);
+            new Path("proxy_bin"), (Map<String, String>) null);
       } else {
         /*
          * Note that we reference the copy of the jar that exists in the

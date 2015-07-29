@@ -21,8 +21,8 @@ import com.google.gwt.eclipse.oophm.model.LaunchConfiguration;
 import com.google.gwt.eclipse.oophm.model.Log;
 import com.google.gwt.eclipse.oophm.model.LogContentProvider;
 import com.google.gwt.eclipse.oophm.model.LogEntry;
-import com.google.gwt.eclipse.oophm.model.LogLabelProvider;
 import com.google.gwt.eclipse.oophm.model.LogEntry.Data;
+import com.google.gwt.eclipse.oophm.model.LogLabelProvider;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -35,7 +35,6 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.debug.ui.console.JavaStackTraceHyperlink;
-import org.eclipse.jdt.internal.formatter.comment.Java2HTMLEntityReader;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeSelection;
@@ -67,6 +66,7 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.ScrolledFormText;
+import org.eclipse.wst.jsdt.internal.formatter.comment.Java2HTMLEntityReader;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -81,7 +81,7 @@ import java.util.regex.Pattern;
 
 /**
  * The content pane for the log entries.
- * 
+ *
  * @param <T> The entity (launch configuration, browser, or server) associated
  *          with the log
  */
@@ -120,10 +120,10 @@ public class LogContent<T extends IModelNode> extends Composite {
 
   /**
    * Matches GWT TreeLogger messages with a reference to a Java source file.
-   * 
+   *
    * Regex groups: 1) Absolute filesystem path to Java source. Its format can be
    * passed directly to the {@link Path#Path(String)} constructor.
-   * 
+   *
    * Example: Errors in 'file:/eclipse/Hello/src/com/example/client/Gwt.java'
    */
   private static final Pattern GWT_ERROR_FILE_REGEX = Pattern.compile(".*'file:(.+\\.java)'");
@@ -132,11 +132,11 @@ public class LogContent<T extends IModelNode> extends Composite {
    * Matches GWT TreeLogger messages with a reference to a line number. These
    * errors are nested below errors referencing a file (if the file is Java, the
    * parent error should match {@link LogContent#GWT_ERROR_FILE_REGEX}.
-   * 
+   *
    * Regex groups: 1) The part of the line that should be enclosed in a
    * hyperlink, 2) The line number, and 3) The rest of the line, which is not
    * part of the link.
-   * 
+   *
    * Example: Line 22: The type Gwt must implement the inherited abstract method
    * EntryPoint.onModuleLoad()
    */
@@ -150,17 +150,17 @@ public class LogContent<T extends IModelNode> extends Composite {
 
   /**
    * Matches a line in a Java stack trace.
-   * 
+   *
    * Regex groups: 1) the URL (minus the prefix) to the Java source location,
    * and 2) the part of the line that should be hyperlinked.
-   * 
+   *
    * Example: at com.example.client.Gwt.onModuleLoad(Gwt.java:50)
    */
   private static final Pattern JAVA_STACK_FRAME_REGEX = Pattern.compile("^\\s*at ([^\\(]+\\((.+\\.java:\\d+)\\))$");
 
   /**
    * Returns the HTML markup for a hyperlink to a line in a Java source file.
-   * 
+   *
    * @param javaSourceAddress the location to the Java source line, specified in
    *          the following format: com.example.Class.method(Class.java)
    * @param text the hyperlink text
@@ -370,7 +370,7 @@ public class LogContent<T extends IModelNode> extends Composite {
      * top. The workaround is not make the FormText not focusable, and to
      * achieve this we instantiate/set it manually. This workaround has the
      * drawback that it can't receive keyboard events, eg ctrl-c for copy
-     * 
+     *
      */
     scrolledFormDetailsText.setFormText(new FormText(scrolledFormDetailsText,
         SWT.NO_FOCUS));
@@ -393,6 +393,7 @@ public class LogContent<T extends IModelNode> extends Composite {
 
     formText.addHyperlinkListener(new IHyperlinkListener() {
 
+      @Override
       public void linkActivated(HyperlinkEvent e) {
         String url = (String) e.getHref();
         if (url.startsWith(JAVA_SOURCE_URL_PREFIX)) {
@@ -402,10 +403,12 @@ public class LogContent<T extends IModelNode> extends Composite {
         }
       }
 
+      @Override
       public void linkEntered(HyperlinkEvent e) {
         // Ignore
       }
 
+      @Override
       public void linkExited(HyperlinkEvent e) {
         // Ignore
       }
@@ -450,6 +453,7 @@ public class LogContent<T extends IModelNode> extends Composite {
     treeViewer.setContentProvider(new LogContentProvider<T>());
     treeViewer.setInput(log.getRootLogEntry());
     treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+      @Override
       public void selectionChanged(SelectionChangedEvent event) {
         updateDetailsPane(event);
       }

@@ -124,7 +124,7 @@ public class AppEngineCorePlugin extends AbstractGooglePlugin {
    */
   public boolean inDevelopmentMode() {
     return (FileLocator.find(AppEngineCorePlugin.getDefault().getBundle(), new Path("proxy_bin"),
-        (Map<?, ?>) null) != null);
+        (Map<String, String>) null) != null);
   }
 
   @Override

@@ -27,4 +27,5 @@ Require-Bundle: com.google.gdt.eclipse.core,
  org.eclipse.ui.views.properties.tabbed,
  org.eclipse.ui.console,
  com.google.gdt.eclipse.platform,
- org.eclipse.jdt.launching
+ org.eclipse.jdt.launching,
+ org.eclipse.wst.jsdt.core
