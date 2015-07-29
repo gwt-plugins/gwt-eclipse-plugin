@@ -17,6 +17,7 @@ package com.google.gdt.eclipse.suite.preferences;
 import com.google.appengine.eclipse.core.sdk.GAESdkRegistrant;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.PropertiesUtilities;
+import com.google.gdt.eclipse.core.sdk.SdkRegistrant;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gwt.eclipse.core.sdk.GWTSdkRegistrant;
 
@@ -166,7 +167,7 @@ public final class GdtPreferences {
   /**
    * Returns the installation id for this plugin, or <code>null</code> if the
    * installation id has never been set.
-   * 
+   *
    * @return installation id for this plugin.
    */
   public static String getInstallationId() {
@@ -176,7 +177,7 @@ public final class GdtPreferences {
   /**
    * Returns the last update time in milliseconds for this installation or
    * <code>0</code> if the last update time has never been set.
-   * 
+   *
    * @return the time in millis
    */
   public static long getLastUpdateTimeMillis() {
@@ -206,17 +207,17 @@ public final class GdtPreferences {
    * Registers all of the {@link SdkRegistrant}s, and records as a workspace
    * preference which ones those were. Registrants will only be called once per
    * workspace.
-   * 
+   *
    * Prior versions of the SDK registration mechanism required adding
    * implementations of SdkBundleRegistratant that were aware of GPE internals,
    * and would handle registrations themselves. To decouple the build/release
    * process of sdkbundles from GPE, this approach has been abandoned.
-   * 
+   *
    * This implementation inspects bundles with a com.google.*.eclipse.sdkbundle
    * bundle id and looks for a marker property file for details about the SDK.
    * If the information resolves as a known SDK type and a valid SDK path, the
    * SDK path is then registered against the proper registrant.
-   * 
+   *
    */
   public static synchronized void registerSdks() {
     IEclipsePreferences instancePrefs = getInstancePreferences();
@@ -232,7 +233,7 @@ public final class GdtPreferences {
 
     for (Bundle bundle : context.getBundles()) {
       String bundleName = bundle.getSymbolicName();
-      String bundleVersion = (String) bundle.getHeaders().get(
+      String bundleVersion = bundle.getHeaders().get(
           org.osgi.framework.Constants.BUNDLE_VERSION);
       String sdkId = bundleName + '_' + bundleVersion;
 
@@ -286,7 +287,7 @@ public final class GdtPreferences {
 
   /**
    * Sets the last update time in milliseconds.
-   * 
+   *
    * @param lastUpdateTimeMillis date of the last update time in milliseconds
    */
   public static void setLastUpdateTimeMillis(long lastUpdateTimeMillis) {
@@ -428,7 +429,7 @@ public final class GdtPreferences {
   private static void registerBundleSdk(Bundle bundle) throws CoreException {
     try {
       IPath propPath = new Path(SDK_REGISTRANT_PROPERTY_FILE);
-      URL propUrl = FileLocator.find(bundle, propPath, (Map<?, ?>) null);
+      URL propUrl = FileLocator.find(bundle, propPath, (Map<String, String>) null);
       if (propUrl != null) {
         InputStream instream = propUrl.openStream();
         Properties props = new Properties();
@@ -438,7 +439,7 @@ public final class GdtPreferences {
         if (sdkType != null && sdkPrefix != null) {
           IPath sdkPrefixPath = new Path(sdkPrefix);
           URL sdkPathUrl = FileLocator.find(bundle, sdkPrefixPath,
-              (Map<?, ?>) null);
+              (Map<String, String>) null);
           if (sdkPathUrl == null) {
             // Automatic SDK registration failed. This is expected in dev mode.
             CorePluginLog.logWarning("Failed to register SDK: " + sdkPrefix);

@@ -51,7 +51,7 @@ public class JsniAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
   /**
    * Returns the line number of the next bracket after end.
-   * 
+   *
    * @param document - the document being parsed
    * @param line - the line to start searching back from
    * @param end - the end position to search back from
@@ -83,7 +83,7 @@ public class JsniAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
   /**
    * Returns the content of the given line without the leading whitespace.
-   * 
+   *
    * @param document - the document being parsed
    * @param line - the line being searched
    * @return the content of the given line without the leading whitespace
@@ -104,7 +104,7 @@ public class JsniAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
   /**
    * Set the indent of a new line based on the command provided in the supplied
    * document.
-   * 
+   *
    * @param document - the document being parsed
    * @param command - the command being performed
    */
@@ -146,7 +146,7 @@ public class JsniAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
   /**
    * Set the indent of a bracket based on the command provided in the supplied
    * document.
-   * 
+   *
    * @param document - the document being parsed
    * @param command - the command being performed
    */
@@ -191,7 +191,7 @@ public class JsniAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
   /**
    * Returns whether or not the given text ends with one of the documents legal
    * line delimiters.
-   * 
+   *
    * @param d the document
    * @param txt the text
    * @return <code>true</code> if <code>txt</code> ends with one of the
@@ -209,7 +209,7 @@ public class JsniAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
   /**
    * Returns the bracket value of a section of text. Closing brackets have a
    * value of -1 and open brackets have a value of 1.
-   * 
+   *
    * @param document - the document being parsed
    * @param start - the start position for the search
    * @param end - the end position for the search
@@ -279,7 +279,7 @@ public class JsniAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
   /**
    * Returns the end position of a comment starting at the given
    * <code>position</code>.
-   * 
+   *
    * @param document - the document being parsed
    * @param position - the start position for the search
    * @param end - the end position for the search
@@ -305,13 +305,13 @@ public class JsniAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
   // TODO: we could use CodeFormatterUtil.createIndentString instead
   private String getIndentToken() {
-    return new DefaultCodeFormatter(prefs).createIndentationString(1);
+    return new DefaultCodeFormatter((Map<String, String>) prefs).createIndentationString(1);
   }
 
   /**
    * Returns the position of the <code>character</code> in the
    * <code>document</code> after <code>position</code>.
-   * 
+   *
    * @param document - the document being parsed
    * @param position - the position to start searching from
    * @param end - the end of the document
