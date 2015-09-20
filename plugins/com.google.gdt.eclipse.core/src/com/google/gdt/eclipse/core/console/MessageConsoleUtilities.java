@@ -29,7 +29,7 @@ public class MessageConsoleUtilities {
    * <code>consoleName</code>. If no console by that name exists then one is
    * created. The returned console is cleared; callers of this method can decide
    * when to activate it.
-   * 
+   *
    * @param consoleName name of the console
    * @param imageDescriptor image descriptor to use
    * @return {@link CustomMessageConsole} with the given
@@ -52,6 +52,28 @@ public class MessageConsoleUtilities {
       consoleManager.addConsoles(new IConsole[] {messageConsole});
     } else {
       messageConsole.clearConsole();
+    }
+
+    return messageConsole;
+  }
+
+  public static CustomMessageConsole getMessageConsoleKeepLog(String consoleName,
+      ImageDescriptor imageDescriptor) {
+    CustomMessageConsole messageConsole = null;
+    IConsoleManager consoleManager = ConsolePlugin.getDefault().getConsoleManager();
+    for (IConsole console : consoleManager.getConsoles()) {
+      if (console.getName().equals(consoleName)
+          && console instanceof CustomMessageConsole) {
+        messageConsole = (CustomMessageConsole) console;
+        break;
+      }
+    }
+
+    if (messageConsole == null) {
+      messageConsole = new CustomMessageConsole(consoleName, imageDescriptor);
+      consoleManager.addConsoles(new IConsole[] {messageConsole});
+    } else {
+      //messageConsole.clearConsole();
     }
 
     return messageConsole;

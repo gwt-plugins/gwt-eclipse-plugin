@@ -15,6 +15,7 @@
 package com.google.gwt.eclipse.core.launch;
 
 import com.google.common.collect.Lists;
+import com.google.gdt.eclipse.core.console.MessageConsoleUtilities;
 import com.google.gdt.eclipse.core.sdk.Sdk.SdkException;
 import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.GWTPluginLog;
@@ -38,6 +39,8 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.StandardClasspathProvider;
+import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 
 import java.io.File;
 import java.net.URL;
@@ -117,8 +120,7 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
   }
 
   @Override
-  public IRuntimeClasspathEntry[] computeUnresolvedClasspath(ILaunchConfiguration config)
-      throws CoreException {
+  public IRuntimeClasspathEntry[] computeUnresolvedClasspath(ILaunchConfiguration config) throws CoreException {
     IRuntimeClasspathEntry[] unresolvedClasspathEntries = super.computeUnresolvedClasspath(config);
     IJavaProject proj = JavaRuntime.getJavaProject(config);
     if (proj == null || !GWTNature.isGWTProject(proj.getProject())) {
@@ -141,8 +143,7 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
      * the classpath by clicking on the "Restore Default Entries" button. This causes the
      * ATTR_DEFAULT_ATTRIBUTE to be unset for a launch configuration.
      */
-    boolean useDefault =
-        config.getAttribute(IJavaLaunchConfigurationConstants.ATTR_DEFAULT_CLASSPATH, true);
+    boolean useDefault = config.getAttribute(IJavaLaunchConfigurationConstants.ATTR_DEFAULT_CLASSPATH, true);
 
     if (!useDefault) {
       return unresolvedClasspathEntries;
@@ -161,8 +162,7 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
      * changed based on UI interaction, so it is safe for us to add entries to the non-default
      * section programmatically.
      */
-    ArrayList<IRuntimeClasspathEntry> defaultRuntimeClasspathEntries =
-        new ArrayList<IRuntimeClasspathEntry>();
+    ArrayList<IRuntimeClasspathEntry> defaultRuntimeClasspathEntries = new ArrayList<IRuntimeClasspathEntry>();
     defaultRuntimeClasspathEntries.addAll(Arrays.asList(unresolvedClasspathEntries));
 
     /*
@@ -176,20 +176,20 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
     int srcPathsInsertionIndex = findIndexOfFirstUserEntry(defaultRuntimeClasspathEntries);
 
     try {
-      defaultRuntimeClasspathEntries.addAll(srcPathsInsertionIndex, GWTProjectUtilities
-          .getGWTSourceFolderPathsFromProjectAndDependencies(proj,
+      defaultRuntimeClasspathEntries.addAll(
+          srcPathsInsertionIndex,
+          GWTProjectUtilities.getGWTSourceFolderPathsFromProjectAndDependencies(proj,
               GWTJUnitLaunchDelegate.isJUnitLaunchConfig(config.getType())));
     } catch (SdkException e) {
       GWTPluginLog.logError(e);
     }
 
-    return defaultRuntimeClasspathEntries
-        .toArray(new IRuntimeClasspathEntry[defaultRuntimeClasspathEntries.size()]);
+    return defaultRuntimeClasspathEntries.toArray(new IRuntimeClasspathEntry[defaultRuntimeClasspathEntries.size()]);
   }
 
   @Override
-  public IRuntimeClasspathEntry[] resolveClasspath(IRuntimeClasspathEntry[] entries,
-      ILaunchConfiguration configuration) throws CoreException {
+  public IRuntimeClasspathEntry[] resolveClasspath(IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration)
+      throws CoreException {
 
     // ******** Runs the RunTimeClasspathEntryResolver resolveClasspath
     IRuntimeClasspathEntry[] resolvedEntries = super.resolveClasspath(entries, configuration);
@@ -224,24 +224,88 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
 
     // Add GWT super dev mode legacy jar to the first of the library list
     if (GWTNature.isGWTProject(proj.getProject()) && resolvedEntries.length > 0) {
-      resolvedEntries =
-          addGwtSuperDevModeLegacyJarToRuntimeClasspathPossibly(configuration, resolvedEntries);
+      resolvedEntries = addGwtSuperDevModeLegacyJarToRuntimeClasspathPossibly(configuration, resolvedEntries);
     }
+
+    // Log duplicate jars
+    try {
+      logErrorIfMoreThanGWTSdkOnClassPath(proj, resolvedEntries);
+    } catch (Exception e) {}
 
     return resolvedEntries;
   }
 
+  /**
+   * @param proj
+   * @param iProject
+   * @param resolvedEntries
+   */
+  private void logErrorIfMoreThanGWTSdkOnClassPath(IJavaProject project, IRuntimeClasspathEntry[] resolvedEntries) {
+    MessageConsole messageConsole =
+        MessageConsoleUtilities.getMessageConsoleKeepLog(project.getProject().getName() + "-GWT", null);
+    MessageConsoleStream out = messageConsole.newMessageStream();
+
+    String message = "~~~~~> There is more than one jar on the classpath? Recommended removing one: ";
+
+    int countDupsGwtUser = 0;
+    int countDupsGwtDev = 0;
+    int countDupsCodeServer = 0;
+
+    for (int i = 0; i < resolvedEntries.length; i++) {
+      IRuntimeClasspathEntry entry = resolvedEntries[i];
+      if (entry.getPath().toString().toLowerCase().contains("gwt-")
+          && entry.getType() == IRuntimeClasspathEntry.ARCHIVE) {
+        if (entry.getPath().toString().toLowerCase().contains("gwt-user")) {
+          countDupsGwtUser++;
+        }
+
+        if (entry.getPath().toString().toLowerCase().contains("gwt-dev")) {
+          countDupsGwtDev++;
+        }
+
+        if (entry.getPath().toString().toLowerCase().contains("gwt-codeserver")) {
+          countDupsCodeServer++;
+        }
+      }
+    }
+
+    if (countDupsCodeServer > 1 || countDupsGwtDev > 1 || countDupsGwtUser > 1) {
+      out.println("\n\n More than one gwt jar has been found on the classpath. Clear console after fix.");
+    }
+
+    for (int i = 0; i < resolvedEntries.length; i++) {
+      IRuntimeClasspathEntry entry = resolvedEntries[i];
+      if (entry.getPath().toString().toLowerCase().contains("gwt-")
+          && entry.getType() == IRuntimeClasspathEntry.ARCHIVE) {
+
+        if (countDupsGwtUser > 1 && entry.getPath().toString().toLowerCase().contains("gwt-user")) {
+          String m = message.replace("jar", "gwt-user.jar") + " ::: path=" + entry.getPath();
+          out.println(m);
+        }
+
+        if (countDupsGwtDev > 1 && entry.getPath().toString().toLowerCase().contains("gwt-dev")) {
+          String m = message.replace("jar", "gwt-dev.jar") + " ::: path=" + entry.getPath();
+          out.println(m);
+        }
+
+        if (countDupsCodeServer > 1 && entry.getPath().toString().toLowerCase().contains("gwt-codeserver")) {
+          String m = message.replace("jar", "gwt-codeserver.jar") + " ::: path=" + entry.getPath();;
+          out.println(m);
+        }
+      }
+    }
+
+  }
+
   protected IRuntimeClasspathEntry[] addGwtSuperDevModeLegacyJarToRuntimeClasspathPossibly(
-      ILaunchConfiguration configuration, IRuntimeClasspathEntry[] resolvedEntries)
-      throws CoreException {
+      ILaunchConfiguration configuration, IRuntimeClasspathEntry[] resolvedEntries) throws CoreException {
     IJavaProject javaProject = JavaRuntime.getJavaProject(configuration);
     GWTRuntime gwtSdk = GWTRuntime.findSdkFor(javaProject);
     if (gwtSdk == null) {
       return resolvedEntries;
     }
 
-    boolean superDevModeEnabled =
-        GWTLaunchConfigurationWorkingCopy.getSuperDevModeEnabled(configuration);
+    boolean superDevModeEnabled = GWTLaunchConfigurationWorkingCopy.getSuperDevModeEnabled(configuration);
     String version = gwtSdk.getVersion();
     boolean legacySuperDevModePossibleForGwtVersion =
         GWTLaunchConstants.SUPERDEVMODE_LAUNCH_LEGACY_VERSIONS.contains(version);
@@ -253,6 +317,8 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
     if (superDevModeEnabled && legacySuperDevModePossibleForGwtVersion) {
       // Add the super dev mode legacy jar first in the list
       all.addAll(Arrays.asList(getSuperDevModeLauncherJarOverride()));
+    } else {
+      all.removeAll(Arrays.asList(getSuperDevModeLauncherJarOverride()));
     }
 
     // Add all the other libraries
@@ -267,41 +333,10 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
    *
    * These classes will be out in GWT 2.7, and this is a workaround for GWT 2.5.0+
    */
-  protected void addSuperDevModeLauncherJarIfNeeded(IJavaProject javaProject,
-      Set<IRuntimeClasspathEntry> classpath, ILaunchConfiguration configuration)
-      throws CoreException {
-    GWTRuntime gwtSdk = GWTRuntime.findSdkFor(javaProject);
-    boolean superDevModeEnabled =
-        GWTLaunchConfigurationWorkingCopy.getSuperDevModeEnabled(configuration);
-    String version = gwtSdk.getVersion();
-    boolean legacySuperDevModePossibleForGwtVersion =
-        GWTLaunchConstants.SUPERDEVMODE_LAUNCH_LEGACY_VERSIONS.contains(version);
-
-    // Valid for GWT versions 2.5.0 to < 2.7
-    if (superDevModeEnabled && legacySuperDevModePossibleForGwtVersion) {
-      // This will only add if super dev mode is enabled and < GWT 2.7
-      // ie. ./google-plugin-for-eclipse/plugins/com.google.gwt.eclipse.core/
-      URL location = AboutSuperDevModeLegacyJar.class.getProtectionDomain().getCodeSource().getLocation();
-      File dir =
-          new File(location.getFile(), "/libs/"
-              + GWTLaunchConstants.SUPERDEVMODE_LEGACY_LAUNCHER_JAR);
-      IPath path = Path.fromOSString(dir.getAbsolutePath());
-      IRuntimeClasspathEntry devJarCpEntry = JavaRuntime.newArchiveRuntimeClasspathEntry(path);
-      classpath.add(devJarCpEntry);
-    }
-  }
-
-  /**
-   * Get the embedded legacy launcher library path. This includes an override for DevMode EntryPoint
-   * to run DevMode with Super Dev Mode easily in < 2.7.
-   *
-   * These classes will be out in GWT 2.7, and this is a workaround for GWT 2.5.0+
-   */
   protected IRuntimeClasspathEntry getSuperDevModeLauncherJarOverride() throws CoreException {
     // ie. ./google-plugin-for-eclipse/plugins/com.google.gwt.eclipse.core/
     URL location = AboutSuperDevModeLegacyJar.class.getProtectionDomain().getCodeSource().getLocation();
-    File dir =
-        new File(location.getFile(), "/libs/" + GWTLaunchConstants.SUPERDEVMODE_LEGACY_LAUNCHER_JAR);
+    File dir = new File(location.getFile(), "/libs/" + GWTLaunchConstants.SUPERDEVMODE_LEGACY_LAUNCHER_JAR);
     IPath path = Path.fromOSString(dir.getAbsolutePath());
     return JavaRuntime.newArchiveRuntimeClasspathEntry(path);
   }
