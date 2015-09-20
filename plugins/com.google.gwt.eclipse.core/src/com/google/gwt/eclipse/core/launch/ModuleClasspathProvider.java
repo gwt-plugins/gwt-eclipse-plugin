@@ -248,7 +248,6 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
     String message = "~~~~~> There is more than one jar on the classpath? Recommended removing one: ";
 
     int countDupsGwtUser = 0;
-    int countDupsGwtDev = 0;
     int countDupsCodeServer = 0;
 
     for (int i = 0; i < resolvedEntries.length; i++) {
@@ -259,17 +258,13 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
           countDupsGwtUser++;
         }
 
-        if (entry.getPath().toString().toLowerCase().contains("gwt-dev")) {
-          countDupsGwtDev++;
-        }
-
         if (entry.getPath().toString().toLowerCase().contains("gwt-codeserver")) {
           countDupsCodeServer++;
         }
       }
     }
 
-    if (countDupsCodeServer > 1 || countDupsGwtDev > 1 || countDupsGwtUser > 1) {
+    if (countDupsCodeServer > 1 || countDupsGwtUser > 1) {
       out.println("\n\n More than one gwt jar has been found on the classpath. Clear console after fix.");
     }
 
@@ -283,13 +278,8 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
           out.println(m);
         }
 
-        if (countDupsGwtDev > 1 && entry.getPath().toString().toLowerCase().contains("gwt-dev")) {
-          String m = message.replace("jar", "gwt-dev.jar") + " ::: path=" + entry.getPath();
-          out.println(m);
-        }
-
         if (countDupsCodeServer > 1 && entry.getPath().toString().toLowerCase().contains("gwt-codeserver")) {
-          String m = message.replace("jar", "gwt-codeserver.jar") + " ::: path=" + entry.getPath();;
+          String m = message.replace("jar", "gwt-codeserver.jar") + " ::: path=" + entry.getPath();
           out.println(m);
         }
       }

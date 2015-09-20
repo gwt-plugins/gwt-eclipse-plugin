@@ -204,7 +204,7 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
      * Change group title to the dev mode that is selected
      */
     public void setTitle() {
-      if (selectionBlock != null && selectionBlock.isSuperDevModeSelected()) {
+      if (selectionBlock != null && selectionBlock.isVisible() && selectionBlock.isSuperDevModeSelected()) {
         groupDevMode.setText(GROUP_TITLE_SUPERDEVMODE);
       } else {
         groupDevMode.setText(GROUP_TITLE_DEVMODE);
@@ -274,14 +274,29 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
     public void initializeFrom(ILaunchConfiguration config) throws CoreException {
       SWTUtilities.setText(groupSelection, GROUP_TITLE_SELECTION);
 
-      // switch the super dev mode on/off
+      // on load, set the radio to the correct selection
       boolean enabled = GWTLaunchConfiguration.getSuperDevModeEnabled(config);
+      setSdmRadioEnabled(enabled);
+    }
+
+    public void setSdmRadioEnabled(boolean enabled) {
       buttonSuperDevMode.setSelection(enabled);
       buttonDevMode.setSelection(!enabled);
     }
 
     public boolean isSuperDevModeSelected() {
       return buttonSuperDevMode.getSelection();
+    }
+
+    public void resetSdmRadio(ILaunchConfigurationWorkingCopy configuration) {
+      // reset the selection
+      setSdmRadioEnabled(true);
+      GWTLaunchConfigurationWorkingCopy.setSuperDevModeEnabled(configuration, true);
+
+      // reset the title
+      if (developmentModeBlock != null) {
+        developmentModeBlock.setTitle();
+      }
     }
 
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
@@ -303,23 +318,12 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
       updateArgumentProcessors(configuration);
     }
 
-    /**
-     * Reset to defaults. Note do not call updateLaunchConfigurationDialog();
-     */
-    public void setSdmEnabled(ILaunchConfigurationWorkingCopy configuration, boolean enable) {
-      // reset the selection
-      buttonSuperDevMode.setSelection(enable);
-      buttonDevMode.setSelection(!enable);
-      GWTLaunchConfigurationWorkingCopy.setSuperDevModeEnabled(configuration, enable);
-
-      // reset the title
-      if (developmentModeBlock != null) {
-        developmentModeBlock.setTitle();
-      }
-    }
-
     public void setVisible(boolean visible) {
       groupSelection.setVisible(visible);
+    }
+
+    public boolean isVisible() {
+      return groupSelection.isVisible();
     }
 
     /**
@@ -771,10 +775,15 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
     // can use super dev mode 2.5.0+ or 3+
     if (canSdkVersionUseSuperDevMode(version)) {
       selectionBlock.setVisible(true);
-      selectionBlock.setSdmEnabled(configuration, true);
     } else {
       selectionBlock.setVisible(false);
-      selectionBlock.setSdmEnabled(configuration, false);
+
+      // Turn off sdm
+      GWTLaunchConfigurationWorkingCopy.setSuperDevModeEnabled(configuration, false);
+    }
+
+    if (developmentModeBlock != null) {
+      developmentModeBlock.setTitle();
     }
   }
 
