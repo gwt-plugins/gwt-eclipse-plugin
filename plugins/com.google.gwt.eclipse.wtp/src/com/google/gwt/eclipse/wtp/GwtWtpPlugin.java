@@ -309,7 +309,31 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
 
     RuntimeProcess serverRuntimeProcess = (RuntimeProcess) event.getSource();
     ILaunch serverLaunch = serverRuntimeProcess.getLaunch();
-    if (serverLaunch == null) {
+    ILaunchConfiguration launchConfig = serverLaunch.getLaunchConfiguration();
+
+    IServer server = null;
+    try {
+      server = ServerUtil.getServer(launchConfig);
+    } catch (CoreException e) {
+      logError("posiblyLaunchGwtSuperDevModeCodeServer: Could get the WTP server.", e);
+      return;
+    }
+
+    if (server == null) {
+      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: No WTP server found.");
+      return;
+    }
+
+    IProject project = getProject(server);
+    if (project == null) {
+      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Couldn't find project.");
+      return;
+    }
+    
+    // If the sync is off, ignore stopping the server
+    if (GWTProjectProperties.getFacetSyncCodeServer(project) != null
+        && GWTProjectProperties.getFacetSyncCodeServer(project) == false) {
+      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: GWT Facet project properties, the code server sync is off.");
       return;
     }
 
@@ -344,7 +368,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       }
 
       for (ILaunch launch : launches) {
-        ILaunchConfiguration launchConfig = launch.getLaunchConfiguration();
+        launchConfig = launch.getLaunchConfiguration();
         String launcherId = launchConfig.getAttribute(GWTLaunchConstants.SUPERDEVMODE_LAUNCH_ID, (String) null);
         // If its the sdm code server
         if (sdmcodeServerType.equals(serverType)) {
