@@ -102,13 +102,13 @@ public class MavenClasspathProvider extends ModuleClasspathProvider {
      * Figure out if we are supposed to be relying on the default classpath or not. The default
      * classpath is the one that is generated for a launch configuration based on the launch
      * configuration's project's build classpath.
-     * 
+     *
      * To determine whether or not to rely on the default classpath, we look at the
      * ATTR_DEFAULT_CLASSPATH attribute of the launch configuration. This attribute is set whenever
      * the user makes a change to the launch configuration classpath using the add/remove buttons.
      * From this point on, Eclipse will respect the user's changes and will not replace their
      * entries with the classpath that it computes.
-     * 
+     *
      * However, users can specify that they want to restore the behavior of having Eclipse compute
      * the classpath by clicking on the "Restore Default Entries" button. This causes the
      * ATTR_DEFAULT_ATTRIBUTE to be unset for a launch configuration.
@@ -162,4 +162,5 @@ public class MavenClasspathProvider extends ModuleClasspathProvider {
 
     return resolvedEntriesList.toArray(new IRuntimeClasspathEntry[resolvedEntriesList.size()]);
   }
+
 }

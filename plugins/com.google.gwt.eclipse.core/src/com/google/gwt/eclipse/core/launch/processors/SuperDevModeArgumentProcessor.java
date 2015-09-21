@@ -273,8 +273,7 @@ public class SuperDevModeArgumentProcessor implements ILaunchConfigurationProces
    * @param configuration the launch config.
    * @return an error string if things are wrong, or null if the module is valid.
    */
-  private String validateModule(IModule imodule, IJavaProject javaProject,
-      ILaunchConfiguration configuration) {
+  private String validateModule(IModule imodule, IJavaProject javaProject, ILaunchConfiguration configuration) {
     List<String> linkers = imodule.getAddLinkers();
     List<String> redirects = imodule.getSetConfigurationProperty("devModeRedirectEnabled");
     List<String> useSourceMaps = imodule.getSetConfigurationProperty("compiler.useSourceMaps");

@@ -44,8 +44,8 @@ public class GWTLaunchConfiguration {
   public static List<String> computeJunitDynamicVMArgsAsList(IJavaProject javaProject) {
     List<String> out = computeDynamicVMArgs(javaProject);
 
-    // Default the maximum heap size to 512 MB
-    out.add("-Xmx512m");
+    // Default the maximum heap size to 1g
+    out.add("-Xmx1g");
 
     return out;
   }
