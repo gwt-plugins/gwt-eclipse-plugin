@@ -67,7 +67,9 @@ public class GWTProjectUtilities {
             // If including tests, include all source, or if not including tests, ensure
             // it is not a test path
             if (includeTestSourceEntries || !GWTProjectUtilities.isTestPath(sourcePath)) {
-              sourceEntries.add(JavaRuntime.newArchiveRuntimeClasspathEntry(sourcePath));
+              if (!isOptional(curClasspathEntry) || exists(sourcePath)) {
+                sourceEntries.add(JavaRuntime.newArchiveRuntimeClasspathEntry(sourcePath));
+              }
             }
           }
         }
@@ -105,8 +107,25 @@ public class GWTProjectUtilities {
   }
 
   public static boolean isTestPath(IPath path) {
-    return "test".equals(path.lastSegment())
-        || "javatests".equals(path.lastSegment());
+    String[] segments = path.segments();
+    int length = segments.length;
+    String last = length < 1 ? null : segments[length - 1];
+    String lastButOne = length < 2 ? null : segments[length - 2];
+    String lastButTwo = length < 3 ? null : segments[length - 3];
+    return "test".equals(last) || "javatests".equals(last) || "src".equals(lastButTwo) && "test".equals(lastButOne);
+  }
+
+  private static boolean exists(IPath sourcePath) {
+    return ResourcesPlugin.getWorkspace().getRoot().exists(sourcePath);
+  }
+
+  private static boolean isOptional(IClasspathEntry entry) {
+    IClasspathAttribute[] attributes = entry.getExtraAttributes();
+    for (IClasspathAttribute attribute : attributes) {
+      if (IClasspathAttribute.OPTIONAL.equals(attribute.getName()) && "true".equals(attribute.getValue())) //$NON-NLS-1$
+        return true;
+    }
+    return false;
   }
 
 }
