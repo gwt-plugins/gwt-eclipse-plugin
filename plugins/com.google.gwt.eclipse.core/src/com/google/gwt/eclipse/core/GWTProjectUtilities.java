@@ -19,7 +19,9 @@ import com.google.gdt.eclipse.core.sdk.Sdk.SdkException;
 import com.google.gwt.eclipse.core.runtime.GWTProjectsRuntime;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
@@ -40,7 +42,7 @@ public class GWTProjectUtilities {
    * will not traverse into the project's dependencies, for this behavior, see
    * {@link #getGWTSourceFolderPathsFromProjectAndDependencies(IJavaProject, boolean)}
    * ).
-   * 
+   *
    * @param javaProject Reference to the project
    * @param sourceEntries The list to be filled with the entries corresponding
    *          to the source folder paths
@@ -51,7 +53,7 @@ public class GWTProjectUtilities {
   private static void fillGWTSourceFolderPathsFromProject(
       IJavaProject javaProject, Collection<? super IRuntimeClasspathEntry>
       sourceEntries, boolean includeTestSourceEntries) throws SdkException {
-    
+
     assert (javaProject != null);
 
     if (GWTProjectsRuntime.isGWTRuntimeProject(javaProject)) {
@@ -84,13 +86,13 @@ public class GWTProjectUtilities {
       }
     }
   }
-  
+
   /**
    * Returns the GWT-applicable source folder paths from a project and all of
    * its transitively required projects.
-   * @throws SdkException 
-   * @throws JavaModelException 
-   * 
+   * @throws SdkException
+   * @throws JavaModelException
+   *
    * @see #fillGWTSourceFolderPathsFromProject(IJavaProject, Collection, boolean)
    */
   public static List<IRuntimeClasspathEntry> getGWTSourceFolderPathsFromProjectAndDependencies(
