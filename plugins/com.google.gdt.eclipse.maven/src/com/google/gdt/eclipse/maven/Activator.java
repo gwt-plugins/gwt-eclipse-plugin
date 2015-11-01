@@ -14,6 +14,8 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.maven;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -50,4 +52,25 @@ public class Activator extends AbstractUIPlugin {
     plugin = null;
     super.stop(context);
   }
+
+  /**
+   * Log info
+   *
+   * @param message
+   */
+  public static void log(String message) {
+    Activator.getDefault().getLog().log(new Status(IStatus.INFO, Activator.PLUGIN_ID, message));
+  }
+
+  /**
+   * Log Error
+   *
+   * @param message
+   * @param exception
+   */
+  public static void logError(String message, Throwable exception) {
+    Activator.getDefault().getLog()
+        .log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, message, exception));
+  }
+
 }
