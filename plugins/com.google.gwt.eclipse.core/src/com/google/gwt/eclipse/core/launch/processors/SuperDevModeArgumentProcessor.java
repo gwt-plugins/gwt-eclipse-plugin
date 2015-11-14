@@ -183,11 +183,12 @@ public class SuperDevModeArgumentProcessor implements ILaunchConfigurationProces
       programArgs.remove(indexDisabled);
     }
 
+    // This will not work for GWT 2.8
     // Verify its a GWT > 2.7, just in case another version snuck in.
-    if (!GwtVersionUtil.isGwtVersionGreaterOrEqualTo27(javaProject)) {
-      // Previously created in GWT 2.7, but switched to GWT 2.4 will do this
-      return;
-    }
+    // if (!GwtVersionUtil.isGwtVersionGreaterOrEqualTo27(javaProject)) {
+    // // Previously created in GWT 2.7, but switched to GWT 2.4 will do this
+    // return;
+    // }
 
     // Super dev mode is on by default, on: nothing off: -nosuperDevMode
     if (!superDevModeEnabled) {
