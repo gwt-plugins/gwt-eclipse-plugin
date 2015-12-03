@@ -15,6 +15,7 @@
 package com.google.gdt.eclipse.maven.configurators;
 
 import com.google.gdt.eclipse.core.natures.NatureUtils;
+import com.google.gdt.eclipse.maven.Activator;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 
 import org.apache.maven.model.Plugin;
@@ -59,17 +60,21 @@ public abstract class AbstractGoogleProjectConfigurator extends AbstractProjectC
       "org.apache.maven.plugins:maven-eclipse-plugin";
 
   protected static final String MAVEN_GWT_PLUGIN_ID = "org.codehaus.mojo:gwt-maven-plugin";
+  protected static final String MAVEN_GWT_PLUGIN_ID2 = "net.ltgt.gwt.maven:gwt-maven-plugin";
 
   /**
    * {@inheritDoc} In the case of a non-GWT project, we do nothing.
    */
   @Override
-  public final void configure(ProjectConfigurationRequest request, IProgressMonitor monitor)
+  public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor)
       throws CoreException {
-    // Sometimes M2Eclipse cals this method with request == null. Why?
+    Activator.log("AbstractGoogleProjectConfigurator.configure request=" + request);
+    // Sometimes M2Eclipse calls this method with request == null. Why?
     if (request != null) {
       MavenProject mavenProject = request.getMavenProject();
-      if (getGwtMavenPlugin(mavenProject) != null) {
+      Activator.log("AbstractGoogleProjectConfigurator.configure mavenProject=" + mavenProject
+          + " getGWtMavenPlugin=" + getGwtMavenPlugin(mavenProject));
+      if (mavenProject != null && getGwtMavenPlugin(mavenProject) != null) {
         IProject project = request.getProject();
         doConfigure(mavenProject, project, request, monitor);
       }
@@ -132,7 +137,7 @@ public abstract class AbstractGoogleProjectConfigurator extends AbstractProjectC
    * @return {@code true} if the project
    */
   protected boolean hasProjectNature(MavenProject mavenProject, String natureId) {
-    if ((natureId == GWTNature.NATURE_ID) && (getGwtMavenPlugin(mavenProject) != null)) {
+    if (natureId == GWTNature.NATURE_ID || getGwtMavenPlugin(mavenProject) != null) {
       return true;
     }
     // The use of the maven-eclipse-plugin is deprecated. The following code is
@@ -158,7 +163,11 @@ public abstract class AbstractGoogleProjectConfigurator extends AbstractProjectC
     return mavenProject.getPlugin(MAVEN_ECLIPSE_PLUGIN_ID);
   }
 
-  private Plugin getGwtMavenPlugin(MavenProject mavenProject) {
+  protected Plugin getGwtMavenPlugin(MavenProject mavenProject) {
+    if (mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID2) != null) {
+      return mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID2);
+    }
     return mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID);
   }
+
 }

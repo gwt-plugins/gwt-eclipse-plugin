@@ -22,6 +22,7 @@ import com.google.gwt.eclipse.core.nature.GWTNature;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.resources.IProject;
@@ -29,27 +30,29 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.m2e.core.lifecyclemapping.model.IPluginExecutionMetadata;
+import org.eclipse.m2e.core.project.IMavenProjectFacade;
+import org.eclipse.m2e.core.project.configurator.AbstractBuildParticipant;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.osgi.service.prefs.BackingStoreException;
 
 import java.util.List;
 
 /**
- * M2Eclipse project configuration extension that configures a project to get
- * the Google GWT project nature.
+ * M2Eclipse project configuration extension that configures a project to get the Google GWT project
+ * nature.
  * <p>
- * NOTE: Do not access this class from outside of the configurators package. All
- * classes in the configurators package have dependencies on plugins that may or
- * may not be present in the user's installation. As long as these classes are
- * only invoked through m2Eclipe's extension points, other parts of this plug-in
- * can be used without requiring the m2Eclipse dependencies.
+ * NOTE: Do not access this class from outside of the configurators package. All classes in the
+ * configurators package have dependencies on plugins that may or may not be present in the user's
+ * installation. As long as these classes are only invoked through m2Eclipe's extension points,
+ * other parts of this plug-in can be used without requiring the m2Eclipse dependencies.
  */
 public class GoogleProjectConfigurator extends AbstractGoogleProjectConfigurator {
 
   /**
-   * These properties may be pulled from the gwt-maven-plugin configuration of
-   * the pom to be used in configuring the Google Web Application settings for
-   * the Eclipse project. If not present, defaults are used.
+   * These properties may be pulled from the gwt-maven-plugin configuration of the pom to be used in
+   * configuring the Google Web Application settings for the Eclipse project. If not present,
+   * defaults are used.
    */
   private static final String ECLIPSE_LAUNCH_SRC_DIR_PROPERTY_KEY = "eclipseLaunchFromWarDir";
   private static final boolean ECLIPSE_LAUNCH_SRC_DIR_DEFAULT = false;
@@ -57,11 +60,9 @@ public class GoogleProjectConfigurator extends AbstractGoogleProjectConfigurator
   private static final String WAR_SRC_DIR_DEFAULT = "src/main/webapp";
 
   /**
-   * @param config
-   *          gwt-maven-maven config DOM
-   * @return the {@link #ECLIPSE_LAUNCH_SRC_DIR_PROPERTY_KEY} value from the
-   *         config if it exists, {@link #ECLIPSE_LAUNCH_SRC_DIR_DEFAULT}
-   *         otherwise or if config is null
+   * @param config gwt-maven-maven config DOM
+   * @return the {@link #ECLIPSE_LAUNCH_SRC_DIR_PROPERTY_KEY} value from the config if it exists,
+   *         {@link #ECLIPSE_LAUNCH_SRC_DIR_DEFAULT} otherwise or if config is null
    */
   private static final boolean getLaunchFromHere(Xpp3Dom config) {
     if (config == null) {
@@ -69,18 +70,24 @@ public class GoogleProjectConfigurator extends AbstractGoogleProjectConfigurator
     }
     for (Xpp3Dom child : config.getChildren()) {
       if (child != null && ECLIPSE_LAUNCH_SRC_DIR_PROPERTY_KEY.equals(child.getName())) {
-        return child.getValue() == null ? ECLIPSE_LAUNCH_SRC_DIR_DEFAULT
-            : Boolean.parseBoolean(child.getValue().trim());
+        return child.getValue() == null ? ECLIPSE_LAUNCH_SRC_DIR_DEFAULT : Boolean
+            .parseBoolean(child.getValue().trim());
       }
     }
     return ECLIPSE_LAUNCH_SRC_DIR_DEFAULT;
   }
 
+  @Override
+  public AbstractBuildParticipant getBuildParticipant(IMavenProjectFacade projectFacade,
+      MojoExecution execution, IPluginExecutionMetadata executionMetadata) {
+    Activator.log("GoogleProjectConfigurator.getBuildParticipant for Maven invoked");
+    return super.getBuildParticipant(projectFacade, execution, executionMetadata);
+  }
+
   /**
-   * @param config
-   *          gwt-maven-maven config DOM
-   * @return the {@link #WAR_SRC_DIR_PROPERTY_KEY} value from the config if it
-   *         exists, {@link #WAR_SRC_DIR_DEFAULT} otherwise or if config is null
+   * @param config gwt-maven-maven config DOM
+   * @return the {@link #WAR_SRC_DIR_PROPERTY_KEY} value from the config if it exists,
+   *         {@link #WAR_SRC_DIR_DEFAULT} otherwise or if config is null
    */
   private static final String getWarSrcDir(Xpp3Dom config) {
     if (config == null) {
@@ -95,29 +102,41 @@ public class GoogleProjectConfigurator extends AbstractGoogleProjectConfigurator
   }
 
   @Override
-  protected void doConfigure(final MavenProject mavenProject, IProject project, ProjectConfigurationRequest unused,
-      final IProgressMonitor monitor) throws CoreException {
+  public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
+    Activator.log("GoogleProjectConfigurator.configure invoked");
+    super.configure(request, monitor);
+  }
+
+  @Override
+  protected void doConfigure(final MavenProject mavenProject, IProject project,
+      ProjectConfigurationRequest unused, final IProgressMonitor monitor) throws CoreException {
+    Activator.log("GoogleProjectConfigurator.doConfigure invoked");
     // configure the GWT Nature
-    boolean hasGwtNature = configureNature(project, mavenProject, GWTNature.NATURE_ID, true, new NatureCallback() {
-      @Override
-      protected void beforeAddingNature() {
-        configureGwtProject(mavenProject, monitor);
-      }
-    }, monitor);
+    boolean hasGwtNature =
+        configureNature(project, mavenProject, GWTNature.NATURE_ID, true, new NatureCallback() {
+          @Override
+          protected void beforeAddingNature() {
+            configureGwtProject(mavenProject, monitor);
+          }
+        }, monitor);
 
     // retrieve gwt-maven-plugin configuration if it exists
-    Plugin gwtPlugin = mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID);
+    Plugin gwtPlugin = getGwtMavenPlugin(mavenProject);
     Xpp3Dom config = gwtPlugin == null ? null : (Xpp3Dom) gwtPlugin.getConfiguration();
 
     // Persist GWT nature settings
     if (!hasGwtNature) {
+      Activator
+          .log("GoogleProjectConfigurator: Skipping maven configuration because GWT nature is false. hasGWTNature="
+              + hasGwtNature);
       return;
     }
 
     try {
       persistGwtNatureSettings(project, mavenProject, config);
     } catch (BackingStoreException exception) {
-      Activator.logError("GoogleProjectConfigurator: Problem configuring maven project.", exception);
+      Activator
+          .logError("GoogleProjectConfigurator: Problem configuring maven project.", exception);
     }
   }
 
@@ -136,7 +155,8 @@ public class GoogleProjectConfigurator extends AbstractGoogleProjectConfigurator
 
     String artifactId = mavenProject.getArtifactId();
     String version = mavenProject.getVersion();
-    IPath location = (project.getRawLocation() != null ? project.getRawLocation() : project.getLocation());
+    IPath location =
+        (project.getRawLocation() != null ? project.getRawLocation() : project.getLocation());
     IPath warOut = null;
     if (location != null && artifactId != null && version != null) {
       warOut = location.append("target").append(artifactId + "-" + version);
@@ -163,27 +183,34 @@ public class GoogleProjectConfigurator extends AbstractGoogleProjectConfigurator
     List<Dependency> dependencies = mavenProject.getDependencies();
     for (Dependency dependency : dependencies) {
       boolean hasGwtGroupId = GWTMavenRuntime.MAVEN_GWT_GROUP_ID.equals(dependency.getGroupId());
-      boolean hasGwtUserArtivactId = GWTMavenRuntime.MAVEN_GWT_USER_ARTIFACT_ID.equals(dependency.getArtifactId());
-      boolean hasGwtUserServletId = GWTMavenRuntime.MAVEN_GWT_SERVLET_ARTIFACT_ID.equals(dependency.getArtifactId());
+      boolean hasGwtUserArtivactId =
+          GWTMavenRuntime.MAVEN_GWT_USER_ARTIFACT_ID.equals(dependency.getArtifactId());
+      boolean hasGwtUserServletId =
+          GWTMavenRuntime.MAVEN_GWT_SERVLET_ARTIFACT_ID.equals(dependency.getArtifactId());
       if (hasGwtGroupId && (hasGwtUserArtivactId || hasGwtUserServletId)) {
         gwtVersion = dependency.getVersion();
+        Activator
+            .log("GoogleProjectConfigurator, Maven: Setting up Gwt Project. hasGwtGroupId="
+                + hasGwtGroupId + " hasGwtUser=" + hasGwtUserArtivactId + " hasGwtUserServletId="
+                + hasGwtUserServletId);
         break;
       }
     }
 
-    Activator.log("GoogleProjectConfigurator, Maven: gwtVersion: " + gwtVersion);
+    Activator.log("GoogleProjectConfigurator, Maven: gwtVersion=" + gwtVersion);
 
     // Check that the pom.xml has GWT dependencies
     if (gwtVersion != null && !StringUtilities.isEmpty(gwtVersion)) {
       try {
         // Download and install the gwt-dev.jar into the local repository.
-        maven.resolve(GWTMavenRuntime.MAVEN_GWT_GROUP_ID, GWTMavenRuntime.MAVEN_GWT_DEV_JAR_ARTIFACT_ID, gwtVersion,
-            "jar", null, mavenProject.getRemoteArtifactRepositories(), monitor);
+        maven.resolve(GWTMavenRuntime.MAVEN_GWT_GROUP_ID,
+            GWTMavenRuntime.MAVEN_GWT_DEV_JAR_ARTIFACT_ID, gwtVersion, "jar", null,
+            mavenProject.getRemoteArtifactRepositories(), monitor);
       } catch (CoreException exception) {
-        Activator.logError(
-            "GoogleProjectConfigurator: Problem configuring the maven project because it could not download the "
-                + "gwt-dev.jar which is used to determine the version.",
-            exception);
+        Activator
+            .logError(
+                "GoogleProjectConfigurator: Problem configuring the maven project because it could not download the "
+                    + "gwt-dev.jar which is used to determine the version.", exception);
       }
     }
   }
