@@ -14,14 +14,36 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.auth;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 /**
  * Placeholder constants.
  */
 public class Constants {
 
   // The properties are located in settings.xml
+  // The README.md has the settings.xml configuration
   // https://console.developers.google.com/apis/credentials/domainverification?project=ide-plugin
-  public static final String ID = "${gwt.eclipse.plugin.oauth.id}";
-  public static final String SECRET = "${gwt.eclipse.plugin.oauth.secret}";
+  public static String ID = getId();
+  public static String SECRET;
+
+  /**
+   * Ugly but it gets the job done providing properties with out a remodel.
+   */
+  private static String getId() {
+    InputStream oauthInput = Constants.class.getResourceAsStream("oauth.properties");
+    Properties properties = new Properties();
+    try {
+      properties.load(oauthInput);
+      ID = properties.getProperty("id");
+      SECRET = properties.getProperty("secret");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return ID;
+  }
+
 
 }

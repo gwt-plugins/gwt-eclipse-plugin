@@ -19,7 +19,7 @@
     <module>features/com.google.gwt.eclipse.sdkbundle.feature</module>
     <module>features/com.google.appengine.eclipse.sdkbundle.feature</module>
     <!-- <module>features/com.google.gdt.eclipse.mobile.android.feature</module> -->
-    
+
     <module>plugins/com.google.appengine.eclipse.core</module>
     <module>plugins/com.google.appengine.eclipse.core.test</module>
     <module>plugins/com.google.appengine.eclipse.core.test.swtbot</module>
@@ -53,14 +53,14 @@
     <module>plugins/com.google.gdt.eclipse.maven</module>
     <!-- <module>plugins/com.google.gdt.eclipse.mobile.android</module> -->
     <module>plugins/com.google.gdt.eclipse.platform</module>
-    
+
     <!-- Run the Eclipse Application from the suite -->
     <module>plugins/com.google.gdt.eclipse.suite</module>
     <module>plugins/com.google.gdt.eclipse.suite.test</module>
     <module>plugins/com.google.gdt.eclipse.suite.test.swtbot</module>
     <module>plugins/com.google.gdt.eclipse.suite.update</module>
     <module>plugins/com.google.gdt.eclipse.swtbot</module>
-    
+
     <!-- GWT -->
     <module>plugins/com.google.gwt.eclipse.core</module>
     <module>plugins/com.google.gwt.eclipse.core.test</module>
@@ -79,7 +79,7 @@
     <!-- SDK Bundles -->
     <module>plugins/com.google.gwt.eclipse.sdkbundle</module>
     <module>plugins/com.google.appengine.eclipse.sdkbundle</module>
-    
+
   </modules>
 
   <properties>
@@ -112,17 +112,13 @@
     <appengine.version>1.9.28</appengine.version>
     <!-- Used In: GwtRuntimeTestUtilities.java -->
     <gwt.version>2.7.0</gwt.version>
-    
+
     <!-- Don't kill the test early -->
     <surefire.timeout>120000</surefire.timeout>
   </properties>
 
   <repositories>
-    <!-- <repository>
-      <id>android</id>
-      <url>${adt-repo.url}</url>
-      <layout>p2</layout>
-    </repository> -->
+    <!-- <repository> <id>android</id> <url>${adt-repo.url}</url> <layout>p2</layout> </repository> -->
     <repository>
       <id>eclipse</id>
       <url>${eclipse-repo.url}</url>
@@ -254,44 +250,14 @@
           </configuration>
         </plugin>
 
-        <!-- <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>tycho-packaging-plugin</artifactId>
-          <version>${tycho.version}</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.eclipse.tycho.extras</groupId>
-              <artifactId>tycho-buildtimestamp-jgit</artifactId>
-              <version>${tycho-extras.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>org.eclipse.tycho.extras</groupId>
-              <artifactId>tycho-sourceref-jgit</artifactId>
-              <version>${tycho-extras.version}</version>
-            </dependency>
-          </dependencies>
-          <configuration>
-            <strictBinIncludes>false</strictBinIncludes>
-            <format>'v'yyyyMMdd-HHmm</format>
-            <timestampProvider>jgit</timestampProvider>
-            <jgit.ignore> pom.xml </jgit.ignore>
-            <jgit.dirtyWorkingTree>${jgit.dirtyWorkingTree}</jgit.dirtyWorkingTree>
-            <sourceReferences>
-              <generate>true</generate>
-            </sourceReferences>
-            <archive>
-              <addMavenDescriptor>false</addMavenDescriptor>
-            </archive>
-            <additionalFileSets>
-              <fileSet>
-                <directory>${project.build.directory}</directory>
-                <includes>
-                  <include>.api_description</include>
-                </includes>
-              </fileSet>
-            </additionalFileSets>
-          </configuration>
-        </plugin> -->
+        <!-- <plugin> <groupId>org.eclipse.tycho</groupId> <artifactId>tycho-packaging-plugin</artifactId> <version>${tycho.version}</version> 
+          <dependencies> <dependency> <groupId>org.eclipse.tycho.extras</groupId> <artifactId>tycho-buildtimestamp-jgit</artifactId> 
+          <version>${tycho-extras.version}</version> </dependency> <dependency> <groupId>org.eclipse.tycho.extras</groupId> <artifactId>tycho-sourceref-jgit</artifactId> 
+          <version>${tycho-extras.version}</version> </dependency> </dependencies> <configuration> <strictBinIncludes>false</strictBinIncludes> 
+          <format>'v'yyyyMMdd-HHmm</format> <timestampProvider>jgit</timestampProvider> <jgit.ignore> pom.xml </jgit.ignore> <jgit.dirtyWorkingTree>${jgit.dirtyWorkingTree}</jgit.dirtyWorkingTree> 
+          <sourceReferences> <generate>true</generate> </sourceReferences> <archive> <addMavenDescriptor>false</addMavenDescriptor> 
+          </archive> <additionalFileSets> <fileSet> <directory>${project.build.directory}</directory> <includes> <include>.api_description</include> 
+          </includes> </fileSet> </additionalFileSets> </configuration> </plugin> -->
 
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
@@ -352,6 +318,12 @@
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.7</version>
         </plugin>
       </plugins>
     </pluginManagement>
