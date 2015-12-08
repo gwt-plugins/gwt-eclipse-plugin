@@ -119,18 +119,18 @@ import javax.xml.transform.stream.StreamResult;
 public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
 
   /**
-   * Interface to allow extension points to determine whether this project is
-   * eligible for GAE SDK selection.
+   * Interface to allow extension points to determine whether this project is eligible for GAE SDK
+   * selection.
    */
   public interface GaeSdkSelectionEnablementFinder {
     boolean shouldEnableGaeSdkSelection(IProject project);
   }
 
   /**
-   * We use this dummy subclass to read the application ID and version from a
-   * project which may not actually have an App Engine nature. Normally, we can
-   * only get a GaeProject by calling the static GaeProject.create(IProject),
-   * which requires that the project already have the nature applied.
+   * We use this dummy subclass to read the application ID and version from a project which may not
+   * actually have an App Engine nature. Normally, we can only get a GaeProject by calling the
+   * static GaeProject.create(IProject), which requires that the project already have the nature
+   * applied.
    */
   private static final class GaeProjectWithoutNature extends GaeProject {
 
@@ -151,7 +151,8 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
   private static final String APIS_CONSOLE_URL = "https://code.google.com/apis/console";
 
   // TODO: read from .properties file
-  private static final String APPENGINE_APP_VERSIONS_URL = "http://appengine.google.com/deployment?&app_id=";
+  private static final String APPENGINE_APP_VERSIONS_URL =
+      "http://appengine.google.com/deployment?&app_id=";
 
   // TODO: read from .properties file
   private static final String APPENGINE_CREATE_APP_URL = "http://appengine.google.com/";
@@ -353,8 +354,9 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
         // Will update WEB-INF/lib farther down..
       }
 
-      boolean oldSdkSelected = !sdkSelectionBlock.getSdkSelection()
-          .getSelectedSdk().getCapabilities().contains(GaeSdkCapability.OPTIONAL_USER_LIB);
+      boolean oldSdkSelected =
+          !sdkSelectionBlock.getSdkSelection().getSelectedSdk().getCapabilities()
+              .contains(GaeSdkCapability.OPTIONAL_USER_LIB);
       if (hasSdkChanged() && oldSdkSelected) {
         setDatanucleusVersionAndUpdateClasspath("", true);
         updateJdoConfig("v1");
@@ -366,9 +368,8 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
         updatePersistenceXml(datanucleusVersion);
       } else if (hasDatanucleusChanged()) {
         /*
-         * If we're here, it means that the user either disabled or enabled
-         * datanucleus, and if they enabled it, they did not also modify the DN
-         * version at the same time.
+         * If we're here, it means that the user either disabled or enabled datanucleus, and if they
+         * enabled it, they did not also modify the DN version at the same time.
          */
         setDatanucleusVersionAndUpdateClasspath(getDatanucleusVersion(),
             useDatanucleusCheckbox.getSelection());
@@ -381,8 +382,8 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
   }
 
   private void addAppengineDevelopmentControls(Composite composite) {
-    Composite appengineDevelopmentSection = SWTFactory.createComposite(composite, 2, 1,
-        GridData.FILL_HORIZONTAL);
+    Composite appengineDevelopmentSection =
+        SWTFactory.createComposite(composite, 2, 1, GridData.FILL_HORIZONTAL);
     GridData indent = new GridData(GridData.FILL_HORIZONTAL);
     indent.horizontalIndent = INDENT_TAB;
     appengineDevelopmentSection.setLayoutData(indent);
@@ -473,8 +474,8 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     appengineCloudSqlConfigureLink.addListener(SWT.Selection, new Listener() {
       @Override
       public void handleEvent(Event event) {
-        GoogleCloudSqlConfigure googleSqlConfigure = new GoogleCloudSqlConfigure(getShell(),
-            getJavaProject(), true);
+        GoogleCloudSqlConfigure googleSqlConfigure =
+            new GoogleCloudSqlConfigure(getShell(), getJavaProject(), true);
         googleSqlConfigure.create();
         Boolean returnStatus = googleSqlConfigure.open() == Dialog.OK;
         if (!configuredProdCloudSql) {
@@ -510,8 +511,8 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     testGoogleCloudSqlConfigureLink.addListener(SWT.Selection, new Listener() {
       @Override
       public void handleEvent(Event event) {
-        GoogleCloudSqlConfigure googleSqlConfigure = new GoogleCloudSqlConfigure(getShell(),
-            getJavaProject(), false);
+        GoogleCloudSqlConfigure googleSqlConfigure =
+            new GoogleCloudSqlConfigure(getShell(), getJavaProject(), false);
         googleSqlConfigure.create();
         Boolean returnStaus = googleSqlConfigure.open() == Dialog.OK;
         if (!configuredTestCloudSql) {
@@ -529,31 +530,28 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
   }
 
   /**
-   * Removes all GAE SDK jars and replaces them with a single container entry,
-   * adds GAE nature and optionally the web app nature.
+   * Removes all GAE SDK jars and replaces them with a single container entry, adds GAE nature and
+   * optionally the web app nature.
    */
   private void addGae() throws CoreException, IOException, BackingStoreException {
     IProject project = getProject();
     /*
      * Set the appropriate web app project properties if this is a J2EE project.
      *
-     * There can be a collision between different property pages manipulating
-     * the same web app properties, but the collision actually works itself out.
+     * There can be a collision between different property pages manipulating the same web app
+     * properties, but the collision actually works itself out.
      *
-     * Both the GWT and GAE property pages make a call to this method. So, there
-     * are no conflicting/differing settings of the web app project properties
-     * in this case.
+     * Both the GWT and GAE property pages make a call to this method. So, there are no
+     * conflicting/differing settings of the web app project properties in this case.
      *
-     * In the event that the GAE/GWT natures are enabled and the Web App
-     * property page does not have the "This Project Has a War Directory"
-     * setting selected, and that setting is enabled, then the settings on the
-     * Web App project page will take precedence (over those settings that are
+     * In the event that the GAE/GWT natures are enabled and the Web App property page does not have
+     * the "This Project Has a War Directory" setting selected, and that setting is enabled, then
+     * the settings on the Web App project page will take precedence (over those settings that are
      * set by this method call).
      *
-     * The gory details as to why have to do with the order of application of
-     * the properties for each page (App Engine, Web App, then GWT), and the
-     * fact that this method will not make any changes to Web App properties if
-     * the project is already a Web App.
+     * The gory details as to why have to do with the order of application of the properties for
+     * each page (App Engine, Web App, then GWT), and the fact that this method will not make any
+     * changes to Web App properties if the project is already a Web App.
      */
     WebAppProjectProperties.maybeSetWebAppPropertiesForDynamicWebProject(project);
 
@@ -572,15 +570,15 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
   private void addLocalDevelopmentControls(Composite composite) {
     GridData indent;
     GridData setRight;
-    Composite localDevelopmentSection = SWTFactory.createComposite(composite, 2, 1,
-        GridData.FILL_HORIZONTAL);
+    Composite localDevelopmentSection =
+        SWTFactory.createComposite(composite, 2, 1, GridData.FILL_HORIZONTAL);
     indent = new GridData(GridData.FILL_HORIZONTAL);
     indent.horizontalIndent = INDENT_TAB;
     localDevelopmentSection.setLayoutData(indent);
 
     Label localDevelopmentInstanceLabel = new Label(localDevelopmentSection, SWT.NONE);
-    localDevelopmentInstanceLabel.setText(
-        "Development SQL instance (used by local development server)");
+    localDevelopmentInstanceLabel
+        .setText("Development SQL instance (used by local development server)");
     localDevelopmentInstanceLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     localDevelopmentInstanceLabel.setToolTipText("This is the SQL instance used"
         + " by the application running on local development server.");
@@ -618,12 +616,12 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     /*
      * The group is organised in the form of a table with 4 columns. It looks like the following.
      *
-     * |-----|--------------------------|-----------|----------------------|
-     * | [x] | Enable local HRD support (spans 2)   | Run Configurations...|
-     * |-------------------------------------------------------------------|
-     * | [ ] | Use Datanucleus JDO/JPA to access the datastore (spans 3)   |
-     * |-------------------------------------------------------------------|
-     * | => Datanucleus JDO/JPA version | [version] |       <empty>        |
+     * |-----|--------------------------|-----------|----------------------| | [x] | Enable local
+     * HRD support (spans 2) | Run Configurations...|
+     * |-------------------------------------------------------------------| | [ ] | Use Datanucleus
+     * JDO/JPA to access the datastore (spans 3) |
+     * |-------------------------------------------------------------------| | => Datanucleus
+     * JDO/JPA version | [version] | <empty> |
      * |-----|--------------------------|-----------|----------------------|
      */
     useHrdCheckbox = new Button(group, SWT.CHECK);
@@ -649,8 +647,9 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
       @Override
       public void handleEvent(Event event) {
         // Open the run configurations dialog and select the WebApp type.
-        ILaunchConfigurationType webAppLaunchType = DebugPlugin.getDefault()
-            .getLaunchManager().getLaunchConfigurationType(WebAppLaunchConfiguration.TYPE_ID);
+        ILaunchConfigurationType webAppLaunchType =
+            DebugPlugin.getDefault().getLaunchManager()
+                .getLaunchConfigurationType(WebAppLaunchConfiguration.TYPE_ID);
 
         DebugUITools.openLaunchConfigurationDialogOnGroup(getShell(), new StructuredSelection(
             webAppLaunchType), RUN_GROUP_ID);
@@ -663,11 +662,12 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     useDatanucleusLabel = new Label(group, SWT.NONE);
     useDatanucleusLabel.setLayoutData(useDatanucleusLabelLayout);
     useDatanucleusLabel.setText("Use Datanucleus JDO/JPA to access the datastore");
-    useDatanucleusLabel.setToolTipText("Enabling this option imports the Datanucleus JAR files "
-        + "into your project so that you can use them to access the datastore via JDO/JPA. It will "
-        + "also enable the Datanucleus enhancer to be run automatically. Disable this option if "
-        + "you are not using the datastore at all or if you are not accessing the datastore via "
-        + "JDO/JPA.");
+    useDatanucleusLabel
+        .setToolTipText("Enabling this option imports the Datanucleus JAR files "
+            + "into your project so that you can use them to access the datastore via JDO/JPA. It will "
+            + "also enable the Datanucleus enhancer to be run automatically. Disable this option if "
+            + "you are not using the datastore at all or if you are not accessing the datastore via "
+            + "JDO/JPA.");
 
     GridData datanucleusVersionLabelLayout = new GridData();
     datanucleusVersionLabelLayout.horizontalIndent = INDENT_TAB;
@@ -712,11 +712,11 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
   }
 
   private void createGoogleCloudSqlComponent(Composite parent) {
-    Composite panel = SWTFactory.createGroup(parent, "Google Cloud SQL", 1, 1,
-        GridData.FILL_HORIZONTAL);
+    Composite panel =
+        SWTFactory.createGroup(parent, "Google Cloud SQL", 1, 1, GridData.FILL_HORIZONTAL);
 
-    Composite useGoogleCloudSqlGroup = SWTFactory.createComposite(panel, 3, 1,
-        GridData.FILL_HORIZONTAL);
+    Composite useGoogleCloudSqlGroup =
+        SWTFactory.createComposite(panel, 3, 1, GridData.FILL_HORIZONTAL);
     useGoogleCloudSqlCheckbox = new Button(useGoogleCloudSqlGroup, SWT.CHECK);
     useGoogleCloudSqlLink = new Link(useGoogleCloudSqlGroup, SWT.NONE);
     useGoogleCloudSqlLink.setText("Enable <a href=\"" + APPENGINE_GOOGLE_CLOUD_SQL_URL
@@ -841,8 +841,8 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     mySqlRadio.setEnabled(useGoogleCloudSqlCheckbox.getSelection());
     mySqlRadio.setSelection(GoogleCloudSqlProperties.getLocalDevMySqlEnabled(getProject()));
     googleCloudSqlRadio.setEnabled(useGoogleCloudSqlCheckbox.getSelection());
-    googleCloudSqlRadio.setSelection(
-        !GoogleCloudSqlProperties.getLocalDevMySqlEnabled(getProject()));
+    googleCloudSqlRadio.setSelection(!GoogleCloudSqlProperties
+        .getLocalDevMySqlEnabled(getProject()));
     mySqlConfigureLink.setEnabled(mySqlRadio.getSelection());
     testGoogleCloudSqlConfigureLink.setEnabled(googleCloudSqlRadio.getSelection());
     appengineCloudSqlConfigureLink.setEnabled(useGoogleCloudSqlCheckbox.getSelection());
@@ -892,14 +892,19 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     ClasspathUtilities.replaceContainerWithClasspathEntries(getJavaProject(),
         GaeSdkContainer.CONTAINER_ID);
     GaeProjectProperties.setFileNamesCopiedToWebInfLib(getProject(),
-        Collections.<String> emptyList());
+        Collections.<String>emptyList());
   }
 
   private void saveChangesToAppEngineWebXml() throws IOException, CoreException {
     GaeProject gaeProject = GaeProject.create(getProject());
+    if (gaeProject == null) {
+      return;
+    }
+
     if (appId == null) {
       appId = "ChangeMe";
     }
+
     if (!appId.equals(initialAppId)) {
       gaeProject.setAppId(appId, true);
     }
@@ -915,8 +920,8 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     if (isDatanucleusEnabled) {
       GaeProjectProperties.setGaeDatanucleusVersion(getProject(), datanucleusVersion);
       // Ping the update server for logging the usage.
-      ExtensionQuery<ILogGaeStats> extQuery = new ExtensionQuery<ILogGaeStats>(
-          AppEngineCorePlugin.PLUGIN_ID, "logGaeStats", "class");
+      ExtensionQuery<ILogGaeStats> extQuery =
+          new ExtensionQuery<ILogGaeStats>(AppEngineCorePlugin.PLUGIN_ID, "logGaeStats", "class");
       List<ExtensionQuery.Data<ILogGaeStats>> contributors = extQuery.getData();
       for (ExtensionQuery.Data<ILogGaeStats> c : contributors) {
         ILogGaeStats optionalLibPingManager = c.getExtensionPointData();
@@ -925,8 +930,9 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     }
 
     // Rebind any classpath containers that apply to this project
-    IClasspathEntry containerEntry = ClasspathUtilities.findClasspathEntryContainer(
-        getJavaProject().getRawClasspath(), GaeSdkContainer.CONTAINER_ID);
+    IClasspathEntry containerEntry =
+        ClasspathUtilities.findClasspathEntryContainer(getJavaProject().getRawClasspath(),
+            GaeSdkContainer.CONTAINER_ID);
 
     if (containerEntry != null) {
       ClasspathContainerInitializer classpathContainerInitializer =
@@ -939,8 +945,8 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     updateProjectSdk();
 
     /*
-     * Explicity force the update of the WEB-INF/lib folder, as changes to the
-     * DN properties do not actually modify the .classpath file.
+     * Explicity force the update of the WEB-INF/lib folder, as changes to the DN properties do not
+     * actually modify the .classpath file.
      */
     updateProjectWebInfLibFolder();
   }
@@ -951,13 +957,13 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     ExtensionQuery<GaeProjectPropertyPage.GaeSdkSelectionEnablementFinder> extQuery =
         new ExtensionQuery<GaeProjectPropertyPage.GaeSdkSelectionEnablementFinder>(
             AppEngineCorePlugin.PLUGIN_ID, "gaeSdkSelectionEnablementFinder", "class");
-    List<ExtensionQuery.Data<GaeProjectPropertyPage.GaeSdkSelectionEnablementFinder>>
-      enablementFinders = extQuery.getData();
-    for (ExtensionQuery.Data<GaeProjectPropertyPage.GaeSdkSelectionEnablementFinder>
-      enablementFinder : enablementFinders) {
-        shouldBeEnabled = shouldBeEnabled
-          && enablementFinder.getExtensionPointData().shouldEnableGaeSdkSelection(
-              getProject().getProject());
+    List<ExtensionQuery.Data<GaeProjectPropertyPage.GaeSdkSelectionEnablementFinder>> enablementFinders =
+        extQuery.getData();
+    for (ExtensionQuery.Data<GaeProjectPropertyPage.GaeSdkSelectionEnablementFinder> enablementFinder : enablementFinders) {
+      shouldBeEnabled =
+          shouldBeEnabled
+              && enablementFinder.getExtensionPointData().shouldEnableGaeSdkSelection(
+                  getProject().getProject());
     }
 
     sdkSelectionBlock.setEnabled(shouldBeEnabled);
@@ -970,11 +976,12 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
 
     useDatanucleusCheckbox.setEnabled(shouldBeEnabled);
     useDatanucleusLabel.setEnabled(shouldBeEnabled);
-    boolean datanucleusVersionShouldBeEnabled = shouldBeEnabled
-        && useDatanucleusCheckbox.getSelection()
-        && sdkSelectionBlock.getSdkSelection().getSelectedSdk() != null
-        && sdkSelectionBlock.getSdkSelection().getSelectedSdk().getCapabilities().contains(
-            GaeSdkCapability.OPTIONAL_USER_LIB);
+    boolean datanucleusVersionShouldBeEnabled =
+        shouldBeEnabled
+            && useDatanucleusCheckbox.getSelection()
+            && sdkSelectionBlock.getSdkSelection().getSelectedSdk() != null
+            && sdkSelectionBlock.getSdkSelection().getSelectedSdk().getCapabilities()
+                .contains(GaeSdkCapability.OPTIONAL_USER_LIB);
     datanucleusVersionLabel.setEnabled(datanucleusVersionShouldBeEnabled);
     datanucleusVersionCombo.getCombo().setEnabled(datanucleusVersionShouldBeEnabled);
 
@@ -1023,8 +1030,8 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
   private void updateJdoConfig(String datanucleusVersion) {
     try {
       // TODO(rdayal): Don't hardcode this value. Look through the project's source paths.
-      String jdoconfigPath = getProject()
-          .getLocation().append("src/META-INF/jdoconfig.xml").toOSString();
+      String jdoconfigPath =
+          getProject().getLocation().append("src/META-INF/jdoconfig.xml").toOSString();
       Document document = parseXML(jdoconfigPath);
       if (document == null) {
         // The file doesn't exist. Do nothing.
@@ -1064,16 +1071,16 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
       }
       writeXML(document, jdoconfigPath);
     } catch (DOMException e) {
-      AppEngineCorePluginLog.logError(
-          "jdoconfig.xml is not in the correct format. Left unaltered.");
+      AppEngineCorePluginLog
+          .logError("jdoconfig.xml is not in the correct format. Left unaltered.");
     }
   }
 
   private void updatePersistenceXml(String datanucleusVersion) {
     try {
       // TODO(rdayal): Don't hardcode this value. Look through the project's source paths.
-      String persistenceXmlPath = getProject()
-          .getLocation().append("src/META-INF/persistence.xml").toOSString();
+      String persistenceXmlPath =
+          getProject().getLocation().append("src/META-INF/persistence.xml").toOSString();
       Document document = parseXML(persistenceXmlPath);
       if (document == null) {
         // The file doesn't exist. Do nothing.
@@ -1088,8 +1095,8 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
       nodes.item(0).setTextContent(getPersitenceValue(v1));
       writeXML(document, persistenceXmlPath);
     } catch (DOMException e) {
-      AppEngineCorePluginLog.logError(
-          "jdoconfig.xml is not in the correct format. Left unaltered.");
+      AppEngineCorePluginLog
+          .logError("jdoconfig.xml is not in the correct format. Left unaltered.");
     }
   }
 
@@ -1105,15 +1112,16 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
 
     GaeSdk oldSdk = sdkSelectionBlock.getInitialSdk();
 
-    UpdateType updateType = AppEngineUpdateProjectSdkCommand.computeUpdateType(
-        sdkSelectionBlock.getInitialSdk(), newSdk, isDefault);
+    UpdateType updateType =
+        AppEngineUpdateProjectSdkCommand.computeUpdateType(sdkSelectionBlock.getInitialSdk(),
+            newSdk, isDefault);
 
     /*
-     * Update the project classpath which will trigger the <WAR>/WEB-INF/lib
-     * jars to be updated, if the WAR output directory is managed
+     * Update the project classpath which will trigger the <WAR>/WEB-INF/lib jars to be updated, if
+     * the WAR output directory is managed
      */
     new AppEngineUpdateProjectSdkCommand(getJavaProject(), oldSdk, newSdk, updateType, null)
-      .execute();
+        .execute();
   }
 
   private void updateProjectWebInfLibFolder() throws CoreException, BackingStoreException,
@@ -1153,14 +1161,14 @@ public class GaeProjectPropertyPage extends AbstractProjectPropertyPage {
     IStatus hrdStatus = validateHrd();
     IStatus googleCloudSqlStatus = validateGoogleCloudSql();
 
-    updateStatus(new IStatus[] {
-        useGaeStatus, sdkStatus, appIdStatus, versionStatus, hrdStatus, googleCloudSqlStatus});
+    updateStatus(new IStatus[] {useGaeStatus, sdkStatus, appIdStatus, versionStatus, hrdStatus,
+        googleCloudSqlStatus});
   }
 
   private IStatus validateGoogleCloudSql() {
     GaeSdk sdk = sdkSelectionBlock.getSdkSelection().getSelectedSdk();
-    boolean googleCloudSqlSupport = sdk != null
-        && sdk.getCapabilities().contains(GaeSdkCapability.GOOGLE_CLOUD_SQL);
+    boolean googleCloudSqlSupport =
+        sdk != null && sdk.getCapabilities().contains(GaeSdkCapability.GOOGLE_CLOUD_SQL);
 
     if (!useGoogleCloudSqlCheckbox.getSelection()) {
       // Ignore any configuration problems since Google Cloud SQL is not enabled

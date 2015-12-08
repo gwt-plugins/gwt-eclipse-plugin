@@ -56,6 +56,25 @@ Please provide a unit test(s) for any patch and if one doesn't exist it may not 
 
 * Jpa facet will turn on if the artifact `<groupId>javax.jdo</groupId> <artifactId>jdo-api</artifactId>` exists.
 
+##~/.m2/settings.xml
+Setup the oauth credentials for Google Login
+
+  <!-- inject properties into builds -->
+  <profiles>
+    <profile>
+      <id>inject-application-props</id>
+      <properties>
+        <!-- https://console.developers.google.com/apis/credentials?project=ide-plugin -->
+        <gwt.eclipse.plugin.oauth.id>xxx</gwt.eclipse.plugin.oauth.id>
+        <gwt.eclipse.plugin.oauth.secret>xxxx</gwt.eclipse.plugin.oauth.secret>
+      </properties>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>inject-application-props</activeProfile>
+  </activeProfiles>
+
 
 ##GPE V1 Setup
 

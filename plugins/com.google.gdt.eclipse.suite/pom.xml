@@ -20,8 +20,36 @@
       <resource>
         <directory>src</directory>
         <filtering>true</filtering>
+        <includes>
+          <include>**/oauth.properties</include>
+        </includes>
       </resource>
     </resources>
+
+    <plugins>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.7</version>
+          <executions>
+            <execution>
+              <id>inject-properties</id>
+              <phase>install</phase>
+              <goals>
+                <goal>resources</goal>
+              </goals>
+            </execution>
+            <!-- Just in case this is used instead of install -->
+            <execution>
+              <id>inject-properties</id>
+              <phase>package</phase>
+              <goals>
+                <goal>resources</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+    </plugins>
 
   </build>
 
