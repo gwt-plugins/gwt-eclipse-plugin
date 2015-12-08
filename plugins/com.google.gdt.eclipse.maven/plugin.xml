@@ -39,6 +39,7 @@
             class="com.google.gdt.eclipse.maven.launch.processors.XXMaxPermSizeArgumentProcessor">
       </launchConfigVmArgProcessor>
    </extension>
+   
    <extension
          point="org.eclipse.m2e.core.projectConfigurators">
       <configurator
@@ -48,6 +49,7 @@
             secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator">
       </configurator>
    </extension>
+   
    <extension
          point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
    </extension>
