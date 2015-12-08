@@ -18,6 +18,10 @@ package com.google.gdt.eclipse.suite.auth;
  * Placeholder constants.
  */
 public class Constants {
-  public static final String ID = "placeholder";
-  public static final String SECRET = "placeholder";
+
+  // The properties are located in settings.xml
+  // https://console.developers.google.com/apis/credentials/domainverification?project=ide-plugin
+  public static final String ID = "${gwt.eclipse.plugin.oauth.id}";
+  public static final String SECRET = "${gwt.eclipse.plugin.oauth.secret}";
+
 }

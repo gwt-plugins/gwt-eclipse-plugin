@@ -78,7 +78,7 @@
         <version>1.6</version>
         <executions>
           <execution>
-            <id>unzip</id>
+            <id>unzip-gae</id>
             <phase>process-resources</phase>
             <configuration>
               <tasks>
@@ -89,16 +89,9 @@
               <goal>run</goal>
             </goals>
           </execution>
-        </executions>
-      </plugin>
-      
-       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.6</version>
-        <executions>
+          
           <execution>
-            <id>unzip</id>
+            <id>unzip-gwt</id>
             <phase>process-resources</phase>
             <configuration>
               <tasks>
