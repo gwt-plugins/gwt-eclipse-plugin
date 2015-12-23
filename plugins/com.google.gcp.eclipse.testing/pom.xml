@@ -13,35 +13,4 @@
   <version>0.0.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
-  <build>
-    <plugins>
-      <!-- This is used when GAE_HOME is not set and this is for GaeProjectTestUtil.installGaeTestSdk() -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy</id>
-            <phase>validate</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <!-- Downloads App Engine SDK and deposits it in the ./resources directory -->
-                <artifactItem>
-                  <groupId>com.google.appengine</groupId>
-                  <artifactId>appengine-java-sdk</artifactId>
-                  <version>1.9.17</version>
-                  <type>zip</type>
-                  <outputDirectory>${basedir}/resources</outputDirectory>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-    </plugins>
-  </build>
 </project>
