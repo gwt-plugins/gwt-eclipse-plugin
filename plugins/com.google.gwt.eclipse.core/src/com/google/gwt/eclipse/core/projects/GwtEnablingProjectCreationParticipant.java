@@ -23,8 +23,11 @@ import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
  * Sets up GWT on the project being created.
  */
 public class GwtEnablingProjectCreationParticipant implements Participant {
+
+  @Override
   public void updateWebAppProjectCreator(IWebAppProjectCreator creator) {
     creator.addContainerPath(GWTRuntimeContainer.getDefaultRuntimePath());
     creator.addNature(GWTNature.NATURE_ID);
   }
+
 }

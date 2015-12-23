@@ -55,10 +55,15 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.DebugUITools;
@@ -89,6 +94,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.management.ReflectionException;
 
 /**
@@ -244,6 +250,14 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
 
   private String[] templateSources;
 
+  private boolean buildAnt;
+
+  private boolean buildMaven;
+
+  private IJavaProject createdJavaProject;
+
+  private IProgressMonitor monitor;
+
   protected WebAppProjectCreator() {
     // Always a java project
     natureIds.add(JavaCore.NATURE_ID);
@@ -285,7 +299,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
   @Override
   public void create(IProgressMonitor monitor) throws CoreException, SdkException,
       ClassNotFoundException, BackingStoreException, IOException {
-
+    this.monitor = monitor;
     boolean useGwt = natureIds.contains(GWTNature.NATURE_ID);
     boolean useGae = natureIds.contains(GaeNature.NATURE_ID);
 
@@ -344,7 +358,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     NatureUtils.addNatures(project, natureIds);
 
     // Create the java project
-    IJavaProject javaProject = JavaCore.create(project);
+    createdJavaProject = JavaCore.create(project);
 
     // Create a source folder and add it to the raw classpath
     IResource warFolder = project.findMember(WebAppUtilities.DEFAULT_WAR_DIR_NAME);
@@ -355,7 +369,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
       WebAppUtilities.setDefaultWarSettings(project);
 
       // Set the default output directory
-      WebAppUtilities.setOutputLocationToWebInfClasses(javaProject, monitor);
+      WebAppUtilities.setOutputLocationToWebInfClasses(createdJavaProject, monitor);
 
       /*
        * Copy files into the web-inf lib folder. This code assumes that it is running in a context
@@ -363,12 +377,12 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
        */
       Sdk gwtSdk = getGWTSdk();
       if (gwtSdk != null) {
-        new GWTUpdateWebInfFolderCommand(javaProject, gwtSdk).execute();
+        new GWTUpdateWebInfFolderCommand(createdJavaProject, gwtSdk).execute();
       }
 
       Sdk gaeSdk = getGaeSdk();
       if (gaeSdk != null) {
-        new AppEngineUpdateWebInfFolderCommand(javaProject, gaeSdk).execute();
+        new AppEngineUpdateWebInfFolderCommand(createdJavaProject, gaeSdk).execute();
       }
     }
 
@@ -377,16 +391,21 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     GdtPreferences.setProjectMigratorVersion(project, ProjectMigrator.CURRENT_VERSION);
 
     if (useGae) {
-      setGaeDefaults(javaProject);
+      setGaeDefaults(createdJavaProject);
     }
-    setProjectClasspath(javaProject, srcFolder, monitor);
+
+    if (!buildMaven) { // Do not do this when using Maven, b/c Maven will configure the Classpath
+      setProjectClasspath(createdJavaProject, srcFolder, monitor);
+    }
 
     if (useGae) {
       // Update WEB-INF folder to get the latest datanucleus jars.
-      new AppEngineUpdateWebInfFolderCommand(javaProject, getGaeSdk()).execute();
+      new AppEngineUpdateWebInfFolderCommand(createdJavaProject, getGaeSdk()).execute();
     }
 
-    createLaunchConfig(project);
+    if (!buildMaven) { // This would have to come after maven extension configuration
+      createLaunchConfig(project);
+    }
 
     // Created a faceted project. This is long-running and hence run in a
     // separate job.
@@ -396,6 +415,33 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     if (useGae) {
       saveAppIdToAppEngineWebXml(project);
     }
+
+    // Allow other extensions to run after project creation
+    includeExtensionPartipants();
+  }
+
+  private void includeExtensionPartipants() throws CoreException {
+    IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+    IExtensionPoint extensionPoint =
+        extensionRegistry
+            .getExtensionPoint("com.google.gdt.eclipse.suite.webAppCreatorParticipant");
+    if (extensionPoint == null) {
+      return;
+    }
+    IExtension[] extensions = extensionPoint.getExtensions();
+    for (IExtension extension : extensions) {
+      IConfigurationElement[] configurationElements = extension.getConfigurationElements();
+      for (IConfigurationElement configurationElement : configurationElements) {
+        Object createExecutableExtension = configurationElement.createExecutableExtension("class");
+        Participant participant = (Participant) createExecutableExtension;
+        participant.updateWebAppProjectCreator(this);
+      }
+    }
+  }
+
+  @Inject
+  public void doSomething(IExtensionRegistry registry) {
+    registry.getConfigurationElementsFor("com.google.gdt.eclipse.suite.webAppCreatorParticipant");
   }
 
   public List<IPath> getContainerPaths() {
@@ -447,6 +493,28 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
   @Override
   public void setAppId(String appId) {
     this.appId = appId;
+  }
+
+  @Override
+  public void setBuildAnt(boolean buildAnt) {
+    this.buildAnt = buildAnt;
+    if (buildAnt) {
+      addTemplate("ant");
+    }
+  }
+
+  @Override
+  public void setBuildMaven(boolean buildMaven) {
+    this.buildMaven = buildMaven;
+    if (buildMaven) {
+      addTemplate("maven");
+    }
+  }
+
+  public void addTemplate(String template) {
+    String[] result = Arrays.copyOf(templates, templates.length + 1);
+    result[templates.length] = template;
+    templates = result;
   }
 
   public void setContainerPaths(List<IPath> containerPaths) {
@@ -789,4 +857,34 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
           getGaeDatanucleusVersion(sdk));
     }
   }
+
+  /**
+   * Return the Java project created. This will only work half way through the process.
+   */
+  @Override
+  public IJavaProject getCreatedJavaProject() {
+    return createdJavaProject;
+  }
+
+  /**
+   * Build a Maven project.
+   */
+  @Override
+  public boolean getBuildMaven() {
+    return buildMaven;
+  }
+
+  /**
+   * Build a Ant project.
+   */
+  @Override
+  public boolean getBuiltAnt() {
+    return buildAnt;
+  }
+
+  @Override
+  public IProgressMonitor getProgressMonitor() {
+    return monitor;
+  }
+
 }

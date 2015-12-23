@@ -165,6 +165,9 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
   private Button generateSampleCodeCheckbox;
 
+  private Button generateMavenCodeCheckbox;
+  private Button generateAntCodeCheckbox;
+
   private Button noAppIdButton;
 
   private Button useAppIdButton;
@@ -172,6 +175,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
   private Text useAppIdText;
 
   private Button browseAppIdButton;
+  private Group otherOptionsGroup;
 
   public NewWebAppProjectWizardPage() {
     super("createProject");
@@ -186,55 +190,63 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     }
   }
 
+  @Override
   public void createControl(Composite parent) {
-    Composite container = new Composite(parent, SWT.NULL);
+
+    final ScrolledComposite scroller = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+
     final GridLayout gridLayout = new GridLayout();
-    container.setLayout(gridLayout);
-    setControl(container);
+
+    Composite containerOfComponents = new Composite(scroller, SWT.NULL);
+    containerOfComponents.setLayout(gridLayout);
+
+    setControl(containerOfComponents);
 
     // TODO: convert these fields to use StringDialogField instead?
 
     // Project name
-    final Label projectNameLabel = new Label(container, SWT.NONE);
+    final Label projectNameLabel = new Label(containerOfComponents, SWT.NONE);
     projectNameLabel.setText("Project name:");
 
-    projectNameText = new Text(container, SWT.BORDER);
+    projectNameText = new Text(containerOfComponents, SWT.BORDER);
     final GridData gd1 = new GridData(GridData.FILL_HORIZONTAL);
     gd1.horizontalSpan = 2;
     projectNameText.setLayoutData(gd1);
     projectNameText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         updateControls();
       }
     });
 
     // Package
-    final Label packageLabel = new Label(container, SWT.NONE);
+    final Label packageLabel = new Label(containerOfComponents, SWT.NONE);
     packageLabel.setText("Package: (e.g. com.example.myproject)");
 
-    packageText = new Text(container, SWT.BORDER);
+    packageText = new Text(containerOfComponents, SWT.BORDER);
     final GridData gd2 = new GridData(GridData.FILL_HORIZONTAL);
     gd2.horizontalSpan = 2;
     packageText.setLayoutData(gd2);
     packageText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         updateControls();
       }
     });
 
-    createLocationGroup(container);
+    createLocationGroup(containerOfComponents);
 
-    createGoogleSdkGroup(container);
+    createGoogleSdkGroup(containerOfComponents);
 
-    createIdentifiersGroup(container);
+    createIdentifiersGroup(containerOfComponents);
 
-    createOtherOptionsGroup(container);
+    createOtherOptionsGroup(containerOfComponents);
 
-    final ScrolledComposite scroller = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+
     scroller.setExpandHorizontal(true);
     scroller.setExpandVertical(true);
-    scroller.setContent(container);
-    scroller.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+    scroller.setContent(containerOfComponents);
+    scroller.setMinSize(containerOfComponents.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
     updateControls();
     projectNameText.forceFocus();
@@ -359,6 +371,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     gaeSelectionBlock = new GaeWorkspaceSdkSelectionBlock(googleSdkGroup, SWT.NONE);
 
     gaeSelectionBlock.addSdkSelectionListener(new SdkSelectionBlock.SdkSelectionListener() {
+      @Override
       public void onSdkSelection(SdkSelectionEvent e) {
         updateControls();
       }
@@ -374,6 +387,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
         + "\">High Replication Datastore (HRD)</a> by default.");
     gaeHrdLink.setToolTipText(GaeProjectPropertyPage.APPENGINE_LOCAL_HRD_URL);
     gaeHrdLink.addListener(SWT.Selection, new Listener() {
+      @Override
       public void handleEvent(Event ev) {
         BrowserUtilities.launchBrowserAndHandleExceptions(ev.text);
       }
@@ -381,8 +395,9 @@ public class NewWebAppProjectWizardPage extends WizardPage {
   }
 
   private void createGoogleSdkGroup(Composite container) {
-    int widthIndent = PixelConverterFactory.createPixelConverter(this.getControl())
-        .convertWidthInCharsToPixels(2);
+    int widthIndent =
+        PixelConverterFactory.createPixelConverter(this.getControl())
+            .convertWidthInCharsToPixels(2);
 
     Group googleSdkGroup = new Group(container, SWT.NONE);
     googleSdkGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -393,10 +408,12 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     googleSdkGroup.setText("Google SDKs");
 
     SelectionListener useSdkCheckboxSelectionListener = new SelectionListener() {
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         updateControls();
       }
 
+      @Override
       public void widgetSelected(SelectionEvent e) {
         updateControls();
       }
@@ -420,6 +437,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     gwtSelectionBlock = new GwtWorkspaceSdkSelectionBlock(googleSdkGroup, SWT.NONE);
 
     gwtSelectionBlock.addSdkSelectionListener(new SdkSelectionBlock.SdkSelectionListener() {
+      @Override
       public void onSdkSelection(SdkSelectionEvent e) {
         updateControls();
       }
@@ -477,6 +495,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     useAppIdText.setLayoutData(gd61);
     useAppIdText.setEditable(true);
     useAppIdText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         validatePageAndSetCompletionStatus();
       }
@@ -556,6 +575,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     gd6.grabExcessHorizontalSpace = true;
     outDirText.setLayoutData(gd6);
     outDirText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         if (outDirCustomButton.getSelection()) {
           outDirCustom = getOutputDirectory();
@@ -579,28 +599,73 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
   private void createOtherOptionsGroup(Composite container) {
     // Other-options group
-    final Group otherOptionsGroup = new Group(container, SWT.NULL);
+    otherOptionsGroup = new Group(container, SWT.NULL);
     otherOptionsGroup.setText("Sample Code");
-    final GridData gd3 = new GridData(GridData.FILL_HORIZONTAL);
-    gd3.horizontalSpan = 2;
-    otherOptionsGroup.setLayoutData(gd3);
+    final GridData gd_otherOptionsGroup_1 = new GridData(GridData.FILL_HORIZONTAL);
+    gd_otherOptionsGroup_1.horizontalSpan = 2;
+    otherOptionsGroup.setLayoutData(gd_otherOptionsGroup_1);
 
-    final GridLayout otherGridLayout = new GridLayout();
-    otherGridLayout.numColumns = 3;
-    otherOptionsGroup.setLayout(otherGridLayout);
+    final GridLayout gl_otherOptionsGroup_1 = new GridLayout();
+    gl_otherOptionsGroup_1.numColumns = 2;
+    otherOptionsGroup.setLayout(gl_otherOptionsGroup_1);
 
     generateSampleCodeCheckbox = new Button(otherOptionsGroup, SWT.CHECK);
     generateSampleCodeCheckbox.setText("Generate project sample code");
     generateSampleCodeCheckbox.addSelectionListener(new SelectionListener() {
+      @Override
       public void widgetDefaultSelected(SelectionEvent e) {
         updateControls();
       }
 
+      @Override
       public void widgetSelected(SelectionEvent e) {
+        if (!generateSampleCodeCheckbox.getSelection()) {
+          generateAntCodeCheckbox.setSelection(false);
+          generateMavenCodeCheckbox.setSelection(false);
+        }
         updateControls();
       }
     });
     generateSampleCodeCheckbox.setSelection(true);
+    new Label(otherOptionsGroup, SWT.NONE);
+
+    generateAntCodeCheckbox = new Button(otherOptionsGroup, SWT.CHECK);
+    generateAntCodeCheckbox.setText("Generate an Ant Project");
+    generateAntCodeCheckbox.addSelectionListener(new SelectionListener() {
+      @Override
+      public void widgetDefaultSelected(SelectionEvent e) {
+        updateControls();
+      }
+
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        if (generateAntCodeCheckbox.getSelection()) {
+          generateSampleCodeCheckbox.setSelection(true);
+          generateMavenCodeCheckbox.setSelection(false);
+        }
+        updateControls();
+      }
+    });
+    generateAntCodeCheckbox.setSelection(false);
+
+    generateMavenCodeCheckbox = new Button(otherOptionsGroup, SWT.CHECK);
+    generateMavenCodeCheckbox.setText("Generate a Maven Project");
+    generateMavenCodeCheckbox.addSelectionListener(new SelectionListener() {
+      @Override
+      public void widgetDefaultSelected(SelectionEvent e) {
+        updateControls();
+      }
+
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+        if (generateMavenCodeCheckbox.getSelection()) {
+          generateSampleCodeCheckbox.setSelection(true);
+          generateAntCodeCheckbox.setSelection(false);
+        }
+        updateControls();
+      }
+    });
+    generateMavenCodeCheckbox.setSelection(false);
   }
 
   private void enableIdentifierGroup(boolean enable) {
@@ -619,7 +684,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     if (outDirWorkspaceButton.getSelection()) {
       outDirLabel.setEnabled(false);
       outDirText.setEnabled(false);
-      outDirBrowseButton.setEnabled(false);
+      outDirBrowseButton.setEnabled(true);
 
       String outDir = workspaceDirectory;
       if (getProjectName().length() > 0) {
@@ -707,8 +772,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
       IPath outPath = new Path(getOutputDirectory());
       if (outDirWorkspaceButton.getSelection()) {
         if (outPath.toFile().exists()) {
-          setMessage("A resource with the project name already exists in the workspace root",
-              ERROR);
+          setMessage("A resource with the project name already exists in the workspace root", ERROR);
           return;
         }
       }
@@ -739,7 +803,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
       // If we are using GAE then an SDK must be selected
       if (useGaeCheckbox.getSelection()) {
-
         Sdk selectedGaeSdk = getSelectedGaeSdk();
         if (selectedGaeSdk == null) {
           setMessage("Please configure an App Engine SDK.", ERROR);
@@ -791,4 +854,13 @@ public class NewWebAppProjectWizardPage extends WizardPage {
       setPageComplete(pageComplete);
     }
   }
+
+  public boolean getBuildAnt() {
+    return generateAntCodeCheckbox.getSelection();
+  }
+
+  public boolean getBuildMaven() {
+    return generateMavenCodeCheckbox.getSelection();
+  }
+
 }
