@@ -33,7 +33,7 @@
           <version>2.7</version>
           <executions>
             <execution>
-              <id>inject-properties</id>
+              <id>inject-properties1</id>
               <phase>install</phase>
               <goals>
                 <goal>resources</goal>
@@ -41,7 +41,7 @@
             </execution>
             <!-- Just in case this is used instead of install -->
             <execution>
-              <id>inject-properties</id>
+              <id>inject-properties2</id>
               <phase>package</phase>
               <goals>
                 <goal>resources</goal>
