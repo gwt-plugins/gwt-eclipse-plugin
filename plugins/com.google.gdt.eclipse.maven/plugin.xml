@@ -53,4 +53,11 @@
    <extension
          point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
    </extension>
+   
+   <extension
+         point="com.google.gdt.eclipse.suite.webAppCreatorParticipant">
+      <client
+            class="com.google.gdt.eclipse.maven.projects.MavenEnablingWebAppCreatorParicipant"></client>
+   </extension>
+   
 </plugin>

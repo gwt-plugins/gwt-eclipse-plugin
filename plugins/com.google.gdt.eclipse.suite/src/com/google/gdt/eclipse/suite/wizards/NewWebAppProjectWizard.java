@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- * 
+ *
  *  All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -42,7 +42,7 @@ import java.net.URI;
 
 /**
  * Creates a new web application project.
- * 
+ *
  * TODO: The progress monitors are not being used correctly.
  */
 @SuppressWarnings("restriction")
@@ -68,6 +68,10 @@ public class NewWebAppProjectWizard extends NewElementWizard
   private boolean useGWT;
 
   private boolean isGenerateEmptyProject;
+
+  private boolean buildAnt;
+
+  private boolean buildMaven;
 
   public NewWebAppProjectWizard() {
   }
@@ -107,6 +111,8 @@ public class NewWebAppProjectWizard extends NewElementWizard
     locationURI = newProjectWizardPage.getCreationLocationURI();
     isGenerateEmptyProject = newProjectWizardPage.isGenerateEmptyProject();
     appId = newProjectWizardPage.getAppId();
+    buildAnt = newProjectWizardPage.getBuildAnt();
+    buildMaven = newProjectWizardPage.getBuildMaven();
 
     /**
      * HACK: We need to make sure that the DebugUITools plugin (and the
@@ -134,12 +140,13 @@ public class NewWebAppProjectWizard extends NewElementWizard
       throws InterruptedException, CoreException {
     try {
       IWebAppProjectCreator wapc = ProjectUtilities.createWebAppProjectCreator();
-
       wapc.setAppId(appId);
       wapc.setProjectName(projectName);
       wapc.setPackageName(packageName);
       wapc.setLocationURI(locationURI);
       wapc.setGenerateEmptyProject(isGenerateEmptyProject);
+      wapc.setBuildAnt(buildAnt);
+      wapc.setBuildMaven(buildMaven);
 
       if (useGae) {
         wapc.addContainerPath(gaeSdkContainerPath);
