@@ -45,8 +45,7 @@
       <configurator
             class="com.google.gdt.eclipse.maven.configurators.GoogleProjectConfigurator"
             id="com.google.gdt.eclipse.maven.googleProjectConfigurator"
-            name="Google Project Configurator"
-            secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator">
+            name="Google Project Configurator"> <!-- secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator" -->
       </configurator>
    </extension>
    
