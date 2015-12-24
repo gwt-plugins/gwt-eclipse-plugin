@@ -24,8 +24,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.wst.sse.core.StructuredModelManager;
 import org.eclipse.wst.sse.core.internal.provisional.IModelManager;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMDocument;
@@ -87,9 +89,9 @@ public class ModuleFile extends AbstractModule {
 
   /**
    * Adds a new entry point to a module.
-   * 
+   *
    * @param qualifiedTypeName name of the entry point class, which should
-   *          com.google.gwt.core.client.EntryPoint
+   *        com.google.gwt.core.client.EntryPoint
    * @throws Exception if there was a problem modifying or saving the module XML
    */
   public void addEntryPoint(final String qualifiedTypeName) throws Exception {
@@ -112,7 +114,7 @@ public class ModuleFile extends AbstractModule {
 
   /**
    * Returns the backing IFile for the module XML file.
-   * 
+   *
    * @return IFile referencing the module XML
    */
   public IFile getFile() {
@@ -121,12 +123,11 @@ public class ModuleFile extends AbstractModule {
   }
 
   /**
-   * Returns the IFolder corresponding to a path relative to this module. The
-   * IFolder is just a resource handle; call its exists() method before using.
-   * 
-   * TODO: wrap public, source, and super-src paths in a class and add this as
-   * an instance method?
-   * 
+   * Returns the IFolder corresponding to a path relative to this module. The IFolder is just a
+   * resource handle; call its exists() method before using.
+   *
+   * TODO: wrap public, source, and super-src paths in a class and add this as an instance method?
+   *
    * @param moduleRelativePath module-relative path
    * @return IFolder corresponding to the path
    */
@@ -153,18 +154,18 @@ public class ModuleFile extends AbstractModule {
     return line[0];
   }
 
+  @Override
   public boolean isBinary() {
     return false;
   }
 
   /**
-   * Returns whether a folder is on the public path of this module. The public
-   * paths include the paths explicitly declared with
-   * <code>&lt;public&gt;</code> tags and all of their descendant sub-folders.
-   * 
+   * Returns whether a folder is on the public path of this module. The public paths include the
+   * paths explicitly declared with <code>&lt;public&gt;</code> tags and all of their descendant
+   * sub-folders.
+   *
    * @param folder the folder to check
-   * @return <code>true</code> if this folder is on a public path, and
-   *         <code>false</code> otherwise
+   * @return <code>true</code> if this folder is on a public path, and <code>false</code> otherwise
    */
   public boolean isPublicPath(IFolder folder) {
     IFolder[] publicFolders = getFolders(getPublicPaths());
@@ -193,19 +194,19 @@ public class ModuleFile extends AbstractModule {
 
   /**
    * <p>
-   * Returns whether a package is on the client source path of this module. The
-   * source paths include the paths explicitly declared with
-   * <code>&lt;source&gt;</code> tags and all of their descendant packages.
+   * Returns whether a package is on the client source path of this module. The source paths include
+   * the paths explicitly declared with <code>&lt;source&gt;</code> tags and all of their descendant
+   * packages.
    * </p>
    * <p>
-   * For example, if a module is located in <code>com.hello</code> and has the
-   * default client source path "client", then <code>com.hello.client</code>
-   * and <code>com.hello.client.utils</code> would both return true.
+   * For example, if a module is located in <code>com.hello</code> and has the default client source
+   * path "client", then <code>com.hello.client</code> and <code>com.hello.client.utils</code> would
+   * both return true.
    * </p>
-   * 
+   *
    * @param pckg package to check
-   * @return <code>true</code> if this package is on a client source path, and
-   *         <code>false</code> otherwise
+   * @return <code>true</code> if this package is on a client source path, and <code>false</code>
+   *         otherwise
    */
   public boolean isSourcePackage(IPackageFragment pckg) {
     IResource resource = pckg.getResource();
@@ -234,6 +235,12 @@ public class ModuleFile extends AbstractModule {
   protected String doGetPackageName() {
     IFolder moduleFolder = (IFolder) getFile().getParent();
     IJavaElement javaElement = JavaCore.create(moduleFolder);
+
+    // For GWT maven plugin 2, its module is in src/main
+    if (moduleFolder.toString().contains("src/main")) {
+      javaElement = findSourceFolderElement(moduleFolder);
+    }
+
     if (javaElement != null) {
       if (javaElement.getElementType() == IJavaElement.PACKAGE_FRAGMENT) {
         return javaElement.getElementName();
@@ -245,6 +252,34 @@ public class ModuleFile extends AbstractModule {
     return "";
   }
 
+  /**
+   * Find the Source folder for the src/main/.../client
+   *
+   * @param moduleFolder
+   * @return The source package java for client
+   */
+  private IJavaElement findSourceFolderElement(IFolder moduleFolder) {
+    // TODO red the source attrbute in the module and find it?
+    IFolder folderSourcePackage = findSourcePackage(moduleFolder, "client");
+    if (folderSourcePackage == null) {
+      return null;
+    }
+
+    IJavaProject javaProject = JavaCore.create(folderSourcePackage.getProject());
+    if (javaProject == null) {
+      return null;
+    }
+
+    try {
+      IPackageFragment clientPackage = javaProject.findPackageFragment(folderSourcePackage.getFullPath());
+      return clientPackage;
+    } catch (JavaModelException e) {
+      e.printStackTrace();
+    }
+
+    return null;
+  }
+
   private IFolder[] getFolders(List<IPath> paths) {
     List<IFolder> folders = new ArrayList<IFolder>();
     for (IPath path : paths) {
@@ -254,6 +289,34 @@ public class ModuleFile extends AbstractModule {
       }
     }
     return folders.toArray(new IFolder[0]);
+  }
+
+  /**
+   * Find the folder with name.
+   *
+   * @param folder
+   * @param name
+   * @return the folder found
+   */
+  private IFolder findSourcePackage(IFolder folder, String name) {
+    IResource[] members = null;
+    try {
+      members = folder.members();
+    } catch (CoreException e) {
+      return null;
+    }
+    if (members == null) {
+      return null;
+    }
+    for (IResource member : members) {
+      if (member.getType() == IResource.FOLDER) {
+        if (member.getName().equals(name)) {
+          return folder;
+        }
+        return findSourcePackage((IFolder) member, name);
+      }
+    }
+    return null;
   }
 
 }
