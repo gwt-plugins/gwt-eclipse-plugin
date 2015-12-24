@@ -48,7 +48,7 @@
          point="org.eclipse.ui.newWizards">
       <category
             id="com.google.gwt.eclipse.core.newWizards"
-            name="Google Web Toolkit">
+            name="GWT">
       </category>
       <wizard
             category="com.google.gwt.eclipse.core.newWizards"
@@ -417,7 +417,7 @@
       <classpathContainerPage
             class="com.google.gwt.eclipse.core.runtime.ui.GWTRuntimeContainerPage"
             id="com.google.gwt.eclipse.core.GWT_CONTAINER"
-            name="Google Web Toolkit">
+            name="GWT">
       </classpathContainerPage>
    </extension>
    
@@ -712,6 +712,7 @@
             class="com.google.gwt.eclipse.core.GWTDeploymentParticipant">
       </deploymentParticipant>
    </extension>
+
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -721,10 +722,11 @@
          <action
                class="com.google.gwt.eclipse.core.actions.ProjectPropertiesAction"
                id="com.google.gwt.eclipse.core.popupMenu.project.gwtSettings"
-               label="Web Toolkit Settings..."
+               label="GWT Classic Settings..."
                menubarPath="com.google.gdt.eclipse.suite.popupMenu.project/settingsContent">
          </action>
       </objectContribution>
+      
       <objectContribution
             adaptable="true"
             id="com.google.gwt.eclipse.core.popupMenus.project.GWTCompile"
@@ -764,7 +766,7 @@
    </extension>
    <extension
          id="gwtProjectValidator"
-         name="Google Web Toolkit Project Validator"
+         name="GWT Project Validator"
          point="org.eclipse.core.resources.builders">
       <builder
             callOnEmptyDelta="true"
@@ -777,7 +779,7 @@
    </extension>
    <extension
          id="gwtProjectProblemMarker"
-         name="Google Web Toolkit Problem"
+         name="GWT Problem"
          point="org.eclipse.core.resources.markers">
       <super
             type="org.eclipse.core.resources.problemmarker">
@@ -795,7 +797,7 @@
    </extension>
    <extension
          id="javaProblemMarker"
-         name="Google Web Toolkit Java Problem"
+         name="GWT Java Problem"
          point="org.eclipse.core.resources.markers">
       <persistent
             value="true">
@@ -806,7 +808,7 @@
    </extension>
    <extension
          id="rpcProblemMarker"
-         name="Google Web Toolkit RPC Problem"
+         name="GWT RPC Problem"
          point="org.eclipse.core.resources.markers">
       <persistent
             value="true">
@@ -837,7 +839,7 @@
    </extension>
    <extension
          id="uiBinderProblemMarker"
-         name="Google Web Toolkit UiBinder Problem"
+         name="GWT UiBinder Problem"
          point="org.eclipse.core.resources.markers">
       <persistent
             value="true">
@@ -888,7 +890,7 @@
    </extension>
    <extension
          id="clientBundleProblemMarker"
-         name="Google Web Toolkit ClientBundle Problem"
+         name="GWT ClientBundle Problem"
          point="org.eclipse.core.resources.markers">
       <super
             type="com.google.gwt.eclipse.core.javaProblemMarker">
@@ -919,7 +921,7 @@
    </extension>
    <extension
          id="uiBinderJavaProblemMarker"
-         name="Google Web Toolkit UiBinder Problem"
+         name="GWT UiBinder Problem"
          point="org.eclipse.core.resources.markers">
       <super
             type="com.google.gwt.eclipse.core.javaProblemMarker">

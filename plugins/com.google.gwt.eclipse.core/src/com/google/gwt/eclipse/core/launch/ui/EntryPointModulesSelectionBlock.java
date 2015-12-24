@@ -61,13 +61,15 @@ public class EntryPointModulesSelectionBlock {
     @Override
     public String getText(Object element) {
       String qualifiedModuleName = (String) element;
-      return Signature.getSimpleName(qualifiedModuleName) + " - "
-          + Signature.getQualifier(qualifiedModuleName);
+      String moduleName = Signature.getSimpleName(qualifiedModuleName);
+      String packageName = Signature.getQualifier(qualifiedModuleName);
+      return moduleName + " - " + packageName;
     }
   }
 
   private class ModulesSelectionAdapter implements IListAdapter<String> {
 
+    @Override
     public void customButtonPressed(ListDialogField<String> field, int index) {
       List<String> beforeModules = modulesField.getElements();
 
@@ -83,9 +85,11 @@ public class EntryPointModulesSelectionBlock {
       notifyListenerIfChanged(beforeModules);
     }
 
+    @Override
     public void doubleClicked(ListDialogField<String> field) {
     }
 
+    @Override
     public void selectionChanged(ListDialogField<String> field) {
       modulesField.enableButton(IDX_REMOVE,
           !modulesField.getSelectedElements().isEmpty());

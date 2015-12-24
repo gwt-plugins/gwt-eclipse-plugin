@@ -24,6 +24,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 
@@ -76,6 +77,10 @@ public abstract class AbstractGoogleProjectConfigurator extends AbstractProjectC
           + " getGWtMavenPlugin=" + getGwtMavenPlugin(mavenProject));
       if (mavenProject != null && getGwtMavenPlugin(mavenProject) != null) {
         IProject project = request.getProject();
+
+        // Make sure it is a java project, GWT Maven Plugin 2 gwt-app will not auto configure as one
+        NatureUtils.addNature(project, JavaCore.NATURE_ID);
+
         doConfigure(mavenProject, project, request, monitor);
       }
     }
