@@ -117,7 +117,12 @@ public final class CloudEndpointsBuilder extends IncrementalProjectBuilder {
         if (isJavaFileResource(resource)) {
           ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
           List<IType> apiAnnotatedTypes = Lists.newArrayList();
-          SwarmAnnotationUtils.collectApiTypes(apiAnnotatedTypes, cu);
+          try {
+            SwarmAnnotationUtils.collectApiTypes(apiAnnotatedTypes, cu);
+          } catch (Exception e) {
+            // GWT supersource will fail if. Maven src/main/super/.* will fail b/c package is out of package path
+            return false;
+          }
           if (apiAnnotatedTypes.isEmpty()) {
             // no annotated types, check if annotation has been removed
             IType[] types = cu.getTypes();
