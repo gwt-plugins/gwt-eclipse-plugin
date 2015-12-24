@@ -1,20 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lifecycleMappingMetadata>
-      <pluginExecutions>
-        <pluginExecution>
-          <pluginExecutionFilter>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <versionRange>[1.0,)</versionRange>
-            <goals>
-              <goal>war</goal>
-            </goals>
-          </pluginExecutionFilter>
-          <action>
-            <configurator>
-              <id>com.google.gdt.eclipse.maven.googleProjectConfigurator</id>
-            </configurator>
-          </action>
-        </pluginExecution>
-      </pluginExecutions>
-  </lifecycleMappingMetadata>
+
+  <pluginExecutions>
+
+    <pluginExecution>
+      <pluginExecutionFilter>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <versionRange>[0.0,)</versionRange>
+        <goals>
+          <goal>war</goal>
+        </goals>
+      </pluginExecutionFilter>
+      <action>
+        <configurator>
+          <id>com.google.gdt.eclipse.maven.googleProjectConfigurator</id>
+        </configurator>
+      </action>
+    </pluginExecution>
+
+    <pluginExecution>
+      <pluginExecutionFilter>
+        <groupId>net.ltgt.gwt.maven</groupId>
+        <artifactId>gwt-maven-plugin</artifactId>
+        <versionRange>[0.0,)</versionRange>
+        <goals>
+          <goal>enforce-encoding</goal>
+        </goals>
+      </pluginExecutionFilter>
+      <action>
+        <configurator>
+          <id>com.google.gdt.eclipse.maven.googleProjectConfigurator</id>
+        </configurator>
+      </action>
+    </pluginExecution>
+
+  </pluginExecutions>
+
+</lifecycleMappingMetadata>
