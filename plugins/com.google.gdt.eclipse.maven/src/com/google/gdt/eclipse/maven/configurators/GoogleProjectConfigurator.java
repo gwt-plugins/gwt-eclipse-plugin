@@ -85,6 +85,8 @@ public class GoogleProjectConfigurator extends AbstractGoogleProjectConfigurator
   }
 
   /**
+   * Returns the war source directory such as src/main/webapp
+   *
    * @param config gwt-maven-maven config DOM
    * @return the {@link #WAR_SRC_DIR_PROPERTY_KEY} value from the config if it exists,
    *         {@link #WAR_SRC_DIR_DEFAULT} otherwise or if config is null
@@ -102,7 +104,8 @@ public class GoogleProjectConfigurator extends AbstractGoogleProjectConfigurator
   }
 
   @Override
-  public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
+  public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor)
+      throws CoreException {
     Activator.log("GoogleProjectConfigurator.configure invoked");
     super.configure(request, monitor);
   }
@@ -121,19 +124,20 @@ public class GoogleProjectConfigurator extends AbstractGoogleProjectConfigurator
         }, monitor);
 
     // retrieve gwt-maven-plugin configuration if it exists
-    Plugin gwtPlugin = getGwtMavenPlugin(mavenProject);
-    Xpp3Dom config = gwtPlugin == null ? null : (Xpp3Dom) gwtPlugin.getConfiguration();
+    Plugin gwtMavenPlugin = getGwtMavenPlugin(mavenProject);
+    Xpp3Dom mavenConfig = gwtMavenPlugin == null ? null : (Xpp3Dom) gwtMavenPlugin.getConfiguration();
 
     // Persist GWT nature settings
     if (!hasGwtNature) {
       Activator
-          .log("GoogleProjectConfigurator: Skipping maven configuration because GWT nature is false. hasGWTNature="
+          .log("GoogleProjectConfigurator: Skipping Maven configuration because GWT nature is false. hasGWTNature="
               + hasGwtNature);
+      // Exit no maven plugin found
       return;
     }
 
     try {
-      persistGwtNatureSettings(project, mavenProject, config);
+      persistGwtNatureSettings(project, mavenProject, mavenConfig);
     } catch (BackingStoreException exception) {
       Activator
           .logError("GoogleProjectConfigurator: Problem configuring maven project.", exception);
@@ -145,30 +149,54 @@ public class GoogleProjectConfigurator extends AbstractGoogleProjectConfigurator
    *
    * @param project
    * @param mavenProject
-   * @param config
+   * @param mavenConfig
    * @throws BackingStoreException
    */
-  private void persistGwtNatureSettings(IProject project, MavenProject mavenProject, Xpp3Dom config)
+  private void persistGwtNatureSettings(IProject project, MavenProject mavenProject, Xpp3Dom mavenConfig)
       throws BackingStoreException {
-    WebAppProjectProperties.setWarSrcDir(project, new Path(getWarSrcDir(config)));
-    WebAppProjectProperties.setWarSrcDirIsOutput(project, getLaunchFromHere(config));
+    IPath warOutDir = getWarOutDir(project, mavenProject);
 
-    String artifactId = mavenProject.getArtifactId();
-    String version = mavenProject.getVersion();
-    IPath location =
-        (project.getRawLocation() != null ? project.getRawLocation() : project.getLocation());
-    IPath warOut = null;
-    if (location != null && artifactId != null && version != null) {
-      warOut = location.append("target").append(artifactId + "-" + version);
-      WebAppProjectProperties.setLastUsedWarOutLocation(project, warOut);
-    }
+    WebAppProjectProperties.setWarSrcDir(project, new Path(getWarSrcDir(mavenConfig))); // src/main/webapp
+    WebAppProjectProperties.setWarSrcDirIsOutput(project, getLaunchFromHere(mavenConfig)); // false
+
+    // TODO the extension should be used, from WarArgProcessor
+    WebAppProjectProperties.setLastUsedWarOutLocation(project, warOutDir);
 
     String message = "GoogleProjectConfiguratior Maven: Success with setting up GWT Nature\n";
     message += "\tartifactId=" + mavenProject.getArtifactId() + "\n";
     message += "\tversion=" + mavenProject.getVersion() + "\n";
-    message += "\tlocation=" + location + "\n";
-    message += "\twarOut=" + warOut;
+    message += "\twarOutDir=" + warOutDir;
     Activator.log(message);
+  }
+
+  /**
+   * Get the war output directory.
+   *
+   * @param project
+   * @param mavenProject
+   * @return returns the war output path
+   */
+  private IPath getWarOutDir(IProject project, MavenProject mavenProject) {
+    String artifactId = mavenProject.getArtifactId();
+    String version = mavenProject.getVersion();
+    IPath locationOfProject =
+        (project.getRawLocation() != null ? project.getRawLocation() : project.getLocation());
+
+    IPath warOut = null;
+
+    if (isGwtMavenPlugin1(mavenProject) && locationOfProject != null && artifactId != null && version != null) {
+      // TODO if maven 2 plugin then use different war directory
+      // TODO: use <hostedWebapp/>
+      warOut = locationOfProject.append("target").append(artifactId + "-" + version);
+    } else if (isGwtMavenPlugin2(mavenProject)) {
+      // TODO look at Maven configuration
+      warOut = locationOfProject.append("target").append("gwt").append("devmode").append("war");
+    }
+
+    // TODO make the directory if it doesn't exist
+    warOut.toFile().mkdirs();
+
+    return warOut;
   }
 
   /**
@@ -189,16 +217,19 @@ public class GoogleProjectConfigurator extends AbstractGoogleProjectConfigurator
           GWTMavenRuntime.MAVEN_GWT_SERVLET_ARTIFACT_ID.equals(dependency.getArtifactId());
       if (hasGwtGroupId && (hasGwtUserArtivactId || hasGwtUserServletId)) {
         gwtVersion = dependency.getVersion();
-        Activator
-            .log("GoogleProjectConfigurator, Maven: Setting up Gwt Project. hasGwtGroupId="
-                + hasGwtGroupId + " hasGwtUser=" + hasGwtUserArtivactId + " hasGwtUserServletId="
-                + hasGwtUserServletId);
+        Activator.log("GoogleProjectConfigurator, Maven: Setting up Gwt Project. hasGwtGroupId="
+            + hasGwtGroupId + " hasGwtUser=" + hasGwtUserArtivactId + " hasGwtUserServletId="
+            + hasGwtUserServletId);
         break;
       }
     }
 
     Activator.log("GoogleProjectConfigurator, Maven: gwtVersion=" + gwtVersion);
 
+    resolveGwtDevJar(mavenProject, monitor,  gwtVersion);
+  }
+
+  private void resolveGwtDevJar(MavenProject mavenProject, IProgressMonitor monitor, String gwtVersion) {
     // Check that the pom.xml has GWT dependencies
     if (gwtVersion != null && !StringUtilities.isEmpty(gwtVersion)) {
       try {
