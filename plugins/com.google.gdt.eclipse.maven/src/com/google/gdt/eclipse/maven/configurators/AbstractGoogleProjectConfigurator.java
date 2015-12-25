@@ -75,6 +75,7 @@ public abstract class AbstractGoogleProjectConfigurator extends AbstractProjectC
       MavenProject mavenProject = request.getMavenProject();
       Activator.log("AbstractGoogleProjectConfigurator.configure mavenProject=" + mavenProject
           + " getGWtMavenPlugin=" + getGwtMavenPlugin(mavenProject));
+
       if (mavenProject != null && getGwtMavenPlugin(mavenProject) != null) {
         IProject project = request.getProject();
 
@@ -168,11 +169,37 @@ public abstract class AbstractGoogleProjectConfigurator extends AbstractProjectC
     return mavenProject.getPlugin(MAVEN_ECLIPSE_PLUGIN_ID);
   }
 
+  /**
+   * Get the first or second GWT Maven plugin.
+   *
+   * @param mavenProject
+   * @return GWT maven plugin one or two
+   */
   protected Plugin getGwtMavenPlugin(MavenProject mavenProject) {
     if (mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID2) != null) {
       return mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID2);
     }
     return mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID);
+  }
+
+  /**
+   * Returns true if the first GWT Maven plugin exists.
+   *
+   * @param mavenProject
+   * @return true if the first Maven plugin was used
+   */
+  protected boolean isGwtMavenPlugin1(MavenProject mavenProject) {
+    return mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID) != null;
+  }
+
+  /**
+   * Returns true if the second GWT Maven plugin exists.
+   *
+   * @param mavenProject
+   * @return true if the second GWT Maven plugin exists.
+   */
+  protected boolean isGwtMavenPlugin2(MavenProject mavenProject) {
+    return mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID2) != null;
   }
 
 }

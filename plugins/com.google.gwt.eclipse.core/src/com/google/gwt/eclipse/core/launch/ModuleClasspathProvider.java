@@ -16,6 +16,7 @@ package com.google.gwt.eclipse.core.launch;
 
 import com.google.common.collect.Lists;
 import com.google.gdt.eclipse.core.console.MessageConsoleUtilities;
+import com.google.gdt.eclipse.core.properties.WebAppProjectProperties;
 import com.google.gdt.eclipse.core.sdk.Sdk.SdkException;
 import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.GWTPluginLog;
@@ -232,7 +233,25 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
       logErrorIfMoreThanGWTSdkOnClassPath(proj, resolvedEntries);
     } catch (Exception e) {}
 
+    createWarOutDirectory(proj);
+
     return resolvedEntries;
+  }
+
+  /**
+   * Ensure that the war out directory is created. This may be a bit agressive.
+   * @param project
+   *
+   */
+  private void createWarOutDirectory(IJavaProject project) {
+    try {
+      IPath warOutPath = WebAppProjectProperties.getLastUsedWarOutLocation(project.getProject());
+      if (warOutPath != null) {
+        warOutPath.toFile().mkdirs();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   /**
