@@ -40,12 +40,24 @@
       </launchConfigVmArgProcessor>
    </extension>
    
+   <!-- packaging: war -->
    <extension
          point="org.eclipse.m2e.core.projectConfigurators">
       <configurator
             class="com.google.gdt.eclipse.maven.configurators.GoogleProjectConfigurator"
-            id="com.google.gdt.eclipse.maven.googleProjectConfigurator"
-            name="Google Project Configurator"> <!-- secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator" -->
+            id="com.google.gdt.eclipse.maven.gwtProjectConfigurator"
+            name="GWT Project Configurator" 
+            secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator">
+      </configurator>
+   </extension>
+   
+   <!-- packaging: gwt-app -->
+   <extension
+         point="org.eclipse.m2e.core.projectConfigurators">
+      <configurator
+            class="com.google.gdt.eclipse.maven.configurators.GoogleProjectConfigurator"
+            id="com.google.gdt.eclipse.maven.gwtProjectConfigurator2"
+            name="GWT Project Configurator">
       </configurator>
    </extension>
    
