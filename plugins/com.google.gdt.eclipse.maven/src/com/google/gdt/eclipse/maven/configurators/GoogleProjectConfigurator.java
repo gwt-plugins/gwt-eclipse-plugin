@@ -184,14 +184,17 @@ public class GoogleProjectConfigurator extends AbstractGoogleProjectConfigurator
 
     IPath warOut = null;
 
-    if (isGwtMavenPlugin1(mavenProject) && locationOfProject != null && artifactId != null && version != null) {
+    if (/*isGwtMavenPlugin1(mavenProject) && */ locationOfProject != null && artifactId != null && version != null) {
       // TODO if maven 2 plugin then use different war directory
-      // TODO: use <hostedWebapp/>
+      // TODO: use plugin1: <hostedWebapp/> or plugin2: webappDirectory
+      // TODO: could be use the outputDirectory
       warOut = locationOfProject.append("target").append(artifactId + "-" + version);
-    } else if (isGwtMavenPlugin2(mavenProject)) {
-      // TODO look at Maven configuration
-      warOut = locationOfProject.append("target").append("gwt").append("devmode").append("war");
     }
+
+    // if (isGwtMavenPlugin2(mavenProject)) {
+    // // TODO look at Maven configuration
+    // warOut = locationOfProject.append("target").append("gwt").append("devmode").append("war");
+    // }
 
     // TODO make the directory if it doesn't exist
     warOut.toFile().mkdirs();
