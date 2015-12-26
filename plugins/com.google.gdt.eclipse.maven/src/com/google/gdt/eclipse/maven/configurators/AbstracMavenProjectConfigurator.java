@@ -39,7 +39,7 @@ import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
  * installation. As long as these classes are only invoked through m2Eclipe's extension points,
  * other parts of this plugin can be used without requiring the m2Eclipse dependencies.
  */
-public abstract class AbstractGoogleProjectConfigurator extends AbstractProjectConfigurator {
+public abstract class AbstracMavenProjectConfigurator extends AbstractProjectConfigurator {
   /**
    * Optional callback interface for callers to get notifications before or after adding natures to
    * a project. Useful in cases where callers want to execute code before or after applying the
@@ -57,11 +57,10 @@ public abstract class AbstractGoogleProjectConfigurator extends AbstractProjectC
     protected void beforeAddingNature() {}
   }
 
-  protected static final String MAVEN_ECLIPSE_PLUGIN_ID =
-      "org.apache.maven.plugins:maven-eclipse-plugin";
-
-  protected static final String MAVEN_GWT_PLUGIN_ID = "org.codehaus.mojo:gwt-maven-plugin";
+  protected static final String MAVEN_ECLIPSE_PLUGIN_ID = "org.apache.maven.plugins:maven-eclipse-plugin";
+  protected static final String MAVEN_GWT_PLUGIN_ID1 = "org.codehaus.mojo:gwt-maven-plugin";
   protected static final String MAVEN_GWT_PLUGIN_ID2 = "net.ltgt.gwt.maven:gwt-maven-plugin";
+  protected static final String MAVEN_WAR_PLUGIN = "org.apache.maven.plugins:maven-war-plugin";
 
   /**
    * {@inheritDoc} In the case of a non-GWT project, we do nothing.
@@ -176,10 +175,28 @@ public abstract class AbstractGoogleProjectConfigurator extends AbstractProjectC
    * @return GWT maven plugin one or two
    */
   protected Plugin getGwtMavenPlugin(MavenProject mavenProject) {
-    if (mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID2) != null) {
-      return mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID2);
+    if (getGwtMavenPlugin2(mavenProject) != null) {
+      return getGwtMavenPlugin2(mavenProject);
     }
-    return mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID);
+    return getGwtMavenPlugin1(mavenProject);
+  }
+
+  protected Plugin getGwtMavenPlugin1(MavenProject mavenProject) {
+    return mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID1);
+  }
+
+  protected Plugin getGwtMavenPlugin2(MavenProject mavenProject) {
+    return mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID2);
+  }
+
+  /**
+   * Get the War plugin.
+   *
+   * @param mavenProject
+   * @return the war plugin.
+   */
+  protected Plugin getWarPlugin(MavenProject mavenProject) {
+    return mavenProject.getPlugin(MAVEN_WAR_PLUGIN);
   }
 
   /**
@@ -189,7 +206,7 @@ public abstract class AbstractGoogleProjectConfigurator extends AbstractProjectC
    * @return true if the first Maven plugin was used
    */
   protected boolean isGwtMavenPlugin1(MavenProject mavenProject) {
-    return mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID) != null;
+    return mavenProject.getPlugin(MAVEN_GWT_PLUGIN_ID1) != null;
   }
 
   /**
