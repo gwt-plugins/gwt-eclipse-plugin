@@ -69,6 +69,11 @@ public final class WebAppProjectProperties {
    */
   private static final String LAUNCH_CONFIG_EXTERNAL_URL_PREFIX = "launchConfigExternalUrlPrefix";
 
+  /**
+   * GWT Maven Plugin 2 ModuleName
+   */
+  private static final String GWT_MAVEN_MODULE_NAME = "gwtMavenModuleName";
+
   public static void addWarOutLocationChangedListener(
       IWarOutLocationChangedListener listener) {
     synchronized (warOutLocationChangedListeners) {
@@ -236,6 +241,17 @@ public final class WebAppProjectProperties {
       listener.warOutLocationChanged(project);
     }
   }
+
+  public static String getGwtMavenModuleName(IProject project) {
+    return getProjectProperties(project).get(GWT_MAVEN_MODULE_NAME, "");
+  }
+
+  public static void setGwtMavenModuleName(IProject project, String gwtMavenModuleName) throws BackingStoreException {
+    IEclipsePreferences prefs = getProjectProperties(project);
+    prefs.put(GWT_MAVEN_MODULE_NAME, gwtMavenModuleName);
+    prefs.flush();
+  }
+
 
   private WebAppProjectProperties() {
     // Not instantiable

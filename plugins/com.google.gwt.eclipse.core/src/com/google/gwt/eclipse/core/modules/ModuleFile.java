@@ -14,12 +14,14 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.modules;
 
+import com.google.gdt.eclipse.core.properties.WebAppProjectProperties;
 import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.util.Util;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -238,7 +240,7 @@ public class ModuleFile extends AbstractModule {
 
     // For GWT maven plugin 2, its module is in src/main
     if (moduleFolder.toString().contains("src/main")) {
-      javaElement = findSourceFolderElement(moduleFolder);
+      javaElement = getGwtMavenModuleName(moduleFolder.getProject());
     }
 
     if (javaElement != null) {
@@ -253,7 +255,49 @@ public class ModuleFile extends AbstractModule {
   }
 
   /**
+   * @param project
+   * @return
+   */
+  private IJavaElement getGwtMavenModuleName(IProject project) {
+    if (project == null) {
+      return null;
+    }
+
+    IFolder moduleFolder = (IFolder) getFile().getParent();
+
+    // For GWT maven plugin 2, its module is in src/main
+    if (!moduleFolder.toString().contains("src/main")) {
+      return null;
+    }
+
+    IJavaProject javaProject = JavaCore.create(project);
+    if (javaProject == null) {
+      return null;
+    }
+
+    String moduleName = WebAppProjectProperties.getGwtMavenModuleName(project);
+    if (moduleName == null || !moduleName.contains(".")) {
+      return null;
+    }
+
+    String[] moduleNameParts = moduleName.split("\\.");
+
+    IPath path = moduleFolder.getFullPath().append("java");
+    for (int i = 0; i < moduleNameParts.length - 1; i++) {
+      path = path.append(moduleNameParts[i]);
+    }
+
+    try {
+      return javaProject.findPackageFragment(path);
+    } catch (JavaModelException e) {
+      return null;
+    }
+  }
+
+  /**
    * Find the Source folder for the src/main/.../client
+   *
+   * TODO won't work b/c super source could have a client, or some other path before it.
    *
    * @param moduleFolder
    * @return The source package java for client
