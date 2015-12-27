@@ -175,7 +175,7 @@ public class MavenProjectConfigurator extends AbstracMavenProjectConfigurator {
    * Get the GWT Maven <hostedWebapp/> directory.
    *
    * @param mavenProject
-   * @return
+   * @return the webapp directory
    */
   private IPath getGwtMavenPluginHostedWebAppDirectory(MavenProject mavenProject) {
     Plugin warPlugin = getGwtMavenPlugin(mavenProject);
