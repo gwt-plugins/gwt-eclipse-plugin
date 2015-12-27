@@ -90,7 +90,7 @@ abstract class AbstractModule implements IModule {
 
   /**
    * Gets a list of attribute values for a particular type of element.
-   * 
+   *
    * @param doc the XML document
    * @param elementName the type of element to search
    * @param attrName the name of the attribute to get the value of
@@ -132,7 +132,7 @@ abstract class AbstractModule implements IModule {
 
   /**
    * Two modules are considered equal iff their qualified names are the same.
-   * 
+   *
    * Subclasses are expected to obey the same semantics.
    */
   @Override
@@ -150,9 +150,10 @@ abstract class AbstractModule implements IModule {
 
   /**
    * returns a list of the <add-linker name="[return value]"/>
-   * 
+   *
    * @return a list of the add linker names.
    */
+  @Override
   public List<String> getAddLinkers() {
     final List<String> ret = new ArrayList<String>();
 
@@ -168,6 +169,7 @@ abstract class AbstractModule implements IModule {
     return ret;
   }
 
+  @Override
   public String getCompiledName() {
     final String[] compiledName = new String[] {getQualifiedName()};
 
@@ -187,6 +189,7 @@ abstract class AbstractModule implements IModule {
     return compiledName[0];
   }
 
+  @Override
   public List<String> getEntryPoints() {
     final List<String> ret = new ArrayList<String>();
 
@@ -203,6 +206,7 @@ abstract class AbstractModule implements IModule {
     return ret;
   }
 
+  @Override
   public Set<IModule> getInheritedModules(final IJavaProject javaProject) {
     final Set<IModule> modules = new HashSet<IModule>();
 
@@ -226,10 +230,12 @@ abstract class AbstractModule implements IModule {
   }
 
 
+  @Override
   public String getPackageName() {
     return Signature.getQualifier(getQualifiedName());
   }
 
+  @Override
   public List<IPath> getPublicPaths() {
     final List<IPath> ret = new ArrayList<IPath>();
 
@@ -253,6 +259,7 @@ abstract class AbstractModule implements IModule {
     return ret;
   }
 
+  @Override
   public String getQualifiedName() {
     // Cache the qualified name
     if (qualifiedName == null) {
@@ -269,9 +276,10 @@ abstract class AbstractModule implements IModule {
 
   /**
    * Returns a list of the <set-configuration-property name="propertyName" value="[return value]"/>.
-   * 
+   *
    * @return a list of the set configuration values for the property name.
    */
+  @Override
   public List<String> getSetConfigurationProperty(final String propertyName) {
     final List<String> ret = new ArrayList<String>();
 
@@ -287,10 +295,12 @@ abstract class AbstractModule implements IModule {
     return ret;
   }
 
+  @Override
   public String getSimpleName() {
     return Signature.getSimpleName(getQualifiedName());
   }
 
+  @Override
   public List<IPath> getSourcePaths() {
     final List<IPath> ret = new ArrayList<IPath>();
 
