@@ -14,6 +14,7 @@
  *******************************************************************************/
 package com.google.appengine.eclipse.wtp.maven;
 
+import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.MojoExecution;
@@ -73,9 +74,9 @@ public class GaeProjectConfigurator extends WTPProjectConfigurator {
    * If there is a JPA artifact, turn on JPA or turn it off
    */
   private boolean isJpaProject(Model pom) {
-    List<Plugin> plugins = pom.getBuild().getPlugins();
-    for (Plugin plugin : plugins) {
-      if (Constants.JPA_ARTIFACT.equals(plugin.getArtifactId())) {
+    List<Dependency> dependencies = pom.getDependencies();
+    for (Dependency dependency : dependencies) {
+      if (Constants.JPA_ARTIFACT.equals(dependency.getArtifactId())) {
         return true;
       }
     }

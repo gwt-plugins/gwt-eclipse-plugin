@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.m2e.core.lifecyclemapping.model.IPluginExecutionMetadata;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
+import org.eclipse.m2e.core.project.MavenProjectChangedEvent;
 import org.eclipse.m2e.core.project.configurator.AbstractBuildParticipant;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.osgi.service.prefs.BackingStoreException;
@@ -62,10 +63,15 @@ public class MavenProjectConfigurator extends AbstracMavenProjectConfigurator {
   private static final String WAR_SRC_DIR_DEFAULT = "src/main/webapp";
 
   @Override
-  public AbstractBuildParticipant getBuildParticipant(IMavenProjectFacade projectFacade, MojoExecution execution,
+  public AbstractBuildParticipant getBuildParticipant(final IMavenProjectFacade projectFacade, MojoExecution execution,
       IPluginExecutionMetadata executionMetadata) {
     Activator.log("MavenProjectConfigurator.getBuildParticipant for Maven invoked");
     return super.getBuildParticipant(projectFacade, execution, executionMetadata);
+  }
+
+  @Override
+  public void mavenProjectChanged(MavenProjectChangedEvent event, IProgressMonitor monitor) throws CoreException {
+    super.mavenProjectChanged(event, monitor);
   }
 
   @Override

@@ -19,8 +19,10 @@ import com.google.appengine.eclipse.wtp.AppEnginePlugin;
 import com.google.appengine.eclipse.wtp.facet.IGaeFacetConstants;
 import com.google.appengine.eclipse.wtp.runtime.GaeRuntime;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 
 import org.apache.maven.model.Model;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jst.server.core.FacetUtil;
@@ -33,6 +35,8 @@ import org.eclipse.wst.common.project.facet.core.IFacetedProject.Action.Type;
 import org.eclipse.wst.common.project.facet.core.IFacetedProjectWorkingCopy;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.eclipse.wst.common.project.facet.core.runtime.IRuntime;
+import org.eclipse.wst.common.project.facet.core.runtime.RuntimeManager;
 
 import java.util.Set;
 
@@ -40,7 +44,8 @@ import java.util.Set;
  * Provides a method for determining whether an AppEngine facet (for either war or ear packaging)
  * should be added to a given project, and if so, adding it.
  */
-@SuppressWarnings("restriction") // DataModelImpl
+@SuppressWarnings("restriction")
+// DataModelImpl
 public class GaeFacetManager {
 
   /**
@@ -63,6 +68,15 @@ public class GaeFacetManager {
       AppEngineMavenPlugin.logError("Error ensuring that correct GAE SDK is installed", e);
       return;
     }
+
+    // Set the primary facet manager runtime
+    try {
+      setPrimaryFacetedRuntime(facetedProject.getProject(), monitor, FacetUtil.getRuntime(runtime.getRuntime()));
+    } catch (CoreException e) {
+      e.printStackTrace();
+      AppEngineMavenPlugin.logError("GaeFacetManager: wasn't able to set primary facet runtime.", e);
+    }
+
     try {
       IProjectFacet facetOfInterest = getFacetForPackaging(pom.getPackaging());
       if (!facetedProject.hasProjectFacet(facetOfInterest)) {
@@ -83,8 +97,8 @@ public class GaeFacetManager {
         facetIdOfInterest = Constants.GAE_EAR_FACET_ID;
         break;
       default:
-        AppEngineMavenPlugin.logError("Unexpected packaging \"" + packaging
-            + "\" for a project using " + Constants.APPENGINE_MAVEN_PLUGIN_ARTIFACT_ID, null);
+        AppEngineMavenPlugin.logError("Unexpected packaging \"" + packaging + "\" for a project using "
+            + Constants.APPENGINE_MAVEN_PLUGIN_ARTIFACT_ID, null);
         throw new EarlyExit();
     }
     return ProjectFacetsManager.getProjectFacet(facetIdOfInterest);
@@ -92,9 +106,8 @@ public class GaeFacetManager {
 
   // See
   // https://code.google.com/p/appengine-maven-plugin/source/browse/src/main/java/com/google/appengine/SdkResolver.java
-  private static void addFacetToProject(IProjectFacet facetOfInterest,
-      IFacetedProject facetedProject, GaeRuntime gaeRuntime, IProgressMonitor monitor)
-      throws EarlyExit {
+  private static void addFacetToProject(IProjectFacet facetOfInterest, IFacetedProject facetedProject,
+      GaeRuntime gaeRuntime, IProgressMonitor monitor) throws EarlyExit {
     IFacetedProjectWorkingCopy workingCopy = facetedProject.createWorkingCopy();
     workingCopy.addProjectFacet(facetOfInterest.getDefaultVersion());
     workingCopy.addTargetedRuntime(FacetUtil.getRuntime(gaeRuntime.getRuntime()));
@@ -108,22 +121,37 @@ public class GaeFacetManager {
     try {
       workingCopy.commitChanges(monitor);
     } catch (CoreException e) {
-      AppEngineMavenPlugin.logError("Error committing addition of " + facetOfInterest.getId()
-          + " facet to project", e);
+      AppEngineMavenPlugin.logError("Error committing addition of " + facetOfInterest.getId() + " facet to project", e);
       throw new EarlyExit();
     }
+  }
+
+  private static void setPrimaryFacetedRuntime(IProject project, IProgressMonitor monitor, IRuntime primaryRuntime)
+      throws CoreException {
+    IProjectFacet f = ProjectFacetsManager.getProjectFacet(IGaeFacetConstants.GAE_FACET_ID);
+    Set<IRuntime> runtimes = RuntimeManager.getRuntimes();
+    Set<IRuntime> gaeRuntimes = Sets.newHashSet();
+    // collect runtimes
+    for (IRuntime runtime : runtimes) {
+      if (runtime.supports(f)) {
+        gaeRuntimes.add(runtime);
+      }
+    }
+
+    IFacetedProject facetedProject = ProjectFacetsManager.create(project);
+    facetedProject.setTargetedRuntimes(gaeRuntimes, monitor);
+    facetedProject.setPrimaryRuntime(primaryRuntime, monitor);
   }
 
   // Sets a property that will be read by GaeFacetInstallDelegate to decide whether or not to
   // create a WTP classpath container with GAE SDK dependencies. A property value of true indicates
   // that we should not create the WTP classpath container, because we will be using the Maven
   // classpath container.
-  private static void markToUseMavenDependencies(IProjectFacet facet,
-      IFacetedProjectWorkingCopy workingCopy) {
+  private static void markToUseMavenDependencies(IProjectFacet facet, IFacetedProjectWorkingCopy workingCopy) {
     Object config = workingCopy.getProjectFacetAction(facet).getConfig();
     IDataModel model = (IDataModel) config;
-    model.addNestedModel(AppEnginePlugin.USE_MAVEN_DEPS_PROPERTY_NAME + ".model",
-        new DataModelImpl(new AbstractDataModelProvider() {
+    model.addNestedModel(AppEnginePlugin.USE_MAVEN_DEPS_PROPERTY_NAME + ".model", new DataModelImpl(
+        new AbstractDataModelProvider() {
           @Override
           public Set<?> getPropertyNames() {
             return ImmutableSet.of(AppEnginePlugin.USE_MAVEN_DEPS_PROPERTY_NAME);
