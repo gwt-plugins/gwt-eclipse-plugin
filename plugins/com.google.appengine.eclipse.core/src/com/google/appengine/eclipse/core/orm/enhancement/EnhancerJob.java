@@ -96,8 +96,10 @@ public class EnhancerJob extends WorkspaceJob {
     // that will be used for invoking the enhancer, because conflicting JARs from the Maven
     // repository are added to the classpath by some other mechanism that we do not understand and
     // possibly cannot control.
-    return MavenUtils.hasMavenNature(javaProject.getProject()) ?
-        removeDatanucleusJars(unfilteredClasspath) : unfilteredClasspath;
+
+    // NOTE use maven profile instead of removing them here
+    //return MavenUtils.hasMavenNature(javaProject.getProject()) ? removeDatanucleusJars(unfilteredClasspath) : unfilteredClasspath;
+    return unfilteredClasspath;
   }
 
   private static final List<String> removeDatanucleusJars(List<String> input) {

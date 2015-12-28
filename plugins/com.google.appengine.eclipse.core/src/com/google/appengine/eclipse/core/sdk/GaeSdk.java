@@ -220,9 +220,12 @@ public class GaeSdk extends AbstractSdk {
 
   // TODO: Get this info from the Appengine SDK info.
   public static final Set<String> GAE_DATANUCLEUS_FILES = Sets.newHashSet(
-      "datanucleus-appengine-1.0.10.final.jar", "datanucleus-core-1.1.5.jar",
-      "datanucleus-jpa-1.1.5.jar", "geronimo-jpa_3.0_spec-1.1.1.jar",
-      "geronimo-jta_1.1_spec-1.1.1.jar", "jdo2-api-2.3-eb.jar");
+      "datanucleus-appengine-1.0.10.final.jar", // datanucleus-appengine
+      "datanucleus-core-1.1.5.jar", // datanucleus-core
+      "datanucleus-jpa-1.1.5.jar", // datanucleus-jpa
+      "geronimo-jpa_3.0_spec-1.1.1.jar", // geronimo-jpa_2.0_spec
+      "geronimo-jta_1.1_spec-1.1.1.jar",  // geronimo-jta_1.1_spec
+      "jdo2-api-2.3-eb.jar"); // jdo-api
 
   private static final SdkFactory<GaeSdk> factory = new SdkFactory<GaeSdk>() {
     @Override
