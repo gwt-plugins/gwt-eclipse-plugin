@@ -186,7 +186,7 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
       // the installed runtimes. If so, set the variable sdk to that runtime's SDK.
       IFacetedProject facetedProject = ProjectFacetsManager.create(eclipseProject);
       if (gaeFacet != null && facetedProject != null && facetedProject.hasProjectFacet(gaeFacet)) {
-        // TODO why is faceted project broken?
+        // TODO why is faceted project broken? --- This will be broken unless the runtiem is checked
         org.eclipse.wst.common.project.facet.core.runtime.IRuntime primRunTime = facetedProject.getPrimaryRuntime();
         if (primRunTime == null) {
           return false;
