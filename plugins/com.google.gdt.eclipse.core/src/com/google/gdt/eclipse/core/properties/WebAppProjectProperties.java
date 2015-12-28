@@ -248,8 +248,16 @@ public final class WebAppProjectProperties {
 
   public static void setGwtMavenModuleName(IProject project, String gwtMavenModuleName) throws BackingStoreException {
     IEclipsePreferences prefs = getProjectProperties(project);
-    prefs.put(GWT_MAVEN_MODULE_NAME, gwtMavenModuleName);
-    prefs.flush();
+    if (gwtMavenModuleName == null) {
+      try {
+        prefs.remove(GWT_MAVEN_MODULE_NAME);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    } else {
+      prefs.put(GWT_MAVEN_MODULE_NAME, gwtMavenModuleName);
+      prefs.flush();
+    }
   }
 
 
