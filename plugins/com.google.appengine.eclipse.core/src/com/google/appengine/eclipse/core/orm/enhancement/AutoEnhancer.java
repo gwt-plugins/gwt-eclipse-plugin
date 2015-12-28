@@ -207,7 +207,8 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
         sdk = GaeSdk.findSdkFor(javaProject);
       }
 
-      return sdk != null && sdk.validate().isOK();
+      boolean isOk = sdk != null && sdk.validate().isOK();
+      return isOk;
     } catch (CoreException e) {
       AppEngineCorePluginLog.logError(e, "Error trying to validate App Engine SDK");
       return false;
