@@ -271,7 +271,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            class="com.google.gwt.eclipse.core.launch.ui.GWTJUnitTabGroup"
+            class="com.google.gwt.eclipse.core.launch.ui.groups.GWTJUnitTabGroup"
             helpContextId="org.eclipse.jdt.junit.junit_tab_group"
             id="com.google.gwt.eclipse.core.launch.gwtJUnitTabGroup"
             type="com.google.gwt.eclipse.core.launch.gwtJUnit">

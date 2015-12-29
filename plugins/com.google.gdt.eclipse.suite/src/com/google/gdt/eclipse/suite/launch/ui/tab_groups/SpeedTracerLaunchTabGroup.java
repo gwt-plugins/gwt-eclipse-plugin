@@ -12,11 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.google.gdt.eclipse.suite.launch.ui;
+package com.google.gdt.eclipse.suite.launch.ui.tab_groups;
 
 import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
+import com.google.gdt.eclipse.suite.launch.ui.tabs.WebAppArgumentsTab;
+import com.google.gdt.eclipse.suite.launch.ui.tabs.WebAppMainTab;
+import com.google.gdt.eclipse.suite.launch.ui.tabs.WebAppServerTab;
 import com.google.gwt.eclipse.core.GWTPlugin;
-import com.google.gwt.eclipse.core.launch.ui.GWTSettingsTab;
+import com.google.gwt.eclipse.core.launch.ui.tabs.GWTSettingsTab;
 import com.google.gwt.eclipse.core.speedtracer.ui.SpeedTracerTab;
 
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;

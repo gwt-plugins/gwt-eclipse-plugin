@@ -55,7 +55,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="com.google.gdt.eclipse.suite.launch.ui.GaeSettingsTab:"/>
+                  <meta.attribute kind="java" basedOn="com.google.gdt.eclipse.suite.launch.ui.tabs.GaeSettingsTab:"/>
                </appInfo>
             </annotation>
          </attribute>

@@ -15,6 +15,7 @@
 package com.google.gwt.eclipse.core.launch;
 
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 
 import java.util.List;
 
@@ -23,8 +24,7 @@ import java.util.List;
  */
 public class GWTLaunchConfigurationWorkingCopy extends GWTLaunchConfiguration {
 
-  public static void clearAttribute(ILaunchConfigurationWorkingCopy workingCopy,
-      GWTLaunchAttributes launchAttribute) {
+  public static void clearAttribute(ILaunchConfigurationWorkingCopy workingCopy, GWTLaunchAttributes launchAttribute) {
     workingCopy.setAttribute(launchAttribute.getQualifiedName(), (String) null);
   }
 
@@ -32,13 +32,11 @@ public class GWTLaunchConfigurationWorkingCopy extends GWTLaunchConfiguration {
     configuration.removeAttribute(GWTLaunchAttributes.SUPERDEVMODE_ENABLED.getQualifiedName());
   }
 
-  public static void setDevModeCodeServerPort(ILaunchConfigurationWorkingCopy workingCopy,
-      String port) {
+  public static void setDevModeCodeServerPort(ILaunchConfigurationWorkingCopy workingCopy, String port) {
     setStringAttribute(workingCopy, GWTLaunchAttributes.CODE_SERVER_PORT, port);
   }
 
-  public static void setDevModeCodeServerPortAuto(ILaunchConfigurationWorkingCopy workingCopy,
-      boolean auto) {
+  public static void setDevModeCodeServerPortAuto(ILaunchConfigurationWorkingCopy workingCopy, boolean auto) {
     setBooleanAttribute(workingCopy, GWTLaunchAttributes.CODE_SERVER_PORT_AUTO, auto);
   }
 
@@ -49,39 +47,35 @@ public class GWTLaunchConfigurationWorkingCopy extends GWTLaunchConfiguration {
   public static void setCodeServerPortAuto(ILaunchConfigurationWorkingCopy workingCopy, boolean auto) {
     setBooleanAttribute(workingCopy, GWTLaunchAttributes.CODE_SERVER_PORT_AUTO, auto);
   }
-  
-  public static void setCodeServerLauncherDir(ILaunchConfigurationWorkingCopy workingCopy, 
-      String launcherDir) {
+
+  public static void setCodeServerLauncherDir(ILaunchConfigurationWorkingCopy workingCopy, String launcherDir) {
     setStringAttribute(workingCopy, GWTLaunchAttributes.CODE_SERVER_LAUNCHER_DIR, launcherDir);
   }
 
   /**
    * Sets the persisted set of entry point modules.
-   * 
+   *
    * @param entryPointModules
    */
-  public static void setEntryPointModules(ILaunchConfigurationWorkingCopy workingCopy,
-      List<String> entryPointModules, List<String> defaultValue) {
-    setListAttribute(workingCopy, GWTLaunchAttributes.ENTRY_POINT_MODULES.getQualifiedName(),
-        entryPointModules, defaultValue);
+  public static void setEntryPointModules(ILaunchConfigurationWorkingCopy workingCopy, List<String> entryPointModules,
+      List<String> defaultValue) {
+    setListAttribute(workingCopy, GWTLaunchAttributes.ENTRY_POINT_MODULES.getQualifiedName(), entryPointModules,
+        defaultValue);
   }
 
   public static void setLogLevel(ILaunchConfigurationWorkingCopy workingCopy, String logLevel) {
     setStringAttribute(workingCopy, GWTLaunchAttributes.LOG_LEVEL, logLevel);
   }
 
-  public static void setSdkContainerPath(ILaunchConfigurationWorkingCopy workingCopy,
-      String sdkContainerPath) {
+  public static void setSdkContainerPath(ILaunchConfigurationWorkingCopy workingCopy, String sdkContainerPath) {
     setStringAttribute(workingCopy, GWTLaunchAttributes.SDK_CONTAINER_PATH, sdkContainerPath);
   }
 
-  public static void setSuperDevModeEnabled(ILaunchConfigurationWorkingCopy configuration,
-      boolean enabled) {
+  public static void setSuperDevModeEnabled(ILaunchConfigurationWorkingCopy configuration, boolean enabled) {
     setBooleanAttribute(configuration, GWTLaunchAttributes.SUPERDEVMODE_ENABLED, enabled);
   }
 
-  public static void setSuperDevModePort(ILaunchConfigurationWorkingCopy configuration,
-      String superDevModeArgs) {
+  public static void setSuperDevModePort(ILaunchConfigurationWorkingCopy configuration, String superDevModeArgs) {
     setStringAttribute(configuration, GWTLaunchAttributes.SUPERDEVMODE_PORT, superDevModeArgs);
   }
 
@@ -89,8 +83,7 @@ public class GWTLaunchConfigurationWorkingCopy extends GWTLaunchConfiguration {
     setStringAttribute(workingCopy, GWTLaunchAttributes.URL, startupUrl);
   }
 
-  private static void clearAttribute(ILaunchConfigurationWorkingCopy workingCopy,
-      String qualifiedAttributeName) {
+  private static void clearAttribute(ILaunchConfigurationWorkingCopy workingCopy, String qualifiedAttributeName) {
     workingCopy.setAttribute(qualifiedAttributeName, (String) null);
   }
 
@@ -104,8 +97,8 @@ public class GWTLaunchConfigurationWorkingCopy extends GWTLaunchConfiguration {
     }
   }
 
-  private static void setListAttribute(ILaunchConfigurationWorkingCopy workingCopy,
-      String qualifiedAttributeName, List<String> newValue, List<String> defaultValue) {
+  private static void setListAttribute(ILaunchConfigurationWorkingCopy workingCopy, String qualifiedAttributeName,
+      List<String> newValue, List<String> defaultValue) {
     if (shouldClearAttribute(defaultValue, newValue)) {
       clearAttribute(workingCopy, qualifiedAttributeName);
     } else {
@@ -133,6 +126,10 @@ public class GWTLaunchConfigurationWorkingCopy extends GWTLaunchConfiguration {
     }
 
     return false;
+  }
+
+  public static void setMainType(ILaunchConfigurationWorkingCopy workingCopy, String mainType) {
+    workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, mainType);
   }
 
 }

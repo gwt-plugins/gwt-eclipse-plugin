@@ -55,7 +55,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":com.google.gwt.eclipse.core.launch.ui.GWTSettingsTab.IGWTSettingsTabFactory"/>
+                  <meta.attribute kind="java" basedOn=":com.google.gwt.eclipse.core.launch.ui.tabs.GWTSettingsTab.IGWTSettingsTabFactory"/>
                </appInfo>
             </annotation>
          </attribute>

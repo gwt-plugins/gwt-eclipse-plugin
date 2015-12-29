@@ -104,7 +104,7 @@ public final class ModuleUtils {
       checkGwtMavenPlugin2SrcMain(javaProject, modules);
     } catch (Exception e) {
       // Ignore
-      e.printStackTrace();
+      //e.printStackTrace();
     }
 
     return modules.values().toArray(new IModule[modules.size()]);

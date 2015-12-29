@@ -12,8 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.google.gwt.eclipse.core.launch.ui;
+package com.google.gwt.eclipse.core.launch.ui.tab_groups;
 
+import com.google.gwt.eclipse.core.launch.ui.JUnitLaunchConfigurationTabDecorator;
+import com.google.gwt.eclipse.core.launch.ui.tabs.GWTJUnitSettingsTab;
 import com.google.gwt.eclipse.core.launch.util.GWTJUnitLaunchUtils;
 
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;

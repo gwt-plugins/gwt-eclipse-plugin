@@ -60,7 +60,7 @@
       <launchConfigurationTabGroup
             type="com.google.gdt.eclipse.suite.webapp"
             helpContextId="org.eclipse.jdt.debug.ui.launchConfigHelpContext.local_java_application"
-            class="com.google.gdt.eclipse.suite.launch.ui.WebAppTabGroup"
+            class="com.google.gdt.eclipse.suite.launch.ui.tab_groups.WebAppTabGroup"
             id="com.google.gdt.eclipse.suite.launch.ui.webappTabGroup">
          <launchMode 
                mode="debug"
@@ -76,7 +76,7 @@
       <launchConfigurationTabGroup
           type="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunch"
           helpContextId="org.eclipse.jdt.debug.ui.launchConfigHelpContext.local_java_application"
-          class="com.google.gdt.eclipse.suite.launch.ui.SpeedTracerLaunchTabGroup"
+          class="com.google.gdt.eclipse.suite.launch.ui.tab_groups.SpeedTracerLaunchTabGroup"
           id="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunchTabGroup">
           <launchMode
               mode="profile"
@@ -86,7 +86,7 @@
       
       <!-- GWT SDM Code Server -->
       <launchConfigurationTabGroup
-            class="com.google.gdt.eclipse.suite.launch.ui.GwtSuperDevModeCodeServerTabGroup"
+            class="com.google.gdt.eclipse.suite.launch.ui.tab_groups.GwtSuperDevModeCodeServerTabGroup"
             id="com.google.gwt.eclipse.core.launch.gwtSdmCodeServerTabGroup"
             type="com.google.gwt.eclipse.core.sdmCodeServer">
          <launchMode
@@ -105,7 +105,7 @@
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
-            class="com.google.gdt.eclipse.suite.launch.ui.WebAppLaunchShortcut"
+            class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppLaunchShortcut"
             description="Launch a Web Application"
             icon="icons/gdt_16x16.png"
             id="com.google.gdt.eclipse.suite.launch.ui.webappLaunchShortcut"
@@ -137,7 +137,7 @@
       
       <!-- Web Application No Server shortcut -->
       <shortcut
-            class="com.google.gdt.eclipse.suite.launch.ui.WebAppNoServerLaunchShortcut"
+            class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppNoServerLaunchShortcut"
             description="Launch a Web Application using an External Server"
             icon="icons/gdt_16x16.png"
             id="com.google.gdt.eclipse.suite.ui.webappNoServerLaunchShortcut"
@@ -173,7 +173,7 @@
       
       <!-- GWT Super Dev Mode Launch shortcut when using GWT -->
       <shortcut
-            class="com.google.gdt.eclipse.suite.launch.ui.WebAppGWTSuperDevModeLaunchShortcut"
+            class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTSuperDevModeLaunchShortcut"
             description="Launch a Web Application using GWT super dev mode"
             icon="icons/gdt_16x16.png"
             id="com.google.gdt.eclipse.suite.launch.ui.webappLaunchShortcutGwtSuperDevMode"
@@ -200,7 +200,7 @@
       </shortcut>
       <!-- GWT Classic Dev Mode Launch shortcut when using GWT -->
       <shortcut
-            class="com.google.gdt.eclipse.suite.launch.ui.WebAppGWTClassicDevModeLaunchShortcut"
+            class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTClassicDevModeLaunchShortcut"
             description="Launch a Web Application using GWT classic dev mode"
             icon="icons/gdt_16x16.png"
             id="com.google.gdt.eclipse.suite.launch.ui.webappLaunchShortcutGwtClassicDevMode"

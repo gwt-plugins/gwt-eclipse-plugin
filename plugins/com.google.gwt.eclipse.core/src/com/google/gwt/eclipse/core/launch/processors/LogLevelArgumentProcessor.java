@@ -33,58 +33,59 @@ import java.util.List;
  */
 public class LogLevelArgumentProcessor implements ILaunchConfigurationProcessor {
 
-  public static final String[] LOG_LEVELS = {
-      "ERROR", "WARN", "INFO", "TRACE", "DEBUG", "SPAM", "ALL"};
+  public static final String[] LOG_LEVELS = {"ERROR", "WARN", "INFO", "TRACE", "DEBUG", "SPAM", "ALL"};
 
   public static final String DEFAULT_LOG_LEVEL = "INFO";
 
   private static final String ARG_LOG_LEVEL = "-logLevel";
 
   public static String getValidLogLevel(List<String> args) {
-    return LaunchConfigurationProcessorUtilities.getArgValueFromUpperCaseChoices(
-        args, ARG_LOG_LEVEL, LOG_LEVELS, DEFAULT_LOG_LEVEL);
+    return LaunchConfigurationProcessorUtilities.getArgValueFromUpperCaseChoices(args, ARG_LOG_LEVEL, LOG_LEVELS,
+        DEFAULT_LOG_LEVEL);
   }
 
-  private static int getLogLevelArgIndex(List<String> args) {
+  private static int getArgIndex(List<String> args) {
     return args.indexOf(ARG_LOG_LEVEL);
   }
 
   /*
-   * TODO: remove this and have different sets of processors based on the launch
-   * config type
+   * TODO: remove this and have different sets of processors based on the launch config type
    */
-  private static boolean isApplicable(ILaunchConfiguration config)
-      throws CoreException {
+  private static boolean isApplicable(ILaunchConfiguration config) throws CoreException {
     return WebAppLaunchConfiguration.TYPE_ID.equals(config.getType().getIdentifier());
   }
 
-  public void update(ILaunchConfigurationWorkingCopy config,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
-      throws CoreException {
+  @Override
+  public void update(ILaunchConfigurationWorkingCopy config, IJavaProject javaProject, List<String> programArgs,
+      List<String> vmArgs) throws CoreException {
 
-    if (!isApplicable(config)) {
-      return;
-    }
+//    if (!isApplicable(config) && !GwtLaunchConfigurationProcessorUtilities.isSuperDevModeCodeServer(config)) {
+//      return;
+//    }
 
-    int insertionIndex = LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(
-        programArgs, getLogLevelArgIndex(programArgs), true);
+    int insertionIndex =
+        LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(programArgs,
+            getArgIndex(programArgs), true);
+
     String persistedLogLevel = GWTLaunchConfiguration.getLogLevel(config);
-    if (GWTNature.isGWTProject(javaProject.getProject())
-        && !StringUtilities.isEmpty(persistedLogLevel)) {
+
+    if (GWTNature.isGWTProject(javaProject.getProject()) && !StringUtilities.isEmpty(persistedLogLevel)) {
       programArgs.add(insertionIndex, ARG_LOG_LEVEL);
       programArgs.add(insertionIndex + 1, persistedLogLevel);
+    } else {
+      // TODO remove?
     }
   }
 
-  public String validate(ILaunchConfiguration launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
-      throws CoreException {
+  @Override
+  public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject, List<String> programArgs,
+      List<String> vmArgs) throws CoreException {
 
     if (!isApplicable(launchConfig)) {
       return null;
     }
 
-    int logLevelArgIndex = getLogLevelArgIndex(programArgs);
+    int logLevelArgIndex = getArgIndex(programArgs);
     if (logLevelArgIndex == -1) {
       return null;
     }
@@ -93,8 +94,7 @@ public class LogLevelArgumentProcessor implements ILaunchConfigurationProcessor 
       return "Log level argument is only valid for GWT projects";
     }
 
-    String logLevel = LaunchConfigurationProcessorUtilities.getArgValue(
-        programArgs, logLevelArgIndex + 1);
+    String logLevel = LaunchConfigurationProcessorUtilities.getArgValue(programArgs, logLevelArgIndex + 1);
     if (StringUtilities.isEmpty(logLevel)) {
       return "Argument for specifying a log level is missing or invalid";
     }

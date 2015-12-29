@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.google.gdt.eclipse.suite.launch.ui;
+package com.google.gdt.eclipse.suite.launch.ui.tabs;
 
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.launch.ILaunchArgumentsContainer;
