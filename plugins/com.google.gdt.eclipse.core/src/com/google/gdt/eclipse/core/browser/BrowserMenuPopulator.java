@@ -54,6 +54,15 @@ import java.util.List;
 public class BrowserMenuPopulator {
 
   /**
+   * Add menus to the development view.
+   */
+  public interface ILaunchMenus {
+    String EXTENSION_ID = "com.google.gdt.eclipse.core.browser.launchMenus";
+
+    List<LaunchMenuModel> getMenus(IProject project);
+  }
+
+  /**
    * Provides default browser information.
    */
   public interface DefaultBrowserProvider {
@@ -65,7 +74,9 @@ public class BrowserMenuPopulator {
     void setDefaultBrowserName(String browserName);
   }
 
-  protected static final String EXTENSION_LAUNCH = "CHROME_SDBG";
+  // TODO Replace with extension
+  @Deprecated
+  protected static final String SDBG_BROWSERNAME_ID = "CHROME_SDBG";
 
   private final DefaultBrowserProvider defaultProvider;
 
@@ -139,8 +150,7 @@ public class BrowserMenuPopulator {
   }
 
   private void addDebugLauncherMenus(IMenuManager menu, String url) {
-    IExtensionPoint extensionPoint =
-        Platform.getExtensionRegistry().getExtensionPoint(IDebugLaunch.EXTENSION_ID);
+    IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(IDebugLaunch.EXTENSION_ID);
     IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
     if (elements == null || elements.length == 0) {
       return;
@@ -158,22 +168,98 @@ public class BrowserMenuPopulator {
     }
   }
 
-  private void addDebugLauncherMenu(IMenuManager menu, final String label,
-      final IDebugLaunch debugLaunch, final String url) {
+  private void addDebugLauncherMenu(IMenuManager menu, final String label, final IDebugLaunch debugLaunch,
+      final String url) {
     if (debugLaunch == null) {
       CorePluginLog.logError("Could not add debug launch.");
       return;
     }
 
-    String menuName = "Open with " + label;
+    // add menus from extension
+    boolean hasMenus = false;
+    try {
+      hasMenus = addMenus(debugLaunch, menu);
+    } catch (CoreException e) {
+      e.printStackTrace();
+    }
 
-    menu.add(new Action("&" + menuName) {
-      @Override
-      public void run() {
-        debugLaunch.launch(project, url, "debug");
-        defaultProvider.setDefaultBrowserName(EXTENSION_LAUNCH + "_" + label);
+    // SDBG
+    // TODO deprecated
+    if (!hasMenus) {
+      String menuName = "Open with " + label;
+      menu.add(new Action("&" + menuName) {
+        @Override
+        public void run() {
+          debugLaunch.launch(project, url, "debug");
+          defaultProvider.setDefaultBrowserName(SDBG_BROWSERNAME_ID + "_" + label);
+        }
+      });
+
+    }
+  }
+
+  /**
+   * Add launcher menus.
+   *
+   * @param debugLaunch
+   * @param menu
+   * @return returns true if there are menu items added
+   * @throws CoreException
+   */
+  private boolean addMenus(IDebugLaunch debugLaunch, IMenuManager menu) throws CoreException {
+    IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(ILaunchMenus.EXTENSION_ID);
+    IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
+    if (elements == null || elements.length == 0) {
+      return false;
+    }
+
+    boolean hasMenus = false;
+    for (IConfigurationElement element : elements) {
+      ILaunchMenus imenus = (ILaunchMenus) element.createExecutableExtension("class");
+      boolean hm = addMenus(debugLaunch, menu, imenus);
+      if (hm) {
+        hasMenus = true;
       }
-    });
+    }
+
+    return hasMenus;
+  }
+
+  /**
+   * Add Menus.
+   *
+   * @param debugLaunch
+   * @param menu
+   * @param menus
+   * @return if there were menus added
+   */
+  private boolean addMenus(final IDebugLaunch debugLaunch, IMenuManager menu, ILaunchMenus imenus) {
+    if (imenus == null) {
+      return false;
+    }
+
+    List<LaunchMenuModel> menus = imenus.getMenus(project);
+    if (menus == null || menus.size() == 0) {
+      return false;
+    }
+
+    for (LaunchMenuModel menuModel : menus) {
+      final String id = menuModel.getId();
+      final String label = menuModel.getMenuLabel();
+      String menuName = "Open with " + label;
+      final String url = menuModel.getUrl();
+      final String mode = menuModel.getDebugMode();
+
+      menu.add(new Action("&" + menuName) {
+        @Override
+        public void run() {
+          debugLaunch.launch(project, url, mode);
+          defaultProvider.setDefaultBrowserName(id);
+        }
+      });
+    }
+
+    return true;
   }
 
   private void launchExtension(String browserName, String url) throws CoreException {
@@ -181,10 +267,13 @@ public class BrowserMenuPopulator {
       return;
     }
 
-    browserName = browserName.replace(EXTENSION_LAUNCH + "_", "");
+    // Deprecated: remove the id, which sets the default browser id
+    browserName = browserName.replace(SDBG_BROWSERNAME_ID + "_", "");
 
-    IExtensionPoint extensionPoint =
-        Platform.getExtensionRegistry().getExtensionPoint(IDebugLaunch.EXTENSION_ID);
+    // Remove the uniqueness
+    browserName = browserName.replaceFirst("(.*?_)", "");
+
+    IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(IDebugLaunch.EXTENSION_ID);
     IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
     if (elements == null || elements.length == 0) {
       return;
@@ -193,7 +282,6 @@ public class BrowserMenuPopulator {
     for (IConfigurationElement element : elements) {
       IDebugLaunch debugLaunch = (IDebugLaunch) element.createExecutableExtension("class");
       String label = element.getAttribute("label");
-
       if (debugLaunch != null && label != null && label.equals(browserName)) {
         debugLaunch.launch(project, url, "debug");
       }
@@ -223,7 +311,7 @@ public class BrowserMenuPopulator {
     }
 
     // The extension was used to launch, re-use it.
-    if (browserName.contains(EXTENSION_LAUNCH)) {
+    if (browserName.contains(SDBG_BROWSERNAME_ID)) {
       try {
         launchExtension(browserName, url);
       } catch (CoreException e) {
@@ -232,7 +320,7 @@ public class BrowserMenuPopulator {
       return;
     }
 
-    // Browser was specificed, use it to launch url.
+    // Browser was specified, use it to launch url.
     try {
       BrowserUtilities.launchBrowser(browserName, url);
     } catch (Throwable t) {
@@ -244,33 +332,32 @@ public class BrowserMenuPopulator {
    * Find a browser to open url
    */
   private void findBrowser() {
-    MessageDialog md =
-        new MessageDialog(SWTUtilities.getShell(), "No browsers found", null, null,
-            MessageDialog.ERROR, new String[] {"Ok"}, 0) {
+    MessageDialog md = new MessageDialog(SWTUtilities.getShell(), "No browsers found", null, null, MessageDialog.ERROR,
+        new String[] { "Ok" }, 0) {
 
+      @Override
+      protected Control createMessageArea(Composite parent) {
+        super.createMessageArea(parent);
+        Link link = new Link(parent, SWT.NONE);
+
+        link.setText("There are no browsers defined, please add one (Right-click on URL -> "
+            + "Open with -> Add a Browser, or <a href=\"#\">Window -> Preferences -> General -> Web Browser</a>).");
+        link.addSelectionListener(new SelectionAdapter() {
           @Override
-          protected Control createMessageArea(Composite parent) {
-            super.createMessageArea(parent);
-            Link link = new Link(parent, SWT.NONE);
+          public void widgetSelected(SelectionEvent e) {
+            PreferenceDialog dialog = PreferencesUtil
+                .createPreferenceDialogOn(Display.getCurrent().getActiveShell(),
+                    "org.eclipse.ui.browser.preferencePage", new String[] { "org.eclipse.ui.browser.preferencePage" },
+                    null);
 
-            link.setText("There are no browsers defined, please add one (Right-click on URL -> "
-                + "Open with -> Add a Browser, or <a href=\"#\">Window -> Preferences -> General -> Web Browser</a>).");
-            link.addSelectionListener(new SelectionAdapter() {
-              @Override
-              public void widgetSelected(SelectionEvent e) {
-                PreferenceDialog dialog =
-                    PreferencesUtil.createPreferenceDialogOn(Display.getCurrent().getActiveShell(),
-                        "org.eclipse.ui.browser.preferencePage",
-                        new String[] {"org.eclipse.ui.browser.preferencePage"}, null);
-
-                if (dialog != null) {
-                  dialog.open();
-                }
-              }
-            });
-            return parent;
+            if (dialog != null) {
+              dialog.open();
+            }
           }
-        };
+        });
+        return parent;
+      }
+    };
     md.open();
   }
 
