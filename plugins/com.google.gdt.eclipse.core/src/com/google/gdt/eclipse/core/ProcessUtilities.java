@@ -14,6 +14,8 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.core;
 
+import com.google.common.base.Joiner;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -47,7 +49,7 @@ public class ProcessUtilities {
 
   /**
    * Receives {@link Process} instances.
-   * 
+   *
    * The caller does not guarantee any thread-safety.
    */
   public interface IProcessReceiver {
@@ -63,11 +65,11 @@ public class ProcessUtilities {
   /**
    * The list of potential filenames for the javac executable.
    */
-  private static final String[] CANDIDATE_JAVAC_FILES = {"javac", "javac.exe"};
+  private static final String[] CANDIDATE_JAVAC_FILES = { "javac", "javac.exe" };
 
   /**
    * Builds a classpath string with the correct separator from a list of paths.
-   * 
+   *
    * @param classpathEntries
    * @return the classpath as a single string
    */
@@ -85,15 +87,13 @@ public class ProcessUtilities {
   }
 
   /**
-   * Computes the fully qualified path to the javac executable that located in
-   * the JRE/JDK used by this project.
-   * 
+   * Computes the fully qualified path to the javac executable that located in the JRE/JDK used by this project.
+   *
    * @param javaProject
    * @return the path to the JRE/JDK javac used on this project
    * @throws CoreException
    */
-  public static String computeJavaCompilerExecutableFullyQualifiedPath(
-      IJavaProject javaProject) throws CoreException {
+  public static String computeJavaCompilerExecutableFullyQualifiedPath(IJavaProject javaProject) throws CoreException {
     return computeJavaCompilerExecutablePathFromJavaExecutablePath(computeJavaExecutableFullyQualifiedPath(javaProject));
   }
 
@@ -113,8 +113,8 @@ public class ProcessUtilities {
     }
 
     /*
-     * If we didn't find a javac executable as a peer of the java executable,
-     * then the java executable was located in <jdk home>/jre/bin.
+     * If we didn't find a javac executable as a peer of the java executable, then the java executable was located in
+     * <jdk home>/jre/bin.
      */
     if (javaExecutablePath.segmentCount() < 3) {
       return null;
@@ -131,25 +131,19 @@ public class ProcessUtilities {
   }
 
   /**
-   * Computes the fully qualified path to the java executable for the JRE/JDK
-   * used by this project.
-   * 
+   * Computes the fully qualified path to the java executable for the JRE/JDK used by this project.
+   *
    * @param javaProject
    * @return the path to the JRE/JDK java (executable) used on this project
    * @throws CoreException
    */
-  public static String computeJavaExecutableFullyQualifiedPath(
-      IJavaProject javaProject) throws CoreException {
+  public static String computeJavaExecutableFullyQualifiedPath(IJavaProject javaProject) throws CoreException {
     IVMInstall projectVMInstall = JavaRuntime.getVMInstall(javaProject);
 
     if (projectVMInstall == null) {
-      throw new CoreException(
-          new Status(
-              Status.ERROR,
-              CorePlugin.PLUGIN_ID,
-              "Unable to locate the JVM for project "
-                  + javaProject.getElementName()
-                  + ". Please verify that you have a project-level JVM installed by inspecting your project's build path."));
+      throw new CoreException(new Status(Status.ERROR, CorePlugin.PLUGIN_ID, "Unable to locate the JVM for project "
+          + javaProject.getElementName()
+          + ". Please verify that you have a project-level JVM installed by inspecting your project's build path."));
     }
 
     return getJavaExecutableForVMInstall(projectVMInstall);
@@ -157,9 +151,10 @@ public class ProcessUtilities {
 
   /**
    * Return the path to the java executable for Eclipse's JVM.
-   * 
+   *
    * @return the fully qualified path to the java executable
-   * @throws CoreException if Eclipse's JVM could not be detected
+   * @throws CoreException
+   *           if Eclipse's JVM could not be detected
    */
   public static String findJavaExecutableForEclipse() throws CoreException {
 
@@ -171,96 +166,77 @@ public class ProcessUtilities {
     }
 
     if (javaHomeDir == null || !javaHomeDir.exists()) {
-      throw new CoreException(
-          new Status(
-              Status.ERROR,
-              CorePlugin.PLUGIN_ID,
-              "Cannot read the java.home property - unable detect the JVM that Eclipse is running on."));
+      throw new CoreException(new Status(Status.ERROR, CorePlugin.PLUGIN_ID,
+          "Cannot read the java.home property - unable detect the JVM that Eclipse is running on."));
     }
 
     File javaExecutable = StandardVMType.findJavaExecutable(javaHomeDir);
 
     if (javaExecutable == null || !javaExecutable.exists()) {
-      throw new CoreException(
-          new Status(
-              Status.ERROR,
-              CorePlugin.PLUGIN_ID,
-              "Unable to find a java executable for the JVM that Eclipse is running on (located at "
-                  + javaHomeDir.getAbsolutePath()
-                  + "). Please verify that this JVM is installed properly."));
+      throw new CoreException(new Status(Status.ERROR, CorePlugin.PLUGIN_ID,
+          "Unable to find a java executable for the JVM that Eclipse is running on (located at "
+              + javaHomeDir.getAbsolutePath() + "). Please verify that this JVM is installed properly."));
     }
 
     return javaExecutable.getAbsolutePath();
   }
 
-  public static String getJavaExecutableForVMInstall(IVMInstall vmInstall)
-      throws CoreException {
+  public static String getJavaExecutableForVMInstall(IVMInstall vmInstall) throws CoreException {
 
     assert vmInstall != null;
 
     File vmInstallLocation = vmInstall.getInstallLocation();
 
     if (vmInstallLocation == null) {
-      throw new CoreException(
-          new Status(
-              Status.ERROR,
-              CorePlugin.PLUGIN_ID,
-              "Unable to determine the path for the JVM "
-                  + vmInstall.getName()
-                  + ". Please verify that this JVM is installed properly by inspecting your project's build path."));
+      throw new CoreException(new Status(Status.ERROR, CorePlugin.PLUGIN_ID,
+          "Unable to determine the path for the JVM " + vmInstall.getName()
+              + ". Please verify that this JVM is installed properly by inspecting your project's build path."));
     }
 
     File javaExecutable = StandardVMType.findJavaExecutable(vmInstallLocation);
 
     if (javaExecutable == null || !javaExecutable.exists()) {
-      throw new CoreException(
-          new Status(
-              Status.ERROR,
-              CorePlugin.PLUGIN_ID,
-              "Unable to find a java executable for the JVM   "
-                  + vmInstall.getName()
-                  + " located at "
-                  + vmInstallLocation.getAbsolutePath()
-                  + ". Please verify that this JVM is installed properly by inspecting your project's build path."));
+      throw new CoreException(new Status(Status.ERROR, CorePlugin.PLUGIN_ID,
+          "Unable to find a java executable for the JVM   " + vmInstall.getName() + " located at "
+              + vmInstallLocation.getAbsolutePath()
+              + ". Please verify that this JVM is installed properly by inspecting your project's build path."));
     }
 
     return javaExecutable.getAbsolutePath();
   }
 
   /**
-   * Returns <code>true</code> if the specified java project has a "JRE
-   * Classpath Container" (Eclipse terminology) which actually points to a JDK.
-   * Returns <code>false</code> otherwise. The method tests for the availability
-   * of a java compiler as a proxy for determining whether the JRE classpath
-   * container exists on the project.
-   * 
+   * Returns <code>true</code> if the specified java project has a "JRE Classpath Container" (Eclipse terminology) which
+   * actually points to a JDK. Returns <code>false</code> otherwise. The method tests for the availability of a java
+   * compiler as a proxy for determining whether the JRE classpath container exists on the project.
+   *
    * @param javaProject
    * @return whether the project has a JRE classpath container
    * @throws CoreException
    */
-  public static boolean isUsingJDK(IJavaProject javaProject)
-      throws CoreException {
+  public static boolean isUsingJDK(IJavaProject javaProject) throws CoreException {
     return (computeJavaCompilerExecutableFullyQualifiedPath(javaProject) != null);
   }
 
   /**
-   * Launch the process specified in the commands and wait for it to terminate.
-   * The console in which the process is running will only activate if the
-   * string marking a successful run of the process does not appear on a line in
-   * the output.
-   * 
-   * @param commands commands to pass to the {@link ProcessBuilder}
-   * @param workingDir directory to use as the working directory
-   * @param messageConsole the MessageConsole where the process's output will go
-   * 
+   * Launch the process specified in the commands and wait for it to terminate. The console in which the process is
+   * running will only activate if the string marking a successful run of the process does not appear on a line in the
+   * output.
+   *
+   * @param commands
+   *          commands to pass to the {@link ProcessBuilder}
+   * @param workingDir
+   *          directory to use as the working directory
+   * @param messageConsole
+   *          the MessageConsole where the process's output will go
+   *
    * @return process exit code
-   * 
+   *
    * @throws IOException
    * @throws InterruptedException
    */
-  public static int launchProcessAndActivateOnError(List<String> commands,
-      File workingDir, MessageConsole messageConsole)
-      throws InterruptedException, IOException {
+  public static int launchProcessAndActivateOnError(final List<String> commands, File workingDir,
+      MessageConsole messageConsole) throws InterruptedException, IOException {
 
     ProcessBuilder pb = new ProcessBuilder(commands);
     pb.directory(workingDir);
@@ -288,11 +264,12 @@ public class ProcessUtilities {
           this.outputStream = outputStream;
         }
 
+        @Override
         public void run() {
-          BufferedReader processReader = new BufferedReader(
-              new InputStreamReader(inputStream));
+          BufferedReader processReader = new BufferedReader(new InputStreamReader(inputStream));
 
           PrintWriter outputWriter = new PrintWriter(outputStream, true);
+          outputWriter.println("Excecuting: " + Joiner.on(" ").join(commands));
           try {
             String line = null;
             while ((line = processReader.readLine()) != null) {
@@ -312,18 +289,17 @@ public class ProcessUtilities {
       final Color errorColor = ccp.getColor(IDebugUIConstants.ID_STANDARD_ERROR_STREAM);
 
       Display.getDefault().asyncExec(new Runnable() {
+        @Override
         public void run() {
           outStream.setColor(outputColor);
           errStream.setColor(errorColor);
         }
       });
 
-      outputThread = new Thread(new ConsoleOutputPump(process.getInputStream(),
-          outStream), "Process Output Pump");
+      outputThread = new Thread(new ConsoleOutputPump(process.getInputStream(), outStream), "Process Output Pump");
       outputThread.start();
 
-      errorThread = new Thread(new ConsoleOutputPump(process.getErrorStream(),
-          errStream), "Process Output Pump");
+      errorThread = new Thread(new ConsoleOutputPump(process.getErrorStream(), errStream), "Process Output Pump");
       errorThread.start();
       processExitCode = process.waitFor();
     } catch (InterruptedException ie) {
@@ -361,23 +337,24 @@ public class ProcessUtilities {
 
   /**
    * Launch the process specified in the commands and wait for it to terminate.
-   * 
-   * @param commands commands to pass to the {@link ProcessBuilder}
-   * @param workingDir directory to use as the working directory
-   * @param additionalPaths list of additional directories to be appended to the
-   *          PATH environmental variable
-   * @param outputStream output stream to receive process output
-   * @param processReceiver optional, will be given the process right after it
-   *          is started
+   *
+   * @param commands
+   *          commands to pass to the {@link ProcessBuilder}
+   * @param workingDir
+   *          directory to use as the working directory
+   * @param additionalPaths
+   *          list of additional directories to be appended to the PATH environmental variable
+   * @param outputStream
+   *          output stream to receive process output
+   * @param processReceiver
+   *          optional, will be given the process right after it is started
    * @return process exit code
-   * 
+   *
    * @throws IOException
    * @throws InterruptedException
    */
-  public static int launchProcessAndWaitFor(List<String> commands,
-      File workingDir, final List<String> additionalPaths,
-      final OutputStream outputStream, IProcessReceiver processReceiver)
-      throws InterruptedException, IOException {
+  public static int launchProcessAndWaitFor(List<String> commands, File workingDir, final List<String> additionalPaths,
+      final OutputStream outputStream, IProcessReceiver processReceiver) throws InterruptedException, IOException {
     ProcessBuilder pb = new ProcessBuilder(commands);
     pb.directory(workingDir);
     pb.redirectErrorStream(true);
@@ -386,14 +363,12 @@ public class ProcessUtilities {
     // if given a non-null, non-empty list of paths, then append to the PATH
     // environmental variable
     if (additionalPaths != null && additionalPaths.size() >= 1) {
-      StringBuilder newPathEnvVar = new StringBuilder(pb.environment().get(
-          "PATH"));
+      StringBuilder newPathEnvVar = new StringBuilder(pb.environment().get("PATH"));
       // for each additional path, add it- if it isn't already in the path list
       for (String path : additionalPaths) {
         // if this additional path isn't already in the new path environment
         // variable
-        String[] existingPaths = newPathEnvVar.toString().split(
-            java.io.File.pathSeparatorChar + "");
+        String[] existingPaths = newPathEnvVar.toString().split(java.io.File.pathSeparatorChar + "");
         boolean pathAlreadyInPATH = false;
         for (String existingPath : existingPaths) {
           if (path.equals(existingPath)) {
@@ -430,9 +405,9 @@ public class ProcessUtilities {
           process = p;
         }
 
+        @Override
         public void run() {
-          BufferedReader processReader = new BufferedReader(
-              new InputStreamReader(process.getInputStream()));
+          BufferedReader processReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
           PrintWriter outputWriter = new PrintWriter(outputStream, true);
           try {
             String line = null;
@@ -455,9 +430,8 @@ public class ProcessUtilities {
       processExitCode = process.waitFor();
     } catch (InterruptedException ie) {
       /*
-       * If the thread that called this method is interrupted while waiting for
-       * process.waitFor to return, ensure that the process is terminated and
-       * that its file handles have been cleaned up.
+       * If the thread that called this method is interrupted while waiting for process.waitFor to return, ensure that
+       * the process is terminated and that its file handles have been cleaned up.
        */
       cleanupProcess(process);
 
@@ -481,30 +455,31 @@ public class ProcessUtilities {
 
   /**
    * Launch the process specified in the commands and wait for it to terminate.
-   * 
-   * @param commands commands to pass to the {@link ProcessBuilder}
-   * @param workingDir directory to use as the working directory
-   * @param outputStream output stream to receive process output
-   * @param processReceiver optional, will be given the process right after it
-   *          is started
+   *
+   * @param commands
+   *          commands to pass to the {@link ProcessBuilder}
+   * @param workingDir
+   *          directory to use as the working directory
+   * @param outputStream
+   *          output stream to receive process output
+   * @param processReceiver
+   *          optional, will be given the process right after it is started
    * @return process exit code
-   * 
+   *
    * @throws IOException
    * @throws InterruptedException
    */
-  public static int launchProcessAndWaitFor(List<String> commands,
-      File workingDir, final OutputStream outputStream,
-      IProcessReceiver processReceiver) throws InterruptedException,
-      IOException {
-    return launchProcessAndWaitFor(commands, workingDir, null, outputStream,
-        processReceiver);
+  public static int launchProcessAndWaitFor(List<String> commands, File workingDir, final OutputStream outputStream,
+      IProcessReceiver processReceiver) throws InterruptedException, IOException {
+    return launchProcessAndWaitFor(commands, workingDir, null, outputStream, processReceiver);
   }
 
   /**
-   * Closes the process' input stream, output stream, and error stream, and
-   * finally destroys the process by calling <code>destroy()</code>.
-   * 
-   * @param p the process to cleanup
+   * Closes the process' input stream, output stream, and error stream, and finally destroys the process by calling
+   * <code>destroy()</code>.
+   *
+   * @param p
+   *          the process to cleanup
    */
   private static void cleanupProcess(Process p) {
     if (p == null) {
@@ -555,11 +530,9 @@ public class ProcessUtilities {
   }
 
   /*
-   * Put classpath argument in an environment variable so we don't overflow the
-   * process command-line buffer on Windows.
+   * Put classpath argument in an environment variable so we don't overflow the process command-line buffer on Windows.
    */
-  private static void moveClasspathArgToEnvironmentVariable(
-      List<String> commandArgs, ProcessBuilder pb) {
+  private static void moveClasspathArgToEnvironmentVariable(List<String> commandArgs, ProcessBuilder pb) {
     int cpFlagIndex = commandArgs.indexOf("-cp");
     if (cpFlagIndex == -1) {
       cpFlagIndex = commandArgs.indexOf("-classpath");
