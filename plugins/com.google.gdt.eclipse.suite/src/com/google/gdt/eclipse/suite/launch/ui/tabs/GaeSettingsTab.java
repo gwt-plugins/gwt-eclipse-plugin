@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.google.gdt.eclipse.suite.launch.ui;
+package com.google.gdt.eclipse.suite.launch.ui.tabs;
 
 import com.google.appengine.eclipse.core.launch.AppEngineLaunchConfiguration;
 import com.google.appengine.eclipse.core.launch.AppEngineLaunchConfigurationWorkingCopy;
@@ -75,15 +75,14 @@ public class GaeSettingsTab extends JavaLaunchTab implements
     private final Text unappliedJobPctText;
 
     public DatastoreSettingsBlock(Composite parent) {
-      datastoreGroup =
-          SWTFactory.createGroup(parent, DATASTORE_GROUP_TITLE, 2,
-          1, GridData.FILL_HORIZONTAL);
+      datastoreGroup = SWTFactory.createGroup(parent, DATASTORE_GROUP_TITLE, 2, 1, GridData.FILL_HORIZONTAL);
 
       hrLabel = new Label(datastoreGroup, SWT.NONE);
       hrLabel.setText("Unapplied job percentage:");
       unappliedJobPctText = new Text(datastoreGroup, SWT.BORDER);
       unappliedJobPctText.setLayoutData(new GridData(40, SWT.DEFAULT));
       unappliedJobPctText.addModifyListener(new ModifyListener() {
+        @Override
         public void modifyText(ModifyEvent e) {
           updateLaunchConfigurationDialog();
         }
@@ -178,10 +177,12 @@ public class GaeSettingsTab extends JavaLaunchTab implements
     super.initializeFrom(config);
   }
 
+  @Override
   public void callSuperUpdateLaunchConfigurationDialog() {
     super.updateLaunchConfigurationDialog();
   }
 
+  @Override
   public void createControl(Composite parent) {
     composite =
         SWTFactory.createComposite(parent, parent.getFont(), 1, 1, GridData.FILL_HORIZONTAL);
@@ -193,6 +194,7 @@ public class GaeSettingsTab extends JavaLaunchTab implements
     datastoreBlock = new DatastoreSettingsBlock(composite);
   }
 
+  @Override
   public void doPerformApply(ILaunchConfigurationWorkingCopy configuration) {
     datastoreBlock.performApply(configuration);
   }
@@ -202,6 +204,7 @@ public class GaeSettingsTab extends JavaLaunchTab implements
     return GdtPlugin.getDefault().getImage(GdtImages.GAE_ICON);
   }
 
+  @Override
   public String getName() {
     return "App Engine";
   }
@@ -224,6 +227,7 @@ public class GaeSettingsTab extends JavaLaunchTab implements
     return super.isValid(config) && datastoreBlock.isValid(config);
   }
 
+  @Override
   public void performApply(ILaunchConfigurationWorkingCopy configuration) {
     if (!this.equals(getLaunchConfigurationDialog().getActiveTab())) {
       return;
@@ -231,9 +235,11 @@ public class GaeSettingsTab extends JavaLaunchTab implements
     doPerformApply(configuration);
   }
 
+  @Override
   public void persistFromArguments(List<String> args, ILaunchConfigurationWorkingCopy config) {
   }
 
+  @Override
   public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
   }
 

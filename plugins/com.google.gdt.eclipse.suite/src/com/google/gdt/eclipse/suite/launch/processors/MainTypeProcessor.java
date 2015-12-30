@@ -165,8 +165,7 @@ public class MainTypeProcessor implements ILaunchConfigurationProcessor {
     String currentMainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
     String previouslySetMainTypeName = getPreviouslySetMainTypeName(config);
 
-    if (!StringUtilities.isEmpty(currentMainTypeName)
-        && !currentMainTypeName.equals(previouslySetMainTypeName)) {
+    if (!StringUtilities.isEmpty(currentMainTypeName) && !currentMainTypeName.equals(previouslySetMainTypeName)) {
       // Our previously set main type must have been changed by the user, do not
       // adjust
       return;

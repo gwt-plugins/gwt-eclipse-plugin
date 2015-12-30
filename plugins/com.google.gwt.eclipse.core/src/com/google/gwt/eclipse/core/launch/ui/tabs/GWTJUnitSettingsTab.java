@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.google.gwt.eclipse.core.launch.ui;
+package com.google.gwt.eclipse.core.launch.ui.tabs;
 
 import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.GWTPluginLog;

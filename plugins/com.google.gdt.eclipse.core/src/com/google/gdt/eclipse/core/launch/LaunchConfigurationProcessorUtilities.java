@@ -245,8 +245,7 @@ public final class LaunchConfigurationProcessorUtilities {
    * @return the index of the removed arg, or 0 (so this can be used as an
    *         insertion index)
    */
-  public static int removeArgsAndReturnInsertionIndex(List<String> args,
-      int argIndex, boolean tryRemovingArgValue) {
+  public static int removeArgsAndReturnInsertionIndex(List<String> args, int argIndex, boolean tryRemovingArgValue) {
     if (argIndex < 0 || argIndex >= args.size()) {
       return 0;
     }

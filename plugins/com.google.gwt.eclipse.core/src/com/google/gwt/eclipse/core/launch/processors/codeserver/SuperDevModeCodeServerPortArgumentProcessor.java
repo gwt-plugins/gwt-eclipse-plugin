@@ -15,9 +15,9 @@
 package com.google.gwt.eclipse.core.launch.processors.codeserver;
 
 import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
+import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.launch.GWTLaunchAttributes;
 import com.google.gwt.eclipse.core.launch.GWTLaunchConfigurationWorkingCopy;
-import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 
 import org.eclipse.core.runtime.CoreException;
@@ -84,16 +84,9 @@ public class SuperDevModeCodeServerPortArgumentProcessor implements ILaunchConfi
       return;
     }
 
-    int index = getArgIndex(programArgs);
-
-    // Only use with the CodeServer entrypoint
-    if (GwtLaunchConfigurationProcessorUtilities.isSuperDevModeCodeServer(launchConfig)) {
-      if (index > -1) {
-        programArgs.remove(index); // remove arg name
-        programArgs.remove(index); // remove port value
-      }
-      return;
-    }
+    int insertionIndex =
+        LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(programArgs,
+            getArgIndex(programArgs), true);
 
     String port = GWTLaunchConfigurationWorkingCopy.getSdmCodeServerPort(launchConfig);
 
@@ -101,21 +94,8 @@ public class SuperDevModeCodeServerPortArgumentProcessor implements ILaunchConfi
       port = GWTLaunchAttributes.CODE_SERVER_PORT.getDefaultValue().toString();
     }
 
-    if (index < 0) {
-      programArgs.add(0, SDM_CODE_SERVER_PORT_ARG);
-      programArgs.add(1, port);
-    } else {
-      if (index == programArgs.size() - 1) {
-        programArgs.add(port);
-      } else {
-        String argValue = programArgs.get(index + 1);
-        if (validatePort(argValue)) {
-          programArgs.set(index + 1, argValue);
-        } else {
-          programArgs.add(index + 1, argValue);
-        }
-      }
-    }
+    programArgs.add(insertionIndex, SDM_CODE_SERVER_PORT_ARG);
+    programArgs.add(insertionIndex + 1, port);
   }
 
   @Override

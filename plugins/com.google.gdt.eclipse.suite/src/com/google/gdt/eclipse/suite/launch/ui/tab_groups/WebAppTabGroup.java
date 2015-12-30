@@ -12,15 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.google.gdt.eclipse.suite.launch.ui;
+package com.google.gdt.eclipse.suite.launch.ui.tab_groups;
 
 import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import com.google.gdt.eclipse.platform.debug.ui.CommonTab;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.launch.WebAppLaunchUtil;
+import com.google.gdt.eclipse.suite.launch.ui.tabs.GaeSettingsTab;
+import com.google.gdt.eclipse.suite.launch.ui.tabs.WebAppArgumentsTab;
+import com.google.gdt.eclipse.suite.launch.ui.tabs.WebAppMainTab;
+import com.google.gdt.eclipse.suite.launch.ui.tabs.WebAppServerTab;
 import com.google.gwt.eclipse.core.GWTPlugin;
-import com.google.gwt.eclipse.core.launch.ui.GWTSettingsTab;
-import com.google.gwt.eclipse.core.launch.ui.GWTSettingsTab.IGWTSettingsTabFactory;
+import com.google.gwt.eclipse.core.launch.ui.tabs.GWTSettingsTab;
+import com.google.gwt.eclipse.core.launch.ui.tabs.GWTSettingsTab.IGWTSettingsTabFactory;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -44,6 +48,7 @@ import java.util.List;
 public class WebAppTabGroup extends AbstractLaunchConfigurationTabGroup {
   private ILaunchConfigurationDialog launchConfigurationDialog;
 
+  @Override
   public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
     launchConfigurationDialog = dialog;
 
@@ -51,8 +56,8 @@ public class WebAppTabGroup extends AbstractLaunchConfigurationTabGroup {
 
     GWTSettingsTab gwtSettingsTab = null;
 
-    ExtensionQuery<IGWTSettingsTabFactory> extQuery = new ExtensionQuery<IGWTSettingsTabFactory>(
-        GWTPlugin.PLUGIN_ID, "gwtSettingsTabFactory", "class");
+    ExtensionQuery<IGWTSettingsTabFactory> extQuery = new ExtensionQuery<IGWTSettingsTabFactory>(GWTPlugin.PLUGIN_ID,
+        "gwtSettingsTabFactory", "class");
     List<ExtensionQuery.Data<IGWTSettingsTabFactory>> gwtSettingsTabFactories = extQuery.getData();
     for (ExtensionQuery.Data<IGWTSettingsTabFactory> factory : gwtSettingsTabFactories) {
       IGWTSettingsTabFactory tabFactory = factory.getExtensionPointData();
@@ -65,10 +70,9 @@ public class WebAppTabGroup extends AbstractLaunchConfigurationTabGroup {
     }
 
     GaeSettingsTab gaeSettingsTab = null;
-    ExtensionQuery<GaeSettingsTab> extQueryGae = new ExtensionQuery<
-        GaeSettingsTab>(GdtPlugin.PLUGIN_ID, "gaeSettingsTab", "class");
-
-        List<ExtensionQuery.Data<GaeSettingsTab>> gaeSettingsTabs = extQueryGae.getData();
+    ExtensionQuery<GaeSettingsTab> extQueryGae = new ExtensionQuery<GaeSettingsTab>(GdtPlugin.PLUGIN_ID,
+        "gaeSettingsTab", "class");
+    List<ExtensionQuery.Data<GaeSettingsTab>> gaeSettingsTabs = extQueryGae.getData();
     for (ExtensionQuery.Data<GaeSettingsTab> tab : gaeSettingsTabs) {
       gaeSettingsTab = tab.getExtensionPointData();
       break;
@@ -78,11 +82,9 @@ public class WebAppTabGroup extends AbstractLaunchConfigurationTabGroup {
       gaeSettingsTab = new GaeSettingsTab();
     }
 
-    ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-        new WebAppMainTab(), new WebAppServerTab(argsTab, true, true),
-        gwtSettingsTab, gaeSettingsTab, argsTab, new JavaJRETab(),
-        new JavaClasspathTab(), new SourceLookupTab(), new EnvironmentTab(),
-        new CommonTab()};
+    ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] { new WebAppMainTab(),
+        new WebAppServerTab(argsTab, true, true), gwtSettingsTab, gaeSettingsTab, argsTab, new JavaJRETab(),
+        new JavaClasspathTab(), new SourceLookupTab(), new EnvironmentTab(), new CommonTab() };
     setTabs(tabs);
   }
 

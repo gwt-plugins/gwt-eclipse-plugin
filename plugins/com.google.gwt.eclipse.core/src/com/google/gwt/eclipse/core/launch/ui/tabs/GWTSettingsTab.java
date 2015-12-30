@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.google.gwt.eclipse.core.launch.ui;
+package com.google.gwt.eclipse.core.launch.ui.tabs;
 
 import com.google.gdt.eclipse.core.SWTUtilities;
 import com.google.gdt.eclipse.core.WebAppUtilities;
@@ -36,6 +36,7 @@ import com.google.gwt.eclipse.core.launch.processors.RemoteUiArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.StartupUrlArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.SuperDevModeArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.XStartOnFirstThreadArgumentProcessor;
+import com.google.gwt.eclipse.core.launch.ui.EntryPointModulesSelectionBlock;
 import com.google.gwt.eclipse.core.launch.ui.EntryPointModulesSelectionBlock.IModulesChangeListener;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.resources.GWTImages;
@@ -575,7 +576,10 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
   public void doPerformApply(ILaunchConfigurationWorkingCopy configuration) {
     // Save the entry point modules - save first!
     persistModules(configuration, entryPointModulesSelectionBlock.getModules());
+
+    // updates the program args
     LaunchConfigurationProcessorUtilities.updateViaProcessor(new ModuleArgumentProcessor(), configuration);
+
     if (selectionBlock != null) {
       selectionBlock.performApply(configuration);
     }

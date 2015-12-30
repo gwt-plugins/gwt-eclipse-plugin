@@ -83,7 +83,7 @@ public class SuperDevModeCodeServerLauncherDirArgumentProcessor implements
 
     // Not a WTP project or classic launcher config
     // TODO, should it prompt for one?
-    if (pathToWarOutDir == null) {
+    if (pathToWarOutDir == null || pathToWarOutDir.isEmpty()) {
       String msg =
           "SuperDevModeCodeServerLauncherDirArgumentProcessor > update: couldn't not determin pathtoWarOutDir.";
       GWTPluginLog.logWarning(msg);

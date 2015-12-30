@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.google.gdt.eclipse.suite.launch.ui;
+package com.google.gdt.eclipse.suite.launch.ui.tabs;
 
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.launch.ILaunchArgumentsContainer;
@@ -24,6 +24,7 @@ import com.google.gdt.eclipse.platform.debug.ui.WorkingDirectoryBlock;
 import com.google.gdt.eclipse.suite.launch.WebAppLaunchUtil;
 import com.google.gdt.eclipse.suite.launch.processors.LaunchConfigurationUpdater;
 import com.google.gdt.eclipse.suite.launch.processors.WarArgumentProcessor;
+import com.google.gdt.eclipse.suite.launch.ui.WebAppWorkingDirectoryBlock;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -38,15 +39,14 @@ import java.util.Set;
 /**
  * Arguments tab for Web App projects.
  */
-public class WebAppArgumentsTab extends ArgumentsTab implements
-    ILaunchArgumentsContainer, UpdateLaunchConfigurationDialogBatcher.Listener {
+public class WebAppArgumentsTab extends ArgumentsTab implements ILaunchArgumentsContainer,
+    UpdateLaunchConfigurationDialogBatcher.Listener {
 
   private final Set<ArgumentsListener> programArgsListeners = new HashSet<ArgumentsListener>();
 
   private boolean blockUpdateLaunchConfigurationDialog;
 
-  private final UpdateLaunchConfigurationDialogBatcher updateLaunchConfigurationDialogBatcher = new UpdateLaunchConfigurationDialogBatcher(
-      this);
+  private final UpdateLaunchConfigurationDialogBatcher updateLaunchConfigurationDialogBatcher = new UpdateLaunchConfigurationDialogBatcher(this);
 
   @Override
   public void activated(ILaunchConfigurationWorkingCopy workingCopy) {
@@ -58,6 +58,7 @@ public class WebAppArgumentsTab extends ArgumentsTab implements
     super.activated(workingCopy);
   }
 
+  @Override
   public void callSuperUpdateLaunchConfigurationDialog() {
     super.updateLaunchConfigurationDialog();
   }
@@ -76,6 +77,7 @@ public class WebAppArgumentsTab extends ArgumentsTab implements
     super.dispose();
   }
 
+  @Override
   public void doPerformApply(ILaunchConfigurationWorkingCopy configuration) {
     super.performApply(configuration);
 
@@ -88,12 +90,10 @@ public class WebAppArgumentsTab extends ArgumentsTab implements
       }
     }
 
-    // Run the WAR updater so it can record when the user manually-sets a WAR
-    // dir
+    // Run the WAR updater so it can record when the user manually-sets a WAR dir
     WarArgumentProcessor warArgProcessor = new WarArgumentProcessor();
     warArgProcessor.setUserUpdate(true);
-    LaunchConfigurationProcessorUtilities.updateViaProcessor(warArgProcessor,
-        configuration);
+    LaunchConfigurationProcessorUtilities.updateViaProcessor(warArgProcessor, configuration);
   }
 
   @Override
@@ -120,8 +120,7 @@ public class WebAppArgumentsTab extends ArgumentsTab implements
         return true;
       }
 
-      String msg = new LaunchConfigurationUpdater(config,
-          JavaCore.create(project)).validate();
+      String msg = new LaunchConfigurationUpdater(config, JavaCore.create(project)).validate();
       if (msg != null) {
         setErrorMessage(msg);
       }
@@ -144,6 +143,7 @@ public class WebAppArgumentsTab extends ArgumentsTab implements
     doPerformApply(configuration);
   }
 
+  @Override
   public void registerProgramArgsListener(ArgumentsListener listener) {
     programArgsListeners.add(listener);
   }

@@ -12,13 +12,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.google.gdt.eclipse.suite.launch.ui;
+package com.google.gdt.eclipse.suite.launch.ui.tab_groups;
 
 import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import com.google.gdt.eclipse.platform.debug.ui.CommonTab;
+import com.google.gdt.eclipse.suite.launch.ui.tabs.WebAppArgumentsTab;
+import com.google.gdt.eclipse.suite.launch.ui.tabs.WebAppMainTab;
 import com.google.gwt.eclipse.core.GWTPlugin;
-import com.google.gwt.eclipse.core.launch.ui.GwtSuperDevModeCodeServerSettingsTab;
-import com.google.gwt.eclipse.core.launch.ui.GwtSuperDevModeCodeServerSettingsTab.IGWTSettingsTabFactory;
+import com.google.gwt.eclipse.core.launch.GWTLaunchConfigurationWorkingCopy;
+import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
+import com.google.gwt.eclipse.core.launch.ui.tabs.GwtSuperDevModeCodeServerSettingsTab;
+import com.google.gwt.eclipse.core.launch.ui.tabs.GwtSuperDevModeCodeServerSettingsTab.IGWTSettingsTabFactory;
 import com.google.gwt.eclipse.core.launch.util.GwtSuperDevModeCodeServerLaunchUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -56,8 +60,7 @@ public class GwtSuperDevModeCodeServerTabGroup extends AbstractLaunchConfigurati
 
     GwtSuperDevModeCodeServerSettingsTab gwtSettingsTab = null;
 
-    ExtensionQuery<IGWTSettingsTabFactory> extQuery = new ExtensionQuery<IGWTSettingsTabFactory>(
-        GWTPlugin.PLUGIN_ID, "gwtSettingsTabFactory", "class");
+    ExtensionQuery<IGWTSettingsTabFactory> extQuery = new ExtensionQuery<IGWTSettingsTabFactory>(GWTPlugin.PLUGIN_ID, "gwtSettingsTabFactory", "class");
     List<ExtensionQuery.Data<IGWTSettingsTabFactory>> gwtSettingsTabFactories = extQuery.getData();
     for (ExtensionQuery.Data<IGWTSettingsTabFactory> factory : gwtSettingsTabFactories) {
       IGWTSettingsTabFactory tabFactory = factory.getExtensionPointData();
@@ -69,10 +72,16 @@ public class GwtSuperDevModeCodeServerTabGroup extends AbstractLaunchConfigurati
       gwtSettingsTab = new GwtSuperDevModeCodeServerSettingsTab(argsTab);
     }
 
+    WebAppMainTab webAppMainTab = new WebAppMainTab();
+
     ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-        new WebAppMainTab(),
-        gwtSettingsTab,  argsTab, new JavaJRETab(),
-        new JavaClasspathTab(), new SourceLookupTab(), new EnvironmentTab(),
+        webAppMainTab,
+        gwtSettingsTab,
+        argsTab,
+        new JavaJRETab(),
+        new JavaClasspathTab(),
+        new SourceLookupTab(),
+        new EnvironmentTab(),
         new CommonTab()};
     setTabs(tabs);
   }
@@ -97,6 +106,8 @@ public class GwtSuperDevModeCodeServerTabGroup extends AbstractLaunchConfigurati
     super.setDefaults(configuration);
 
     GwtSuperDevModeCodeServerLaunchUtil.setDefaults(configuration, null);
+
+    GWTLaunchConfigurationWorkingCopy.setMainType(configuration, GwtLaunchConfigurationProcessorUtilities.SUPERDEVMODE_CODESERVER_MAIN_TYPE);
   }
 
   private void createUpdateJob() {

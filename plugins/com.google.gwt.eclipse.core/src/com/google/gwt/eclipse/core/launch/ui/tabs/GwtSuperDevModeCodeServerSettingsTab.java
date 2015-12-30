@@ -10,7 +10,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  *******************************************************************************/
-package com.google.gwt.eclipse.core.launch.ui;
+package com.google.gwt.eclipse.core.launch.ui.tabs;
 
 import com.google.gdt.eclipse.core.SWTUtilities;
 import com.google.gdt.eclipse.core.WebAppUtilities;
@@ -34,6 +34,7 @@ import com.google.gwt.eclipse.core.launch.processors.StartupUrlArgumentProcessor
 import com.google.gwt.eclipse.core.launch.processors.XStartOnFirstThreadArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.codeserver.SuperDevModeCodeServerLauncherDirArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.codeserver.SuperDevModeCodeServerPortArgumentProcessor;
+import com.google.gwt.eclipse.core.launch.ui.EntryPointModulesSelectionBlock;
 import com.google.gwt.eclipse.core.launch.ui.EntryPointModulesSelectionBlock.IModulesChangeListener;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.resources.GWTImages;
@@ -109,8 +110,7 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
     private final Text portServerText;
 
     public SdmModeBlock(Composite parent) {
-      groupDevMode =
-          SWTFactory.createGroup(parent, GROUP_DEVMODE_TITLE, 2, 1, GridData.FILL_HORIZONTAL);
+      groupDevMode = SWTFactory.createGroup(parent, GROUP_DEVMODE_TITLE, 2, 1, GridData.FILL_HORIZONTAL);
 
       // Log level
       SWTFactory.createLabel(groupDevMode, "Log level:", 1);
@@ -118,7 +118,6 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
       logLevelComboViewer.setContentProvider(new ArrayContentProvider());
       logLevelComboViewer.setLabelProvider(new DefaultComboLabelProvider());
       logLevelComboViewer.setInput(LogLevelArgumentProcessor.LOG_LEVELS);
-
       logLevelComboViewer.addPostSelectionChangedListener(new ISelectionChangedListener() {
         @Override
         public void selectionChanged(SelectionChangedEvent event) {
@@ -160,6 +159,8 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
           updateLaunchConfigurationDialog();
         }
       });
+      // Turn this off, CodeServer has no auto port
+      portAutoSelectionButton.setVisible(false);
     }
 
     public String getCodeServerPort() {
@@ -171,17 +172,15 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
     }
 
     public String getLogLevel() {
-      StructuredSelection logLevelSelection =
-          (StructuredSelection) logLevelComboViewer.getSelection();
-      return logLevelSelection.getFirstElement() != null ? logLevelSelection.getFirstElement()
-          .toString() : LogLevelArgumentProcessor.DEFAULT_LOG_LEVEL;
+      StructuredSelection logLevelSelection = (StructuredSelection) logLevelComboViewer.getSelection();
+      return logLevelSelection.getFirstElement() != null ? logLevelSelection.getFirstElement().toString()
+          : LogLevelArgumentProcessor.DEFAULT_LOG_LEVEL;
     }
 
     public void initializeFrom(ILaunchConfiguration config) throws CoreException {
       SWTUtilities.setText(groupDevMode, GROUP_DEVMODE_TITLE);
 
-      logLevelComboViewer.setSelection(new StructuredSelection(GWTLaunchConfiguration
-          .getLogLevel(config)));
+      logLevelComboViewer.setSelection(new StructuredSelection(GWTLaunchConfiguration.getLogLevel(config)));
 
       portServerText.setText(GWTLaunchConfiguration.getCodeServerPort(config));
 
@@ -191,37 +190,19 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
     public void performApply(ILaunchConfigurationWorkingCopy launchConfig) {
       // Dev Mode Save the log level
       GWTLaunchConfigurationWorkingCopy.setLogLevel(launchConfig, getLogLevel());
-      LaunchConfigurationProcessorUtilities.updateViaProcessor(new LogLevelArgumentProcessor(),
-          launchConfig);
+      LaunchConfigurationProcessorUtilities.updateViaProcessor(new LogLevelArgumentProcessor(), launchConfig);
 
       // Dev Mode CodeServer port
       GWTLaunchConfigurationWorkingCopy.setCodeServerPort(launchConfig, getCodeServerPort());
-      GWTLaunchConfigurationWorkingCopy
-          .setCodeServerPortAuto(launchConfig, getCodeServerPortAuto());
-      LaunchConfigurationProcessorUtilities.updateViaProcessor(
-          new SuperDevModeCodeServerPortArgumentProcessor(), launchConfig);
+      GWTLaunchConfigurationWorkingCopy.setCodeServerPortAuto(launchConfig, getCodeServerPortAuto());
+      LaunchConfigurationProcessorUtilities.updateViaProcessor(new SuperDevModeCodeServerPortArgumentProcessor(), launchConfig);
 
       // Super Dev Mode Code Server only launcerDir
-      LaunchConfigurationProcessorUtilities.updateViaProcessor(
-          new SuperDevModeCodeServerLauncherDirArgumentProcessor(), launchConfig);
-
-      updateDevModeBlockVisibility(launchConfig);
+      LaunchConfigurationProcessorUtilities.updateViaProcessor(new SuperDevModeCodeServerLauncherDirArgumentProcessor(), launchConfig);
     }
 
     public void updateEnabledState() {
-      portServerText.setEnabled(!portAutoSelectionButton.getSelection()
-          && portAutoSelectionButton.getEnabled());
-    }
-
-    /**
-     * Hide the dev mode block when running in sdm mode.2
-     */
-    private void updateDevModeBlockVisibility(ILaunchConfigurationWorkingCopy launchConfig) {
-      try {
-        boolean isSdmMode =
-            GwtLaunchConfigurationProcessorUtilities.isSuperDevModeCodeServer(launchConfig);
-        groupDevMode.setVisible(!isSdmMode);
-      } catch (CoreException e) {}
+      portServerText.setEnabled(!portAutoSelectionButton.getSelection() && portAutoSelectionButton.getEnabled());
     }
   }
 
@@ -251,10 +232,8 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
           try {
             IJavaProject javaProject = getJavaProject();
             if (javaProject == null) {
-              MessageDialog.openError(
-                  Workbench.getInstance().getActiveWorkbenchWindow().getShell(),
-                  "No project found",
-                  "Please make sure that this launch configuration has a valid project assigned.");
+              MessageDialog.openError(Workbench.getInstance().getActiveWorkbenchWindow().getShell(),
+                  "No project found", "Please make sure that this launch configuration has a valid project assigned.");
               return;
             }
 
@@ -298,8 +277,7 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
       GWTRuntime runtime = javaProject == null ? null : getRuntime(javaProject);
 
       boolean hasNoServerArg =
-          NoServerArgumentProcessor.hasNoServerArg(LaunchConfigurationProcessorUtilities
-              .parseProgramArgs(config));
+          NoServerArgumentProcessor.hasNoServerArg(LaunchConfigurationProcessorUtilities.parseProgramArgs(config));
       boolean showStartupUrl =
           GwtLaunchConfigurationProcessorUtilities.isGwtShell(config)
               || GwtLaunchConfigurationProcessorUtilities.isHostedMode(config)
@@ -315,11 +293,9 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
       // Save the startup URL
       GWTLaunchConfigurationWorkingCopy.setStartupUrl(configuration, getUrl().trim());
-      LaunchConfigurationProcessorUtilities.updateViaProcessor(new StartupUrlArgumentProcessor(),
-          configuration);
+      LaunchConfigurationProcessorUtilities.updateViaProcessor(new StartupUrlArgumentProcessor(), configuration);
 
-      LaunchConfigurationProcessorUtilities.updateViaProcessor(
-          new XStartOnFirstThreadArgumentProcessor(), configuration);
+      LaunchConfigurationProcessorUtilities.updateViaProcessor(new XStartOnFirstThreadArgumentProcessor(), configuration);
     }
   }
 
@@ -377,8 +353,7 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
   }
 
   public GwtSuperDevModeCodeServerSettingsTab(ILaunchArgumentsContainer argsContainer,
-      boolean showDevelopmentModeBlock, boolean showUrlSelectionBlock,
-      boolean showPerformGwtCompileSetting) {
+      boolean showDevelopmentModeBlock, boolean showUrlSelectionBlock, boolean showPerformGwtCompileSetting) {
     this.showDevelopmentModeBlock = showDevelopmentModeBlock;
     this.showUrlSelectionBlock = showUrlSelectionBlock;
     this.showPerformGwtCompileSetting = showPerformGwtCompileSetting;
@@ -399,7 +374,7 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
 
   @Override
   public void createControl(Composite parent) {
-    comp = SWTFactory.createComposite(parent, parent.getFont(), 1, 1, GridData.FILL_BOTH);
+    comp = SWTFactory.createComposite(parent, parent.getFont(), 2, 2, GridData.FILL_BOTH);
     ((GridLayout) comp.getLayout()).verticalSpacing = 0;
     setControl(comp);
 
@@ -413,10 +388,10 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
       sdmModeBlock = new SdmModeBlock(comp);
     }
 
+    // Deprecated
     if (showPerformGwtCompileSetting) {
       createVerticalSpacer(comp, 1);
-      performGwtCompileButton =
-          SWTFactory.createCheckButton(comp, "Perform GWT compile", null, true, 1);
+      performGwtCompileButton = SWTFactory.createCheckButton(comp, "Perform GWT compile", null, true, 1);
       performGwtCompileButton.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent e) {
@@ -456,8 +431,7 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
 
     // Save the entry point modules
     persistModules(configuration, entryPointModulesBlock.getModules());
-    LaunchConfigurationProcessorUtilities.updateViaProcessor(new ModuleArgumentProcessor(),
-        configuration);
+    LaunchConfigurationProcessorUtilities.updateViaProcessor(new ModuleArgumentProcessor(), configuration);
 
     // TODO if codeServerModeBlock
 
@@ -509,8 +483,7 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
           // set of defined entry point modules (specified in project
           // properties).
           IProject project = javaProject.getProject();
-          entryPointModulesBlock.setDefaultModules(ModuleArgumentProcessor.getDefaultModules(
-              project, config));
+          entryPointModulesBlock.setDefaultModules(ModuleArgumentProcessor.getDefaultModules(project, config));
 
           // Initialize the selected set of entry point modules
           List<String> launchConfigModules = GWTLaunchConfiguration.getEntryPointModules(config);
@@ -558,13 +531,6 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
       GWTPluginLog.logError(e, "Could not persist entry point modules");
     }
 
-    try {
-      String startupUrl =
-          StartupUrlArgumentProcessor.getStartupUrl(args, getCurrentLaunchConfiguration());
-      GWTLaunchConfigurationWorkingCopy.setStartupUrl(config, startupUrl);
-    } catch (CoreException e) {
-      GWTPluginLog.logError(e, "Could not persist startup URL");
-    }
 
     String port = SuperDevModeCodeServerPortArgumentProcessor.getPort(args);
     if (port.equalsIgnoreCase("auto")) {
@@ -604,8 +570,7 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
 
     boolean isGWTProject = javaProject != null && GWTNature.isGWTProject(javaProject.getProject());
     String message =
-        isGWTProject ? null
-            : "GWT is not enabled for this project. You can enable it in the project's properties.";
+        isGWTProject ? null : "GWT is not enabled for this project. You can enable it in the project's properties.";
 
     setMessage(message);
     SWTUtilities.setEnabledRecursive(comp, isGWTProject);
@@ -613,11 +578,9 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
 
   protected void persistModules(ILaunchConfigurationWorkingCopy configuration, List<String> modules) {
     if (modules.equals(entryPointModulesBlock.getDefaultModules())) {
-      GWTLaunchConfigurationWorkingCopy.clearAttribute(configuration,
-          GWTLaunchAttributes.ENTRY_POINT_MODULES);
+      GWTLaunchConfigurationWorkingCopy.clearAttribute(configuration, GWTLaunchAttributes.ENTRY_POINT_MODULES);
     } else {
-      GWTLaunchConfigurationWorkingCopy.setEntryPointModules(configuration, modules,
-          Collections.<String>emptyList());
+      GWTLaunchConfigurationWorkingCopy.setEntryPointModules(configuration, modules, Collections.<String>emptyList());
     }
   }
 
@@ -635,8 +598,7 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
   private IProject getProject() throws CoreException {
     IJavaProject javaProject = getJavaProject();
     if (javaProject == null || !javaProject.exists()) {
-      throw new CoreException(new Status(IStatus.ERROR, GWTPlugin.PLUGIN_ID,
-          "Could not get a valid Java project"));
+      throw new CoreException(new Status(IStatus.ERROR, GWTPlugin.PLUGIN_ID, "Could not get a valid Java project"));
     }
 
     return javaProject.getProject();

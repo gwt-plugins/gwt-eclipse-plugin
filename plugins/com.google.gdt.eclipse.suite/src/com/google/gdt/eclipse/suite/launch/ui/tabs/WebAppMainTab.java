@@ -12,7 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package com.google.gdt.eclipse.suite.launch.ui;
+package com.google.gdt.eclipse.suite.launch.ui.tabs;
 
 import com.google.appengine.eclipse.core.nature.GaeNature;
 import com.google.gdt.eclipse.core.CorePluginLog;
@@ -39,22 +39,22 @@ import org.eclipse.jdt.internal.debug.ui.launcher.LauncherMessages;
 import java.text.MessageFormat;
 
 /**
- * A launch configuration tab based off of JDT's main tab that provides
- * GPE-specific validation of the project and main class.
+ * A launch configuration tab based off of JDT's main tab that provides GPE-specific validation of
+ * the project and main class.
  */
 @SuppressWarnings("restriction")
-public class WebAppMainTab extends JavaMainTab implements
-    UpdateLaunchConfigurationDialogBatcher.Listener {
+public class WebAppMainTab extends JavaMainTab implements UpdateLaunchConfigurationDialogBatcher.Listener {
 
   /**
-   * See javadoc on
-   * {@link com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor}
-   * for information about why this is required.
+   * See javadoc on {@link com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor} for
+   * information about why this is required.
    */
   private boolean blockUpdateLaunchConfigurationDialog;
 
-  private final UpdateLaunchConfigurationDialogBatcher updateLaunchConfigurationDialogBatcher = new UpdateLaunchConfigurationDialogBatcher(
-      this);
+  private final UpdateLaunchConfigurationDialogBatcher updateLaunchConfigurationDialogBatcher =
+      new UpdateLaunchConfigurationDialogBatcher(this);
+
+  private LaunchConfigurationUpdater launchConfigurator;
 
   @Override
   public void callSuperUpdateLaunchConfigurationDialog() {
@@ -86,23 +86,61 @@ public class WebAppMainTab extends JavaMainTab implements
       configuration.setMappedResources(new IResource[] {project});
     }
 
-    IJavaProject javaProject = getJavaProject();
-    if (javaProject != null && javaProject.exists()) {
-      try {
-        new LaunchConfigurationUpdater(configuration, javaProject).update();
-      } catch (CoreException e) {
-        CorePluginLog.logError(e,
-            "Could not update arguments to reflect main tab changes");
-      }
+    try {
+      saveLaunchConfiguration(configuration);
+    } catch (CoreException e) {
+      CorePluginLog.logError(e, "Could not update arguments to reflect main tab changes");
     }
   }
 
+  /**
+   * Save the Launch configuration.
+   *
+   * @param configuration
+   * @throws CoreException
+   */
+  public void saveLaunchConfiguration(ILaunchConfigurationWorkingCopy configuration) throws CoreException {
+    LaunchConfigurationUpdater configurator = getLaunchConfigurator(configuration);
+    if (configurator != null) {
+      configurator.update();
+    }
+  }
+
+  /**
+   * Get the LaunchConfigurator.
+   *
+   * @param configuration
+   * @return the launch configurator.
+   * @throws CoreException
+   */
+  private LaunchConfigurationUpdater getLaunchConfigurator(ILaunchConfiguration configuration) throws CoreException {
+    IJavaProject javaProject = getJavaProject();
+    if (javaProject == null || !javaProject.exists()) {
+      return null;
+    }
+
+    if (launchConfigurator == null) {
+      launchConfigurator = new LaunchConfigurationUpdater(configuration, javaProject);
+    }
+    return launchConfigurator;
+  }
+
+
   @Override
-  public void initializeFrom(ILaunchConfiguration config) {
+  public void initializeFrom(ILaunchConfiguration configuration) {
+    // Initialize the static arg processors
+    try {
+      getLaunchConfigurator(configuration);
+    } catch (CoreException e) {
+      // Ignore this
+      e.printStackTrace();
+      GdtPlugin.getLogger().logInfo("WebAppMainTab.getLaunchConfigurator() error:", e);
+    }
+
     blockUpdateLaunchConfigurationDialog = true;
 
     try {
-      super.initializeFrom(config);
+      super.initializeFrom(configuration);
     } finally {
       blockUpdateLaunchConfigurationDialog = false;
     }
@@ -113,8 +151,7 @@ public class WebAppMainTab extends JavaMainTab implements
     setErrorMessage(null);
     setMessage(null);
 
-    if (!super.isValid(launchConfig)
-        || !isValidProject(getEnteredProjectName(), launchConfig)) {
+    if (!super.isValid(launchConfig) || !isValidProject(getEnteredProjectName(), launchConfig)) {
       return false;
     }
 
@@ -142,16 +179,14 @@ public class WebAppMainTab extends JavaMainTab implements
   }
 
   /**
-   * If the named project exists, return it as an IProject. Otherwise, return
-   * null.
+   * If the named project exists, return it as an IProject. Otherwise, return null.
    */
   private IProject getProjectNamed(String projectName) {
     if (projectName.length() == 0) {
       return null;
     }
 
-    IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
-        projectName);
+    IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
     return project.exists() ? project : null;
   }
 
@@ -167,17 +202,14 @@ public class WebAppMainTab extends JavaMainTab implements
     IWorkspace workspace = ResourcesPlugin.getWorkspace();
     IStatus status = workspace.validateName(projectName, IResource.PROJECT);
     if (status.isOK()) {
-      IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
-          projectName);
+      IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
       if (!project.exists()) {
-        setErrorMessage(MessageFormat.format(LauncherMessages.JavaMainTab_20,
-            projectName));
+        setErrorMessage(MessageFormat.format(LauncherMessages.JavaMainTab_20, projectName));
         return false;
       }
 
       if (!project.isOpen()) {
-        setErrorMessage(MessageFormat.format(LauncherMessages.JavaMainTab_21,
-            projectName));
+        setErrorMessage(MessageFormat.format(LauncherMessages.JavaMainTab_21, projectName));
         return false;
       }
 
@@ -196,8 +228,8 @@ public class WebAppMainTab extends JavaMainTab implements
 
       boolean isGwtOrGaeProject;
       try {
-        isGwtOrGaeProject = GWTNature.isGWTProject(project)
-            || NatureUtils.hasNature(project, GaeNature.NATURE_ID);
+        isGwtOrGaeProject =
+            GWTNature.isGWTProject(project) || NatureUtils.hasNature(project, GaeNature.NATURE_ID);
       } catch (CoreException e) {
         GdtPlugin.getLogger().logError(e);
         isGwtOrGaeProject = false;
@@ -208,8 +240,7 @@ public class WebAppMainTab extends JavaMainTab implements
         return false;
       }
     } else {
-      setErrorMessage(MessageFormat.format(LauncherMessages.JavaMainTab_19,
-          status.getMessage()));
+      setErrorMessage(MessageFormat.format(LauncherMessages.JavaMainTab_19, status.getMessage()));
       return false;
     }
 
