@@ -50,12 +50,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Performs enhancement of classes in response to build events. This builder
- * supports incremental and full builds. It also checks for project settings
- * that limit the number of classes that it will try to enhance.
+ * Performs enhancement of classes in response to build events. This builder supports incremental and full builds. It
+ * also checks for project settings that limit the number of classes that it will try to enhance.
  *
- * NOTE: This builder assumes that the Java builder has already executed by the
- * time this builder kicks off.
+ * NOTE: This builder assumes that the Java builder has already executed by the time this builder kicks off.
  */
 @SuppressWarnings("restriction")
 public class AutoEnhancer extends IncrementalProjectBuilder {
@@ -65,12 +63,10 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
   }
 
   /**
-   * Determine the path of the Java source file that produced the given class
-   * file path, assuming the class file was generated in the given output
-   * location and the source file lives in the given source folder.
+   * Determine the path of the Java source file that produced the given class file path, assuming the class file was
+   * generated in the given output location and the source file lives in the given source folder.
    */
-  private static IPath computeJavaFilePath(IPath classFilePath,
-      IPath outputLocation, IPath srcFolderPath) {
+  private static IPath computeJavaFilePath(IPath classFilePath, IPath outputLocation, IPath srcFolderPath) {
     IPath classpathRelativePath = classFilePath.removeFirstSegments(outputLocation.segmentCount());
     String name = classFilePath.lastSegment();
     int enclosingTypeSeparatorPos = name.indexOf('$');
@@ -82,8 +78,7 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
     }
     name = name + ".java";
 
-    classpathRelativePath = classpathRelativePath.removeLastSegments(1).append(
-        name);
+    classpathRelativePath = classpathRelativePath.removeLastSegments(1).append(name);
     IPath javaFilePath = srcFolderPath.append(classpathRelativePath);
 
     // Only return the computed Java file path if we can find the resource
@@ -94,8 +89,7 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
     return null;
   }
 
-  private static IPath getOutputLocation(IClasspathEntry classpathEntry,
-      IPath defaultOutputLocation) {
+  private static IPath getOutputLocation(IClasspathEntry classpathEntry, IPath defaultOutputLocation) {
     IPath outputFolder = classpathEntry.getOutputLocation();
     if (outputFolder == null) {
       outputFolder = defaultOutputLocation;
@@ -112,8 +106,7 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
 
   @Override
   // Overrides an Eclipse API method with a raw parameter type
-  protected IProject[] build(
-      int kind, @SuppressWarnings("rawtypes") Map args, IProgressMonitor monitor)
+  protected IProject[] build(int kind, @SuppressWarnings("rawtypes") Map args, IProgressMonitor monitor)
       throws CoreException {
     IProject project = getProject();
     if (project == null || !project.isAccessible()) {
@@ -130,8 +123,8 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
       return null;
     }
 
-    List<IPath> inclusionPatternsList =
-        GaeProjectProperties.getOrmEnhancementInclusionPatterns(javaProject.getProject());
+    List<IPath> inclusionPatternsList = GaeProjectProperties.getOrmEnhancementInclusionPatterns(javaProject
+        .getProject());
     if (inclusionPatternsList.isEmpty()) {
       return null;
     } else {
@@ -160,13 +153,13 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
   }
 
   /**
-   * Verifies that a given {@code IJavaProject} has a valid GAE SDK. If the project has a GAE facet
-   * (<em>not</em> a GAE nature), and the primary runtime defined in that facet is installed, that
-   * runtime's SDK is examined by calling {@link GaeSdk#validate()}.
-   * Otherwise, {@link GaeSdk#getFactory()} is called to find a GAE SDK; if one is found, it is
-   * examined by calling {@link GaeSdk#validate()}, otherwise validation fails.
+   * Verifies that a given {@code IJavaProject} has a valid GAE SDK. If the project has a GAE facet (<em>not</em> a GAE
+   * nature), and the primary runtime defined in that facet is installed, that runtime's SDK is examined by calling
+   * {@link GaeSdk#validate()}. Otherwise, {@link GaeSdk#getFactory()} is called to find a GAE SDK; if one is found, it
+   * is examined by calling {@link GaeSdk#validate()}, otherwise validation fails.
    *
-   * @param javaProject the given {@code IJavaProject}
+   * @param javaProject
+   *          the given {@code IJavaProject}
    * @return {@code true} if validation succeeds, {@code} false if it fails
    */
   private boolean hasValidSdk(IJavaProject javaProject) {
@@ -177,8 +170,7 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
       IProjectFacet gaeFacet = null;
       if (ProjectFacetsManager.isProjectFacetDefined(AppEngineCoreConstants.GAE_WAR_FACET_ID)) {
         gaeFacet = ProjectFacetsManager.getProjectFacet(AppEngineCoreConstants.GAE_WAR_FACET_ID);
-      } else if (ProjectFacetsManager.isProjectFacetDefined(
-          AppEngineCoreConstants.GAE_EAR_FACET_ID)) {
+      } else if (ProjectFacetsManager.isProjectFacetDefined(AppEngineCoreConstants.GAE_EAR_FACET_ID)) {
         gaeFacet = ProjectFacetsManager.getProjectFacet(AppEngineCoreConstants.GAE_EAR_FACET_ID);
       }
 
@@ -186,7 +178,7 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
       // the installed runtimes. If so, set the variable sdk to that runtime's SDK.
       IFacetedProject facetedProject = ProjectFacetsManager.create(eclipseProject);
       if (gaeFacet != null && facetedProject != null && facetedProject.hasProjectFacet(gaeFacet)) {
-        // TODO why is faceted project broken? --- This will be broken unless the runtiem is checked
+        // TODO why is faceted project broken? --- This will be broken unless the runtime is checked
         org.eclipse.wst.common.project.facet.core.runtime.IRuntime primRunTime = facetedProject.getPrimaryRuntime();
         if (primRunTime == null) {
           return false;
@@ -215,8 +207,7 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
     }
   }
 
-  private Set<String> computeEnhancementPathsForFullBuild()
-      throws CoreException {
+  private Set<String> computeEnhancementPathsForFullBuild() throws CoreException {
     Set<IPath> scannedOutputLocations = new HashSet<IPath>();
     final Set<String> pathsToEnhance = new HashSet<String>();
 
@@ -226,16 +217,14 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
         continue;
       }
 
-      final IPath outputLocation = getOutputLocation(classpathEntry,
-          javaProject.getOutputLocation());
+      final IPath outputLocation = getOutputLocation(classpathEntry, javaProject.getOutputLocation());
 
       if (!scannedOutputLocations.add(outputLocation)) {
         // Skip the output folder if we've already scanned it
         continue;
       }
 
-      IFolder outputFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(
-          outputLocation);
+      IFolder outputFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(outputLocation);
       if (outputFolder.exists()) {
         outputFolder.accept(new IResourceProxyVisitor() {
           @Override
@@ -261,8 +250,7 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
     return pathsToEnhance;
   }
 
-  private Set<String> computeEnhancementPathsForIncrementalBuild(
-      IResourceDelta delta) throws CoreException {
+  private Set<String> computeEnhancementPathsForIncrementalBuild(IResourceDelta delta) throws CoreException {
     final Set<String> pathsToEnhance = new HashSet<String>();
     IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
       @Override
@@ -299,42 +287,34 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
   }
 
   /**
-   * Determines the path of the Java source file that produced the given class
-   * file path. We don't know which source folder contains the original Java
-   * source, so we'll just try each of them until we find it.
+   * Determines the path of the Java source file that produced the given class file path. We don't know which source
+   * folder contains the original Java source, so we'll just try each of them until we find it.
    *
-   * @return the path of the Java source file, or <code>null</code> if a
-   *         corresponding Java source file could not be found under any of the
-   *         project's source folders.
+   * @return the path of the Java source file, or <code>null</code> if a corresponding Java source file could not be
+   *         found under any of the project's source folders.
    */
-  private IPath computeJavaFilePath(IPath classFilePath)
-      throws JavaModelException {
+  private IPath computeJavaFilePath(IPath classFilePath) throws JavaModelException {
     for (IClasspathEntry classpathEntry : javaProject.getRawClasspath()) {
       if (classpathEntry.getEntryKind() != IClasspathEntry.CPE_SOURCE) {
         // Skip any classpath entry that is not a source entry
         continue;
       }
 
-      IPath outputLocation = getOutputLocation(classpathEntry,
-          javaProject.getOutputLocation());
+      IPath outputLocation = getOutputLocation(classpathEntry, javaProject.getOutputLocation());
 
-      IPath javaFilePath = computeJavaFilePath(classFilePath, outputLocation,
-          classpathEntry.getPath());
-      if (javaFilePath != null
-          && ResourcesPlugin.getWorkspace().getRoot().findMember(javaFilePath) != null) {
+      IPath javaFilePath = computeJavaFilePath(classFilePath, outputLocation, classpathEntry.getPath());
+      if (javaFilePath != null && ResourcesPlugin.getWorkspace().getRoot().findMember(javaFilePath) != null) {
         return javaFilePath;
       }
     }
 
-    AppEngineCorePluginLog.logWarning("Could not find Java source for class file "
-        + classFilePath.toString());
+    AppEngineCorePluginLog.logWarning("Could not find Java source for class file " + classFilePath.toString());
     return null;
   }
 
   /**
-   * Answers whether the class file for a particular Java source file should be
-   * enhanced. Right now we just check the Java file path against the defined
-   * ORM inclusion patterns, but in the future we could possibly look at ORM
+   * Answers whether the class file for a particular Java source file should be enhanced. Right now we just check the
+   * Java file path against the defined ORM inclusion patterns, but in the future we could possibly look at ORM
    * annotations in the file, or use some other more specific heuristic.
    */
   private boolean shouldEnhanceClass(IPath javaFilePath) {
@@ -345,8 +325,7 @@ public class AutoEnhancer extends IncrementalProjectBuilder {
 
     // NOTE: inclusionPatterns cannot be null, or this method will automatically
     // return false and cause us to include *all* classes, instead of none.
-    boolean shouldEnhance = !Util.isExcluded(
-        javaFilePath.removeFirstSegments(1).makeRelative(), inclusionPatterns,
+    boolean shouldEnhance = !Util.isExcluded(javaFilePath.removeFirstSegments(1).makeRelative(), inclusionPatterns,
         null, false);
     return shouldEnhance;
   }

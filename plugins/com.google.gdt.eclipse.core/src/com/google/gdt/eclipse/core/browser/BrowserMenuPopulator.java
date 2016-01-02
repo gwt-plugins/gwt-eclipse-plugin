@@ -54,15 +54,6 @@ import java.util.List;
 public class BrowserMenuPopulator {
 
   /**
-   * Add menus to the development view.
-   */
-  public interface ILaunchMenus {
-    String EXTENSION_ID = "com.google.gdt.eclipse.core.browser.launchMenus";
-
-    List<LaunchMenuModel> getMenus(IProject project);
-  }
-
-  /**
    * Provides default browser information.
    */
   public interface DefaultBrowserProvider {
@@ -74,9 +65,7 @@ public class BrowserMenuPopulator {
     void setDefaultBrowserName(String browserName);
   }
 
-  // TODO Replace with extension
-  @Deprecated
-  protected static final String SDBG_BROWSERNAME_ID = "CHROME_SDBG";
+  protected static final String BROWSER_NAME_EXTENSION = "EXTENSION_";
 
   private final DefaultBrowserProvider defaultProvider;
 
@@ -146,10 +135,10 @@ public class BrowserMenuPopulator {
     menu.add(openWithMenuManager);
 
     // Registered launchers will be added to the menu
-    addDebugLauncherMenus(menu, url);
+    addExtensionDebugLauncherMenus(menu, url);
   }
 
-  private void addDebugLauncherMenus(IMenuManager menu, String url) {
+  private void addExtensionDebugLauncherMenus(IMenuManager menu, String url) {
     IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(IDebugLaunch.EXTENSION_ID);
     IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
     if (elements == null || elements.length == 0) {
@@ -160,106 +149,28 @@ public class BrowserMenuPopulator {
       try {
         IDebugLaunch debugLaunch = (IDebugLaunch) element.createExecutableExtension("class");
         String label = element.getAttribute("label");
-
-        addDebugLauncherMenu(menu, label, debugLaunch, url);
+        addExtensionDebugLauncherMenu(menu, label, debugLaunch, url);
       } catch (CoreException e) {
         CorePluginLog.logError("Could not add launcher menu.", e);
       }
     }
   }
 
-  private void addDebugLauncherMenu(IMenuManager menu, final String label, final IDebugLaunch debugLaunch,
-      final String url) {
+  private void addExtensionDebugLauncherMenu(IMenuManager menu, final String label, final IDebugLaunch debugLaunch, final String url) {
     if (debugLaunch == null) {
       CorePluginLog.logError("Could not add debug launch.");
       return;
     }
 
-    // add menus from extension
-    boolean hasMenus = false;
-    try {
-      hasMenus = addMenus(debugLaunch, menu);
-    } catch (CoreException e) {
-      e.printStackTrace();
-    }
-
-    // SDBG
-    // TODO deprecated
-    if (!hasMenus) {
-      String menuName = "Open with " + label;
-      menu.add(new Action("&" + menuName) {
-        @Override
-        public void run() {
-          debugLaunch.launch(project, url, "debug");
-          defaultProvider.setDefaultBrowserName(SDBG_BROWSERNAME_ID + "_" + label);
-        }
-      });
-
-    }
-  }
-
-  /**
-   * Add launcher menus.
-   *
-   * @param debugLaunch
-   * @param menu
-   * @return returns true if there are menu items added
-   * @throws CoreException
-   */
-  private boolean addMenus(IDebugLaunch debugLaunch, IMenuManager menu) throws CoreException {
-    IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(ILaunchMenus.EXTENSION_ID);
-    IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
-    if (elements == null || elements.length == 0) {
-      return false;
-    }
-
-    boolean hasMenus = false;
-    for (IConfigurationElement element : elements) {
-      ILaunchMenus imenus = (ILaunchMenus) element.createExecutableExtension("class");
-      boolean hm = addMenus(debugLaunch, menu, imenus);
-      if (hm) {
-        hasMenus = true;
+    // EXTENSION menus
+    String menuName = "Open with " + label;
+    menu.add(new Action("&" + menuName) {
+      @Override
+      public void run() {
+        debugLaunch.launch(project, url, "debug");
+        defaultProvider.setDefaultBrowserName(BROWSER_NAME_EXTENSION + label);
       }
-    }
-
-    return hasMenus;
-  }
-
-  /**
-   * Add Menus.
-   *
-   * @param debugLaunch
-   * @param menu
-   * @param menus
-   * @return if there were menus added
-   */
-  private boolean addMenus(final IDebugLaunch debugLaunch, IMenuManager menu, ILaunchMenus imenus) {
-    if (imenus == null) {
-      return false;
-    }
-
-    List<LaunchMenuModel> menus = imenus.getMenus(project);
-    if (menus == null || menus.size() == 0) {
-      return false;
-    }
-
-    for (LaunchMenuModel menuModel : menus) {
-      final String id = menuModel.getId();
-      final String label = menuModel.getMenuLabel();
-      String menuName = "Open with " + label;
-      final String url = menuModel.getUrl();
-      final String mode = menuModel.getDebugMode();
-
-      menu.add(new Action("&" + menuName) {
-        @Override
-        public void run() {
-          debugLaunch.launch(project, url, mode);
-          defaultProvider.setDefaultBrowserName(id);
-        }
-      });
-    }
-
-    return true;
+    });
   }
 
   private void launchExtension(String browserName, String url) throws CoreException {
@@ -267,18 +178,14 @@ public class BrowserMenuPopulator {
       return;
     }
 
-    // Deprecated: remove the id, which sets the default browser id
-    browserName = browserName.replace(SDBG_BROWSERNAME_ID + "_", "");
-
-    // Remove the uniqueness
-    browserName = browserName.replaceFirst("(.*?_)", "");
+    // remove the id, which sets the default browser id
+    browserName = browserName.replace(BROWSER_NAME_EXTENSION, "");
 
     IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(IDebugLaunch.EXTENSION_ID);
     IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
     if (elements == null || elements.length == 0) {
       return;
     }
-
     for (IConfigurationElement element : elements) {
       IDebugLaunch debugLaunch = (IDebugLaunch) element.createExecutableExtension("class");
       String label = element.getAttribute("label");
@@ -311,7 +218,7 @@ public class BrowserMenuPopulator {
     }
 
     // The extension was used to launch, re-use it.
-    if (browserName.contains(SDBG_BROWSERNAME_ID)) {
+    if (browserName.contains(BROWSER_NAME_EXTENSION)) {
       try {
         launchExtension(browserName, url);
       } catch (CoreException e) {

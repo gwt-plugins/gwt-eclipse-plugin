@@ -51,12 +51,10 @@ import java.util.regex.Pattern;
  */
 public class EnhancerJob extends WorkspaceJob {
 
-  private static final Pattern DATANUCLEUS_JAR_PATTERN =
-      Pattern
-          .compile("datanucleus/datanucleus-(?<part>[a-z\\-]+)/(?<version>[^/]+)/datanucleus-\\k<part>-\\k<version>\\.jar$");
+  private static final Pattern DATANUCLEUS_JAR_PATTERN = Pattern
+      .compile("datanucleus/datanucleus-(?<part>[a-z\\-]+)/(?<version>[^/]+)/datanucleus-\\k<part>-\\k<version>\\.jar$");
 
-  private static final Set<String> DATANUCLEUS_PARTS_PACKAGED_WITH_APP_ENGINE = ImmutableSet.of(
-      "api-jdo", "api-jpa", "appengine", "core");
+  private static final Set<String> DATANUCLEUS_PARTS_PACKAGED_WITH_APP_ENGINE = ImmutableSet.of("jpa", "api-jdo", "api-jpa", "appengine", "core");
 
   /**
    * Interface for extension points to provide a classpath for the Datanucleus Enhancer.
@@ -64,9 +62,9 @@ public class EnhancerJob extends WorkspaceJob {
   public interface IEnhancerJobCpFinder {
     List<String> buildClasspath(IJavaProject javaProject);
   }
+
   /**
-   * Interface for extension points to provide a Datanucleus version to be used with Datanucleus
-   * Enhancer.
+   * Interface for extension points to provide a Datanucleus version to be used with Datanucleus Enhancer.
    */
   public interface IEnhancerJobDatanucleusVersionProvider {
     String getVersion(IJavaProject javaProject);
@@ -80,29 +78,23 @@ public class EnhancerJob extends WorkspaceJob {
 
   private static List<String> buildClasspath(IJavaProject javaProject) throws CoreException {
 
-    ExtensionQuery<EnhancerJob.IEnhancerJobCpFinder> extQuery =
-        new ExtensionQueryWithElement<EnhancerJob.IEnhancerJobCpFinder>(
-            AppEngineCorePlugin.PLUGIN_ID, "enhancerJobExtension", "enhancerJobCpFinder", "class");
-    List<ExtensionQuery.Data<EnhancerJob.IEnhancerJobCpFinder>> enhancerJobCpFinders =
-        extQuery.getData();
+    ExtensionQuery<EnhancerJob.IEnhancerJobCpFinder> extQuery = new ExtensionQueryWithElement<EnhancerJob.IEnhancerJobCpFinder>(
+        AppEngineCorePlugin.PLUGIN_ID, "enhancerJobExtension", "enhancerJobCpFinder", "class");
+    List<ExtensionQuery.Data<EnhancerJob.IEnhancerJobCpFinder>> enhancerJobCpFinders = extQuery.getData();
     for (ExtensionQuery.Data<EnhancerJob.IEnhancerJobCpFinder> enhancerJobCpFinder : enhancerJobCpFinders) {
-      List<String> extensionPointEnhancerCp =
-          enhancerJobCpFinder.getExtensionPointData().buildClasspath(javaProject);
+      List<String> extensionPointEnhancerCp = enhancerJobCpFinder.getExtensionPointData().buildClasspath(javaProject);
       if (extensionPointEnhancerCp != null) {
         return extensionPointEnhancerCp;
       }
     }
 
+    // Find the classpath
     List<String> unfilteredClasspath = LaunchUtilities.getDefaultClasspath(javaProject);
     // If this classpath contains certain enhancer JARs, they must be removed from the classpath
     // that will be used for invoking the enhancer, because conflicting JARs from the Maven
     // repository are added to the classpath by some other mechanism that we do not understand and
     // possibly cannot control.
-
-    // NOTE use maven profile instead of removing them here
-    // return MavenUtils.hasMavenNature(javaProject.getProject()) ?
-    // removeDatanucleusJars(unfilteredClasspath) : unfilteredClasspath;
-    return unfilteredClasspath;
+    return MavenUtils.hasMavenNature(javaProject.getProject()) ? removeDatanucleusJars(unfilteredClasspath) : unfilteredClasspath;
   }
 
   private static final List<String> removeDatanucleusJars(List<String> input) {
@@ -111,24 +103,24 @@ public class EnhancerJob extends WorkspaceJob {
       Matcher m = DATANUCLEUS_JAR_PATTERN.matcher(classpathItem);
       boolean matches = m.find();
       if (!(matches && DATANUCLEUS_PARTS_PACKAGED_WITH_APP_ENGINE.contains(m.group("part")))) {
+        //System.out.println("\t ++++++ " + classpathItem);
         result.add(classpathItem);
+      } else {
+        //System.out.println("\t\t ------ " + classpathItem);
       }
     }
     return result;
   }
 
   /**
-   * Traverses for enhancerJobExtension extensions to determine Datanucleus version used in
-   * <code>javaProject</code>. Extension implementors are responsible to return a proper version
-   * only for Java project they can understand. Must return <code>null</code> in other cases.
+   * Traverses for enhancerJobExtension extensions to determine Datanucleus version used in <code>javaProject</code>.
+   * Extension implementors are responsible to return a proper version only for Java project they can understand. Must
+   * return <code>null</code> in other cases.
    */
   private static String getDatanucleusVersion(IJavaProject javaProject) throws CoreException {
-    ExtensionQuery<EnhancerJob.IEnhancerJobDatanucleusVersionProvider> extQuery =
-        new ExtensionQueryWithElement<EnhancerJob.IEnhancerJobDatanucleusVersionProvider>(
-            AppEngineCorePlugin.PLUGIN_ID, "enhancerJobExtension", "datanucleusVersionProvider",
-            "class");
-    List<ExtensionQuery.Data<EnhancerJob.IEnhancerJobDatanucleusVersionProvider>> providers =
-        extQuery.getData();
+    ExtensionQuery<EnhancerJob.IEnhancerJobDatanucleusVersionProvider> extQuery = new ExtensionQueryWithElement<EnhancerJob.IEnhancerJobDatanucleusVersionProvider>(
+        AppEngineCorePlugin.PLUGIN_ID, "enhancerJobExtension", "datanucleusVersionProvider", "class");
+    List<ExtensionQuery.Data<EnhancerJob.IEnhancerJobDatanucleusVersionProvider>> providers = extQuery.getData();
     for (ExtensionQuery.Data<EnhancerJob.IEnhancerJobDatanucleusVersionProvider> provider : providers) {
       String version = provider.getExtensionPointData().getVersion(javaProject);
       if (version != null) {
@@ -184,36 +176,31 @@ public class EnhancerJob extends WorkspaceJob {
         commands.add(datanucleusVersion);
       }
 
-      MessageConsole messageConsole =
-          MessageConsoleUtilities.getMessageConsole(javaProject.getElementName()
-              + " - Datanucleus Enhancement", null);
+      MessageConsole messageConsole = MessageConsoleUtilities.getMessageConsole(javaProject.getElementName()
+          + " - Datanucleus Enhancement", null);
 
       IPath projectLocation = javaProject.getProject().getLocation();
 
-      int exitCode =
-          ProcessUtilities.launchProcessAndActivateOnError(commands, projectLocation.toFile(), messageConsole);
+      int exitCode = ProcessUtilities.launchProcessAndActivateOnError(commands, projectLocation.toFile(),
+          messageConsole);
 
       if (exitCode != 0) {
-        AppEngineCorePluginLog.logError("Datanucleus enhancer terminated with exit code "
-            + exitCode
+        AppEngineCorePluginLog.logError("Datanucleus enhancer terminated with exit code " + exitCode
             + ".\nNavigate to the console view for \"Datanucleus Enhancer\" for more information");
       }
 
       refreshEnhancedResources(monitor);
 
     } catch (IOException e) {
-      throw new CoreException(new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID,
-          e.getLocalizedMessage(), e));
+      throw new CoreException(new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID, e.getLocalizedMessage(), e));
     } catch (InterruptedException e) {
-      throw new CoreException(new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID,
-          e.getLocalizedMessage(), e));
+      throw new CoreException(new Status(IStatus.ERROR, AppEngineCorePlugin.PLUGIN_ID, e.getLocalizedMessage(), e));
     }
     return Status.OK_STATUS;
   }
 
   /**
-   * After enhancement is done we have to refresh possibly changed resources. This won't trigger
-   * another build.
+   * After enhancement is done we have to refresh possibly changed resources. This won't trigger another build.
    */
   private void refreshEnhancedResources(IProgressMonitor monitor) throws CoreException {
     IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
