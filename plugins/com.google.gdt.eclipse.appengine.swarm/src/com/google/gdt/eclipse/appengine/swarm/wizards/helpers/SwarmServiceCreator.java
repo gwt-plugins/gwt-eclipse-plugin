@@ -75,7 +75,7 @@ import java.util.List;
 /**
  * The main class responsible for generating Swarm service classes and triggering lib creation /
  * web.xml modifications.
- * 
+ *
  */
 @SuppressWarnings("nls")
 public class SwarmServiceCreator {
@@ -132,7 +132,7 @@ public class SwarmServiceCreator {
    * Android project. Also updated the android project's classpath by removing all the previous
    * files inside ApiLibs folder, deleting it, copying from ApiLibs folder in App Engine project and
    * then add the jars in the copied folder.
-   * 
+   *
    * @throws InvocationTargetException
    * @throws IllegalArgumentException
    */
@@ -217,18 +217,18 @@ public class SwarmServiceCreator {
 
   /**
    * Given a root package, generates the Cloud Endpoint ownerDomain and packagePath information.
-   * 
+   *
    * If rootPackage is com.foo.bar, then the ownerDomain will be "foo.com", and the packagePath will
    * be "bar".
-   * 
+   *
    * As another example, if the rootPackage is "com.foo.bar.baz", the ownerDomain is still
    * "foo.com", and the packgePath is "bar.baz".
-   * 
+   *
    * In the case where the rootPackage has only two components, packagePath is the empty string.
-   * 
+   *
    * If rootPackage has less than two components, then <code>DEFAULT_PACKAGE_INFO</code> will be
    * returned.
-   * 
+   *
    * @param rootPackage the root package. Cannot be null.
    * @return
    */
@@ -271,7 +271,7 @@ public class SwarmServiceCreator {
    * <code>androidEndpointLibsfolder</code> from the <code>androidLibsFolder</code>. Also, based on
    * <code>addFiles</code>, adds or removes source folder in <code>androidEndpointLibsfolder</code>
    * from <code>rawClasspathList</code>.
-   * 
+   *
    * @throws InvocationTargetException
    * @throws IllegalArgumentException
    * @throws IOException
@@ -357,7 +357,6 @@ public class SwarmServiceCreator {
 
   public void create(boolean generateLibs, IProgressMonitor progressMonitor)
       throws SwarmGenerationException, Exception {
-
     try {
       XmlUtil xmlUtil = new XmlUtil();
 
@@ -371,7 +370,7 @@ public class SwarmServiceCreator {
 
           swarmType = SwarmAnnotationUtils.getSwarmType(current);
           if (swarmType == SwarmType.ENTITY) {
-            createPersistenceXmlFile(new NullProgressMonitor());
+            createPersistenceXmlFile(progressMonitor);
           } else if (swarmType == null) {
             continue;
           }
@@ -379,8 +378,8 @@ public class SwarmServiceCreator {
           if (swarmType != SwarmType.API) {
             primaryKeyType = SwarmAnnotationUtils.getPrimaryKeyType(current);
             idGetterName = SwarmAnnotationUtils.getId(current);
-            createManagerFactoryClass(new NullProgressMonitor());
-            createServiceClass(new NullProgressMonitor());
+            createManagerFactoryClass(progressMonitor);
+            createServiceClass(progressMonitor);
           }
         }
       }
@@ -530,7 +529,7 @@ public class SwarmServiceCreator {
 
   /**
    * Checks if a class with the given classname exists in the project.
-   * 
+   *
    * @throws JavaModelException
    */
   private boolean classExists(String className) throws JavaModelException {

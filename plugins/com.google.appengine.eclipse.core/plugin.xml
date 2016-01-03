@@ -8,44 +8,34 @@
   <extension-point id="com.google.appengine.eclipse.core.appengineWebXml" name="appengineWebXml" schema="schema/com.google.appengine.eclipse.core.appengineWebXml.exsd"/>
   <extension-point id="com.google.appengine.eclipse.core.gaeProjectChange" name="gaeProjectChange" schema="schema/com.google.appengine.eclipse.core.gaeProjectChange.exsd"/>
   <extension-point id="com.google.appengine.eclipse.core.logGaeStats" name="logGaeStats" schema="schema/com.google.appengine.eclipse.core.logGaeStats.exsd"/>
+  
   <extension
         point="org.eclipse.jdt.core.compilationParticipant">
       <compilationParticipant
             class="com.google.appengine.eclipse.core.validators.java.JavaCompilationParticipant"
             createsProblems="true"
             id="com.google.appengine.eclipse.core.javaCompilationParticipant">
-         <managedMarker
-               markerType="com.google.appengine.eclipse.core.javaProblemMarker">
-         </managedMarker>
+         <managedMarker markerType="com.google.appengine.eclipse.core.javaProblemMarker"></managedMarker>
       </compilationParticipant>
    </extension>
+   
    <extension
          id="gaeNature"
          name="GAE Nature"
          point="org.eclipse.core.resources.natures">
       <runtime>
-         <run
-               class="com.google.appengine.eclipse.core.nature.GaeNature">
-         </run>
+      	<run class="com.google.appengine.eclipse.core.nature.GaeNature"></run>
       </runtime>
-      <builder
-            id="com.google.appengine.eclipse.core.enhancerbuilder">
-      </builder>
-      <requires-nature
-            id="org.eclipse.jdt.core.javanature">
-      </requires-nature>
-      <builder
-            id="com.google.appengine.eclipse.core.projectValidator">
-      </builder>
-      <builder
-            id="com.google.appengine.eclipse.core.gaeProjectChangeNotifier">
-      </builder>
+      <requires-nature id="org.eclipse.jdt.core.javanature"></requires-nature>
+      
+      <builder id="com.google.appengine.eclipse.core.enhancerbuilder"></builder>
+      <builder id="com.google.appengine.eclipse.core.projectValidator"></builder>
+      <builder id="com.google.appengine.eclipse.core.gaeProjectChangeNotifier"></builder>
    </extension>
+   
    <extension
          point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="com.google.appengine.eclipse.core.preferences.GaePreferenceInitializer">
-      </initializer>
+      <initializer class="com.google.appengine.eclipse.core.preferences.GaePreferenceInitializer"></initializer>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -56,15 +46,13 @@
             name="App Engine">
       </page>
    </extension>
-   <extension
-         point="org.eclipse.jdt.core.classpathContainerInitializer">
+   <extension point="org.eclipse.jdt.core.classpathContainerInitializer">
       <classpathContainerInitializer
             class="com.google.appengine.eclipse.core.sdk.GaeSdkContainerInitializer"
             id="com.google.appengine.eclipse.core.GAE_CONTAINER">
       </classpathContainerInitializer>
    </extension>
-   <extension
-         point="org.eclipse.ui.propertyPages">
+   <extension point="org.eclipse.ui.propertyPages">
       <page
             category="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage"
             class="com.google.appengine.eclipse.core.properties.ui.GaeProjectPropertyPage"
@@ -93,8 +81,7 @@
          </enabledWhen>
       </page>
    </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
+   <extension point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="true"
             id="com.google.appengine.eclipse.core.projectGaeSettings"
@@ -119,17 +106,16 @@
          </action>
       </objectContribution>
    </extension>
+   
    <extension
          id="enhancerbuilder"
          name="Enhancer"
          point="org.eclipse.core.resources.builders">
-      <builder
-            hasNature="true">
-         <run
-               class="com.google.appengine.eclipse.core.orm.enhancement.AutoEnhancer">
-         </run>
+      <builder hasNature="true">
+         <run class="com.google.appengine.eclipse.core.orm.enhancement.AutoEnhancer"></run>
       </builder>
    </extension>
+   
    <extension
          id="projectValidator"
          name="Google App Engine Project Validator"
@@ -138,8 +124,7 @@
             callOnEmptyDelta="true"
             hasNature="true"
             isConfigurable="false">
-         <run
-               class="com.google.appengine.eclipse.core.validators.GaeProjectValidator">
+         <run class="com.google.appengine.eclipse.core.validators.GaeProjectValidator">
          </run>
       </builder>
    </extension>
@@ -150,24 +135,19 @@
          id="gaeProjectChangeNotifier"
          name="Google App Engine Cloud Endpoints Builder"
          point="org.eclipse.core.resources.builders">
-      <builder
-            hasNature="true">
-         <run
-               class="com.google.appengine.eclipse.core.properties.ui.CloudEndpointsBuilder">
-         </run>
+      <builder hasNature="true">
+         <run class="com.google.appengine.eclipse.core.properties.ui.CloudEndpointsBuilder"></run>
       </builder>
    </extension>
+   
    <extension
          id="problemMarker"
          name="Google App Engine Problem"
          point="org.eclipse.core.resources.markers">
-      <persistent
-            value="true">
-      </persistent>
-      <super
-            type="org.eclipse.core.resources.problemmarker">
-      </super>
+      <persistent value="true"></persistent>
+      <super type="org.eclipse.core.resources.problemmarker"></super>
    </extension>
+   
    <extension
          point="org.eclipse.jdt.ui.classpathContainerPage">
       <classpathContainerPage
@@ -176,6 +156,7 @@
             name="Google App Engine">
       </classpathContainerPage>
    </extension>
+   
    <extension
          point="org.eclipse.jdt.ui.quickFixProcessors">
       <quickFixProcessor
@@ -183,9 +164,7 @@
             id="com.google.appengine.eclipse.core.quickFixProcessor"
             name="App Engine QuickFix Processor">
          <handledMarkerTypes>
-            <markerType
-                  id="com.google.appengine.eclipse.core.javaProblemMarker">
-            </markerType>
+            <markerType id="com.google.appengine.eclipse.core.javaProblemMarker"></markerType>
          </handledMarkerTypes>
       </quickFixProcessor>
    </extension>
@@ -200,23 +179,17 @@
          id="javaProblemMarker"
          name="Google App Engine Java Problem"
          point="org.eclipse.core.resources.markers">
-      <persistent
-            value="true">
-      </persistent>
-      <super
-            type="org.eclipse.jdt.core.problem">
-      </super>
+      <persistent value="true"></persistent>
+      <super type="org.eclipse.jdt.core.problem"></super>
    </extension>
-   <extension
-         point="org.eclipse.ui.commands">
+   <extension point="org.eclipse.ui.commands">
       <command
             defaultHandler="com.google.appengine.eclipse.core.deploy.ui.DeployProjectHandler"
             id="com.google.appengine.eclipse.core.deployToGoogle"
             name="Deploy to Google">
       </command>
    </extension>
-   <extension
-         point="org.eclipse.ui.menus">
+   <extension point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
             locationURI="menu:com.google.gdt.eclipse.suite.GDTPulldown?after=toolbarGroup.deploy">
@@ -229,13 +202,10 @@
          </command>
       </menuContribution>
    </extension>
-   <extension
-         point="com.google.gdt.eclipse.login.oauthScope">
-      <oauthScope
-            scope="https://www.googleapis.com/auth/appengine.admin">
+   <extension point="com.google.gdt.eclipse.login.oauthScope">
+      <oauthScope scope="https://www.googleapis.com/auth/appengine.admin">
       </oauthScope>
-      <oauthScope
-            scope="https://www.googleapis.com/auth/sqlservice">
+      <oauthScope scope="https://www.googleapis.com/auth/sqlservice">
       </oauthScope>
    </extension>
    <extension
@@ -256,11 +226,7 @@
          id="endpointsProblemMarker"
          name="Google App Engine Cloud Endpoints Problem Marker"
          point="org.eclipse.core.resources.markers">
-      <persistent
-            value="true">
-      </persistent>
-      <super
-            type="org.eclipse.core.resources.problemmarker">
-      </super>
+      <persistent value="true"></persistent>
+      <super type="org.eclipse.core.resources.problemmarker"></super>
    </extension>
 </plugin>
