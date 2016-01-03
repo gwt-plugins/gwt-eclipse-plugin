@@ -81,11 +81,11 @@ public class SwarmApiCreator {
 
   /**
    * Generates the discovery documents and client libraries based on an .api configuration file.
-   * 
+   *
    * TODO (rdayal): Tighten up the exception types thrown by this method
    * <p/>
    * TODO (rdayal): Deal with Maven projects properly by exposing the layout parameter.
-   * 
+   *
    * @param project the App Engine project
    * @param apiConfig a string with the .api file contents
    * @param outputFolder the folder where the client libraries should be generated into
@@ -303,7 +303,7 @@ public class SwarmApiCreator {
           SwarmServiceCreator.createConfigFile(
               project,
               WebAppUtilities.getWebInfFolder(project).getFile(apiConfigKey).getProjectRelativePath().toString(),
-              new NullProgressMonitor());
+              monitor);
       ResourceUtils.writeToFile(apiConfigFile, apiConfig);
       if (!generateLibs) {
         continue;

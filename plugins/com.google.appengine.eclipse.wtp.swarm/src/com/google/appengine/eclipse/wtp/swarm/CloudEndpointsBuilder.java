@@ -62,14 +62,15 @@ public final class CloudEndpointsBuilder extends IncrementalProjectBuilder {
   @Override
   protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor)
       throws CoreException {
-    boolean fullBuild = kind == IncrementalProjectBuilder.FULL_BUILD;
+    // auto build is when Maven update is invoked from Eclipse
+    // project clean is a full build
+    boolean fullBuild = kind == IncrementalProjectBuilder.FULL_BUILD || kind == IncrementalProjectBuilder.AUTO_BUILD;
     checkState(fullBuild);
     IProject project = getProject();
     MarkerUtilities.clearMarkers(CloudEndpointsUtils.MARKER_ID, project);
     IResourceDelta delta = getDelta(project);
 
-    boolean shouldGenerate = fullBuild || delta != null && apiClassesChanged(delta, monitor)
-        || appIdChanged;
+    boolean shouldGenerate = fullBuild || delta != null && apiClassesChanged(delta, monitor) || appIdChanged;
     boolean withLibs = false;
 
     // return if disabled, allowing to track changes

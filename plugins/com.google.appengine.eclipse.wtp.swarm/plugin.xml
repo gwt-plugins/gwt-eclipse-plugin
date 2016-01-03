@@ -120,6 +120,7 @@
          <run class="com.google.appengine.eclipse.wtp.swarm.CloudEndpointsBuilder"/>
       </builder>
     </extension>
+
     <extension
            point="org.eclipse.core.resources.markers"
            id="cloudEndpointsProblemMarker"
