@@ -185,8 +185,8 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
       SWTUtilities.setText(groupDevMode, GROUP_TITLE_DEVMODE);
 
       comboDevModeLogLevelViewer.setSelection(new StructuredSelection(GWTLaunchConfiguration.getLogLevel(config)));
-      textDevModeCodeServerPort.setText(GWTLaunchConfiguration.getCodeServerPort(config));
-      buttonDevModeAutoPort.setSelection(GWTLaunchConfiguration.getCodeServerPortAuto(config));
+      textDevModeCodeServerPort.setText(GWTLaunchConfiguration.getClassicDevModeCodeServerPort(config));
+      buttonDevModeAutoPort.setSelection(GWTLaunchConfiguration.getClassicDevModeCodeServerPortAuto(config));
     }
 
     public void performApply(ILaunchConfigurationWorkingCopy configuration) {
@@ -195,8 +195,8 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
       LaunchConfigurationProcessorUtilities.updateViaProcessor(new LogLevelArgumentProcessor(), configuration);
 
       // Dev Mode code server port
-      GWTLaunchConfigurationWorkingCopy.setDevModeCodeServerPort(configuration, getDevModeCodeServerPort());
-      GWTLaunchConfigurationWorkingCopy.setDevModeCodeServerPortAuto(configuration, getDevModeCodeServerPortAuto());
+      GWTLaunchConfigurationWorkingCopy.setClassicDevModeCodeServerPort(configuration, getDevModeCodeServerPort());
+      GWTLaunchConfigurationWorkingCopy.setClassicDevModeCodeServerPortAuto(configuration, getDevModeCodeServerPortAuto());
       LaunchConfigurationProcessorUtilities.updateViaProcessor(new DevModeCodeServerPortArgumentProcessor(),
           configuration);
     }
@@ -698,9 +698,9 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
 
     String port = DevModeCodeServerPortArgumentProcessor.getPort(args);
     if (port.equalsIgnoreCase("auto")) {
-      GWTLaunchConfigurationWorkingCopy.setDevModeCodeServerPortAuto(config, true);
+      GWTLaunchConfigurationWorkingCopy.setClassicDevModeCodeServerPortAuto(config, true);
     } else {
-      GWTLaunchConfigurationWorkingCopy.setDevModeCodeServerPort(config, port);
+      GWTLaunchConfigurationWorkingCopy.setClassicDevModeCodeServerPort(config, port);
     }
   }
 

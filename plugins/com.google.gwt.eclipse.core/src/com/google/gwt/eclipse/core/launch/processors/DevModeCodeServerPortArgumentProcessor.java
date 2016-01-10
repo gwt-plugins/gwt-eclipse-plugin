@@ -46,12 +46,12 @@ public class DevModeCodeServerPortArgumentProcessor implements ILaunchConfigurat
 
     // not in or last arg (and hence no value)
     if (index < 0 || index == args.size() - 1) {
-      return (String) GWTLaunchAttributes.CODE_SERVER_PORT.getDefaultValue();
+      return (String) GWTLaunchAttributes.CLASSIC_DEVMODE_CODE_SERVER_PORT.getDefaultValue();
     }
 
     String port = args.get(index + 1);
     if (!validatePort(port)) {
-      return (String) GWTLaunchAttributes.CODE_SERVER_PORT.getDefaultValue();
+      return (String) GWTLaunchAttributes.CLASSIC_DEVMODE_CODE_SERVER_PORT.getDefaultValue();
     }
 
     return port;
@@ -98,8 +98,8 @@ public class DevModeCodeServerPortArgumentProcessor implements ILaunchConfigurat
       return;
     }
 
-    String port = GWTLaunchConfigurationWorkingCopy.getCodeServerPort(launchConfig);
-    boolean auto = GWTLaunchConfigurationWorkingCopy.getCodeServerPortAuto(launchConfig);
+    String port = GWTLaunchConfigurationWorkingCopy.getClassicDevModeCodeServerPort(launchConfig);
+    boolean auto = GWTLaunchConfigurationWorkingCopy.getClassicDevModeCodeServerPortAuto(launchConfig);
 
     if (auto || !validatePort(port)) {
       port = "auto";

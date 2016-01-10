@@ -14,6 +14,9 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.launch;
 
+import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 
@@ -32,20 +35,20 @@ public class GWTLaunchConfigurationWorkingCopy extends GWTLaunchConfiguration {
     configuration.removeAttribute(GWTLaunchAttributes.SUPERDEVMODE_ENABLED.getQualifiedName());
   }
 
-  public static void setDevModeCodeServerPort(ILaunchConfigurationWorkingCopy workingCopy, String port) {
-    setStringAttribute(workingCopy, GWTLaunchAttributes.CODE_SERVER_PORT, port);
+  public static void setClassicDevModeCodeServerPort(ILaunchConfigurationWorkingCopy workingCopy, String port) {
+    setStringAttribute(workingCopy, GWTLaunchAttributes.CLASSIC_DEVMODE_CODE_SERVER_PORT, port);
   }
 
-  public static void setDevModeCodeServerPortAuto(ILaunchConfigurationWorkingCopy workingCopy, boolean auto) {
-    setBooleanAttribute(workingCopy, GWTLaunchAttributes.CODE_SERVER_PORT_AUTO, auto);
+  public static void setClassicDevModeCodeServerPortAuto(ILaunchConfigurationWorkingCopy workingCopy, boolean auto) {
+    setBooleanAttribute(workingCopy, GWTLaunchAttributes.CLASSIC_DEVMODE_CODE_SERVER_PORT_AUTO, auto);
   }
 
-  public static void setCodeServerPort(ILaunchConfigurationWorkingCopy workingCopy, String port) {
-    setStringAttribute(workingCopy, GWTLaunchAttributes.CODE_SERVER_PORT, port);
+  public static void setSdmCodeServerPort(ILaunchConfigurationWorkingCopy workingCopy, String port) {
+    setStringAttribute(workingCopy, GWTLaunchAttributes.SDM_CODE_SERVER_PORT, port);
   }
 
-  public static void setCodeServerPortAuto(ILaunchConfigurationWorkingCopy workingCopy, boolean auto) {
-    setBooleanAttribute(workingCopy, GWTLaunchAttributes.CODE_SERVER_PORT_AUTO, auto);
+  public static void setSdmCodeServerPortAuto(ILaunchConfigurationWorkingCopy workingCopy, boolean auto) {
+    setBooleanAttribute(workingCopy, GWTLaunchAttributes.SDM_CODE_SERVER_PORT_AUTO, auto);
   }
 
   public static void setCodeServerLauncherDir(ILaunchConfigurationWorkingCopy workingCopy, String launcherDir) {
@@ -73,10 +76,6 @@ public class GWTLaunchConfigurationWorkingCopy extends GWTLaunchConfiguration {
 
   public static void setSuperDevModeEnabled(ILaunchConfigurationWorkingCopy configuration, boolean enabled) {
     setBooleanAttribute(configuration, GWTLaunchAttributes.SUPERDEVMODE_ENABLED, enabled);
-  }
-
-  public static void setSuperDevModePort(ILaunchConfigurationWorkingCopy configuration, String superDevModeArgs) {
-    setStringAttribute(configuration, GWTLaunchAttributes.SUPERDEVMODE_PORT, superDevModeArgs);
   }
 
   public static void setStartupUrl(ILaunchConfigurationWorkingCopy workingCopy, String startupUrl) {
@@ -130,6 +129,10 @@ public class GWTLaunchConfigurationWorkingCopy extends GWTLaunchConfiguration {
 
   public static void setMainType(ILaunchConfigurationWorkingCopy workingCopy, String mainType) {
     workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, mainType);
+  }
+
+  public static String getMainType(ILaunchConfigurationWorkingCopy workingCopy) throws CoreException {
+    return LaunchConfigurationProcessorUtilities.getMainTypeName(workingCopy);
   }
 
 }

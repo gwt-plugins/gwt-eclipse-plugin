@@ -23,6 +23,7 @@ import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationUtilities;
 import com.google.gdt.eclipse.core.launch.WebAppLaunchConfiguration;
 import com.google.gdt.eclipse.core.launch.WebAppLaunchConfigurationWorkingCopy;
+import com.google.gdt.eclipse.suite.launch.processors.PortArgumentProcessor;
 import com.google.gdt.eclipse.suite.launch.processors.WarArgumentProcessor;
 import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.launch.GWTLaunchConfigurationWorkingCopy;
@@ -55,7 +56,7 @@ public class WebAppLaunchUtil {
 
   /**
    * Create a launch new configuration working copy.
-   * 
+   *
    * @param isGwtSuperDevModeEnabled will turn on GWT super dev mode.
    * @return ILaunchConfigurationWorkingCopy
    * @throws CoreException
@@ -181,7 +182,11 @@ public class WebAppLaunchUtil {
   }
 
   public static void setDefaults(ILaunchConfigurationWorkingCopy configuration, IProject project) {
-    configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
-        ModuleClasspathProvider.computeProviderId(project));
+    // Set the default main type so it shows up when the launcher is created.
+    configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, ModuleClasspathProvider.computeProviderId(project));
+
+    // Set the default server port
+    LaunchConfigurationProcessorUtilities.updateViaProcessor(new PortArgumentProcessor(), configuration);
   }
+
 }

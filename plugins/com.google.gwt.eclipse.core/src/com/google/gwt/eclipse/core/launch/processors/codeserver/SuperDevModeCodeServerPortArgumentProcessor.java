@@ -48,12 +48,12 @@ public class SuperDevModeCodeServerPortArgumentProcessor implements ILaunchConfi
 
     // not in or last arg (and hence no value)
     if (index < 0 || index == args.size() - 1) {
-      return (String) GWTLaunchAttributes.CODE_SERVER_PORT.getDefaultValue();
+      return (String) GWTLaunchAttributes.SDM_CODE_SERVER_PORT.getDefaultValue();
     }
 
     String port = args.get(index + 1);
     if (!validatePort(port)) {
-      return (String) GWTLaunchAttributes.CODE_SERVER_PORT.getDefaultValue();
+      return (String) GWTLaunchAttributes.SDM_CODE_SERVER_PORT.getDefaultValue();
     }
 
     return port;
@@ -84,6 +84,12 @@ public class SuperDevModeCodeServerPortArgumentProcessor implements ILaunchConfi
       return;
     }
 
+    // Only run this if the entry point is CodeServer. Do not run this with a DevMode entry point.
+    String mainType = GWTLaunchConfigurationWorkingCopy.getMainType(launchConfig);
+    if (mainType != null && !mainType.contains("CodeServer")) {
+      return;
+    }
+
     int insertionIndex =
         LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(programArgs,
             getArgIndex(programArgs), true);
@@ -91,7 +97,7 @@ public class SuperDevModeCodeServerPortArgumentProcessor implements ILaunchConfi
     String port = GWTLaunchConfigurationWorkingCopy.getSdmCodeServerPort(launchConfig);
 
     if (!validatePort(port)) {
-      port = GWTLaunchAttributes.CODE_SERVER_PORT.getDefaultValue().toString();
+      port = GWTLaunchAttributes.SDM_CODE_SERVER_PORT.getDefaultValue().toString();
     }
 
     programArgs.add(insertionIndex, SDM_CODE_SERVER_PORT_ARG);

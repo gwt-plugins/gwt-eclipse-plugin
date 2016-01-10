@@ -182,9 +182,9 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
 
       logLevelComboViewer.setSelection(new StructuredSelection(GWTLaunchConfiguration.getLogLevel(config)));
 
-      portServerText.setText(GWTLaunchConfiguration.getCodeServerPort(config));
+      portServerText.setText(GWTLaunchConfiguration.getClassicDevModeCodeServerPort(config));
 
-      portAutoSelectionButton.setSelection(GWTLaunchConfiguration.getCodeServerPortAuto(config));
+      portAutoSelectionButton.setSelection(GWTLaunchConfiguration.getClassicDevModeCodeServerPortAuto(config));
     }
 
     public void performApply(ILaunchConfigurationWorkingCopy launchConfig) {
@@ -193,8 +193,8 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
       LaunchConfigurationProcessorUtilities.updateViaProcessor(new LogLevelArgumentProcessor(), launchConfig);
 
       // Dev Mode CodeServer port
-      GWTLaunchConfigurationWorkingCopy.setCodeServerPort(launchConfig, getCodeServerPort());
-      GWTLaunchConfigurationWorkingCopy.setCodeServerPortAuto(launchConfig, getCodeServerPortAuto());
+      GWTLaunchConfigurationWorkingCopy.setSdmCodeServerPort(launchConfig, getCodeServerPort());
+      GWTLaunchConfigurationWorkingCopy.setSdmCodeServerPortAuto(launchConfig, getCodeServerPortAuto());
       LaunchConfigurationProcessorUtilities.updateViaProcessor(new SuperDevModeCodeServerPortArgumentProcessor(), launchConfig);
 
       // Super Dev Mode Code Server only launcerDir
@@ -534,9 +534,9 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
 
     String port = SuperDevModeCodeServerPortArgumentProcessor.getPort(args);
     if (port.equalsIgnoreCase("auto")) {
-      GWTLaunchConfigurationWorkingCopy.setCodeServerPortAuto(config, true);
+      GWTLaunchConfigurationWorkingCopy.setSdmCodeServerPortAuto(config, true);
     } else {
-      GWTLaunchConfigurationWorkingCopy.setCodeServerPort(config, port);
+      GWTLaunchConfigurationWorkingCopy.setSdmCodeServerPort(config, port);
     }
   }
 

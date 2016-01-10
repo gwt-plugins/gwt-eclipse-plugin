@@ -78,15 +78,13 @@ public class GwtSuperDevModeCodeServerLaunchUtil {
    * If the project doesn't have focus, the updateViaProcessors will not run.
    */
   public static void setDefaults(ILaunchConfigurationWorkingCopy launchConfig, IProject project) {
-    launchConfig.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
-        ModuleClasspathProvider.computeProviderId(project));
+    launchConfig.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, ModuleClasspathProvider.computeProviderId(project));
 
     // Turn on Super Dev Mode
     GWTLaunchConfigurationWorkingCopy.setSuperDevModeEnabled(launchConfig, true);
 
     // Update program arg for - main type
-    LaunchConfigurationProcessorUtilities.updateViaProcessor(new SuperDevModeCodeServerMainTypeProcessor(),
-        launchConfig);
+    LaunchConfigurationProcessorUtilities.updateViaProcessor(new SuperDevModeCodeServerMainTypeProcessor(), launchConfig);
 
     // Update program arg for - GWT module
     LaunchConfigurationProcessorUtilities.updateViaProcessor(new ModuleArgumentProcessor(), launchConfig);

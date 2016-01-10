@@ -54,14 +54,14 @@ public class GWTLaunchConfiguration {
     return StringUtilities.join(computeJunitDynamicVMArgsAsList(javaProject), " ");
   }
 
-  public static String getCodeServerPort(ILaunchConfiguration launchConfiguration)
+  public static String getClassicDevModeCodeServerPort(ILaunchConfiguration launchConfiguration)
       throws CoreException {
-    return getStringAttribute(launchConfiguration, GWTLaunchAttributes.CODE_SERVER_PORT);
+    return getStringAttribute(launchConfiguration, GWTLaunchAttributes.CLASSIC_DEVMODE_CODE_SERVER_PORT);
   }
 
-  public static boolean getCodeServerPortAuto(ILaunchConfiguration launchConfiguration)
+  public static boolean getClassicDevModeCodeServerPortAuto(ILaunchConfiguration launchConfiguration)
       throws CoreException {
-    return getBooleanAttribute(launchConfiguration, GWTLaunchAttributes.CODE_SERVER_PORT_AUTO);
+    return getBooleanAttribute(launchConfiguration, GWTLaunchAttributes.CLASSIC_DEVMODE_CODE_SERVER_PORT_AUTO);
   }
 
   /**
@@ -99,10 +99,6 @@ public class GWTLaunchConfiguration {
   public static boolean getSuperDevModeEnabled(ILaunchConfiguration launchConfiguration)
       throws CoreException {
     return getBooleanAttribute(launchConfiguration, GWTLaunchAttributes.SUPERDEVMODE_ENABLED);
-  }
-
-  public static String getSdmPort(ILaunchConfiguration launchConfiguration) throws CoreException {
-    return getStringAttribute(launchConfiguration, GWTLaunchAttributes.SUPERDEVMODE_PORT);
   }
 
   public static String getStartupUrl(ILaunchConfiguration launchConfiguration) throws CoreException {
