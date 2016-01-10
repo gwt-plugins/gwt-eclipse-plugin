@@ -20,13 +20,19 @@ import com.google.gwt.eclipse.core.GWTPlugin;
 import java.util.Collections;
 
 /**
- *
+ * Dev Mode and Super Dev Mode launch attributes.
  */
 public enum GWTLaunchAttributes implements ILaunchConfigurationAttribute {
 
-  CODE_SERVER_PORT("9997"),
+  /**
+   * Classic Dev Mode code server port for oohpm
+   */
+  CLASSIC_DEVMODE_CODE_SERVER_PORT("9997"),
 
-  CODE_SERVER_PORT_AUTO(false),
+  /**
+   * Classic Dev mode code server port is derived automatically
+   */
+  CLASSIC_DEVMODE_CODE_SERVER_PORT_AUTO(false),
 
   /**
    * Set of entry point modules to pass to GWT.
@@ -38,6 +44,9 @@ public enum GWTLaunchAttributes implements ILaunchConfigurationAttribute {
    */
   LOG_LEVEL("INFO"),
 
+  /**
+   * Output compiled style
+   */
   OUTPUT_STYLE("OBFUSCATED"),
 
   /**
@@ -46,11 +55,20 @@ public enum GWTLaunchAttributes implements ILaunchConfigurationAttribute {
    */
   SDK_CONTAINER_PATH(""),
 
+  /**
+   * Super Dev Mode code server port
+   */
   SDM_CODE_SERVER_PORT("9876"),
 
-  SUPERDEVMODE_ENABLED(false),
+  /**
+   * Super Dev Mode code server port derived automatically
+   */
+  SDM_CODE_SERVER_PORT_AUTO(false),
 
-  SUPERDEVMODE_PORT("9876"),
+  /**
+   * Super Dev Mode is enabled or not
+   */
+  SUPERDEVMODE_ENABLED(false),
 
   /**
    * URL to launch.

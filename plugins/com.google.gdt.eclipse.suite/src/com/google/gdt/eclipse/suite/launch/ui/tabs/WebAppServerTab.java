@@ -58,8 +58,7 @@ import java.util.List;
  * Main configuration tab for webapp or Speed Tracer launch preferences.
  */
 @SuppressWarnings("restriction")
-public class WebAppServerTab extends JavaLaunchTab implements
-    WebAppArgumentsTab.ArgumentsListener,
+public class WebAppServerTab extends JavaLaunchTab implements WebAppArgumentsTab.ArgumentsListener,
     UpdateLaunchConfigurationDialogBatcher.Listener {
 
   // TODO: Create a subclass that contains the run server and autoport
@@ -78,9 +77,8 @@ public class WebAppServerTab extends JavaLaunchTab implements
   private final WebAppServerTab webAppServerTab = this;
 
   /**
-   * See javadoc on
-   * {@link com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor}
-   * for information about why this is required.
+   * See javadoc on {@link com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor} for information about why
+   * this is required.
    */
   private boolean blockUpdateLaunchConfigurationDialog;
 
@@ -91,21 +89,22 @@ public class WebAppServerTab extends JavaLaunchTab implements
 
   private final boolean showRunServerButton;
 
-  public WebAppServerTab(ILaunchArgumentsContainer argsContainer,
-      boolean showAutoPortSelectionButton, boolean showRunServerButton) {
+  public WebAppServerTab(ILaunchArgumentsContainer argsContainer, boolean showAutoPortSelectionButton,
+      boolean showRunServerButton) {
     this.showAutoPortSelectionButton = showAutoPortSelectionButton;
     this.showRunServerButton = showRunServerButton;
 
     argsContainer.registerProgramArgsListener(this);
   }
 
+  @Override
   public void callSuperUpdateLaunchConfigurationDialog() {
     super.updateLaunchConfigurationDialog();
   }
 
+  @Override
   public void createControl(Composite parent) {
-    Composite comp = SWTFactory.createComposite(parent, parent.getFont(), 1, 1,
-        GridData.FILL_BOTH);
+    Composite comp = SWTFactory.createComposite(parent, parent.getFont(), 1, 1, GridData.FILL_BOTH);
     ((GridLayout) comp.getLayout()).verticalSpacing = 0;
     setControl(comp);
     createServerComponent(comp);
@@ -125,27 +124,22 @@ public class WebAppServerTab extends JavaLaunchTab implements
     super.dispose();
   }
 
+  @Override
   public void doPerformApply(ILaunchConfigurationWorkingCopy configuration) {
     if (runServerButton != null) {
-      WebAppLaunchConfigurationWorkingCopy.setRunServer(configuration,
-          runServerButton.getSelection());
+      WebAppLaunchConfigurationWorkingCopy.setRunServer(configuration, runServerButton.getSelection());
     }
 
-    LaunchConfigurationProcessorUtilities.updateViaProcessor(
-        new NoServerArgumentProcessor(), configuration);
-    LaunchConfigurationProcessorUtilities.updateViaProcessor(
-        new ServerArgumentProcessor(), configuration);
+    LaunchConfigurationProcessorUtilities.updateViaProcessor(new NoServerArgumentProcessor(), configuration);
+    LaunchConfigurationProcessorUtilities.updateViaProcessor(new ServerArgumentProcessor(), configuration);
 
-    WebAppLaunchConfigurationWorkingCopy.setServerPort(configuration,
-        serverPortText.getText().trim());
+    WebAppLaunchConfigurationWorkingCopy.setServerPort(configuration, serverPortText.getText().trim());
 
     if (autoPortSelectionButton != null) {
-      WebAppLaunchConfigurationWorkingCopy.setAutoPortSelection(configuration,
-          autoPortSelectionButton.getSelection());
+      WebAppLaunchConfigurationWorkingCopy.setAutoPortSelection(configuration, autoPortSelectionButton.getSelection());
     }
 
-    LaunchConfigurationProcessorUtilities.updateViaProcessor(
-        new PortArgumentProcessor(), configuration);
+    LaunchConfigurationProcessorUtilities.updateViaProcessor(new PortArgumentProcessor(), configuration);
   }
 
   @Override
@@ -153,6 +147,7 @@ public class WebAppServerTab extends JavaLaunchTab implements
     return GdtPlugin.getDefault().getImage(GdtImages.GDT_ICON);
   }
 
+  @Override
   public String getName() {
     return "Server";
   }
@@ -212,8 +207,7 @@ public class WebAppServerTab extends JavaLaunchTab implements
     }
 
     if (runServerButton != null) {
-      if (WebAppLaunchUtil.projectIsGaeOnly(project)
-          && !runServerButton.getSelection()) {
+      if (WebAppLaunchUtil.projectIsGaeOnly(project) && !runServerButton.getSelection()) {
         setErrorMessage("App Engine projects need to run the built-in server.");
         return false;
       }
@@ -222,6 +216,7 @@ public class WebAppServerTab extends JavaLaunchTab implements
     return true;
   }
 
+  @Override
   public void performApply(ILaunchConfigurationWorkingCopy configuration) {
     if (!this.equals(getLaunchConfigurationDialog().getActiveTab())) {
       return;
@@ -230,40 +225,37 @@ public class WebAppServerTab extends JavaLaunchTab implements
     doPerformApply(configuration);
   }
 
-  public void persistFromArguments(List<String> args,
-      ILaunchConfigurationWorkingCopy config) {
+  @Override
+  public void persistFromArguments(List<String> args, ILaunchConfigurationWorkingCopy config) {
 
     boolean runServer = false;
     try {
-      runServer = LaunchConfigurationAttributeUtilities.getBoolean(config, 
-        WebAppLaunchAttributes.RUN_SERVER);
+      runServer = LaunchConfigurationAttributeUtilities.getBoolean(config, WebAppLaunchAttributes.RUN_SERVER);
     } catch (CoreException e) {
       // ignored, just use false
     }
-    
+
     PortParser portParser = PortParser.parse(args);
-    WebAppLaunchConfigurationWorkingCopy.setAutoPortSelection(config,
-        (!portParser.isPresent || portParser.isAuto) && runServer);
-    
+    WebAppLaunchConfigurationWorkingCopy.setAutoPortSelection(config, (!portParser.isPresent || portParser.isAuto)
+        && runServer);
+
     if (portParser.isPresent && !portParser.isAuto) {
-      WebAppLaunchConfigurationWorkingCopy.setServerPort(config,
-          portParser.port);
+      WebAppLaunchConfigurationWorkingCopy.setServerPort(config, portParser.port);
     }
 
     boolean shouldRunServer = !NoServerArgumentProcessor.hasNoServerArg(args);
     WebAppLaunchConfigurationWorkingCopy.setRunServer(config, shouldRunServer);
   }
 
+  @Override
   public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
   }
 
   protected void createServerComponent(Composite parent) {
-    Group group = SWTFactory.createGroup(parent, "Embedded Server:", 3, 1,
-        GridData.FILL_HORIZONTAL);
+    Group group = SWTFactory.createGroup(parent, "Embedded Server:", 3, 1, GridData.FILL_HORIZONTAL);
 
     if (showRunServerButton) {
-      runServerButton = SWTFactory.createCheckButton(group,
-          "Run built-in server", null, true, 3);
+      runServerButton = SWTFactory.createCheckButton(group, "Run built-in server", null, true, 3);
       runServerButton.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent e) {
@@ -285,12 +277,12 @@ public class WebAppServerTab extends JavaLaunchTab implements
     serverPortLabel.setText("Port:");
 
     serverPortText = new Text(group, SWT.BORDER);
-    final GridData serverPortTextGridData = new GridData(SWT.FILL, SWT.CENTER,
-        false, false);
+    final GridData serverPortTextGridData = new GridData(SWT.FILL, SWT.CENTER, false, false);
     serverPortTextGridData.widthHint = 75;
     serverPortText.setLayoutData(serverPortTextGridData);
     serverPortText.setTextLimit(5);
     serverPortText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         webAppServerTab.updateLaunchConfigurationDialog();
       }
@@ -299,8 +291,7 @@ public class WebAppServerTab extends JavaLaunchTab implements
     if (showAutoPortSelectionButton) {
       autoPortSelectionButton = new Button(group, SWT.CHECK);
       autoPortSelectionButton.setText("Automatically select an unused port");
-      autoPortSelectionButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER,
-          true, false));
+      autoPortSelectionButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
       autoPortSelectionButton.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent e) {
@@ -319,10 +310,8 @@ public class WebAppServerTab extends JavaLaunchTab implements
   }
 
   private void updateEnabledState() {
-    boolean usingAutoPort = autoPortSelectionButton != null
-        && autoPortSelectionButton.getSelection();
-    boolean runningServer = runServerButton == null
-        || runServerButton.getSelection();
+    boolean usingAutoPort = autoPortSelectionButton != null && autoPortSelectionButton.getSelection();
+    boolean runningServer = runServerButton == null || runServerButton.getSelection();
     serverPortText.setEnabled(!usingAutoPort && runningServer);
 
     if (autoPortSelectionButton != null) {

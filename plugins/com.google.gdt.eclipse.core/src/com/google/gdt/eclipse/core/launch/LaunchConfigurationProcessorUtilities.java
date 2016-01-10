@@ -164,10 +164,8 @@ public final class LaunchConfigurationProcessorUtilities {
   /**
    * @return the main type, or null
    */
-  public static String getMainTypeName(ILaunchConfiguration config)
-      throws CoreException {
-    return config.getAttribute(
-        IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, (String) null);
+  public static String getMainTypeName(ILaunchConfiguration config) throws CoreException {
+    return config.getAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, (String) null);
   }
 
   /**
