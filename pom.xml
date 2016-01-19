@@ -51,7 +51,6 @@
     <module>plugins/com.google.gdt.eclipse.managedapis</module>
     <module>plugins/com.google.gdt.eclipse.managedapis.test</module>
     <module>plugins/com.google.gdt.eclipse.maven</module>
-    <!-- <module>plugins/com.google.gdt.eclipse.mobile.android</module> -->
     <module>plugins/com.google.gdt.eclipse.platform</module>
 
     <!-- Run the Eclipse Application from the suite -->
