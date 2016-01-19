@@ -36,7 +36,6 @@ import com.google.gwt.eclipse.core.launch.processors.SuperDevModeArgumentProcess
 import com.google.gwt.eclipse.core.launch.processors.XStartOnFirstThreadArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.codeserver.SuperDevModeCodeServerLauncherDirArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.codeserver.SuperDevModeCodeServerPortArgumentProcessor;
-import com.google.gwt.eclipse.core.speedtracer.SpeedTracerLaunchConfiguration;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -50,28 +49,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/*
- * TODO: consider splitting this into separate WebAppLaunchConfigurationUpdater
- * and SpeedTracerLaunchConfigurationUpdater.
- */
 /**
- * Updates launch configurations by delegating to the many {@link ILaunchConfigurationProcessor}s.
+ * Updates launch configurations by delegating to the many
+ * {@link ILaunchConfigurationProcessor}s.
  */
 public class LaunchConfigurationUpdater {
 
   /**
-   * The types of launch configurations that the processors are capable of handling.
+   * The types of launch configurations that the processors are capable of
+   * handling.
    */
   public static final Set<String> APPLICABLE_LAUNCH_CONFIGURATION_TYPE_IDS = new HashSet<String>(
-      Arrays.asList(new String[] {WebAppLaunchConfiguration.TYPE_ID,
-          SpeedTracerLaunchConfiguration.TYPE_ID // TODO consider removing SpeedTracerLaunchConfig
-          }));
+      Arrays.asList(new String[] { WebAppLaunchConfiguration.TYPE_ID }));
 
-  private static final List<ILaunchConfigurationProcessor> PROCESSORS =
-      new ArrayList<ILaunchConfigurationProcessor>();
+  private static final List<ILaunchConfigurationProcessor> PROCESSORS = new ArrayList<ILaunchConfigurationProcessor>();
 
   static {
-    // Ordering matters! E.g. startup URL depends on main type, so it must appear after main type.
+    // Ordering matters! E.g. startup URL depends on main type, so it must
+    // appear after main type.
     ClasspathUtilities.ClassFinder classFinder = new ClasspathUtilities.ClassFinder();
 
     PROCESSORS.add(new ClasspathProviderProcessor());
@@ -97,8 +92,8 @@ public class LaunchConfigurationUpdater {
     PROCESSORS.add(new SuperDevModeCodeServerLauncherDirArgumentProcessor()); // GWT CodeServer
     addExternalProcessors();
 
-    ExtensionQueryStringAttr extQuery =
-        new ExtensionQueryStringAttr(GdtPlugin.PLUGIN_ID, "launchConfigurationType", "launchId");
+    ExtensionQueryStringAttr extQuery = new ExtensionQueryStringAttr(GdtPlugin.PLUGIN_ID, "launchConfigurationType",
+        "launchId");
     List<ExtensionQuery.Data<String>> launchIds = extQuery.getData();
     for (ExtensionQuery.Data<String> launchId : launchIds) {
       APPLICABLE_LAUNCH_CONFIGURATION_TYPE_IDS.add(launchId.getExtensionPointData().trim());
@@ -106,12 +101,10 @@ public class LaunchConfigurationUpdater {
   }
 
   private static void addExternalProcessors() {
-    ExtensionQuery<ILaunchConfigurationProcessor> extQuery =
-        new ExtensionQuery<ILaunchConfigurationProcessor>(GdtPlugin.PLUGIN_ID,
-            "launchConfigVmArgProcessor", "class");
+    ExtensionQuery<ILaunchConfigurationProcessor> extQuery = new ExtensionQuery<ILaunchConfigurationProcessor>(
+        GdtPlugin.PLUGIN_ID, "launchConfigVmArgProcessor", "class");
 
-    List<ExtensionQuery.Data<ILaunchConfigurationProcessor>> launchConfigProcessors =
-        extQuery.getData();
+    List<ExtensionQuery.Data<ILaunchConfigurationProcessor>> launchConfigProcessors = extQuery.getData();
     for (ExtensionQuery.Data<ILaunchConfigurationProcessor> processor : launchConfigProcessors) {
       PROCESSORS.add(processor.getExtensionPointData());
     }
@@ -125,8 +118,7 @@ public class LaunchConfigurationUpdater {
 
   private final List<String> vmArgs;
 
-  public LaunchConfigurationUpdater(ILaunchConfiguration launchConfig, IJavaProject javaProject)
-      throws CoreException {
+  public LaunchConfigurationUpdater(ILaunchConfiguration launchConfig, IJavaProject javaProject) throws CoreException {
     this.launchConfig = launchConfig;
     this.javaProject = javaProject;
 
@@ -142,7 +134,8 @@ public class LaunchConfigurationUpdater {
   }
 
   /**
-   * Updates the launch configuration by delegating to each {@link ILaunchConfigurationProcessor}.
+   * Updates the launch configuration by delegating to each
+   * {@link ILaunchConfigurationProcessor}.
    * <p>
    * This method saves the launch configuration's working copy.
    *

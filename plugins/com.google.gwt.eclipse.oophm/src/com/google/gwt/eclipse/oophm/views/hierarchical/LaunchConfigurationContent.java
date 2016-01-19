@@ -16,11 +16,8 @@ package com.google.gwt.eclipse.oophm.views.hierarchical;
 
 import com.google.gdt.eclipse.core.browser.BrowserMenuPopulator;
 import com.google.gwt.eclipse.core.GWTPlugin;
-import com.google.gwt.eclipse.core.GWTPluginLog;
-import com.google.gwt.eclipse.core.speedtracer.SpeedTracerBrowserUtilities;
 import com.google.gwt.eclipse.oophm.model.IWebAppDebugModelListener;
 import com.google.gwt.eclipse.oophm.model.LaunchConfiguration;
-import com.google.gwt.eclipse.oophm.model.SpeedTracerLaunchConfiguration;
 import com.google.gwt.eclipse.oophm.model.WebAppDebugModelEvent;
 import com.google.gwt.eclipse.oophm.model.WebAppDebugModelListenerAdapter;
 
@@ -58,32 +55,32 @@ import org.eclipse.swt.widgets.Menu;
 import java.util.List;
 
 /**
- * Displays a filtered list of launch URLs for a given launch configuration.
- * This pane is displayed when a launch configuration is selected in the
- * hierarchical view.
+ * Displays a filtered list of launch URLs for a given launch configuration. This pane is displayed
+ * when a launch configuration is selected in the hierarchical view.
  */
 public class LaunchConfigurationContent extends Composite {
 
   /*
-   * All methods must be called on the UI thread, otherwise there needs to be
-   * locking on the viewer .
+   * All methods must be called on the UI thread, otherwise there needs to be locking on the viewer
+   * .
    */
   private static class ContentProvider implements ITreeContentProvider {
-    private final IWebAppDebugModelListener launchUrlsChangedListener = new WebAppDebugModelListenerAdapter() {
-      @Override
-      public void launchConfigurationLaunchUrlsChanged(
-          WebAppDebugModelEvent<LaunchConfiguration> e) {
-        if (e.getElement().equals(launchConfigurationModelObject)) {
-          Display.getDefault().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-              updateLaunchUrlsOrLoadingOnViewer();
-            }
-          });
+    private final IWebAppDebugModelListener launchUrlsChangedListener =
+        new WebAppDebugModelListenerAdapter() {
+          @Override
+          public void launchConfigurationLaunchUrlsChanged(
+              WebAppDebugModelEvent<LaunchConfiguration> e) {
+            if (e.getElement().equals(launchConfigurationModelObject)) {
+              Display.getDefault().asyncExec(new Runnable() {
+                @Override
+                public void run() {
+                  updateLaunchUrlsOrLoadingOnViewer();
+                }
+              });
 
-        }
-      }
-    };
+            }
+          }
+        };
 
     private TreeViewer viewer;
 
@@ -92,18 +89,16 @@ public class LaunchConfigurationContent extends Composite {
     private final Label launchUrlsCaptionLabel;
 
     /*
-     * TODO: The launchUrlsCaptionLabel is leaking the abstraction of the
-     * provider being separate from the viewer (this label counts as part of the
-     * "viewer" since it is updated along with viewer updates). But a fix is
-     * overly complicated for the current usage of this class.
+     * TODO: The launchUrlsCaptionLabel is leaking the abstraction of the provider being separate
+     * from the viewer (this label counts as part of the "viewer" since it is updated along with
+     * viewer updates). But a fix is overly complicated for the current usage of this class.
      */
     private ContentProvider(Label launchUrlsCaptionLabel) {
       this.launchUrlsCaptionLabel = launchUrlsCaptionLabel;
     }
 
     @Override
-    public void dispose() {
-    }
+    public void dispose() {}
 
     @Override
     public Object[] getChildren(Object parentElement) {
@@ -127,8 +122,7 @@ public class LaunchConfigurationContent extends Composite {
 
     @Override
     public Object getParent(Object element) {
-      return element != launchConfigurationModelObject
-          ? launchConfigurationModelObject : null;
+      return element != launchConfigurationModelObject ? launchConfigurationModelObject : null;
     }
 
     @Override
@@ -160,7 +154,8 @@ public class LaunchConfigurationContent extends Composite {
         viewer.getTree().setEnabled(isServing);
 
         if (isServing) {
-          launchUrlsCaptionLabel.setText("Double-click to open a URL or right-click for more options.");
+          launchUrlsCaptionLabel
+              .setText("Double-click to open a URL or right-click for more options.");
           launchUrlsCaptionLabel.getParent().layout();
         } else {
           launchUrlsCaptionLabel.setText("Development mode is loading...");
@@ -173,12 +168,10 @@ public class LaunchConfigurationContent extends Composite {
 
   private static class LabelProvider implements ILabelProvider {
     @Override
-    public void addListener(ILabelProviderListener listener) {
-    }
+    public void addListener(ILabelProviderListener listener) {}
 
     @Override
-    public void dispose() {
-    }
+    public void dispose() {}
 
     @Override
     public Image getImage(Object element) {
@@ -196,8 +189,7 @@ public class LaunchConfigurationContent extends Composite {
     }
 
     @Override
-    public void removeListener(ILabelProviderListener listener) {
-    }
+    public void removeListener(ILabelProviderListener listener) {}
   }
 
   private final Clipboard clipboard = new Clipboard(Display.getCurrent());
@@ -206,19 +198,17 @@ public class LaunchConfigurationContent extends Composite {
   private TreeViewer viewer;
   private BrowserMenuPopulator browserMenuPopulator = new BrowserMenuPopulator(
       new BrowserMenuPopulator.DefaultBrowserProvider() {
-        private final String ATTR_PREVIOUS_BROWSER = GWTPlugin.PLUGIN_ID
-            + ".oophm." + LaunchConfigurationContent.class.getSimpleName();
+        private final String ATTR_PREVIOUS_BROWSER = GWTPlugin.PLUGIN_ID + ".oophm."
+            + LaunchConfigurationContent.class.getSimpleName();
 
         @Override
         public String getDefaultBrowserName() {
-          return GWTPlugin.getDefault().getPreferenceStore().getString(
-              ATTR_PREVIOUS_BROWSER);
+          return GWTPlugin.getDefault().getPreferenceStore().getString(ATTR_PREVIOUS_BROWSER);
         }
 
         @Override
         public void setDefaultBrowserName(String browserName) {
-          GWTPlugin.getDefault().getPreferenceStore().setValue(
-              ATTR_PREVIOUS_BROWSER, browserName);
+          GWTPlugin.getDefault().getPreferenceStore().setValue(ATTR_PREVIOUS_BROWSER, browserName);
         }
       });
 
@@ -245,8 +235,7 @@ public class LaunchConfigurationContent extends Composite {
   private void copySelectionToClipboard() {
     String url = getSelectedUrl();
     if (url != null) {
-      clipboard.setContents(new Object[] {url},
-          new Transfer[] {textTransferInstance});
+      clipboard.setContents(new Object[] {url}, new Transfer[] {textTransferInstance});
     }
   }
 
@@ -256,18 +245,8 @@ public class LaunchConfigurationContent extends Composite {
     menuMgr.addMenuListener(new IMenuListener() {
       @Override
       public void menuAboutToShow(IMenuManager manager) {
-
-        if (launchConfiguration instanceof SpeedTracerLaunchConfiguration) {
-          manager.add(new Action("&Open") {
-            @Override
-            public void run() {
-              launchSpeedTracer();
-            }
-          });
-        } else {
-          populateBrowserActions(launchConfiguration, manager);
-          manager.add(new Separator());
-        }
+        populateBrowserActions(launchConfiguration, manager);
+        manager.add(new Separator());
 
         manager.add(new Action("&Copy") {
           @Override
@@ -282,49 +261,22 @@ public class LaunchConfigurationContent extends Composite {
   }
 
   private void createViewer(Label launchUrlsCaptionLabel) {
-    viewer = new TreeViewer(this, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL
-        | SWT.BORDER);
+    viewer = new TreeViewer(this, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
     viewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
     viewer.setLabelProvider(new LabelProvider());
     viewer.setContentProvider(new ContentProvider(launchUrlsCaptionLabel));
     viewer.setInput(launchConfiguration);
-
     viewer.addDoubleClickListener(new IDoubleClickListener() {
       @Override
       public void doubleClick(DoubleClickEvent event) {
-        if (launchConfiguration instanceof SpeedTracerLaunchConfiguration) {
-          launchSpeedTracer();
-        } else {
-          browserMenuPopulator
-              .openDefaultBrowser(getProject(launchConfiguration), getSelectedUrl());
-        }
+
       }
     });
   }
 
   private String getSelectedUrl() {
     StructuredSelection selection = (StructuredSelection) viewer.getSelection();
-    return selection != null && !selection.isEmpty()
-        ? (String) selection.getFirstElement() : null;
-  }
-
-  private void launchSpeedTracer() {
-    try {
-      ILaunch launch = launchConfiguration.getLaunch();
-      ILaunchConfiguration config = launch.getLaunchConfiguration();
-      if (config != null) {
-        if (!SpeedTracerBrowserUtilities.ensureChromeConfiguredOrPrompt(
-            getShell(), config)) {
-          return;
-        }
-      }
-
-      List<String> command = SpeedTracerBrowserUtilities.computeBrowserCommandLine(launch);
-      new ProcessBuilder(command).start();
-    } catch (Throwable t) {
-      GWTPluginLog.logError(t, "Could not open Chrome.");
-    }
+    return selection != null && !selection.isEmpty() ? (String) selection.getFirstElement() : null;
   }
 
   private void populateBrowserActions(LaunchConfiguration launchConfig, IMenuManager manager) {

@@ -15,7 +15,6 @@
 package com.google.gwt.eclipse.oophm.model;
 
 import com.google.gwt.core.ext.TreeLogger.Type;
-import com.google.gwt.eclipse.core.speedtracer.SpeedTracerLaunchConfiguration;
 import com.google.gwt.eclipse.oophm.Activator;
 import com.google.gwt.eclipse.oophm.DevModeImages;
 
@@ -48,14 +47,14 @@ public class ModelLabelProvider extends ColumnLabelProvider implements
   @Override
   public Image getImage(Object element) {
     if (element instanceof LaunchConfiguration) {
-      return getLaunchConfigurationImage((LaunchConfiguration) element);      
+      return getLaunchConfigurationImage((LaunchConfiguration) element);
     } else if (element instanceof BrowserTab) {
       return getBrowserTabImage((BrowserTab) element);
     }
 
     return null;
   }
-  
+
   @Override
   public String getText(Object element) {
     assert (element instanceof IModelNode);
@@ -78,33 +77,24 @@ public class ModelLabelProvider extends ColumnLabelProvider implements
         }
       }
     }
-    
+
     return Activator.getDefault().getImage(imageId);
   }
 
   private Image getLaunchConfigurationImage(LaunchConfiguration launchConfiguration) {
     String launchConfigType = launchConfiguration.getLaunchTypeId();
-    String imageId;
+    String imageId = DevModeImages.GDT_ICON;
 
-    if (SpeedTracerLaunchConfiguration.TYPE_ID.equals(launchConfigType)) {
-      imageId = launchConfiguration.isTerminated()
-          ? DevModeImages.SPEED_TRACER_ICON_TERMINATED
-          : DevModeImages.SPEED_TRACER_ICON;
-      
+    if (launchConfiguration.isTerminated()) {
+      imageId = DevModeImages.GDT_ICON_TERMINATED;
     } else {
-      imageId = DevModeImages.GDT_ICON;
-
-      if (launchConfiguration.isTerminated()) {
-        imageId = DevModeImages.GDT_ICON_TERMINATED;
-      } else {
-        String attentionLevel = launchConfiguration.getNeedsAttentionLevel();
-        if (attentionLevel != null) {
-          Type logLevel = LogEntry.toTreeLoggerType(attentionLevel);
-          if (logLevel == Type.ERROR) {
-            imageId = DevModeImages.GDT_ICON_ERROR;
-          } else if (logLevel == Type.WARN) {
-            imageId = DevModeImages.GDT_ICON_WARNING;
-          }
+      String attentionLevel = launchConfiguration.getNeedsAttentionLevel();
+      if (attentionLevel != null) {
+        Type logLevel = LogEntry.toTreeLoggerType(attentionLevel);
+        if (logLevel == Type.ERROR) {
+          imageId = DevModeImages.GDT_ICON_ERROR;
+        } else if (logLevel == Type.WARN) {
+          imageId = DevModeImages.GDT_ICON_WARNING;
         }
       }
     }

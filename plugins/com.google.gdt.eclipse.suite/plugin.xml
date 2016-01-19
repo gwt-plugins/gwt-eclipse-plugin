@@ -36,15 +36,6 @@
             name="Web Application"
             sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
             sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
-      <launchConfigurationType
-          delegate="com.google.gdt.eclipse.suite.launch.SpeedTracerLaunchDelegate"
-          delegateDescription="Profiles Using Speed Tracer"
-          delegateName="Speed Tracer Launcher"
-          id="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunch"
-          modes="profile"
-          name="Speed Tracer"
-          sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
-          sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer" />
    </extension>
    
       <extension
@@ -71,17 +62,6 @@
                mode="run"
                description="Run a Web Application">
          </launchMode>
-      </launchConfigurationTabGroup>
-      <!-- TODO: This lives here since it references the Server tab.  Use extensions to clean it up. -->
-      <launchConfigurationTabGroup
-          type="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunch"
-          helpContextId="org.eclipse.jdt.debug.ui.launchConfigHelpContext.local_java_application"
-          class="com.google.gdt.eclipse.suite.launch.ui.tab_groups.SpeedTracerLaunchTabGroup"
-          id="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunchTabGroup">
-          <launchMode
-              mode="profile"
-              description="Profile Using Speed Tracer">
-          </launchMode>
       </launchConfigurationTabGroup>
       
       <!-- GWT SDM Code Server -->

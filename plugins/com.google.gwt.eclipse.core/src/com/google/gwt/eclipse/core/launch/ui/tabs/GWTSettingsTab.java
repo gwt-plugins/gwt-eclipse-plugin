@@ -18,7 +18,6 @@ import com.google.gdt.eclipse.core.SWTUtilities;
 import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.launch.ILaunchArgumentsContainer;
 import com.google.gdt.eclipse.core.launch.ILaunchShortcutStrategy;
-import com.google.gdt.eclipse.core.launch.LaunchConfigurationAttributeUtilities;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.core.launch.UpdateLaunchConfigurationDialogBatcher;
 import com.google.gwt.eclipse.core.GWTPlugin;
@@ -41,7 +40,6 @@ import com.google.gwt.eclipse.core.launch.ui.EntryPointModulesSelectionBlock.IMo
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.resources.GWTImages;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
-import com.google.gwt.eclipse.core.speedtracer.SpeedTracerLaunchConfiguration;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -592,11 +590,6 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
       urlSelectionBlock.performApply(configuration);
     }
 
-    if (performGwtCompileButton != null) {
-      LaunchConfigurationAttributeUtilities.set(configuration,
-          SpeedTracerLaunchConfiguration.Attribute.PERFORM_GWT_COMPILE, performGwtCompileButton.getSelection());
-    }
-
     enableSuperDevModeSelection(configuration);
   }
 
@@ -647,14 +640,6 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
           List<String> launchConfigModules = GWTLaunchConfiguration.getEntryPointModules(config);
           entryPointModulesSelectionBlock.setModules(launchConfigModules);
         }
-
-        if (performGwtCompileButton != null) {
-          boolean performGwtCompile =
-              LaunchConfigurationAttributeUtilities.getBoolean(config,
-                  SpeedTracerLaunchConfiguration.Attribute.PERFORM_GWT_COMPILE);
-          performGwtCompileButton.setSelection(performGwtCompile);
-        }
-
       } catch (CoreException e) {
         // Purposely ignored; this happens when the java project does
         // not exist
@@ -662,7 +647,6 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
 
       maybeGrayControls(javaProject);
       updateEnabledState();
-
     } finally {
       updateLaunchConfigurationDialogBlock = false;
     }

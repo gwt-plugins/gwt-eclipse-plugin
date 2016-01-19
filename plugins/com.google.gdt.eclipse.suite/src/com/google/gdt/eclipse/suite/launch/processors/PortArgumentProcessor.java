@@ -21,7 +21,6 @@ import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.core.launch.WebAppLaunchConfigurationWorkingCopy;
 import com.google.gwt.eclipse.core.launch.processors.NoServerArgumentProcessor;
 import com.google.gwt.eclipse.core.nature.GWTNature;
-import com.google.gwt.eclipse.core.speedtracer.SpeedTracerLaunchConfiguration;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -224,10 +223,6 @@ public class PortArgumentProcessor implements ILaunchConfigurationProcessor {
      * and ensure the launch is not using automatic port selection.
      */
     PortParser portParser = PortParser.parse(programArgs);
-    if (SpeedTracerLaunchConfiguration.TYPE_ID.equals(launchConfig.getType().getIdentifier())
-        && (!portParser.isPresent || portParser.isAuto)) {
-      return "Please specify a port number (automatic port selection is not supported by Speed Tracer launch configurations)";
-    }
 
     if (!portParser.isPresent) {
       return null;
