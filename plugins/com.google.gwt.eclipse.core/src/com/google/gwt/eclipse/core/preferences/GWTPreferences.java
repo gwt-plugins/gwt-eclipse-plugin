@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -71,6 +71,7 @@ public class GWTPreferences {
         getEclipsePreferences(), GWTRuntime.getFactory());
 
     sdkManager.addSdkUpdateListener(new SdkManager.SdkUpdateListener<GWTRuntime>() {
+      @Override
       public void onSdkUpdate(SdkUpdateEvent<GWTRuntime> sdkUpdateEvent) throws CoreException {
 
         SdkManager<GWTRuntime>.SdkUpdateEventProcessor sdkUpdateEventProcessor =
@@ -108,7 +109,7 @@ public class GWTPreferences {
    * Returns the folder path where the genfiles from the gwt compile are
    * located. There is no set method, but the user could manually change the
    * folder name by editing the value in the preferences file.
-   * 
+   *
    * @return The folder name where the genfiles from the gwt compile are
    *         located.
    */
@@ -176,15 +177,11 @@ public class GWTPreferences {
 
   /**
    * Returns the port to use for the SourceViewerServer.
-   * 
+   *
    * @return the port to use for the SourceViewerServer
    */
   public static int getSourceViewerServerPort() {
     return getEclipsePreferences().getInt(SOURCE_VIEWER_SERVER_PORT, 50313);
-  }
-
-  public static boolean getSpeedTracerEnabled() {
-    return getEclipsePreferences().getBoolean(SPEED_TRACER_ENABLED, false);
   }
 
   public static boolean getUiBinderWizardGenerateContentDefault() {
@@ -235,7 +232,7 @@ public class GWTPreferences {
 
   /**
    * Sets the port number to use for the SourceViewerServer.
-   * 
+   *
    * @param port the port number to save
    */
   public static void setSourceViewerServerPort(int port) {

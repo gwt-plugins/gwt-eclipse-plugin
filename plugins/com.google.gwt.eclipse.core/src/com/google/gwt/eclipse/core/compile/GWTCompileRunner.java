@@ -24,7 +24,6 @@ import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.GWTProjectUtilities;
 import com.google.gwt.eclipse.core.launch.GWTLaunchConfiguration;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
-import com.google.gwt.eclipse.core.speedtracer.SpeedTracerArtifactsRemover;
 
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
@@ -72,11 +71,6 @@ public class GWTCompileRunner {
       IProcessReceiver processReceiver) throws IOException,
       InterruptedException, CoreException, OperationCanceledException {
     IProject project = javaProject.getProject();
-
-    if (warLocation != null) {
-      // Remove any existing Speed Tracer launch artifacts
-      new SpeedTracerArtifactsRemover(warLocation.toFile()).removeAll();
-    }
 
     if (settings.getEntryPointModules().isEmpty()) {
       // Nothing to compile, so just return.
@@ -182,7 +176,7 @@ public class GWTCompileRunner {
      * the build classpath, but in some cases (i.e. when using Maven), it may
      * not be. Adding it to the end of the classpath (even if is duplicated)
      * does no harm.
-     * 
+     *
      * TODO: Consider invoking the appropriate ModuleClasspathProvider.
      */
     GWTRuntime gwtRuntime = GWTRuntime.findSdkFor(javaProject);

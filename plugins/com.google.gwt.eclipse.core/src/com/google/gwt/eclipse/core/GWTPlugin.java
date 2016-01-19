@@ -22,30 +22,24 @@ import com.google.gdt.eclipse.core.sdk.UpdateWebInfFolderCommand;
 import com.google.gdt.eclipse.core.sdk.WebInfFolderUpdater;
 import com.google.gwt.eclipse.core.clientbundle.ClientBundleResourceChangeListener;
 import com.google.gwt.eclipse.core.clientbundle.ClientBundleResourceDependencyIndex;
-import com.google.gwt.eclipse.core.launch.SpeedTracerLaunchListener;
 import com.google.gwt.eclipse.core.markers.ClientBundleProblemType;
 import com.google.gwt.eclipse.core.markers.GWTProblemType;
-import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.resources.GWTImages;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateWebInfFolderCommand;
 import com.google.gwt.eclipse.core.search.JavaRefIndex;
-import com.google.gwt.eclipse.core.speedtracer.SourceViewerServer;
 import com.google.gwt.eclipse.core.uibinder.model.reference.UiBinderReferenceManager;
 import com.google.gwt.eclipse.core.uibinder.problems.UiBinderTemplateProblemType;
 import com.google.gwt.eclipse.core.uibinder.problems.java.UiBinderJavaProblemType;
 import com.google.gwt.eclipse.core.validators.rpc.RemoteServiceProblemType;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-
-import java.net.BindException;
 
 /**
  * The activator class controls the plug-in life cycle.
@@ -119,16 +113,6 @@ public class GWTPlugin extends AbstractGooglePlugin {
 
     addLaunchListener();
 
-    if (GWTPreferences.getSpeedTracerEnabled()) {
-      try {
-        SourceViewerServer.INSTANCE.start();
-      } catch (BindException be) {
-        // Ignore this exception - it's already been logged.
-
-      } catch (Throwable e) {
-        GWTPluginLog.logError(e, "Could not start source viewer server.");
-      }
-    }
     ClientBundleResourceChangeListener.addToWorkspace();
     UiBinderReferenceManager.INSTANCE.start();
 
@@ -144,12 +128,6 @@ public class GWTPlugin extends AbstractGooglePlugin {
     JavaRefIndex.save();
 
     removeLaunchListener();
-
-    try {
-      SourceViewerServer.INSTANCE.stop();
-    } catch (Throwable e) {
-      GWTPluginLog.logError(e, "Could not stop source viewer server.");
-    }
 
     InstanceScope.INSTANCE.getNode(PLUGIN_ID).flush();
 
@@ -203,13 +181,9 @@ public class GWTPlugin extends AbstractGooglePlugin {
   }
 
   private void addLaunchListener() {
-    DebugPlugin.getDefault().getLaunchManager()
-        .addLaunchListener(SpeedTracerLaunchListener.INSTANCE);
   }
 
   private void removeLaunchListener() {
-    DebugPlugin.getDefault().getLaunchManager()
-        .removeLaunchListener(SpeedTracerLaunchListener.INSTANCE);
   }
 
 }

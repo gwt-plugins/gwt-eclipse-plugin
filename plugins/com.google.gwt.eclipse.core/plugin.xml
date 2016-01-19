@@ -17,12 +17,6 @@
             id="com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage"
             name="GWT">
       </page>
-      <page
-            category="com.google.gdt.eclipse.suite.preferences.ui.googlePreferences"
-            class="com.google.gwt.eclipse.core.preferences.ui.SpeedTracerPreferencePage"
-            id="com.google.gwt.eclipse.core.preferences.ui.SpeedTracerPreferencePage"
-            name="Speed Tracer">
-      </page>
    </extension>
    <extension
          id="gwtNature"
@@ -741,18 +735,6 @@
       </objectContribution>
       <objectContribution
             adaptable="true"
-            id="com.google.gwt.eclipse.core.popupMenus.project.SpeedTracerToolbarAction"
-            objectClass="org.eclipse.core.resources.IProject">
-         <action
-               class="com.google.gwt.eclipse.core.speedtracer.ui.SpeedTracerToolbarAction"
-               icon="icons/speed-tracer_small.png"
-               id="com.google.gwt.eclipse.core.actions.SpeedTracerToolbarAction"
-               label="Profile Using Speed Tracer"
-               menubarPath="com.google.gdt.eclipse.suite.popupMenu.project/actionsContent">
-         </action>
-      </objectContribution>
-      <objectContribution
-            adaptable="true"
             id="com.google.gwt.eclipse.core.popupMenus.file.AddResourcesToClientBundle"
             objectClass="org.eclipse.core.resources.IFile">
          <action
@@ -961,56 +943,7 @@
       </variable>
    </extension>
 
-    <!-- Speed Tracer -->
-    <extension
-        point="org.eclipse.debug.ui.launchConfigurationTypeImages">
-        <launchConfigurationTypeImage
-            icon="icons/speed-tracer_small.png"
-            configTypeID="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunch"
-            id="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunchImage">
-        </launchConfigurationTypeImage>
-        <launchConfigurationTypeImage
-            icon="icons/gwt_16x16.png"
-            configTypeID="com.google.gwt.eclipse.core.sdmCodeServer"
-            id="com.google.gwt.eclipse.core.sdmCodeServerImage">
-        </launchConfigurationTypeImage>
-    </extension>
-    <extension
-        point="org.eclipse.debug.ui.launchShortcuts">
-        <shortcut
-            class="com.google.gwt.eclipse.core.speedtracer.ui.SpeedTracerLaunchShortcut"
-            description="Profile Using Speed Tracer"
-            icon="icons/speed-tracer_small.png"
-            id="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunchShortcut"
-            label="Speed Tracer"
-            modes="profile">
-            <contextualLaunch>
-                <enablement>
-                    <with
-                        variable="selection">
-                        <count
-                            value="1" />
-                        <iterate>
-                            <!-- TODO: create a launch tester for ST -->
-                            <!--
-                                see code in
-                                com.google.gdt.eclipse.suite.propertytesters.LaunchTargetTester.java
-                            -->
-                            <test
-                                property="com.google.gdt.eclipse.suite.isLaunchTarget" />
-                        </iterate>
-                    </with>
-                </enablement>
-            </contextualLaunch>
-
-            <description
-                description="Profile Using Speed Tracer"
-                mode="profile" />
-            <configurationType
-                id="com.google.gwt.eclipse.core.speedtracer.speedTracerLaunch" />
-        </shortcut>
-    </extension>
-    <extension
+   <extension
           point="org.eclipse.ui.menus">
        <menuContribution
              allPopups="false"
@@ -1023,17 +956,6 @@
                 tooltip="GWT Compile Project">
           </command>
        </menuContribution>
-       <menuContribution
-          allPopups="false"
-          locationURI="menu:com.google.gdt.eclipse.suite.GDTPulldown?after=toolbarGroup.profile">
-          <command
-                commandId="com.google.gwt.eclipse.core.speedTracerProfile"
-                icon="icons/speed-tracer_small.png"
-                label="Profile Using Speed Tracer..."
-                style="push"
-                tooltip="Profile Using Speed Tracer">
-          </command>
-       </menuContribution>
     </extension>
     <extension
           point="org.eclipse.ui.commands">
@@ -1041,11 +963,6 @@
              defaultHandler="com.google.gwt.eclipse.core.actions.GWTCompileToolbarHandler"
              id="com.google.gwt.eclipse.core.gwtCompileProject"
              name="GWT Compile Project">
-       </command>
-       <command
-             defaultHandler="com.google.gwt.eclipse.core.speedtracer.ui.SpeedTracerToolbarHandler"
-             id="com.google.gwt.eclipse.core.speedTracerProfile"
-             name="Profile Using Speed Tracer">
        </command>
     </extension>
     <extension

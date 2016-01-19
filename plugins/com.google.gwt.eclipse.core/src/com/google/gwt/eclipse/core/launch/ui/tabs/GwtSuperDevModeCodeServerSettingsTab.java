@@ -16,7 +16,6 @@ import com.google.gdt.eclipse.core.SWTUtilities;
 import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.launch.ILaunchArgumentsContainer;
 import com.google.gdt.eclipse.core.launch.ILaunchShortcutStrategy;
-import com.google.gdt.eclipse.core.launch.LaunchConfigurationAttributeUtilities;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.core.launch.UpdateLaunchConfigurationDialogBatcher;
 import com.google.gwt.eclipse.core.GWTPlugin;
@@ -40,7 +39,6 @@ import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.resources.GWTImages;
 import com.google.gwt.eclipse.core.runtime.GWTProjectsRuntime;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
-import com.google.gwt.eclipse.core.speedtracer.SpeedTracerLaunchConfiguration;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -488,13 +486,6 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
           // Initialize the selected set of entry point modules
           List<String> launchConfigModules = GWTLaunchConfiguration.getEntryPointModules(config);
           entryPointModulesBlock.setModules(launchConfigModules);
-        }
-
-        if (performGwtCompileButton != null) {
-          boolean performGwtCompile =
-              LaunchConfigurationAttributeUtilities.getBoolean(config,
-                  SpeedTracerLaunchConfiguration.Attribute.PERFORM_GWT_COMPILE);
-          performGwtCompileButton.setSelection(performGwtCompile);
         }
 
       } catch (CoreException e) {
