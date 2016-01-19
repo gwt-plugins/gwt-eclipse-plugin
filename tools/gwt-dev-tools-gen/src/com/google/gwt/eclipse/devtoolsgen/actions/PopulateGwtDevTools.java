@@ -59,7 +59,7 @@ import java.util.Set;
 // Steps for generating gwt-dev-tools.jar
 //
 // 1. Run this plugin using an Eclipse Application launch configuration.
-// 
+//
 // In the Eclipse you just launched:
 // 2. Import the GWT source projects (gwt-dev, gwt-user) and the gwt-dev-tools
 // project.
@@ -72,7 +72,7 @@ import java.util.Set;
 // development workbench as the plugin searches for dependencies.
 // 6. When the job finishes, the gwt-dev-tools project should contain exactly
 // the transitive set of compilation units needed by the GWT plugin.
-// 
+//
 // 7. Create a staging directory for the new gwt-dev-tools JAR.
 // 8. Copy the gwt-dev-tools bin directory (except Deps.class) into the staging
 // directory.
@@ -81,20 +81,21 @@ import java.util.Set;
 // 10. Jar the staging directory: "jar -cf gwt-dev-tools.jar -C <staging-dir> ."
 // 11. Copy the new gwt-dev-tool.jar to the GWT plugin's /libs directory, and
 // then commit the updated gwt-dev-tools.jar and Deps.java.
-// 
+//
 public class PopulateGwtDevTools implements IWorkbenchWindowActionDelegate {
 
   private class CopyDepsToGwtDevTools implements IWorkspaceRunnable {
 
+    @Override
     public void run(IProgressMonitor monitor) throws CoreException {
-      IPackageFragmentRoot srcRoot = gwtDevTools.findPackageFragmentRoot(new Path(
-          "/gwt-dev-tools/src/"));
+      IPackageFragmentRoot srcRoot =
+          gwtDevTools.findPackageFragmentRoot(new Path("/gwt-dev-tools/src/"));
 
       System.out.print("Copying files to gwt-dev-tools...");
       for (IFile dep : deps) {
         IPackageFragment srcPckg = (IPackageFragment) JavaCore.create(dep.getParent());
-        IPackageFragment dstPckg = srcRoot.createPackageFragment(
-            srcPckg.getElementName(), false, null);
+        IPackageFragment dstPckg =
+            srcRoot.createPackageFragment(srcPckg.getElementName(), false, null);
 
         dep.copy(dstPckg.getPath().append(dep.getName()), false, null);
       }
@@ -114,18 +115,17 @@ public class PopulateGwtDevTools implements IWorkbenchWindowActionDelegate {
     @Override
     @SuppressWarnings("unchecked")
     public void endVisit(FieldDeclaration node) {
-      if (!((CompilationUnit) node.getRoot()).getJavaElement().getElementName().equals(
-          "Deps.java")) {
+      if (!((CompilationUnit) node.getRoot()).getJavaElement().getElementName().equals("Deps.java")) {
         return;
       }
 
-      for (VariableDeclarationFragment fragment : (List<VariableDeclarationFragment>) node.fragments()) {
+      for (VariableDeclarationFragment fragment : (List<VariableDeclarationFragment>) node
+          .fragments()) {
         if (fragment.getName().getIdentifier().equals("RESOURCES")) {
           ArrayInitializer array = (ArrayInitializer) fragment.getInitializer();
           for (StringLiteral arrayItem : (List<StringLiteral>) array.expressions()) {
             try {
-              IFile resource = findResourceInGwtProjects(new Path(
-                  arrayItem.getLiteralValue()));
+              IFile resource = findResourceInGwtProjects(new Path(arrayItem.getLiteralValue()));
               if (resource != null) {
                 deps.add(resource);
                 printDependency(resource);
@@ -183,15 +183,14 @@ public class PopulateGwtDevTools implements IWorkbenchWindowActionDelegate {
     }
   }
 
-  private static IFile findFileOnClasspath(IJavaProject javaProject,
-      IPath classpathRelativePath) throws JavaModelException {
+  private static IFile findFileOnClasspath(IJavaProject javaProject, IPath classpathRelativePath)
+      throws JavaModelException {
     for (IPackageFragmentRoot pckgFragmentRoot : javaProject.getPackageFragmentRoots()) {
       if (pckgFragmentRoot.isArchive()) {
         continue;
       }
       IPath filepath = pckgFragmentRoot.getPath().append(classpathRelativePath);
-      IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(
-          filepath);
+      IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(filepath);
       if (res instanceof IFile) {
         return (IFile) res;
       }
@@ -200,8 +199,7 @@ public class PopulateGwtDevTools implements IWorkbenchWindowActionDelegate {
   }
 
   private static IJavaProject findJavaProject(String name) {
-    return JavaCore.create(ResourcesPlugin.getWorkspace().getRoot().getProject(
-        name));
+    return JavaCore.create(ResourcesPlugin.getWorkspace().getRoot().getProject(name));
   }
 
   private Set<IFile> deps = new HashSet<IFile>();
@@ -212,12 +210,13 @@ public class PopulateGwtDevTools implements IWorkbenchWindowActionDelegate {
 
   private final IJavaProject gwtUser = findJavaProject("gwt-user");
 
-  public void dispose() {
-  }
+  @Override
+  public void dispose() {}
 
-  public void init(IWorkbenchWindow window) {
-  }
+  @Override
+  public void init(IWorkbenchWindow window) {}
 
+  @Override
   public void run(IAction action) {
     try {
       if (gwtDev == null) {
@@ -250,27 +249,24 @@ public class PopulateGwtDevTools implements IWorkbenchWindowActionDelegate {
       while (iter.hasNext()) {
         IFile dep = iter.next();
 
-        IJavaElement srcRoot = JavaCore.create(dep.getParent()).getAncestor(
-            IJavaElement.PACKAGE_FRAGMENT_ROOT);
-        IPath srcPathRelativePath = dep.getFullPath().removeFirstSegments(
-            srcRoot.getPath().segmentCount());
-        IFile existingFile = findFileOnClasspath(gwtDevTools,
-            srcPathRelativePath);
+        IJavaElement srcRoot =
+            JavaCore.create(dep.getParent()).getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+        IPath srcPathRelativePath =
+            dep.getFullPath().removeFirstSegments(srcRoot.getPath().segmentCount());
+        IFile existingFile = findFileOnClasspath(gwtDevTools, srcPathRelativePath);
 
         if (existingFile != null) {
           iter.remove();
         }
       }
 
-      System.out.format(
-          "Finished dependency search (%d files found; %d new)\n",
-          totalDepsCount, deps.size());
+      System.out.format("Finished dependency search (%d files found; %d new)\n", totalDepsCount,
+          deps.size());
 
       if (!deps.isEmpty()) {
         IWorkspaceRunnable op = new CopyDepsToGwtDevTools();
         ISchedulingRule lock = ResourcesPlugin.getWorkspace().getRoot();
-        ResourcesPlugin.getWorkspace().run(op, lock, IWorkspace.AVOID_UPDATE,
-            null);
+        ResourcesPlugin.getWorkspace().run(op, lock, IWorkspace.AVOID_UPDATE, null);
       } else {
         System.out.println("Done");
       }
@@ -279,8 +275,8 @@ public class PopulateGwtDevTools implements IWorkbenchWindowActionDelegate {
     }
   }
 
-  public void selectionChanged(IAction action, ISelection selection) {
-  }
+  @Override
+  public void selectionChanged(IAction action, ISelection selection) {}
 
   private void findAllDependencies(ICompilationUnit cu, int callGraphLevel) {
     ASTParser parser = ASTParser.newParser(AST.JLS3);
@@ -290,8 +286,7 @@ public class PopulateGwtDevTools implements IWorkbenchWindowActionDelegate {
     rootCu.accept(new DependencyCollector(callGraphLevel));
   }
 
-  private IFile findResourceInGwtProjects(IPath classpathRelativePath)
-      throws JavaModelException {
+  private IFile findResourceInGwtProjects(IPath classpathRelativePath) throws JavaModelException {
     IFile res = findFileOnClasspath(gwtDev, classpathRelativePath);
     if (res != null) {
       return res;
@@ -299,8 +294,7 @@ public class PopulateGwtDevTools implements IWorkbenchWindowActionDelegate {
     return findFileOnClasspath(gwtUser, classpathRelativePath);
   }
 
-  private IType findTypeInGwtProjects(String qualifiedTypeName)
-      throws JavaModelException {
+  private IType findTypeInGwtProjects(String qualifiedTypeName) throws JavaModelException {
     IType type = gwtDev.findType(qualifiedTypeName);
     if (type != null) {
       return type;
