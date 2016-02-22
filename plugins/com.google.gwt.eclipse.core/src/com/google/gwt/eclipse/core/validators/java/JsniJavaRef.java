@@ -178,8 +178,8 @@ public class JsniJavaRef extends JsniRef {
   }
 
   private JsniJavaRef(JsniRef ref) {
-    super(ref.className(), ref.memberName(), ref.paramTypesString(),
-        (ref.isMethod() && !ref.matchesAnyOverload()) ? ref.paramTypes() : null);
+    // TODO 0 is array dimensions????
+    super(ref.className(), 0, ref.memberName(), ref.paramTypesString(), (ref.isMethod() && !ref.matchesAnyOverload()) ? ref.paramTypes() : null);
   }
 
   public String dottedClassName() {

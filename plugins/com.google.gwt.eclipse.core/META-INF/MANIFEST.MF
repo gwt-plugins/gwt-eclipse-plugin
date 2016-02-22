@@ -1,7 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: com.google.gwt.eclipse.core.GWTPlugin
-Bundle-ClassPath: libs/gwt-dev-tools.jar,.
+Bundle-ClassPath: .,
+ libs/gwt-dev.jar,
+ libs/gwt-user.jar
 Bundle-Localization: plugin
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
