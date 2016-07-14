@@ -45,3 +45,5 @@ Require-Bundle: javax.servlet,
  org.eclipse.wst.server.core,
  org.eclipse.wst.sse.core,
  org.eclipse.wst.sse.ui
+Bundle-ClassPath: libs/gwt-dev.jar,
+ .

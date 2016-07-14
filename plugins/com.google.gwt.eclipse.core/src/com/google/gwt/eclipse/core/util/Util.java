@@ -41,6 +41,7 @@ import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.jdt.internal.ui.wizards.NewWizardMessages;
+import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IFileEditorMapping;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.registry.EditorRegistry;
@@ -56,7 +57,7 @@ import java.util.List;
 
 /**
  * Utility functions for the GWT plug-in.
- * 
+ *
  * TODO(): Unify with the existing utilities classes in the gdt core plugin.
  */
 @SuppressWarnings("restriction")
@@ -77,7 +78,7 @@ public final class Util {
    * Sync method has same return type as parameterization of last async
    * parameter (AsyncCallback). If the async callback parameter type is raw,
    * just assume sync return type of void.
-   * 
+   *
    * @param ast {@link AST} associated with the destination compilation unit
    * @param asyncMethod the GWT RPC async method declaration
    * @param imports {@link ImportRewrite} associated with the destination
@@ -140,7 +141,7 @@ public final class Util {
   /**
    * Creates a GWT RPC async callback parameter declaration based on the sync
    * method return type.
-   * 
+   *
    * @param ast {@link AST} associated with the destination compilation unit
    * @param syncReturnType the sync method return type
    * @param callbackParameterName name of the callback parameter
@@ -183,7 +184,7 @@ public final class Util {
    * example, if a path of <code>/tmp/foo.jar</code> is passed in, then this
    * method will return <code>/tmp/foo-sources.jar</code> if it exists, or
    * <code>null</code> otherwise.
-   * 
+   *
    * The convention is that a sources jar will have the same name as the binary
    * jar, except with a suffix of <code>-sources</code> before the extension.
    */
@@ -217,7 +218,7 @@ public final class Util {
 
   /**
    * Returns the callback parameter declaration from an async method.
-   * 
+   *
    * @param method async method declaration
    * @return callback parameter declaration
    */
@@ -292,7 +293,7 @@ public final class Util {
    * SDK's core jars. If the validation jars are present, there should be two of
    * them: <code>validation-api-<version>.jar</code> and
    * <code>validation-api-<version>-sources.jar</code>.
-   * 
+   *
    * If the validation jars are not present (i.e. this is a pre-GWT 2.3 SDK),
    * then an empty array is returned.
    */
@@ -303,6 +304,7 @@ public final class Util {
     }
 
     String[] validationJarNames = sdkDir.list(new FilenameFilter() {
+      @Override
       public boolean accept(File file, String fileName) {
         if (fileName.startsWith(GWTRuntime.VALIDATION_API_JAR_PREFIX)
             && fileName.endsWith(".jar")
@@ -392,7 +394,9 @@ public final class Util {
         // Only need to do anything if there's an explicit default set
         if (internalMapping.getDeclaredDefaultEditors().length > 0) {
           // Clear any default editor associations for this extension
-          internalMapping.setDefaultEditors(new ArrayList<Object>());
+
+          List<IEditorDescriptor> list = new ArrayList<IEditorDescriptor>();
+          internalMapping.setDefaultEditors(list);
 
           // Save the updated editor registry to disk
           editorRegistry.saveAssociations();
