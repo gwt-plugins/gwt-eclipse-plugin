@@ -59,7 +59,6 @@
       <import plugin="org.eclipse.wst.jsdt.manipulation"/>
       <import plugin="org.apache.ant"/>
       <import plugin="org.eclipse.wst.common.modulecore"/>
-      <import plugin="org.eclipse.core.runtime.compatibility"/>
       <import plugin="org.eclipse.e4.ui.workbench"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.mylyn.commons.ui"/>
