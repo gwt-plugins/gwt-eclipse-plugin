@@ -180,7 +180,7 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
 
       logLevelComboViewer.setSelection(new StructuredSelection(GWTLaunchConfiguration.getLogLevel(config)));
 
-      portServerText.setText(GWTLaunchConfiguration.getClassicDevModeCodeServerPort(config));
+      portServerText.setText(GWTLaunchConfiguration.getSdmCodeServerPort(config));
 
       portAutoSelectionButton.setSelection(GWTLaunchConfiguration.getClassicDevModeCodeServerPortAuto(config));
     }
