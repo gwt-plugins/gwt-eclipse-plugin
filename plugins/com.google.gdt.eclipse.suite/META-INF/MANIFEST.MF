@@ -26,7 +26,6 @@ Require-Bundle: com.google.appengine.eclipse.core;visibility:=reexport,
  com.google.gwt.eclipse.oophm;visibility:=reexport,
  org.eclipse.core.expressions,
  org.eclipse.core.filesystem,
- org.eclipse.core.runtime,
  org.eclipse.core.variables,
  org.eclipse.debug.ui,
  org.eclipse.e4.ui.workbench,
@@ -42,4 +41,8 @@ Require-Bundle: com.google.appengine.eclipse.core;visibility:=reexport,
  org.eclipse.wst.server.core,
  org.eclipse.wst.common.project.facet.core,
  com.google.gdt.eclipse.appengine.api,
- com.google.gdt.eclipse.platform
+ com.google.gdt.eclipse.platform,
+ org.eclipse.equinox.common,
+ system.bundle,
+ org.eclipse.core.runtime
+Import-Package: org.eclipse.core.runtime.preferences

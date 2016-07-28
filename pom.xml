@@ -90,7 +90,6 @@
     <eclipse.target>luna</eclipse.target>
     <jettyMinVersion>8.1</jettyMinVersion>
     <jettyMaxVersion>8.2</jettyMaxVersion>
-    <swtbotVersion>2.2.1</swtbotVersion>
 
     <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
     <!-- <adt-repo.url>http://dl-ssl.google.com/android/eclipse/</adt-repo.url> -->
@@ -117,7 +116,6 @@
   </properties>
 
   <repositories>
-    <!-- <repository> <id>android</id> <url>${adt-repo.url}</url> <layout>p2</layout> </repository> -->
     <repository>
       <id>eclipse</id>
       <url>${eclipse-repo.url}</url>

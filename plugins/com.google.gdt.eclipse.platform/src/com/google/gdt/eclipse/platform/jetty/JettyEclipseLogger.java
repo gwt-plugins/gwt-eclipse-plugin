@@ -154,4 +154,9 @@ public class JettyEclipseLogger implements Logger {
   public void warn(Throwable thrown) {
     warn("", thrown);
   }
+
+  public void debug(String msg, long value) {
+    log(IStatus.INFO, format(msg, value), null);
+  }
+
 }

@@ -17,8 +17,10 @@ package com.google.gwt.eclipse.core.validators.java;
 import com.google.gdt.eclipse.core.JavaASTUtils;
 import com.google.gwt.dev.jjs.Correlation;
 import com.google.gwt.dev.jjs.Correlation.Axis;
+import com.google.gwt.dev.jjs.CorrelationFactory;
 import com.google.gwt.dev.jjs.InternalCompilerException;
 import com.google.gwt.dev.jjs.SourceInfo;
+import com.google.gwt.dev.jjs.SourceOrigin;
 import com.google.gwt.dev.js.JsParser;
 import com.google.gwt.dev.js.JsParserException;
 import com.google.gwt.dev.js.JsParserException.SourceDetail;
@@ -84,6 +86,7 @@ public final class JsniParser {
    */
   @SuppressWarnings("serial")
   private static class SourceInfoAdapter implements SourceInfo {
+    @Override
     public void addCorrelation(Correlation c) {
     }
 
@@ -98,10 +101,12 @@ public final class JsniParser {
       return Collections.emptyList();
     }
 
+    @Override
     public int getEndPos() {
       return -1;
     }
 
+    @Override
     public String getFileName() {
       return "unknown";
     }
@@ -118,10 +123,12 @@ public final class JsniParser {
       return null;
     }
 
+    @Override
     public int getStartLine() {
       return -1;
     }
 
+    @Override
     public int getStartPos() {
       return -1;
     }
@@ -130,12 +137,65 @@ public final class JsniParser {
       return this;
     }
 
-    public SourceInfo makeChild(Class<?> caller, String description,
-        SourceInfo... merge) {
+    public SourceInfo makeChild(Class<?> caller, String description, SourceInfo... merge) {
       return this;
     }
 
     public void merge(SourceInfo... sourceInfos) {
+    }
+
+    /* (non-Javadoc)
+     * @see com.google.gwt.dev.jjs.SourceInfo#getCorrelation(com.google.gwt.dev.jjs.Correlation.Axis)
+     */
+    @Override
+    public Correlation getCorrelation(Axis axis) {
+      // TODO(${user}): Auto-generated method stub
+      return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.google.gwt.dev.jjs.SourceInfo#getCorrelations()
+     */
+    @Override
+    public Correlation[] getCorrelations() {
+      // TODO(${user}): Auto-generated method stub
+      return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.google.gwt.dev.jjs.SourceInfo#getCorrelator()
+     */
+    @Override
+    public CorrelationFactory getCorrelator() {
+      // TODO(${user}): Auto-generated method stub
+      return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.google.gwt.dev.jjs.SourceInfo#getOrigin()
+     */
+    @Override
+    public SourceOrigin getOrigin() {
+      // TODO(${user}): Auto-generated method stub
+      return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.google.gwt.dev.jjs.SourceInfo#makeChild()
+     */
+    @Override
+    public SourceInfo makeChild() {
+      // TODO(${user}): Auto-generated method stub
+      return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.google.gwt.dev.jjs.SourceInfo#makeChild(com.google.gwt.dev.jjs.SourceOrigin)
+     */
+    @Override
+    public SourceInfo makeChild(SourceOrigin origin) {
+      // TODO(${user}): Auto-generated method stub
+      return null;
     }
   }
 
