@@ -1,5 +1,4 @@
 <project name="com.google.gdt.eclipse.suite.e44.feature"
-         default="build"
          basedir=".">
     <property name="feature_name"
               value="com.google.gdt.eclipse.suite.e44.feature" />
