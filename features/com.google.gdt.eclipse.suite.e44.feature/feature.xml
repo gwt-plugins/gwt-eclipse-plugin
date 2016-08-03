@@ -11,7 +11,7 @@
    </description>
 
    <copyright>
-      Copyright 2009 - 2015
+      Copyright 2009 - 2017
    </copyright>
 
    <license>
@@ -19,7 +19,8 @@
    </license>
 
    <url>
-      <update label="GWT Eclipse Plugin Site for Eclipse" url="http://storage.googleapis.com/gwt-eclipse-plugin/release"/>
+      <update label="GWT Eclipse Plugin Site for Eclipse" 
+          url="http://storage.googleapis.com/gwt-eclipse-plugin/v2/release"/>
    </url>
 
    <requires>
