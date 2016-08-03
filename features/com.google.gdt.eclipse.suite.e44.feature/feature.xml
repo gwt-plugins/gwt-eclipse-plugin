@@ -7,11 +7,11 @@
       plugin="com.google.gdt.eclipse.suite">
 
    <description>
-      Support for the development of GWT Projects in Eclipse
+      Support for the development of GWT Projects in Eclipse (GEP)
    </description>
 
    <copyright>
-      Copyright 2009 - 2015
+      Copyright 2009 - 2016
    </copyright>
 
    <license>
