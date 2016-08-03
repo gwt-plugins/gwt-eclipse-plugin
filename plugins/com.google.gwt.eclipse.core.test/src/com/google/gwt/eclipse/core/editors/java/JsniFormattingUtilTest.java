@@ -42,7 +42,7 @@ public class JsniFormattingUtilTest extends AbstractGWTPluginTestCase {
   public void testFormat() throws Exception {
 
     // Use GWT indentation settings
-    Map<String, Object> javaPrefs = JavaCore.getDefaultOptions();
+    Map<String, String> javaPrefs = JavaCore.getDefaultOptions();
     javaPrefs.put(DefaultCodeFormatterConstants.FORMATTER_INDENTATION_SIZE, "2");
     javaPrefs.put(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR, JavaCore.SPACE);
     javaPrefs.put(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE, "2");
