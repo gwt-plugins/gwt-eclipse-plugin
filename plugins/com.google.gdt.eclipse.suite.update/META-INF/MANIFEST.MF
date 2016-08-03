@@ -10,12 +10,10 @@ Bundle-Vendor: Google, Inc.
 Bundle-Version: 0.0.0.qualifier
 Export-Package: com.google.gdt.eclipse.suite.update,
  com.google.gdt.eclipse.suite.update.builders,
- com.google.gdt.eclipse.suite.update.importer,
  com.google.gdt.eclipse.suite.update.ui,
  com.google.gdt.eclipse.suite.update.usage
 Require-Bundle: com.google.appengine.eclipse.core,
  com.google.gdt.eclipse.apiclientlib,
- com.google.gdt.eclipse.appengine.swarm,
  com.google.gdt.eclipse.core,
  com.google.gdt.eclipse.login,
  com.google.gdt.eclipse.platform,

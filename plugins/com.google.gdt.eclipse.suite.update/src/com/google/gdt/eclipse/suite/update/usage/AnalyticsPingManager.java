@@ -15,13 +15,8 @@
 package com.google.gdt.eclipse.suite.update.usage;
 
 import com.google.api.client.util.escape.PercentEscaper;
-import com.google.appengine.eclipse.core.AppEngineCorePlugin;
-import com.google.appengine.eclipse.core.resources.GaeProject;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.google.gdt.eclipse.appengine.swarm.AppEngineSwarmPlugin;
-import com.google.gdt.eclipse.core.CorePlugin;
-import com.google.gdt.eclipse.core.update.internal.core.ProjectInformationUtils;
 import com.google.gdt.eclipse.login.GoogleLogin;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.update.GdtExtPlugin;
@@ -90,86 +85,8 @@ public class AnalyticsPingManager implements PingManager {
   }
 
   @Override
-  public void sendAPIAddPing(String apiName, String apiPlatform) {
-//    sendPing(
-//        ManagedApiPlugin.PLUGIN_ID,
-//        Action.ADD_MANAGED_API,
-//        apiName + "/" + apiPlatform,
-//        null, new CustomDimensionAssignment(CustomDimensionName.API_NAME, apiName));
-  }
-
-  @Override
-  public void sendDatanucleusLibVersionChanged(String version) {
-    sendPing(AppEngineCorePlugin.PLUGIN_ID, Action.UPDATE_DATANUCLEUS_VERSION, version, null);
-  }
-
-  @Override
-  public void sendGaeBackendDeployPing(IProject project) {
-    sendPing(
-        CorePlugin.PLUGIN_ID,
-        Action.DEPLOY_GAE_BACKEND,
-        projectDetailsString(project),
-        null,
-        new CustomDimensionAssignment(
-            CustomDimensionName.HASHED_GAE_APP_ID,
-            UpdateSiteURLGenerator.getSHA1Hash(GaeProject.create(project).getAppId())));
-  }
-
-  @Override
-  public void sendEndpointsGenerateAppEngineBackendPing(IProject project) {
-    sendPing(
-        AppEngineSwarmPlugin.PLUGIN_ID,
-        Action.GENERATE_GAE_BACKEND,
-        projectDetailsString(project), null);
-  }
-
-  @Override
-  public void sendAppEngineConnectedAndroidPing(IProject project) {
-    sendPing(
-        AppEngineSwarmPlugin.PLUGIN_ID,
-        Action.GENERATE_GAE_ANDROID_PROJECT,
-        projectDetailsString(project), null);
-  }
-
-  @Override
-  public void sendGenEndpointsClassPing(IProject project) {
-    sendPing(
-        AppEngineSwarmPlugin.PLUGIN_ID,
-        Action.GENERATE_ENDPOINT_CLASS,
-        projectDetailsString(project), null);
-  }
-
-  @Override
-  public void sendGaeDeployPing(IProject project) {
-    sendPing(
-        CorePlugin.PLUGIN_ID,
-        Action.DEPLOY_GAE,
-        projectDetailsString(project),
-        null,
-        new CustomDimensionAssignment(
-            CustomDimensionName.HASHED_GAE_APP_ID,
-            UpdateSiteURLGenerator.getSHA1Hash(GaeProject.create(project).getAppId())),
-        new CustomDimensionAssignment(
-            CustomDimensionName.CLOUD_SQL_USAGE, CloudSqlUsage.forProject(project).toString()),
-        new CustomDimensionAssignment(
-            CustomDimensionName.IS_CLOUD_ENDPOINTS_PROJECT,
-            Boolean.toString(ProjectInformationUtils.isCloudEndpointProject(project))));
-  }
-
-  @Override
-  public void sendGaeSampleAppsPing() {
-    sendPing(GdtExtPlugin.PLUGIN_ID, Action.IMPORT_GAE_DEMO_APP, null, null);
-  }
-
-  @Override
   public void sendProjectImportPing() {
     sendPing(GdtExtPlugin.PLUGIN_ID, Action.IMPORT_HOSTED_PROJECT, null, null);
-  }
-
-  @Deprecated
-  @Override
-  public void sendAppsScriptImportPing(String driveFileId) {
-
   }
 
   @Nullable

@@ -46,11 +46,5 @@
             name="Import App Engine Sample Apps">
       </command>
    </extension>
-   <extension
-         point="com.google.gdt.eclipse.appengine.swarm.endpointscallback">
-      <endpointscallback
-            class="com.google.gdt.eclipse.suite.update.usage.EndpointsUsageReporter">
-      </endpointscallback>
-   </extension>
 
 </plugin>
