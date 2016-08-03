@@ -22,7 +22,6 @@ import com.google.common.collect.Maps;
 import com.google.gdt.eclipse.appengine.swarm.AppEngineSwarmPlugin;
 import com.google.gdt.eclipse.core.CorePlugin;
 import com.google.gdt.eclipse.core.update.internal.core.ProjectInformationUtils;
-import com.google.gdt.eclipse.drive.DrivePlugin;
 import com.google.gdt.eclipse.login.GoogleLogin;
 import com.google.gdt.eclipse.managedapis.ManagedApiPlugin;
 import com.google.gdt.eclipse.suite.GdtPlugin;
@@ -168,10 +167,10 @@ public class AnalyticsPingManager implements PingManager {
     sendPing(GdtExtPlugin.PLUGIN_ID, Action.IMPORT_HOSTED_PROJECT, null, null);
   }
 
+  @Deprecated
   @Override
   public void sendAppsScriptImportPing(String driveFileId) {
-    sendPing(
-        DrivePlugin.PLUGIN_ID, Action.IMPORT_APPS_SCRIPT_PROJECT, driveFileId, null);
+
   }
 
   @Nullable

@@ -57,8 +57,5 @@
             class="com.google.gdt.eclipse.suite.update.usage.EndpointsUsageReporter">
       </endpointscallback>
    </extension>
-   <extension point="com.google.gdt.eclipse.drive.listener">
-      <listenerClass class="com.google.gdt.eclipse.suite.update.usage.AppsScriptImportReporter" />
-   </extension>
 
 </plugin>
