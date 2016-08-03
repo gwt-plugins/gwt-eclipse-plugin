@@ -18,7 +18,6 @@
     <module>features/com.google.gdt.eclipse.suite.e44.feature</module>
     <module>features/com.google.gwt.eclipse.sdkbundle.feature</module>
     <module>features/com.google.appengine.eclipse.sdkbundle.feature</module>
-    <!-- <module>features/com.google.gdt.eclipse.mobile.android.feature</module> -->
 
     <module>plugins/com.google.appengine.eclipse.core</module>
     <module>plugins/com.google.appengine.eclipse.core.test</module>
@@ -44,8 +43,6 @@
     <module>plugins/com.google.gdt.eclipse.appengine.swarm.test.swtbot</module>
     <module>plugins/com.google.gdt.eclipse.core</module>
     <module>plugins/com.google.gdt.eclipse.core.test</module>
-    <module>plugins/com.google.gdt.eclipse.drive</module>
-    <module>plugins/com.google.gdt.eclipse.drive.test</module>
     <module>plugins/com.google.gdt.eclipse.login</module>
     <module>plugins/com.google.gdt.eclipse.login.test.swtbot</module>
     <module>plugins/com.google.gdt.eclipse.managedapis</module>
