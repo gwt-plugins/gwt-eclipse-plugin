@@ -22,7 +22,6 @@ import com.google.gdt.eclipse.appengine.swarm.util.SwarmAnnotationUtils;
 import com.google.gdt.eclipse.appengine.swarm.wizards.helpers.SwarmGenerationException;
 import com.google.gdt.eclipse.appengine.swarm.wizards.helpers.SwarmServiceCreator;
 import com.google.gdt.eclipse.core.MarkerUtilities;
-import com.google.gdt.eclipse.managedapis.ManagedApiPlugin;
 
 import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.resources.IMarker;
@@ -43,7 +42,6 @@ import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -82,7 +80,7 @@ public final class CloudEndpointsBuilder extends IncrementalProjectBuilder {
       if (ConnectedProjectHandler.getConnectedProject(project) != null) {
         withLibs = true;
       } else {
-        withLibs = areLibsGeneratedLocally();
+        //withLibs = areLibsGeneratedLocally();
       }
     }
     if (shouldGenerate) {
@@ -111,9 +109,9 @@ public final class CloudEndpointsBuilder extends IncrementalProjectBuilder {
       public boolean visit(IResourceDelta delta) throws CoreException {
         IResource resource = delta.getResource();
         // don't look into generated data
-        if (isGeneratedLibsResource(resource)) {
-          return false;
-        }
+//        if (isGeneratedLibsResource(resource)) {
+//          return false;
+//        }
         // go with java code
         if (isJavaFileResource(resource)) {
           ICompilationUnit cu = (ICompilationUnit) JavaCore.create(resource);
@@ -144,15 +142,6 @@ public final class CloudEndpointsBuilder extends IncrementalProjectBuilder {
       }
     });
     return changed[0];
-  }
-
-  /**
-   * @return <code>true</code> if the project has "endpoint-libs" folder.
-   */
-  private boolean areLibsGeneratedLocally() {
-    IProject project = getProject();
-    File libFolder = project.getLocation().append(ManagedApiPlugin.SWARM_LIB_FOLDER_NAME).toFile();
-    return libFolder.exists();
   }
 
   /**
@@ -237,14 +226,6 @@ public final class CloudEndpointsBuilder extends IncrementalProjectBuilder {
       throw new ResourceException(IResourceStatus.BUILD_FAILED, null,
           "Error in generating Cloud Enpoints", e);
     }
-  }
-
-  /**
-   * @return <code>true</code> if the given resource is the endpoint-libs resource.
-   */
-  private boolean isGeneratedLibsResource(IResource resource) {
-    String resourcePath = resource.getFullPath().toOSString();
-    return resourcePath.indexOf(ManagedApiPlugin.SWARM_LIB_FOLDER_NAME) != -1;
   }
 
   /**

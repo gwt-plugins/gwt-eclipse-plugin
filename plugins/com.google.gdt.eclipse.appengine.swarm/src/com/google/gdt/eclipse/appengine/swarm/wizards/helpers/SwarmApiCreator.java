@@ -14,21 +14,14 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.appengine.swarm.wizards.helpers;
 
-import com.google.gdt.eclipse.appengine.swarm.AppEngineSwarmPlugin;
 import com.google.gdt.eclipse.core.ResourceUtils;
 import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.jobs.UnzipRunnable;
-import com.google.gdt.eclipse.managedapis.ManagedApiJsonClasses.ApiDependencies;
-import com.google.gdt.eclipse.managedapis.ManagedApiPlugin;
-import com.google.gdt.eclipse.managedapis.ManagedApiUtils;
-import com.google.gdt.eclipse.managedapis.impl.ApiPlatformType;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 
 import java.io.File;
@@ -54,7 +47,6 @@ public class SwarmApiCreator {
   private static final String REST_SUFFIX = "-rest";
 
   private final String appId;
-  private ApiDependencies apiDependencies;
 
   private static final String DISCOVERY_API_ROOT = "https://webapis-discovery.appspot.com/_ah/api";
   private static final String CLIENT_LIB_GENERATOR =
@@ -101,7 +93,7 @@ public class SwarmApiCreator {
    */
   @SuppressWarnings("unchecked")
   public void createClientLibFromApiConfig(IProject project, String apiConfig, File outputFolder,
-      SubMonitor monitor, ApiPlatformType platformType, String serviceClassName, ClassLoader loader)
+      SubMonitor monitor, String serviceClassName, ClassLoader loader)
       throws Exception {
     generateAndWriteDiscovery(project, apiConfig, serviceClassName, RPC, loader);
     String discoveryDocRest =
@@ -135,7 +127,6 @@ public class SwarmApiCreator {
               String.class, String.class, File.class);
       methodArgs.add(discoveryDocRest);
       methodArgs.add(JAVA);
-      methodArgs.add(ManagedApiPlugin.API_CLIENT_LANG_VERSION);
       methodArgs.add(null);
       methodArgs.add(tempFile);
     } catch (NoSuchMethodException nme) {
@@ -157,7 +148,6 @@ public class SwarmApiCreator {
                 String.class, String.class, File.class);
         methodArgs.add(discoveryDocRest);
         methodArgs.add(Enum.valueOf(langEnumClass, JAVA));
-        methodArgs.add(ManagedApiPlugin.API_CLIENT_LANG_VERSION);
         methodArgs.add(null);
         methodArgs.add(tempFile);
       } catch (NoSuchMethodException nme) {
@@ -182,7 +172,6 @@ public class SwarmApiCreator {
             clientLibGenerator.getMethod("c", String.class, langEnumClass, String.class, File.class);
         methodArgs.add(discoveryDocRest);
         methodArgs.add(Enum.valueOf(langEnumClass, JAVA));
-        methodArgs.add(ManagedApiPlugin.API_CLIENT_LANG_VERSION);
         methodArgs.add(tempFile);
       } catch (NoSuchMethodException nme) {
         throw new SwarmGenerationException(nme);
@@ -217,38 +206,38 @@ public class SwarmApiCreator {
       throw new OperationCanceledException();
     }
 
-    apiDependencies = ManagedApiUtils.findAndReadDependencyFile(outputFolder);
-    if (apiDependencies == null) {
-      throw new CoreException(new Status(IStatus.ERROR, AppEngineSwarmPlugin.PLUGIN_ID,
-          "apiDependencies not initialized."));
-    }
+//    apiDependencies = ManagedApiUtils.findAndReadDependencyFile(outputFolder);
+//    if (apiDependencies == null) {
+//      throw new CoreException(new Status(IStatus.ERROR, AppEngineSwarmPlugin.PLUGIN_ID,
+//          "apiDependencies not initialized."));
+//    }
     monitor.worked(5);
 
     if (monitor.isCanceled()) {
       throw new OperationCanceledException();
     }
 
-    for (ApiDependencies.File f : apiDependencies.getFiles()) {
-      // Detect fileName from the relative path.
-      String fileName = f.getPath();
-      if (fileName.contains("/")) {
-        fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
-      }
-      if (fileName.contains(SwarmServiceCreator.SOURCE_JAR_NAME_SUBSTRING)
-          && fileName.endsWith(SwarmServiceCreator.JAR_FILE_EXTENSION)) {
-        // We are expecting only a single source jar to be extracted.
-        extractSourceFolder(outputFolder, fileName, serviceClassName.toLowerCase());
-        break;
-      }
-
-      if (monitor.isCanceled()) {
-        throw new OperationCanceledException();
-      }
-    }
-    monitor.worked(10);
-    if (platformType != null) {
-      removeUnwantedFiles(outputFolder, platformType);
-    }
+//    for (ApiDependencies.File f : apiDependencies.getFiles()) {
+//      // Detect fileName from the relative path.
+//      String fileName = f.getPath();
+//      if (fileName.contains("/")) {
+//        fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+//      }
+//      if (fileName.contains(SwarmServiceCreator.SOURCE_JAR_NAME_SUBSTRING)
+//          && fileName.endsWith(SwarmServiceCreator.JAR_FILE_EXTENSION)) {
+//        // We are expecting only a single source jar to be extracted.
+//        extractSourceFolder(outputFolder, fileName, serviceClassName.toLowerCase());
+//        break;
+//      }
+//
+//      if (monitor.isCanceled()) {
+//        throw new OperationCanceledException();
+//      }
+//    }
+//    monitor.worked(10);
+//    if (platformType != null) {
+//      removeUnwantedFiles(outputFolder, platformType);
+//    }
     monitor.worked(10);
 
     if (monitor.isCanceled()) {
@@ -263,7 +252,7 @@ public class SwarmApiCreator {
    */
   @SuppressWarnings("unchecked")
   public void createSwarmApi(ArrayList<Class<?>> serviceClassList, IProject project,
-      File outputFolder, ApiPlatformType platformType, boolean generateLibs, ClassLoader loader,
+      File outputFolder, boolean generateLibs, ClassLoader loader,
       SubMonitor monitor) throws Exception {
 
     monitor.subTask("Generating API Configuration File");
@@ -320,20 +309,19 @@ public class SwarmApiCreator {
       File clientLibFolder = new File(clientLibPath);
       clientLibFolder.mkdir();
       createClientLibFromApiConfig(project, apiConfig, clientLibFolder, monitor.newChild(1),
-          platformType, apiConfigName, loader);
+           apiConfigName, loader);
     }
   }
 
-  public void removeUnwantedFiles(File targetFolder, ApiPlatformType platformType)
+  public void removeUnwantedFiles(File targetFolder)
       throws CoreException {
     List<String> filesToRemoveList = new ArrayList<String>();
 
     // TODO: Should look for this via the descriptor file.
     filesToRemoveList.add("pom.xml");
 
-    List<String> unneededDeps =
-        ManagedApiUtils.computeDependenciesToRemove(apiDependencies, platformType);
-    filesToRemoveList.addAll(unneededDeps);
+//    List<String> unneededDeps = ManagedApiUtils.computeDependenciesToRemove(apiDependencies, platformType);
+//    filesToRemoveList.addAll(unneededDeps);
     ResourceUtils.deleteFiles(targetFolder, filesToRemoveList);
   }
 

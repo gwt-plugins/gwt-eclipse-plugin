@@ -9,12 +9,7 @@
             class="com.google.gdt.eclipse.suite.update.usage.GaeUsageTrackingDeploymentParticipant">
       </deploymentParticipant>
    </extension>
-   <extension
-         point="com.google.gdt.eclipse.managedapis.managedApiProjectInitializationCallback">
-      <managedApiProjectInitializationCallback
-            class="com.google.gdt.eclipse.suite.update.usage.ManagedApiPing">
-      </managedApiProjectInitializationCallback>
-   </extension>
+   
    <extension
          point="org.eclipse.jdt.core.compilationParticipant">
       <compilationParticipant

@@ -577,10 +577,4 @@
          </managedMarker>
       </compilationParticipant>
    </extension>
-    <extension
-          point="com.google.gdt.eclipse.managedapis.managedApiProjectInitializationCallback">
-       <managedApiProjectInitializationCallback
-             class="com.google.appengine.eclipse.wtp.managedapis.ProjectInitializationCallback">
-       </managedApiProjectInitializationCallback>
-    </extension>
 </plugin>

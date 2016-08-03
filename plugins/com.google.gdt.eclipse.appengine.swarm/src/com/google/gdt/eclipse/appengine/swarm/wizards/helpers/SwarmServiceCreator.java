@@ -23,18 +23,8 @@ import com.google.gdt.eclipse.appengine.swarm.util.XmlUtil;
 import com.google.gdt.eclipse.core.ResourceUtils;
 import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.resources.ProjectResources;
-import com.google.gdt.eclipse.managedapis.EclipseProject;
-import com.google.gdt.eclipse.managedapis.ManagedApi;
-import com.google.gdt.eclipse.managedapis.ManagedApiPlugin;
-import com.google.gdt.eclipse.managedapis.ManagedApiUtils;
-import com.google.gdt.eclipse.managedapis.impl.ApiPlatformType;
-import com.google.gdt.eclipse.managedapis.impl.EclipseJavaProject;
-import com.google.gdt.eclipse.managedapis.impl.ManagedApiImpl;
-import com.google.gdt.eclipse.managedapis.impl.ProguardConfig;
-import com.google.gdt.eclipse.managedapis.impl.ProguardState;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -146,17 +136,17 @@ public class SwarmServiceCreator {
         androidProject.getLocation().append(folderName).toOSString());
     File androidLibsFolder = new File(androidProject.getLocation().append("libs").toOSString());
 
-    List<String> binaryDepsToadd = ManagedApiUtils.computeBinaryDepsToAdd(
-        ManagedApiUtils.findAndReadDependencyFile(androidEndpointLibsFolder),
-        ApiPlatformType.getAndroidPlatformType(androidProject));
+//    List<String> binaryDepsToadd = ManagedApiUtils.computeBinaryDepsToAdd(
+//        ManagedApiUtils.findAndReadDependencyFile(androidEndpointLibsFolder),
+//        ApiPlatformType.getAndroidPlatformType(androidProject));
 
     if (monitor.isCanceled()) {
       throw new OperationCanceledException();
     }
 
     // Remove existing jars
-    updateAndroidProject(androidProject, androidEndpointLibsFolder, androidLibsFolder,
-        rawClasspathList, binaryDepsToadd, false);
+//    updateAndroidProject(androidProject, androidEndpointLibsFolder, androidLibsFolder,
+//        rawClasspathList, false);
 
     if (monitor.isCanceled()) {
       throw new OperationCanceledException();
@@ -178,13 +168,13 @@ public class SwarmServiceCreator {
      * Now that we've copied the updated endpoint information over to the possibly newly-created
      * endpoint libs folder, re-read the deps file.
      */
-    binaryDepsToadd = ManagedApiUtils.computeBinaryDepsToAdd(
-        ManagedApiUtils.findAndReadDependencyFile(androidEndpointLibsFolder),
-        ApiPlatformType.getAndroidPlatformType(androidProject));
+//    binaryDepsToadd = ManagedApiUtils.computeBinaryDepsToAdd(
+//        ManagedApiUtils.findAndReadDependencyFile(androidEndpointLibsFolder),
+//        ApiPlatformType.getAndroidPlatformType(androidProject));
 
     // Now copy the appropriate jars over the endpoint libs folder
-    updateAndroidProject(androidProject, androidEndpointLibsFolder, androidLibsFolder,
-        rawClasspathList, binaryDepsToadd, true);
+//    updateAndroidProject(androidProject, androidEndpointLibsFolder, androidLibsFolder,
+//        rawClasspathList, true);
 
     if (monitor.isCanceled()) {
       throw new OperationCanceledException();
@@ -414,7 +404,7 @@ public class SwarmServiceCreator {
       }
 
       androidProject = ConnectedProjectHandler.getConnectedProject(project);
-      ApiPlatformType androidPlatformType = ApiPlatformType.getAndroidPlatformType(androidProject);
+//      ApiPlatformType androidPlatformType = ApiPlatformType.getAndroidPlatformType(androidProject);
 
       initializeClassloader(new NullProgressMonitor());
       SwarmApiCreator apiCreator = new SwarmApiCreator(appId);
@@ -442,22 +432,22 @@ public class SwarmServiceCreator {
         throw new OperationCanceledException();
       }
 
-      apiCreator.createSwarmApi(serviceClassList, project, outputFolder, androidPlatformType,
-          generateLibs, loader, monitor.newChild(70));
-
-      if (monitor.isCanceled()) {
-        throw new OperationCanceledException();
-      }
-
-      if (generateLibs) {
-        if (androidProject != null) {
-          copyToConnectedAndroidProject(outputFolder, ManagedApiPlugin.SWARM_LIB_FOLDER_NAME,
-              androidProject, monitor.newChild(10));
-        } else {
-          File appEngineFolder = createEmptySwarmLib(monitor.newChild(10));
-          ResourceUtils.copyFolder(outputFolder, appEngineFolder);
-        }
-      }
+//      apiCreator.createSwarmApi(serviceClassList, project, outputFolder, androidPlatformType,
+//          generateLibs, loader, monitor.newChild(70));
+//
+//      if (monitor.isCanceled()) {
+//        throw new OperationCanceledException();
+//      }
+//
+//      if (generateLibs) {
+//        if (androidProject != null) {
+//          copyToConnectedAndroidProject(outputFolder, ManagedApiPlugin.SWARM_LIB_FOLDER_NAME,
+//              androidProject, monitor.newChild(10));
+//        } else {
+//          File appEngineFolder = createEmptySwarmLib(monitor.newChild(10));
+//          ResourceUtils.copyFolder(outputFolder, appEngineFolder);
+//        }
+//      }
 
       if (monitor.isCanceled()) {
         throw new OperationCanceledException();
@@ -548,15 +538,15 @@ public class SwarmServiceCreator {
   }
 
   private File createEmptySwarmLib(SubMonitor monitor) throws CoreException {
-    IFolder f = project.getFolder(ManagedApiPlugin.SWARM_LIB_FOLDER_NAME);
-    File libFolder = project.getLocation().append(ManagedApiPlugin.SWARM_LIB_FOLDER_NAME).toFile();
-    if (f.exists()) {
-      ResourceUtils.deleteFileRecursively(libFolder);
-    }
-    // Refresh Eclipse's IFolder so it knows the folder is deleted.
-    f.refreshLocal(IResource.DEPTH_INFINITE, monitor.newChild(1));
-    ResourceUtils.createFolderStructure(project, new Path(ManagedApiPlugin.SWARM_LIB_FOLDER_NAME));
-    return libFolder;
+//    IFolder f = project.getFolder(ManagedApiPlugin.SWARM_LIB_FOLDER_NAME);
+//    File libFolder = project.getLocation().append(ManagedApiPlugin.SWARM_LIB_FOLDER_NAME).toFile();
+//    if (f.exists()) {
+//      ResourceUtils.deleteFileRecursively(libFolder);
+//    }
+//    // Refresh Eclipse's IFolder so it knows the folder is deleted.
+//    f.refreshLocal(IResource.DEPTH_INFINITE, monitor.newChild(1));
+//    ResourceUtils.createFolderStructure(project, new Path(ManagedApiPlugin.SWARM_LIB_FOLDER_NAME));
+    return null;
   }
 
   private void createManagerFactoryClass(IProgressMonitor monitor) throws JavaModelException,
@@ -707,21 +697,21 @@ public class SwarmServiceCreator {
   }
 
   private void updateProguardInfo() throws CoreException, IOException {
-    if (androidProject == null) {
-      return;
-    }
-
-    IFolder swarmLibFolder = androidProject.getFolder(ManagedApiPlugin.SWARM_LIB_FOLDER_NAME);
-    ProguardState beforeState = ManagedApiUtils.generateCurrentProguardState(androidProject,
-        swarmLibFolder);
-
-    EclipseProject ep = new EclipseJavaProject(JavaCore.create(androidProject));
-    ManagedApi endpointLibsApi = ManagedApiImpl.createManagedApi(ep, swarmLibFolder);
-    ProguardConfig endpointLibsProguardConfig = new ProguardConfig(endpointLibsApi, ep);
-    if (endpointLibsProguardConfig.hasProguardConfig()) {
-      ProguardState futureState = ProguardState.createForFuture(beforeState,
-          endpointLibsProguardConfig, ep);
-      futureState.apply();
-    }
+//    if (androidProject == null) {
+//      return;
+//    }
+//
+//    IFolder swarmLibFolder = androidProject.getFolder(ManagedApiPlugin.SWARM_LIB_FOLDER_NAME);
+//    ProguardState beforeState = ManagedApiUtils.generateCurrentProguardState(androidProject,
+//        swarmLibFolder);
+//
+//    EclipseProject ep = new EclipseJavaProject(JavaCore.create(androidProject));
+//    ManagedApi endpointLibsApi = ManagedApiImpl.createManagedApi(ep, swarmLibFolder);
+//    ProguardConfig endpointLibsProguardConfig = new ProguardConfig(endpointLibsApi, ep);
+//    if (endpointLibsProguardConfig.hasProguardConfig()) {
+//      ProguardState futureState = ProguardState.createForFuture(beforeState,
+//          endpointLibsProguardConfig, ep);
+//      futureState.apply();
+//    }
   }
 }

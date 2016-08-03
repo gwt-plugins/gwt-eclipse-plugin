@@ -23,7 +23,6 @@ import com.google.gdt.eclipse.appengine.swarm.AppEngineSwarmPlugin;
 import com.google.gdt.eclipse.core.CorePlugin;
 import com.google.gdt.eclipse.core.update.internal.core.ProjectInformationUtils;
 import com.google.gdt.eclipse.login.GoogleLogin;
-import com.google.gdt.eclipse.managedapis.ManagedApiPlugin;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.update.GdtExtPlugin;
 import com.google.gdt.eclipse.suite.update.GdtExtPlugin.GaeMaxSdkVersionComputer;
@@ -92,11 +91,11 @@ public class AnalyticsPingManager implements PingManager {
 
   @Override
   public void sendAPIAddPing(String apiName, String apiPlatform) {
-    sendPing(
-        ManagedApiPlugin.PLUGIN_ID,
-        Action.ADD_MANAGED_API,
-        apiName + "/" + apiPlatform,
-        null, new CustomDimensionAssignment(CustomDimensionName.API_NAME, apiName));
+//    sendPing(
+//        ManagedApiPlugin.PLUGIN_ID,
+//        Action.ADD_MANAGED_API,
+//        apiName + "/" + apiPlatform,
+//        null, new CustomDimensionAssignment(CustomDimensionName.API_NAME, apiName));
   }
 
   @Override

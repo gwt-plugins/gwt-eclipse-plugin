@@ -15,7 +15,6 @@ Export-Package: com.google.gdt.eclipse.appengine.swarm,
  com.google.gdt.eclipse.appengine.swarm.wizards.helpers
 Require-Bundle: com.google.appengine.eclipse.core,
  com.google.gdt.eclipse.core,
- com.google.gdt.eclipse.managedapis,
  com.google.gwt.eclipse.core,
  com.google.gwt.eclipse.oophm,
  com.google.gdt.eclipse.suite,
