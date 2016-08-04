@@ -17,7 +17,6 @@ package com.google.gdt.eclipse.suite.update.usage;
 import com.google.api.client.util.escape.PercentEscaper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.google.gdt.eclipse.login.GoogleLogin;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.update.GdtExtPlugin;
 import com.google.gdt.eclipse.suite.update.GdtExtPlugin.GaeMaxSdkVersionComputer;
@@ -125,10 +124,7 @@ public class AnalyticsPingManager implements PingManager {
         parametersMap, CustomDimensionName.ECLIPSE_VERSION, GdtPlugin.getEclipseVersion());
     setCustomDimension(
         parametersMap, CustomDimensionName.ECLIPSE_PRODUCT_ID, Platform.getProduct().getId());
-    setCustomDimension(
-        parametersMap,
-        CustomDimensionName.IS_SIGNED_IN,
-        Boolean.toString(GoogleLogin.getInstance().isLoggedIn()));
+
     setCustomDimension(parametersMap, CustomDimensionName.SDK_VERSIONS, getSdkVersions());
     for (CustomDimensionAssignment nameValuePair : customDimensions) {
       setCustomDimension(parametersMap, nameValuePair.getName(), nameValuePair.getValue());

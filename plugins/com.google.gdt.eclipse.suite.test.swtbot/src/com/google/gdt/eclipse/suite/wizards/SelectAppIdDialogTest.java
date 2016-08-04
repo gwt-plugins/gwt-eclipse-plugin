@@ -14,17 +14,13 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.wizards;
 
-import com.google.gdt.eclipse.login.TestGoogleLogin;
 import com.google.gdt.eclipse.swtbot.SwtBotProjectActions;
 import com.google.gdt.eclipse.swtbot.SwtBotTestingUtilities;
 import com.google.gdt.eclipse.swtbot.SwtBotWorkbenchActions;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotButton;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 
@@ -35,8 +31,8 @@ public class SelectAppIdDialogTest extends TestCase {
   private SWTWorkbenchBot bot = new SWTWorkbenchBot();
   private static final String SIGN_IN_MESSAGE = "Click <a href=\"\">here</a> to log in.";
   private static final String CHANGE_USER_MESSAGE = "You are currently  logged in as "
-      + TestGoogleLogin.getEmail() + ". Click <a href=\"\">here</a> to change that.";
-  
+      + ". Click <a href=\"\">here</a> to change that.";
+
   // TODO(rdayal): Remove this method once the methods below are uncommented.
   public void testThatExistsOnlyBecauseJUnitThrowsAnExceptionWhenThereAreNoTestsInTheFile() {
   }

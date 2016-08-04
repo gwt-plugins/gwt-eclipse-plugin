@@ -506,10 +506,10 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     browseAppIdButton.addSelectionListener(new SelectionAdapter() {
       @Override
       public void widgetSelected(SelectionEvent e) {
-        SelectAppIdDialog dlg = new SelectAppIdDialog(getShell());
-        if (dlg.open() == Window.OK) {
-          useAppIdText.setText(dlg.getSelectedAppId());
-        }
+//        SelectAppIdDialog dlg = new SelectAppIdDialog(getShell());
+//        if (dlg.open() == Window.OK) {
+//          useAppIdText.setText(dlg.getSelectedAppId());
+//        }
       }
     });
 

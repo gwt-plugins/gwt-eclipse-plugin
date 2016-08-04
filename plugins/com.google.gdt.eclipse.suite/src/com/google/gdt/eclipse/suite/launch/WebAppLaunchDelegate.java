@@ -21,7 +21,6 @@ import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.core.launch.WebAppLaunchConfiguration;
-import com.google.gdt.eclipse.login.GoogleLogin;
 import com.google.gdt.eclipse.platform.launch.WtpPublisher;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.launch.processors.WarArgumentProcessor;
@@ -45,7 +44,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.JavaLaunchDelegate;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.ServerUtil;
@@ -202,9 +200,9 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
   /**
    * Check to see if the user wants to launch on a specific port and check if that port is available
    * for use. If it is not, ask the user if they want to cancel the launch or continue anyway
-   * 
+   *
    * Visible for testing
-   * 
+   *
    * @param configuration A Launch Configuration
    * @return true if launch should continue, false if user terminated
    * @throws CoreException
@@ -223,6 +221,7 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
     final String port = WebAppLaunchConfiguration.getServerPort(configuration);
     if (!NetworkUtilities.isPortAvailable(port)) {
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
           continueLaunch.set(MessageDialog.openQuestion(null, "Port in Use", "The port " + port
               + " appears to be in use (perhaps by another launch), "
@@ -253,33 +252,39 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
     for (String string : vmArgList) {
       vmArgs += string;
     }
+
+    // TODO
     String refreshToken = null;
     String accessToken = null;
     String clientId = null;
     String clientSecret = null;
-    // If the user is not logged in, prompt him to log in.
-    GoogleLogin.promptToLogIn("Please Log in to continue launch");
-    // Try to get the vm arguments.
-    try {
-      refreshToken = GoogleLogin.getInstance().fetchOAuth2RefreshToken();
-      accessToken = GoogleLogin.getInstance().fetchAccessToken();
-      clientId = GoogleLogin.getInstance().fetchOAuth2ClientId();
-      clientSecret = GoogleLogin.getInstance().fetchOAuth2ClientSecret();
-    } catch (SWTException e) {
-      // The exception is thrown if the user did not log in when prompted. Just
-      // show an error message and exit.
-      Display.getDefault().syncExec(new Runnable() {
-        public void run() {
-          MessageDialog.openError(null, "Error in authentication",
-              "Please sign in with your Google account before launching");
-        }
-      });
-    } catch (IOException e) {
-      CorePluginLog.logError(e);
-    }
+
+
+//    // If the user is not logged in, prompt him to log in.
+//    GoogleLogin.promptToLogIn("Please Log in to continue launch");
+//    // Try to get the vm arguments.
+//    try {
+//      refreshToken = GoogleLogin.getInstance().fetchOAuth2RefreshToken();
+//      accessToken = GoogleLogin.getInstance().fetchAccessToken();
+//      clientId = GoogleLogin.getInstance().fetchOAuth2ClientId();
+//      clientSecret = GoogleLogin.getInstance().fetchOAuth2ClientSecret();
+//    } catch (SWTException e) {
+//      // The exception is thrown if the user did not log in when prompted. Just
+//      // show an error message and exit.
+//      Display.getDefault().syncExec(new Runnable() {
+//        public void run() {
+//          MessageDialog.openError(null, "Error in authentication",
+//              "Please sign in with your Google account before launching");
+//        }
+//      });
+//    } catch (IOException e) {
+//      CorePluginLog.logError(e);
+//    }
+
     if (refreshToken == null || accessToken == null || clientId == null || clientSecret == null) {
       return false;
     }
+
     String rdbmsExtraPropertiesValue =
         String.format(ARG_RDBMS_EXTRA_PROPERTIES_VALUE_FORMAT, refreshToken, accessToken, clientId,
             clientSecret);
@@ -287,6 +292,7 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
     workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArgs);
     ILaunchConfiguration config = workingCopy.doSave();
     IPath path = config.getLocation();
+
     if ((path != null) && path.toFile().exists()) {
       try {
         Runtime.getRuntime().exec("chmod 600 " + path.toString());
@@ -294,6 +300,7 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
         CorePluginLog.logError("Could not change permissions on the launch config file");
       }
     }
+
     return true;
   }
 
@@ -302,7 +309,7 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
    * but the main type takes a WAR argument, we need to check at launch-time whether the launch
    * config has a runtime WAR. If it does not, then we ask the user for one and insert it into the
    * launch config.
-   * 
+   *
    * @param configuration the launch configuration that may be written to
    * @return true to continue the launch, false to abort silently
    * @throws CoreException

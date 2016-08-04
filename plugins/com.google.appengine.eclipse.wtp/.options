@@ -1,4 +1,0 @@
-# Debugging options for the com.google.appengine.eclipse.wtp plugin
-
-# Turn on general debugging
-com.google.appengine.eclipse.wtp/debug=true

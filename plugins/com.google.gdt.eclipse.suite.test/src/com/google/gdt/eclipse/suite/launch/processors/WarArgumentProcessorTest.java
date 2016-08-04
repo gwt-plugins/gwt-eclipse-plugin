@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.launch.processors;
 
-import com.google.appengine.eclipse.core.projects.GaeEnablingProjectCreationParticipant;
 import com.google.gcp.eclipse.testing.GaeProjectTestUtil;
 import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorTestingHelper;
@@ -48,8 +47,7 @@ public class WarArgumentProcessorTest extends TestCase {
     GwtRuntimeTestUtilities.addDefaultRuntime();
 
     helper.setUp(WarArgumentProcessorTest.class.getSimpleName(),
-        new GwtEnablingProjectCreationParticipant(),
-        new GaeEnablingProjectCreationParticipant());
+        new GwtEnablingProjectCreationParticipant());
   }
 
 

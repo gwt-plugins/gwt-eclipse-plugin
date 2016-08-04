@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.launch.processors;
 
-import com.google.appengine.eclipse.core.projects.GaeEnablingProjectCreationParticipant;
 import com.google.gcp.eclipse.testing.GaeProjectTestUtil;
 import com.google.gdt.eclipse.core.ClasspathUtilities.ClassFinder;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorTestingHelper;
@@ -46,8 +45,7 @@ public class MainTypeProcessorTest extends TestCase {
     GwtRuntimeTestUtilities.addDefaultRuntime();
 
     helper.setUp(MainTypeProcessorTest.class.getSimpleName(),
-        new GwtEnablingProjectCreationParticipant(),
-        new GaeEnablingProjectCreationParticipant());
+        new GwtEnablingProjectCreationParticipant());
   }
 
   public void testGaeOnly() throws Exception {
