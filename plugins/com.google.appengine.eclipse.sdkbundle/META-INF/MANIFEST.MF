@@ -4,8 +4,7 @@ Bundle-Name: App Engine SDK
 Bundle-SymbolicName: com.google.appengine.eclipse.sdkbundle;singleton:=true
 Bundle-Version: 0.0.0.qualifier
 Bundle-Vendor: Google, Inc.
-Require-Bundle: org.eclipse.core.runtime,
- com.google.appengine.eclipse.core;visibility:=reexport
+Require-Bundle: org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Eclipse-BundleShape: dir

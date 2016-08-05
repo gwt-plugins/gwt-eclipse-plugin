@@ -9,7 +9,7 @@ Bundle-SymbolicName: com.google.gcp.eclipse.testing;singleton:=true
 Bundle-Vendor: %providerName
 Bundle-Version: 0.0.0.qualifier
 Export-Package: com.google.gcp.eclipse.testing
-Require-Bundle: com.google.appengine.eclipse.core,
+Require-Bundle: 
  com.google.gdt.eclipse.core,
  org.eclipse.core.filesystem,
  org.eclipse.core.resources,

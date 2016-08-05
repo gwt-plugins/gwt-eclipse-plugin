@@ -19,7 +19,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.update.GdtExtPlugin;
-import com.google.gdt.eclipse.suite.update.GdtExtPlugin.GaeMaxSdkVersionComputer;
 import com.google.gdt.eclipse.suite.update.GdtExtPlugin.GwtMaxSdkVersionComputer;
 import com.google.gdt.eclipse.suite.update.UpdateSiteURLGenerator;
 
@@ -135,19 +134,11 @@ public class AnalyticsPingManager implements PingManager {
   private static String getSdkVersions() {
     IJavaProject[] projects = GdtExtPlugin.getJavaProjects();
     String maxGwtSdkVersion = new GwtMaxSdkVersionComputer().computeMaxSdkVersion(projects);
-    String maxGaeSdkVersion = new GaeMaxSdkVersionComputer().computeMaxSdkVersion(projects);
+
     if (maxGwtSdkVersion == null) {
-      if (maxGaeSdkVersion == null) {
-        return "none";
-      } else {
-        return "GAE " + maxGaeSdkVersion;
-      }
+      return "none";
     } else {
-      if (maxGaeSdkVersion == null) {
-        return "GWT " + maxGwtSdkVersion;
-      } else {
-        return "both GWT " + maxGwtSdkVersion + " and GAE " + maxGaeSdkVersion;
-      }
+      return "GWT " + maxGwtSdkVersion;
     }
   }
 

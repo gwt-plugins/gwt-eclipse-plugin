@@ -14,35 +14,30 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.update.builders;
 
-import com.google.appengine.eclipse.core.nature.GaeNature;
-import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.suite.update.GdtExtPlugin;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.compiler.CompilationParticipant;
 
 /**
- * A compilation participant that is used to trigger an update check of the GDT
- * Plugin's feature whenever a Java build is triggered on a project, and the
- * project has either the GWT or GAE natures (or both).
+ * A compilation participant that is used to trigger an update check of the GDT Plugin's feature
+ * whenever a Java build is triggered on a project, and the project has either the GWT or GAE
+ * natures (or both).
  */
 public class UpdateTriggerCompilationParticipant extends CompilationParticipant {
 
   @Override
   public boolean isActive(IJavaProject project) {
-    try {
-      if (project.exists()) {
-        if (GWTNature.isGWTProject(project.getProject())
-            || project.getProject().hasNature(GaeNature.NATURE_ID)) {
-          GdtExtPlugin.getFeatureUpdateManager().checkForUpdates();
-          return true;
-        }
-      }
-    } catch (CoreException e) {
-      CorePluginLog.logError(e);
+    if (!project.exists()) {
+      return false;
     }
-    return false;
+
+    if (GWTNature.isGWTProject(project.getProject())) {
+      GdtExtPlugin.getFeatureUpdateManager().checkForUpdates();
+      return true;
+    } else {
+      return false;
+    }
   }
 }

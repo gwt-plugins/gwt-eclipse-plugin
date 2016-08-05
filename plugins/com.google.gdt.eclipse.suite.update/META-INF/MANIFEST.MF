@@ -12,7 +12,7 @@ Export-Package: com.google.gdt.eclipse.suite.update,
  com.google.gdt.eclipse.suite.update.builders,
  com.google.gdt.eclipse.suite.update.ui,
  com.google.gdt.eclipse.suite.update.usage
-Require-Bundle: com.google.appengine.eclipse.core,
+Require-Bundle: 
  com.google.gdt.eclipse.apiclientlib,
  com.google.gdt.eclipse.core,
  com.google.gdt.eclipse.platform,

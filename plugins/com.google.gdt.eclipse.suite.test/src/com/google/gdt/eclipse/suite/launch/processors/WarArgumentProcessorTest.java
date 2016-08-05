@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.launch.processors;
 
-import com.google.gcp.eclipse.testing.GaeProjectTestUtil;
 import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorTestingHelper;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
@@ -37,13 +36,13 @@ import java.util.List;
  */
 public class WarArgumentProcessorTest extends TestCase {
 
-  private final LaunchConfigurationProcessorTestingHelper helper = new LaunchConfigurationProcessorTestingHelper();
+  private final LaunchConfigurationProcessorTestingHelper helper =
+      new LaunchConfigurationProcessorTestingHelper();
 
   @Override
   public void setUp() throws Exception {
     GwtTestUtilities.setUp();
 
-    GaeProjectTestUtil.addDefaultSdk();
     GwtRuntimeTestUtilities.addDefaultRuntime();
 
     helper.setUp(WarArgumentProcessorTest.class.getSimpleName(),
@@ -63,7 +62,8 @@ public class WarArgumentProcessorTest extends TestCase {
 
     // Ensure the WarArgumentProcessor keeps the "-war", since the main
     // type is still one that uses it
-    List<String> args = LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
+    List<String> args =
+        LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
     assertTrue(args.indexOf("-war") >= 0);
     new WarArgumentProcessor().update(helper.getLaunchConfig(),
         JavaCore.create(helper.getProject()), args, null);
@@ -71,8 +71,7 @@ public class WarArgumentProcessorTest extends TestCase {
 
     // Drop to GWTShell main type, which does not use it, ensure the arg is
     // removed
-    helper.getLaunchConfig().setAttribute(
-        IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
+    helper.getLaunchConfig().setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
         GwtLaunchConfigurationProcessorUtilities.GWT_SHELL_MAIN_TYPE);
     assertTrue(args.indexOf("-war") >= 0);
     new WarArgumentProcessor().update(helper.getLaunchConfig(),

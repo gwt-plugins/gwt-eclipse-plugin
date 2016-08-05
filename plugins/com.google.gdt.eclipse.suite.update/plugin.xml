@@ -18,12 +18,7 @@
             id="com.google.gdt.eclipse.suite.updateTriggerCompilationParticipant">
       </compilationParticipant>
    </extension>
-   <extension
-         point="com.google.appengine.eclipse.core.logGaeStats">
-      <LogGaeStats
-            class="com.google.gdt.eclipse.suite.update.usage.LogGaeStats">
-      </LogGaeStats>
-   </extension>
+   
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution

@@ -14,11 +14,9 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.update;
 
-import com.google.appengine.eclipse.core.resources.GaeProject;
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
 import com.google.gdt.eclipse.core.update.internal.core.UpdateQueryBuilder;
 import com.google.gdt.eclipse.suite.GdtPlugin;
-import com.google.gdt.eclipse.suite.update.GdtExtPlugin.GaeMaxSdkVersionComputer;
 import com.google.gdt.eclipse.suite.update.GdtExtPlugin.GwtMaxSdkVersionComputer;
 
 import org.eclipse.core.resources.IProject;
@@ -195,7 +193,6 @@ public class UpdateSiteURLGenerator {
             GdtExtPlugin.FEATURE_ID, GdtExtPlugin.FEATURE_VERSION.toString()).toString());
 
     SdkUtils.MaxSdkVersionComputer gwtMaxVersionComputer = new GwtMaxSdkVersionComputer();
-    SdkUtils.MaxSdkVersionComputer gaeMaxVersionComputer = new GaeMaxSdkVersionComputer();
 
     Map<String, String> maxSdkVersions = new HashMap<String, String>();
     IJavaProject[] projects = GdtExtPlugin.getJavaProjects();
@@ -204,12 +201,6 @@ public class UpdateSiteURLGenerator {
         projects);
     if (maxGWTSdkVersion != null) {
       maxSdkVersions.put("gwtv", maxGWTSdkVersion);
-    }
-
-    String maxAppEngineSdkVersion = gaeMaxVersionComputer.computeMaxSdkVersion(
-        projects);
-    if (maxAppEngineSdkVersion != null) {
-      maxSdkVersions.put("gaev", maxAppEngineSdkVersion);
     }
 
     updateQueryBuilder.setMaxSdkVersions(maxSdkVersions);
@@ -225,18 +216,10 @@ public class UpdateSiteURLGenerator {
     }
 
     if (project != null) {
-      updateQueryBuilder.retrieveGoogleCloudSqlUsage(project);
       updateQueryBuilder.retrieveRPCLayerCount(project);
       updateQueryBuilder.retrieveFacetsEnabled(project);
       // Check if the project is Swarm project.
       updateQueryBuilder.retrieveCloudEndpointEnabled(project);
-      GaeProject gaeProject = GaeProject.create(project);
-      if (gaeProject != null) {
-        String hash = getSHA1Hash(gaeProject.getAppId());
-        if (hash != null) {
-          updateQueryBuilder.setGaeAppIdHash(hash);
-        }
-      }
     }
 
     updateQueryBuilder.retrieveExtensionContributions(project);

@@ -38,8 +38,7 @@ Require-Bundle: com.google.gdt.eclipse.core,
  org.eclipse.debug.ui;bundle-version="3.10.1",
  org.eclipse.ui.console;bundle-version="3.5.300",
  com.google.gdt.eclipse.platform,
- org.eclipse.jdt.ui,
- com.google.appengine.eclipse.wtp
+ org.eclipse.jdt.ui
 Export-Package: com.google.gwt.eclipse.wtp,
  com.google.gwt.eclipse.wtp.facet.data,
  com.google.gwt.eclipse.wtp.utils

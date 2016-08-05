@@ -6,10 +6,7 @@ Bundle-Version: 0.0.0.qualifier
 Bundle-Localization: plugin
 Bundle-Activator: com.google.gwt.eclipse.wtp.maven.GwtMavenPlugin
 Bundle-Vendor: %providerName
-Require-Bundle: com.google.appengine.eclipse.core,
- com.google.appengine.eclipse.wtp,
- com.google.appengine.eclipse.wtp.jpa,
- org.eclipse.core.resources,
+Require-Bundle: org.eclipse.core.resources,
  org.eclipse.equinox.common,
  org.eclipse.m2e.core,
  org.eclipse.m2e.core.ui,

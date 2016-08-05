@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -14,26 +14,20 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.core.update.internal.core;
 
+import com.google.common.base.Joiner;
+import com.google.gdt.eclipse.core.CorePlugin;
+import com.google.gdt.eclipse.core.CorePluginLog;
+import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.QualifiedName;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ProjectScope;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IScopeContext;
-
-import com.google.common.base.Joiner;
-import com.google.gdt.eclipse.core.CorePlugin;
-import com.google.gdt.eclipse.core.CorePluginLog;
-import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 
 /**
  * Builds the query string to include with a feature update check request.
@@ -58,7 +52,7 @@ public class UpdateQueryBuilder {
       "endpoints_genconnectedandroid";
 
   public static final String ENDPOINTS_GEN_ENDPOINT_CLASS = "endpoints_genclass";
-  
+
   public static final String APPS_SCRIPT_IMPORT = "apps_script_import";
 
   /**
@@ -205,23 +199,6 @@ public class UpdateQueryBuilder {
   }
 
   /**
-   * Retrieves info about Google cloud sql usage.
-   */
-  public void retrieveGoogleCloudSqlUsage(IProject project) {
-    IScopeContext projectScope = new ProjectScope(project);
-    IEclipsePreferences prefs = projectScope.getNode(APP_ENGINE_CORE_PLUGIN_ID);
-    if (prefs == null) {
-      CorePluginLog.logError("retrieveGoogleCloudSqlUsage: No appEngineCorePluginID preferences");
-      return;
-    }
-
-    if (prefs.getBoolean("googleCloudSqlEnabled", false)) {
-      isGoogleCloudSqlUsed = true;
-      isGoogleCloudSqlUsedWithMysql = prefs.getBoolean("localDevMySqlEnabled", false);
-    }
-  }
-
-  /**
    * Retrieves count of RPC layers used if Gae Project is App Engine Connected
    * Android Project.
    */
@@ -252,7 +229,7 @@ public class UpdateQueryBuilder {
 
   /**
    * Sets the eclipse version string to use in the query.
-   * 
+   *
    * @param eclipseVersion eclipse version string to use in the query
    */
   public void setEclipseVersion(String eclipseVersion) {
@@ -261,7 +238,7 @@ public class UpdateQueryBuilder {
 
   /**
    * Sets the feature version component.
-   * 
+   *
    * @param featureVersion feature version component
    */
   public void setFeatureVersion(String featureVersion) {
@@ -278,7 +255,7 @@ public class UpdateQueryBuilder {
 
   /**
    * Sets the installation id.
-   * 
+   *
    * @param installationId installation id
    */
   public void setInstallationId(String installationId) {

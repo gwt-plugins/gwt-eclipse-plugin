@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.update;
 
-import com.google.appengine.eclipse.core.sdk.GaeSdk;
 import com.google.gdt.eclipse.core.AbstractGooglePlugin;
 import com.google.gdt.eclipse.core.Logger;
 import com.google.gdt.eclipse.core.PluginProperties;
@@ -43,16 +42,6 @@ import org.w3c.dom.Element;
  */
 @SuppressWarnings("deprecation")
 public class GdtExtPlugin extends AbstractGooglePlugin {
-
-  /**
-   * Computes max gae sdk version.
-   */
-  public static final class GaeMaxSdkVersionComputer extends SdkUtils.MaxSdkVersionComputer {
-    @Override
-    public Sdk doFindSdk(IJavaProject project) throws JavaModelException {
-      return GaeSdk.findSdkFor(project);
-    }
-  }
 
   /**
    * Computes max gwt sdk version.
@@ -152,36 +141,6 @@ public class GdtExtPlugin extends AbstractGooglePlugin {
   }
 
   private void initializeFeatureUpdateManager() {
-    /*
-     * TODO: Note that the update computers for SDK update checking do not
-     * compare qualifiers. This is because we always compare the SDK Bundle
-     * feature version from the site.xml file (which always has a qualifier)
-     * against the maximum SDK version in use in the workspace (which never has
-     * a qualifier, since we query the SDKs for their versions directly). In the
-     * future, we need to come up with a way to correlate the maximum SDK
-     * version that is in use with an installed SDK Bundle feature, so that we
-     * can use the proper qualifier.
-     */
-    FeatureUpdateChecker gaeSdkChecker = new FeatureUpdateChecker(new UpdateComputer() {
-      @Override
-      public UpdateInfo checkSiteXMLForUpdates(Element siteXMLRootElem) {
-        GaeMaxSdkVersionComputer maxVersionComputer = new GaeMaxSdkVersionComputer();
-        String maxAppEngineSdkVersion = maxVersionComputer.computeMaxSdkVersion(getJavaProjects());
-        if (maxAppEngineSdkVersion == null) {
-          /*
-           * Doesn't look like the App Engine SDK is being used in the
-           * workspace; indicate that there is no update available
-           */
-          return new UpdateInfo(APP_ENGINE_SDK_BUNDLE_FEATURE_ID);
-        }
-
-        return doCheckSiteXMLForUpdates(
-            APP_ENGINE_SDK_BUNDLE_FEATURE_ID,
-            new PluginVersionIdentifier(maxAppEngineSdkVersion),
-            GdtPreferences.getVersionForLastAcknowledgedUpdateNotification(APP_ENGINE_SDK_BUNDLE_FEATURE_ID),
-            siteXMLRootElem, false);
-      }
-    });
     FeatureUpdateChecker gwtSdkChecker = new FeatureUpdateChecker(new UpdateComputer() {
       @Override
       public UpdateInfo checkSiteXMLForUpdates(Element siteXMLRootElem) {
@@ -214,7 +173,6 @@ public class GdtExtPlugin extends AbstractGooglePlugin {
 
     FeatureUpdateCheckersMap updateCheckersMap = new FeatureUpdateCheckersMap(UpdateSiteToken.class);
 
-    updateCheckersMap.put(UpdateSiteToken.GAE_SDK, gaeSdkChecker);
     updateCheckersMap.put(UpdateSiteToken.GPE_CORE, checker);
     updateCheckersMap.put(UpdateSiteToken.GWT_SDK, gwtSdkChecker);
 
