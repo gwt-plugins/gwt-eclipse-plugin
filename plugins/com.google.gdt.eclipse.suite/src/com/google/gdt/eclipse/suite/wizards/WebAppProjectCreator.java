@@ -14,15 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.wizards;
 
-import com.google.appengine.eclipse.core.nature.GaeNature;
-import com.google.appengine.eclipse.core.preferences.GaePreferences;
-import com.google.appengine.eclipse.core.properties.GaeProjectProperties;
-import com.google.appengine.eclipse.core.resources.GaeProject;
-import com.google.appengine.eclipse.core.resources.GaeProjectResources;
-import com.google.appengine.eclipse.core.sdk.AppEngineUpdateWebInfFolderCommand;
-import com.google.appengine.eclipse.core.sdk.GaeSdk;
-import com.google.appengine.eclipse.core.sdk.GaeSdkCapability;
-import com.google.appengine.eclipse.core.sdk.GaeSdkContainer;
 import com.google.gdt.eclipse.core.ResourceUtils;
 import com.google.gdt.eclipse.core.StringUtilities;
 import com.google.gdt.eclipse.core.WebAppUtilities;
@@ -83,8 +74,6 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -95,7 +84,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.management.ReflectionException;
 
 /**
  * Web application project creator.
@@ -246,7 +234,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
 
   private String projectName;
 
-  private String[] templates = new String[] {"sample"};
+  private String[] templates = new String[] { "sample" };
 
   private String[] templateSources;
 
@@ -290,22 +278,17 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
   }
 
   /**
-   * Creates the project per the current configuration. Note that the caller must have a workspace
-   * lock in order to successfully execute this method.
+   * Creates the project per the current configuration. Note that the caller must have a workspace lock in order to
+   * successfully execute this method.
    *
    * @throws BackingStoreException
    * @throws IOException
    */
   @Override
-  public void create(IProgressMonitor monitor) throws CoreException, SdkException,
-      ClassNotFoundException, BackingStoreException, IOException {
+  public void create(IProgressMonitor monitor)
+      throws CoreException, SdkException, ClassNotFoundException, BackingStoreException, IOException {
     this.monitor = monitor;
     boolean useGwt = natureIds.contains(GWTNature.NATURE_ID);
-    boolean useGae = natureIds.contains(GaeNature.NATURE_ID);
-
-    if (useGae) {
-      createGaeProject(useGwt);
-    }
 
     // TODO: Add code to update the progress monitor
     if (useGwt) {
@@ -316,12 +299,15 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
 
       if (!isGenerateEmptyProject) {
         createGWTProject(monitor, packageName, locationPath.toOSString());
-      } else if (!useGae) {
-        // Add "empty" web.xml since the project is using GWT but not using
-        // Google App Engine and GPE has already generated an empty project.
-        addFile(new Path(WebAppUtilities.DEFAULT_WAR_DIR_NAME + "/WEB-INF/web.xml"),
-            ProjectResources.createWebXmlSource());
       }
+
+      // TODO ?
+      // else if (!useGae) {
+      // // Add "empty" web.xml since the project is using GWT but not using
+      // // Google App Engine and GPE has already generated an empty project.
+      // addFile(new Path(WebAppUtilities.DEFAULT_WAR_DIR_NAME + "/WEB-INF/web.xml"),
+      // ProjectResources.createWebXmlSource());
+      // }
 
       IPath projDirPath = locationPath.append(projectName);
 
@@ -345,9 +331,9 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     }
 
     /*
-     * Refresh contents; if this project was generated via GWT's WebAppCreator, then these files
-     * would have been created directly on the file system Although, this refresh should have been
-     * done via the project.open() call, which is part of the createProject call above.
+     * Refresh contents; if this project was generated via GWT's WebAppCreator, then these files would have been created
+     * directly on the file system Although, this refresh should have been done via the project.open() call, which is
+     * part of the createProject call above.
      */
     project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 
@@ -372,17 +358,12 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
       WebAppUtilities.setOutputLocationToWebInfClasses(createdJavaProject, monitor);
 
       /*
-       * Copy files into the web-inf lib folder. This code assumes that it is running in a context
-       * that has a workspace lock.
+       * Copy files into the web-inf lib folder. This code assumes that it is running in a context that has a workspace
+       * lock.
        */
       Sdk gwtSdk = getGWTSdk();
       if (gwtSdk != null) {
         new GWTUpdateWebInfFolderCommand(createdJavaProject, gwtSdk).execute();
-      }
-
-      Sdk gaeSdk = getGaeSdk();
-      if (gaeSdk != null) {
-        new AppEngineUpdateWebInfFolderCommand(createdJavaProject, gaeSdk).execute();
       }
     }
 
@@ -390,17 +371,8 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     // so it will get future migrations but not existing migrations
     GdtPreferences.setProjectMigratorVersion(project, ProjectMigrator.CURRENT_VERSION);
 
-    if (useGae) {
-      setGaeDefaults(createdJavaProject);
-    }
-
     if (!buildMaven) { // Do not do this when using Maven, b/c Maven will configure the Classpath
       setProjectClasspath(createdJavaProject, srcFolder, monitor);
-    }
-
-    if (useGae) {
-      // Update WEB-INF folder to get the latest datanucleus jars.
-      new AppEngineUpdateWebInfFolderCommand(createdJavaProject, getGaeSdk()).execute();
     }
 
     if (!buildMaven) { // This would have to come after maven extension configuration
@@ -411,20 +383,14 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     // separate job.
     jobSetupFacets(project);
 
-    // Add the App Engine App ID to the project and create a new App Engine/Cloud project
-    if (useGae) {
-      saveAppIdToAppEngineWebXml(project);
-    }
-
     // Allow other extensions to run after project creation
     includeExtensionPartipants();
   }
 
   private void includeExtensionPartipants() throws CoreException {
     IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
-    IExtensionPoint extensionPoint =
-        extensionRegistry
-            .getExtensionPoint("com.google.gdt.eclipse.suite.webAppCreatorParticipant");
+    IExtensionPoint extensionPoint = extensionRegistry
+        .getExtensionPoint("com.google.gdt.eclipse.suite.webAppCreatorParticipant");
     if (extensionPoint == null) {
       return;
     }
@@ -572,95 +538,25 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     }
   }
 
-  protected IFolder createFolders(IProject project, boolean createWarFolders,
-      IProgressMonitor monitor) throws CoreException {
+  protected IFolder createFolders(IProject project, boolean createWarFolders, IProgressMonitor monitor)
+      throws CoreException {
     IFolder srcFolder = project.getFolder("src");
     ResourceUtils.createFolderIfNonExistent(srcFolder, monitor);
 
     if (createWarFolders) {
       // create <WAR>/WEB-INF/lib
-      ResourceUtils.createFolderStructure(project, new Path(WebAppUtilities.DEFAULT_WAR_DIR_NAME
-          + "/WEB-INF/lib"));
+      ResourceUtils.createFolderStructure(project, new Path(WebAppUtilities.DEFAULT_WAR_DIR_NAME + "/WEB-INF/lib"));
     }
 
     return srcFolder;
   }
 
-  protected void createGaeProject(boolean useGwt) throws CoreException, FileNotFoundException,
-      UnsupportedEncodingException {
-    addFile(new Path(WebAppUtilities.DEFAULT_WAR_DIR_NAME + "/WEB-INF/appengine-web.xml"),
-        GaeProjectResources.createAppEngineWebXmlSource(useGwt));
-
-    IPath gaeSdkContainerPath = findContainerPath(GaeSdkContainer.CONTAINER_ID);
-    if (gaeSdkContainerPath == null) {
-      throw new CoreException(new Status(IStatus.ERROR, GdtPlugin.PLUGIN_ID,
-          "Missing GAE SDK container path"));
-    }
-
-    GaeSdk gaeSdk = GaePreferences.getSdkManager().findSdkForPath(gaeSdkContainerPath);
-    if (gaeSdk != null) {
-      // Add jdoconfig.xml
-      addFile(new Path("src/META-INF/jdoconfig.xml"),
-          GaeProjectResources.createJdoConfigXmlSource(getGaeDatanucleusVersion(gaeSdk)));
-      // Add persistence.xml
-      addFile(new Path("src/META-INF/persistence.xml"),
-          GaeProjectResources.createPersistenceXmlSource(getGaeDatanucleusVersion(gaeSdk)));
-
-      IPath installationPath = gaeSdk.getInstallationPath();
-      File log4jPropertiesFile = installationPath.append("config/user/log4j.properties").toFile();
-      if (log4jPropertiesFile.exists()) {
-        // Add the log4j.properties file
-        addFile(new Path("src/log4j.properties"), new FileInputStream(log4jPropertiesFile));
-      }
-
-      File loggingPropertiesFile =
-          installationPath.append("config/user/logging.properties").toFile();
-      if (loggingPropertiesFile.exists()) {
-        // Add the logging.properties file
-        addFile(new Path(WebAppUtilities.DEFAULT_WAR_DIR_NAME + "/WEB-INF/logging.properties"),
-            new FileInputStream(loggingPropertiesFile));
-      }
-    }
-
-    if (isGenerateEmptyProject) {
-      addFile(new Path(WebAppUtilities.DEFAULT_WAR_DIR_NAME + "/WEB-INF/web.xml"),
-          GaeProjectResources.createEmptyWebXml());
-    }
-
-    if (!useGwt && !isGenerateEmptyProject) {
-      String servletName = WebAppProjectCreator.generateServletName(projectName);
-      String servletPath = WebAppProjectCreator.generateServletPath(projectName);
-      String servletPackageName = packageName;
-      String servletSimpleClassName = WebAppProjectCreator.generateServletClassName(projectName);
-      String servletQualifiedClassName = servletPackageName + "." + servletSimpleClassName;
-
-      // Add index.html
-      addFile(new Path(WebAppUtilities.DEFAULT_WAR_DIR_NAME + "/index.html"),
-          GaeProjectResources.createWelcomePageSource(servletName, servletPath));
-
-      // Add web.xml
-      addFile(new Path(WebAppUtilities.DEFAULT_WAR_DIR_NAME + "/WEB-INF/web.xml"),
-          ProjectResources.createWebXmlSource(servletName, servletPath, servletQualifiedClassName));
-      // Add servlet source
-      IPath servletClassSourcePath =
-          new Path("src/" + servletQualifiedClassName.replace('.', '/') + ".java");
-      addFile(servletClassSourcePath,
-          GaeProjectResources.createSampleServletSource(servletPackageName, servletSimpleClassName));
-
-      // Add default favicon.ico
-      addFile(new Path(WebAppUtilities.DEFAULT_WAR_DIR_NAME + "/favicon.ico"),
-          GaeProjectResources.createFavicon());
-    }
-  }
-
   protected void createLaunchConfig(IProject project) throws CoreException {
     // If the default SDK is GWT 2.7 or greater, turn on GWT super dev mode by default.
-    boolean turnOnGwtSuperDevMode =
-        GwtVersionUtil.isGwtVersionGreaterOrEqualTo27(JavaCore.create(project));
+    boolean turnOnGwtSuperDevMode = GwtVersionUtil.isGwtVersionGreaterOrEqualTo27(JavaCore.create(project));
 
-    ILaunchConfigurationWorkingCopy wc =
-        WebAppLaunchUtil.createLaunchConfigWorkingCopy(project.getName(), project,
-            WebAppLaunchUtil.determineStartupURL(project, false), false, turnOnGwtSuperDevMode);
+    ILaunchConfigurationWorkingCopy wc = WebAppLaunchUtil.createLaunchConfigWorkingCopy(project.getName(), project,
+        WebAppLaunchUtil.determineStartupURL(project, false), false, turnOnGwtSuperDevMode);
     ILaunchGroup[] groups = DebugUITools.getLaunchGroups();
 
     ArrayList<String> groupsNames = new ArrayList<String>();
@@ -704,16 +600,12 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     return null;
   }
 
-  protected Sdk getGaeSdk() {
-    return getSdk(GaeSdkContainer.CONTAINER_ID, GaePreferences.getSdkManager());
-  }
-
   protected Sdk getGWTSdk() {
     return getSdk(GWTRuntimeContainer.CONTAINER_ID, GWTPreferences.getSdkManager());
   }
 
-  protected void setProjectClasspath(IJavaProject javaProject, IFolder srcFolder,
-      IProgressMonitor monitor) throws JavaModelException {
+  protected void setProjectClasspath(IJavaProject javaProject, IFolder srcFolder, IProgressMonitor monitor)
+      throws JavaModelException {
     List<IClasspathEntry> classpathEntries = new ArrayList<IClasspathEntry>();
     classpathEntries.add(JavaCore.newSourceEntry(srcFolder.getFullPath()));
 
@@ -721,8 +613,8 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     IProject project = javaProject.getProject();
     IFolder testFolder = project.getFolder("test");
     if (testFolder.exists()) {
-      classpathEntries.add(JavaCore.newSourceEntry(testFolder.getFullPath(), new IPath[0], project
-          .getFullPath().append("test-classes")));
+      classpathEntries.add(JavaCore.newSourceEntry(testFolder.getFullPath(), new IPath[0],
+          project.getFullPath().append("test-classes")));
     }
 
     // Add our container entries to the path
@@ -739,19 +631,17 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
       throws SdkException, JavaModelException, CoreException {
 
     /*
-     * The project name will be used as the entry point name. When invoking GWT's WebAppCreator, the
-     * entry point name will be passed in as the last component in the module name. The
-     * WebAppCreator will use the last component of the module name as the generated Eclipse project
-     * name, which gives us the desired effect.
+     * The project name will be used as the entry point name. When invoking GWT's WebAppCreator, the entry point name
+     * will be passed in as the last component in the module name. The WebAppCreator will use the last component of the
+     * module name as the generated Eclipse project name, which gives us the desired effect.
      *
-     * FIXME: The project name may not be a valid entry point name. We need to scan the project name
-     * token-by-token, and translate its tokens into a valid Java identifier name. Some examples:
+     * FIXME: The project name may not be a valid entry point name. We need to scan the project name token-by-token, and
+     * translate its tokens into a valid Java identifier name. Some examples:
      *
-     * If the first token in the project name is a lower-case letter, then the translated character
-     * should be made upper case.
+     * If the first token in the project name is a lower-case letter, then the translated character should be made upper
+     * case.
      *
-     * If the first token in the project name is a non-alpha character it should be deleted in the
-     * translation.
+     * If the first token in the project name is a non-alpha character it should be deleted in the translation.
      */
 
     final String entryPoint = generateClassName(projectName);
@@ -772,31 +662,17 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
 
     File outDir = new File(outDirPath, projectName);
 
-    WebAppProjectCreatorRunner.createProject(qualifiedModuleName, outDir.getAbsolutePath(),
-        runtime, monitor, templateSources, templates);
+    WebAppProjectCreatorRunner.createProject(qualifiedModuleName, outDir.getAbsolutePath(), runtime, monitor,
+        templateSources, templates);
 
     reformatJavaFiles(outDir);
     String version = runtime.getVersion();
     if (!SdkUtils.isInternal(version)
-        && SdkUtils.compareVersionStrings(version,
-            WebAppProjectCreatorRunner.GWT_VERSION_WITH_TEMPLATES) <= -1) {
+        && SdkUtils.compareVersionStrings(version, WebAppProjectCreatorRunner.GWT_VERSION_WITH_TEMPLATES) <= -1) {
       deleteAllLaunchConfigurations(outDir);
       deleteAllShellScripts(projectName, outDir);
       deleteBuildScript(outDir);
     }
-  }
-
-  private String getGaeDatanucleusVersion(GaeSdk sdk) {
-    if (sdk.getCapabilities().contains(GaeSdkCapability.OPTIONAL_USER_LIB)) {
-      try {
-        return sdk.getAppEngineBridge().getLatestVersion("datanucleus");
-      } catch (CoreException e) {
-        GdtPlugin.getLogger().logError(e, "Could not get appengine bridge from sdk");
-      } catch (ReflectionException e) {
-        GdtPlugin.getLogger().logError(e.getLocalizedMessage(), e.getTargetException());
-      }
-    }
-    return "";
   }
 
   private Sdk getSdk(String containerId, SdkManager<? extends Sdk> sdkManager) {
@@ -830,32 +706,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
       }
     };
     setupFacetsJob.schedule();
-  }
-
-  private void saveAppIdToAppEngineWebXml(IProject project) throws IOException, CoreException {
-    if (appId == null || appId.isEmpty()) {
-      return;
-    }
-
-    GaeProject gaeProject = GaeProject.create(project);
-    if (gaeProject != null) {
-      gaeProject.setAppId(appId, true);
-    }
-  }
-
-  private void setGaeDefaults(IJavaProject javaProject) throws BackingStoreException {
-    GaeSdk sdk = (GaeSdk) getGaeSdk();
-
-    // Enable HRD by default for new projects, if supported.
-    if (sdk != null && sdk.getCapabilities().contains(GaeSdkCapability.HRD)) {
-      GaeProjectProperties.setGaeHrdEnabled(javaProject.getProject(), true);
-    }
-
-    // Choose the highest version for each library by default.
-    if (sdk != null) {
-      GaeProjectProperties.setGaeDatanucleusVersion(javaProject.getProject(),
-          getGaeDatanucleusVersion(sdk));
-    }
   }
 
   /**

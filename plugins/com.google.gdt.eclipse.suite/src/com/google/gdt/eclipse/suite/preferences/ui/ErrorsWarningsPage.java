@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.preferences.ui;
 
-import com.google.appengine.eclipse.core.nature.GaeNature;
 import com.google.gdt.eclipse.core.BuilderUtilities;
 import com.google.gdt.eclipse.core.markers.GdtProblemCategory;
 import com.google.gdt.eclipse.core.markers.GdtProblemSeverities;
@@ -57,10 +56,9 @@ import java.util.Map;
 
 /**
  * Preference page for customizing the severity of problem markers.
- * 
- * NOTE: We're subclassing the internal PropertyAndPreferencePage rather than
- * the vanilla PreferencePage, so we can easily add project-level overrides for
- * problem severities in the future.
+ *
+ * NOTE: We're subclassing the internal PropertyAndPreferencePage rather than the vanilla PreferencePage, so we can
+ * easily add project-level overrides for problem severities in the future.
  */
 @SuppressWarnings("restriction")
 public class ErrorsWarningsPage extends PropertyAndPreferencePage {
@@ -87,8 +85,7 @@ public class ErrorsWarningsPage extends PropertyAndPreferencePage {
   private ViewerSorter severityViewerSorter = new ViewerSorter() {
     @Override
     public int compare(Viewer viewer, Object e1, Object e2) {
-      return ((GdtProblemSeverity) e2).getSeverityId()
-          - ((GdtProblemSeverity) e1).getSeverityId();
+      return ((GdtProblemSeverity) e2).getSeverityId() - ((GdtProblemSeverity) e1).getSeverityId();
     }
   };
 
@@ -97,20 +94,19 @@ public class ErrorsWarningsPage extends PropertyAndPreferencePage {
   public ErrorsWarningsPage() {
     setDescription("Select the severity level for the following problems.");
   }
-  
+
   @Override
   public boolean performOk() {
     updateWorkingCopyFromCombos();
 
     if (!GdtProblemSeverities.getInstance().equals(problemSeveritiesWorkingCopy)) {
-      MessageDialog dialog = new MessageDialog(getShell(),
-          "Errors/Warnings Settings Changed", null,
+      MessageDialog dialog = new MessageDialog(getShell(), "Errors/Warnings Settings Changed", null,
           "The Google Error/Warning settings have changed.  A full rebuild "
-              + "of all GWT/App Engine projects is required for changes to "
-              + "take effect.  Do the full build now?", MessageDialog.QUESTION,
-          new String[] {
-              IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL,
-              IDialogConstants.CANCEL_LABEL}, 2); // Cancel is default
+              + "of all GWT/App Engine projects is required for changes to " + "take effect.  Do the full build now?",
+          MessageDialog.QUESTION,
+          new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL }, 2); // Cancel
+                                                                                                                     // is
+                                                                                                                     // default
       int result = dialog.open();
 
       if (result == 2) { // Cancel
@@ -119,8 +115,7 @@ public class ErrorsWarningsPage extends PropertyAndPreferencePage {
         updateWorkspaceSeveritySettingsFromWorkingCopy();
 
         if (result == 0) { // Yes
-          BuilderUtilities.scheduleRebuildAll(GWTNature.NATURE_ID,
-              GaeNature.NATURE_ID);
+          BuilderUtilities.scheduleRebuildAll(GWTNature.NATURE_ID);
         }
       }
     }
@@ -149,13 +144,12 @@ public class ErrorsWarningsPage extends PropertyAndPreferencePage {
     // Create the list of problems (grouped by category)
     createProblemsList(topPanel);
 
-    ExpandableComposite firstChild = (ExpandableComposite)problemsPanel.getChildren()[0];
+    ExpandableComposite firstChild = (ExpandableComposite) problemsPanel.getChildren()[0];
     firstChild.setExpanded(true);
-    
+
     // Initialize the severity combos
     populateSeverityCombosFromWorkingCopy();
 
-    
     return topPanel;
   }
 
@@ -182,19 +176,15 @@ public class ErrorsWarningsPage extends PropertyAndPreferencePage {
     populateSeverityCombosFromWorkingCopy();
   }
 
-  private void addProblemTypeRow(Composite categoryProblemsPanel,
-      IGdtProblemType problemType) {
-    GridData problemLabelLayout = new GridData(SWT.FILL, SWT.CENTER, true,
-        false);
+  private void addProblemTypeRow(Composite categoryProblemsPanel, IGdtProblemType problemType) {
+    GridData problemLabelLayout = new GridData(SWT.FILL, SWT.CENTER, true, false);
 
     Label problemLabel = new Label(categoryProblemsPanel, SWT.NONE);
     problemLabel.setLayoutData(problemLabelLayout);
     problemLabel.setText(problemType.getDescription());
 
-    ComboViewer severityCombo = new ComboViewer(categoryProblemsPanel,
-        SWT.READ_ONLY);
-    GridData severityComboLayout = new GridData(SWT.FILL, SWT.CENTER, false,
-        false);
+    ComboViewer severityCombo = new ComboViewer(categoryProblemsPanel, SWT.READ_ONLY);
+    GridData severityComboLayout = new GridData(SWT.FILL, SWT.CENTER, false, false);
     severityCombo.getCombo().setLayoutData(severityComboLayout);
     severityCombo.setContentProvider(new ArrayContentProvider());
     severityCombo.setLabelProvider(severityLabelProvider);
@@ -209,6 +199,7 @@ public class ErrorsWarningsPage extends PropertyAndPreferencePage {
     List<IGdtProblemType> problemTypes = new ArrayList<IGdtProblemType>(
         problemSeveritiesWorkingCopy.getAllProblemTypes());
     Collections.sort(problemTypes, new Comparator<IGdtProblemType>() {
+      @Override
       public int compare(IGdtProblemType a, IGdtProblemType b) {
         return a.getProblemId() - b.getProblemId();
       }
@@ -226,10 +217,8 @@ public class ErrorsWarningsPage extends PropertyAndPreferencePage {
         ExpandableComposite.TWISTIE | ExpandableComposite.CLIENT_INDENT);
     expandPanel.setText(label);
     expandPanel.setExpanded(false);
-    expandPanel.setFont(JFaceResources.getFontRegistry().getBold(
-        JFaceResources.DIALOG_FONT));
-    expandPanel.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true,
-        false));
+    expandPanel.setFont(JFaceResources.getFontRegistry().getBold(JFaceResources.DIALOG_FONT));
+    expandPanel.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
     expandPanel.addExpansionListener(new ExpansionAdapter() {
       @Override
       public void expansionStateChanged(ExpansionEvent e) {
@@ -259,8 +248,7 @@ public class ErrorsWarningsPage extends PropertyAndPreferencePage {
 
     // Create an expandable composite for each problem category
     for (GdtProblemCategory category : GdtProblemCategory.getAllCategoriesInDisplayOrder()) {
-      Composite categoryPanel = createProblemCategory(problemsPanel,
-          category.getDisplayName());
+      Composite categoryPanel = createProblemCategory(problemsPanel, category.getDisplayName());
 
       // Associate each panel with its associated problem category
       problemCategoryPanels.put(category, categoryPanel);
@@ -280,7 +268,8 @@ public class ErrorsWarningsPage extends PropertyAndPreferencePage {
   private void updateWorkingCopyFromCombos() {
     for (IGdtProblemType problemType : problemSeverityCombos.keySet()) {
       ComboViewer combo = problemSeverityCombos.get(problemType);
-      GdtProblemSeverity severity = (GdtProblemSeverity) ((IStructuredSelection) combo.getSelection()).getFirstElement();
+      GdtProblemSeverity severity = (GdtProblemSeverity) ((IStructuredSelection) combo.getSelection())
+          .getFirstElement();
       problemSeveritiesWorkingCopy.setSeverity(problemType, severity);
     }
   }

@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.launch.processors;
 
-import com.google.appengine.eclipse.core.nature.GaeNature;
 import com.google.gdt.eclipse.core.ClasspathUtilities;
 import com.google.gdt.eclipse.core.ClasspathUtilities.ClassFinder;
 import com.google.gdt.eclipse.core.CorePluginLog;
@@ -132,8 +131,6 @@ public class MainTypeProcessor implements ILaunchConfigurationProcessor {
       // Fallback
       return MainType.GWT_SHELL.mainTypeName;
 
-    } else if (GaeNature.isGaeProject(project)) {
-      return MainType.GAE_APP_SERVER.mainTypeName;
     } else {
       return null;
     }

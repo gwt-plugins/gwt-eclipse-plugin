@@ -14,11 +14,9 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.launch.ui.tabs;
 
-import com.google.appengine.eclipse.core.nature.GaeNature;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.DynamicWebProjectUtilities;
 import com.google.gdt.eclipse.core.launch.UpdateLaunchConfigurationDialogBatcher;
-import com.google.gdt.eclipse.core.natures.NatureUtils;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.launch.processors.LaunchConfigurationUpdater;
 import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
@@ -227,13 +225,7 @@ public class WebAppMainTab extends JavaMainTab implements UpdateLaunchConfigurat
       }
 
       boolean isGwtOrGaeProject;
-      try {
-        isGwtOrGaeProject =
-            GWTNature.isGWTProject(project) || NatureUtils.hasNature(project, GaeNature.NATURE_ID);
-      } catch (CoreException e) {
-        GdtPlugin.getLogger().logError(e);
-        isGwtOrGaeProject = false;
-      }
+      isGwtOrGaeProject = GWTNature.isGWTProject(project);
 
       if (!isGwtOrGaeProject) {
         setErrorMessage("Project does not use GWT or GAE");

@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.launch.processors;
 
-import com.google.appengine.eclipse.core.nature.GaeNature;
 import com.google.gdt.eclipse.core.StringUtilities;
 import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
@@ -63,12 +62,10 @@ public class PortArgumentProcessor implements ILaunchConfigurationProcessor {
           return newNotPresentPortParser();
         }
 
-        PortArgStyle portArgStyle =
-            portArg.equalsIgnoreCase(PortArgStyle.GWT.arg) ? PortArgStyle.GWT
-                : PortArgStyle.GAE_SHORT;
+        PortArgStyle portArgStyle = portArg.equalsIgnoreCase(PortArgStyle.GWT.arg) ? PortArgStyle.GWT
+            : PortArgStyle.GAE_SHORT;
 
-        return new PortParser(true, portArgIndex, port, portArgStyle.autoPortValue.equals(port),
-            portArgStyle);
+        return new PortParser(true, portArgIndex, port, portArgStyle.autoPortValue.equals(port), portArgStyle);
       }
     }
 
@@ -116,8 +113,7 @@ public class PortArgumentProcessor implements ILaunchConfigurationProcessor {
 
     public final PortArgStyle portArgStyle;
 
-    private PortParser(boolean isPresent, int portArgIndex, String port, boolean isAuto,
-        PortArgStyle portArgStyle) {
+    private PortParser(boolean isPresent, int portArgIndex, String port, boolean isAuto, PortArgStyle portArgStyle) {
       this.isPresent = isPresent;
       this.portArgIndex = portArgIndex;
       this.port = port;
@@ -140,8 +136,8 @@ public class PortArgumentProcessor implements ILaunchConfigurationProcessor {
     }
 
     /**
-     * @return list of arguments to specify port, or null if the given values are not valid (e.g.
-     *         not auto but port is empty)
+     * @return list of arguments to specify port, or null if the given values are not valid (e.g. not auto but port is
+     *         empty)
      */
     public List<String> getPortArgs(boolean isAuto, String port) {
       if (!isAuto && StringUtilities.isEmpty(port) || !PortParser.isValidPort(port)) {
@@ -168,35 +164,27 @@ public class PortArgumentProcessor implements ILaunchConfigurationProcessor {
     }
   }
 
-  private static final String INVALID_PORT_ARGUMENT_STYLE =
-      "Argument style for specifying the port is not applicable to the current project";
+  private static final String INVALID_PORT_ARGUMENT_STYLE = "Argument style for specifying the port is not applicable to the current project";
 
   @Override
-  public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject,
-      List<String> programArgs, List<String> vmArgs) throws CoreException {
+  public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject, List<String> programArgs,
+      List<String> vmArgs) throws CoreException {
 
     boolean isAuto = WebAppLaunchConfigurationWorkingCopy.getAutoPortSelection(launchConfig);
     String port = WebAppLaunchConfigurationWorkingCopy.getServerPort(launchConfig);
 
     PortParser parser = PortParser.parse(programArgs);
 
-    int insertionIndex =
-        parser.isPresent ? LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(
-            programArgs, parser.portArgIndex, parser.portArgStyle.isPortASeparateArg) : 0;
+    int insertionIndex = parser.isPresent ? LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(
+        programArgs, parser.portArgIndex, parser.portArgStyle.isPortASeparateArg) : 0;
 
     if (!NoServerArgumentProcessor.hasNoServerArg(programArgs)) {
       IProject project = javaProject.getProject();
       boolean isGwtProject = GWTNature.isGWTProject(project);
-      boolean isGaeProject = GaeNature.isGaeProject(project);
 
       PortArgStyle portArgStyle = null;
       if (isGwtProject) {
         portArgStyle = PortArgStyle.GWT;
-      } else if (isGaeProject) {
-        // Prefer the style that existed in the args previously
-        portArgStyle =
-            parser.portArgStyle != null && parser.portArgStyle.isGae() ? parser.portArgStyle
-                : PortArgStyle.GAE_LONG;
       } else {
         // This processor is not applicable for the given project
         return;
@@ -210,8 +198,8 @@ public class PortArgumentProcessor implements ILaunchConfigurationProcessor {
   }
 
   @Override
-  public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject,
-      List<String> programArgs, List<String> vmArgs) throws CoreException {
+  public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject, List<String> programArgs,
+      List<String> vmArgs) throws CoreException {
 
     // Only validate for main types we know about
     if (!MainTypeProcessor.isMainTypeFromSdk(launchConfig)) {
@@ -219,8 +207,8 @@ public class PortArgumentProcessor implements ILaunchConfigurationProcessor {
     }
 
     /*
-     * Speed Tracer launch configurations require a port to be defined. Parse the current arguments
-     * and ensure the launch is not using automatic port selection.
+     * Speed Tracer launch configurations require a port to be defined. Parse the current arguments and ensure the
+     * launch is not using automatic port selection.
      */
     PortParser portParser = PortParser.parse(programArgs);
 
@@ -230,9 +218,9 @@ public class PortArgumentProcessor implements ILaunchConfigurationProcessor {
 
     IProject project = javaProject.getProject();
     boolean isGwtProject = GWTNature.isGWTProject(project);
-    boolean isGaeProject = GaeNature.isGaeProject(project);
-    if (isGwtProject && portParser.portArgStyle != PortArgStyle.GWT || isGaeProject
-        && !isGwtProject && !portParser.portArgStyle.isGae()) {
+
+    if (isGwtProject && portParser.portArgStyle != PortArgStyle.GWT && !isGwtProject
+        && !portParser.portArgStyle.isGae()) {
       return INVALID_PORT_ARGUMENT_STYLE;
     }
 

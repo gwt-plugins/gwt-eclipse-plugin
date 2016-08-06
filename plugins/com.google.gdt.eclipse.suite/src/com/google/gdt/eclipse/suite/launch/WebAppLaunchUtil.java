@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.launch;
 
-import com.google.appengine.eclipse.core.nature.GaeNature;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
@@ -129,11 +128,6 @@ public class WebAppLaunchUtil {
     }
 
     if (strategy == null) {
-
-      if (WebAppLaunchUtil.projectIsGaeOnly(project)) {
-        return "";
-      }
-
       if (WebAppUtilities.isWebApp(project)) {
         strategy = new WebAppLaunchShortcutStrategy();
       } else {
@@ -175,10 +169,6 @@ public class WebAppLaunchUtil {
 
     IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
     return project.exists() ? project : null;
-  }
-
-  public static boolean projectIsGaeOnly(IProject project) {
-    return GaeNature.isGaeProject(project) && !GWTNature.isGWTProject(project);
   }
 
   public static void setDefaults(ILaunchConfigurationWorkingCopy configuration, IProject project) {

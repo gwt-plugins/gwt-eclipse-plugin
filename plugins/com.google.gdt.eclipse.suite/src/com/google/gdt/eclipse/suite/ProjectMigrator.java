@@ -14,8 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite;
 
-import com.google.appengine.eclipse.core.nature.GaeNature;
-import com.google.gdt.eclipse.core.natures.NatureUtils;
 import com.google.gdt.eclipse.suite.launch.processors.DefaultWorkingDirectoryMigrator;
 import com.google.gdt.eclipse.suite.launch.processors.LaunchConfigAffectingChangesListener;
 import com.google.gdt.eclipse.suite.preferences.GdtPreferences;
@@ -37,8 +35,7 @@ public class ProjectMigrator {
   public static final int CURRENT_VERSION = 4;
 
   /**
-   * Scans projects in workspace for those that have not been migrated to the
-   * latest version.
+   * Scans projects in workspace for those that have not been migrated to the latest version.
    */
   public void migrate() {
     boolean closedProjectsInWorkspace = false;
@@ -62,8 +59,7 @@ public class ProjectMigrator {
           IResourceDelta delta = event.getDelta();
           if (delta != null) {
             // Find any project-level changes
-            IResourceDelta[] projectDeltas = delta.getAffectedChildren(
-                IResourceDelta.CHANGED, IResource.PROJECT);
+            IResourceDelta[] projectDeltas = delta.getAffectedChildren(IResourceDelta.CHANGED, IResource.PROJECT);
 
             // The master delta may include more than one project delta
             for (IResourceDelta projectDelta : projectDeltas) {
@@ -82,10 +78,9 @@ public class ProjectMigrator {
   }
 
   /**
-   * The actual migration logic. Ensure the template is followed exactly --
-   * specifically that {@link ProjectMigrator#CURRENT_VERSION} has been bumped,
-   * and that it will equal the projectVersion at the end of this method. Also
-   * make sure you use "if" and not "else if".
+   * The actual migration logic. Ensure the template is followed exactly -- specifically that
+   * {@link ProjectMigrator#CURRENT_VERSION} has been bumped, and that it will equal the projectVersion at the end of
+   * this method. Also make sure you use "if" and not "else if".
    *
    * @param project
    * @param projectVersion
@@ -103,8 +98,8 @@ public class ProjectMigrator {
       projectVersion = 2;
 
       /*
-       * Moves to the GPE's new style of launch configs where arguments reflect
-       * the actual parameters passed to the launch
+       * Moves to the GPE's new style of launch configs where arguments reflect the actual parameters passed to the
+       * launch
        */
       LaunchConfigAffectingChangesListener.INSTANCE.updateLaunchConfigurations(project);
     }
@@ -113,8 +108,8 @@ public class ProjectMigrator {
       projectVersion = 3;
 
       /*
-       * Set the launch config's working directory to default (which will always
-       * resolve to the WAR directory) if it currently equals the WAR directory.
+       * Set the launch config's working directory to default (which will always resolve to the WAR directory) if it
+       * currently equals the WAR directory.
        */
       new DefaultWorkingDirectoryMigrator().migrate(project);
     }
@@ -123,16 +118,14 @@ public class ProjectMigrator {
       projectVersion = 4;
 
       /*
-       * GPE now realizes GWTShell from newer SDKs supports the -remoteUI
-       * argument. Update the launch configs so those that use GWTShell will
-       * switch to the Dev Mode view inside Eclipse.
+       * GPE now realizes GWTShell from newer SDKs supports the -remoteUI argument. Update the launch configs so those
+       * that use GWTShell will switch to the Dev Mode view inside Eclipse.
        */
       LaunchConfigAffectingChangesListener.INSTANCE.updateLaunchConfigurations(project);
     }
 
     if (projectVersion != CURRENT_VERSION) {
-      GdtPlugin.getLogger().logError(
-          "Project migrator did not migrate project to the latest version");
+      GdtPlugin.getLogger().logError("Project migrator did not migrate project to the latest version");
     }
 
     // Write back project version
@@ -140,21 +133,19 @@ public class ProjectMigrator {
   }
 
   /**
-   * Migrates the given project if there is some migration that needs to be
-   * done. This method ensures no exceptions escape.
+   * Migrates the given project if there is some migration that needs to be done. This method ensures no exceptions
+   * escape.
    */
   private void safelyMigrateIfVersionChanged(IProject project) {
     try {
-      if (GWTNature.isGWTProject(project.getProject())
-          || NatureUtils.hasNature(project, GaeNature.NATURE_ID)) {
+      if (GWTNature.isGWTProject(project.getProject())) {
         int projectVersion = GdtPreferences.getProjectMigratorVersion(project);
         if (projectVersion != CURRENT_VERSION) {
           migrateProject(project, projectVersion);
         }
       }
     } catch (Throwable e) {
-      GdtPlugin.getLogger().logError(e,
-          "Skipping project migrator for project " + project.getName());
+      GdtPlugin.getLogger().logError(e, "Skipping project migrator for project " + project.getName());
     }
   }
 

@@ -23,7 +23,6 @@ import com.google.gdt.eclipse.core.launch.WebAppLaunchAttributes;
 import com.google.gdt.eclipse.core.launch.WebAppLaunchConfiguration;
 import com.google.gdt.eclipse.core.launch.WebAppLaunchConfigurationWorkingCopy;
 import com.google.gdt.eclipse.suite.GdtPlugin;
-import com.google.gdt.eclipse.suite.launch.WebAppLaunchUtil;
 import com.google.gdt.eclipse.suite.launch.processors.PortArgumentProcessor;
 import com.google.gdt.eclipse.suite.launch.processors.PortArgumentProcessor.PortParser;
 import com.google.gdt.eclipse.suite.launch.processors.ServerArgumentProcessor;
@@ -206,8 +205,9 @@ public class WebAppServerTab extends JavaLaunchTab implements WebAppArgumentsTab
       return false;
     }
 
+    // TODO ?
     if (runServerButton != null) {
-      if (WebAppLaunchUtil.projectIsGaeOnly(project) && !runServerButton.getSelection()) {
+      if (!runServerButton.getSelection()) {
         setErrorMessage("App Engine projects need to run the built-in server.");
         return false;
       }

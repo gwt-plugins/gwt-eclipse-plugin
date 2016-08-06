@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.wizards;
 
-import com.google.appengine.eclipse.core.nature.GaeNature;
 import com.google.gdt.eclipse.core.projects.IWebAppProjectCreator;
 import com.google.gdt.eclipse.core.projects.ProjectUtilities;
 import com.google.gdt.eclipse.core.sdk.Sdk.SdkException;
@@ -63,8 +62,6 @@ public class NewWebAppProjectWizard extends NewElementWizard
 
   private String appId;
 
-  private boolean useGae;
-
   private boolean useGWT;
 
   private boolean isGenerateEmptyProject;
@@ -103,8 +100,6 @@ public class NewWebAppProjectWizard extends NewElementWizard
   @Override
   public boolean performFinish() {
     projectName = newProjectWizardPage.getProjectName();
-    useGae = newProjectWizardPage.useGae();
-    gaeSdkContainerPath = newProjectWizardPage.getGaeSdkContainerPath();
     useGWT = newProjectWizardPage.useGWT();
     gwtSdkContainerPath = newProjectWizardPage.getGWTSdkContainerPath();
     packageName = newProjectWizardPage.getPackage();
@@ -147,11 +142,6 @@ public class NewWebAppProjectWizard extends NewElementWizard
       wapc.setGenerateEmptyProject(isGenerateEmptyProject);
       wapc.setBuildAnt(buildAnt);
       wapc.setBuildMaven(buildMaven);
-
-      if (useGae) {
-        wapc.addContainerPath(gaeSdkContainerPath);
-        wapc.addNature(GaeNature.NATURE_ID);
-      }
 
       if (useGWT) {
         wapc.addContainerPath(gwtSdkContainerPath);

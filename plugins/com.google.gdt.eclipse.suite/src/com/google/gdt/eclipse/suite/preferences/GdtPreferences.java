@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.preferences;
 
-import com.google.appengine.eclipse.core.sdk.GAESdkRegistrant;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.PropertiesUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkRegistrant;
@@ -450,7 +449,8 @@ public final class GdtPreferences {
           if (sdkPathUrl != null) {
             if ("file".equals(sdkPathUrl.getProtocol())) {
               if ("GAE".equals(sdkType)) {
-                GAESdkRegistrant.registerSdk(sdkPathUrl);
+                // TODO ?
+                //GAESdkRegistrant.registerSdk(sdkPathUrl);
               } else if ("GWT".equals(sdkType)) {
                 GWTSdkRegistrant.registerSdk(sdkPathUrl);
               }

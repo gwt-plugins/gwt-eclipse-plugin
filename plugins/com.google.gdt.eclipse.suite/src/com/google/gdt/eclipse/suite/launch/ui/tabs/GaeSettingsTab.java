@@ -14,18 +14,7 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.launch.ui.tabs;
 
-import com.google.appengine.eclipse.core.launch.AppEngineLaunchConfiguration;
-import com.google.appengine.eclipse.core.launch.AppEngineLaunchConfigurationWorkingCopy;
-import com.google.appengine.eclipse.core.launch.processors.HrdArgumentProcessor;
-import com.google.appengine.eclipse.core.properties.GaeProjectProperties;
-import com.google.appengine.eclipse.core.properties.ui.GaeProjectPropertyPage;
-import com.google.appengine.eclipse.core.resources.GaeProject;
-import com.google.appengine.eclipse.core.sdk.GaeSdk;
-import com.google.appengine.eclipse.core.sdk.GaeSdkCapability;
-import com.google.gdt.eclipse.core.CorePluginLog;
-import com.google.gdt.eclipse.core.SWTUtilities;
 import com.google.gdt.eclipse.core.launch.ILaunchArgumentsContainer;
-import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.core.launch.UpdateLaunchConfigurationDialogBatcher;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.resources.GdtImages;
@@ -34,12 +23,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaLaunchTab;
 import org.eclipse.jdt.internal.debug.ui.SWTFactory;
 import org.eclipse.jdt.launching.JavaRuntime;
-import org.eclipse.jface.preference.PreferenceDialog;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -52,7 +38,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import java.util.List;
 
@@ -60,8 +45,8 @@ import java.util.List;
  * Settings tab for App Engine.
  */
 @SuppressWarnings("restriction")
-public class GaeSettingsTab extends JavaLaunchTab implements
-    ILaunchArgumentsContainer.ArgumentsListener, UpdateLaunchConfigurationDialogBatcher.Listener {
+public class GaeSettingsTab extends JavaLaunchTab
+    implements ILaunchArgumentsContainer.ArgumentsListener, UpdateLaunchConfigurationDialogBatcher.Listener {
 
   /**
    * Datastore options block.
@@ -99,23 +84,24 @@ public class GaeSettingsTab extends JavaLaunchTab implements
             return;
           }
 
-          PreferenceDialog page =
-              PreferencesUtil.createPropertyDialogOn(getShell(), javaProject.getProject(),
-                  GaeProjectPropertyPage.ID, new String[] {GaeProjectPropertyPage.ID}, null);
-          if (Window.OK == page.open()) {
-            updateState();
-            updateLaunchConfigurationDialog();
-          }
+          // TODO ?
+          // PreferenceDialog page = PreferencesUtil.createPropertyDialogOn(getShell(), javaProject.getProject(),
+          // GaeProjectPropertyPage.ID, new String[] {GaeProjectPropertyPage.ID}, null);
+          // if (Window.OK == page.open()) {
+          // updateState();
+          // updateLaunchConfigurationDialog();
+          // }
         }
       });
     }
 
     public void initializeFrom(ILaunchConfiguration config) {
-      try {
-        unappliedJobPctText.setText(AppEngineLaunchConfiguration.getUnappliedJobPct(config));
-      } catch (CoreException e) {
-        CorePluginLog.logError(e);
-      }
+      // TODO ?
+      // try {
+      // unappliedJobPctText.setText(AppEngineLaunchConfiguration.getUnappliedJobPct(config));
+      // } catch (CoreException e) {
+      // CorePluginLog.logError(e);
+      // }
 
       updateState();
     }
@@ -138,28 +124,20 @@ public class GaeSettingsTab extends JavaLaunchTab implements
     }
 
     public void performApply(ILaunchConfigurationWorkingCopy config) {
-      AppEngineLaunchConfigurationWorkingCopy.setUnappliedJobPct(config,
-          unappliedJobPctText.getText().trim());
-      LaunchConfigurationProcessorUtilities.updateViaProcessor(
-          new HrdArgumentProcessor(), config);
-    }
-
-    private boolean isHrdEnabled() throws JavaModelException {
-      IJavaProject javaProject = getJavaProject();
-      GaeSdk sdk = (javaProject != null) ? GaeSdk.findSdkFor(javaProject) : null;
-
-      return sdk != null && sdk.getCapabilities().contains(GaeSdkCapability.HRD)
-          && GaeProjectProperties.getGaeHrdEnabled(javaProject.getProject());
+      // TODO ?
+      // AppEngineLaunchConfigurationWorkingCopy.setUnappliedJobPct(config, unappliedJobPctText.getText().trim());
+      // LaunchConfigurationProcessorUtilities.updateViaProcessor(new HrdArgumentProcessor(), config);
     }
 
     private void updateState() {
       boolean hrdEnabled = false;
 
-      try {
-        hrdEnabled = isHrdEnabled();
-      } catch (JavaModelException e) {
-        CorePluginLog.logError(e);
-      }
+      // TODO ?
+//      try {
+//        hrdEnabled = isHrdEnabled();
+//      } catch (JavaModelException e) {
+//        CorePluginLog.logError(e);
+//      }
 
       hrLabel.setEnabled(hrdEnabled);
       unappliedJobPctText.setEnabled(hrdEnabled);
@@ -184,8 +162,7 @@ public class GaeSettingsTab extends JavaLaunchTab implements
 
   @Override
   public void createControl(Composite parent) {
-    composite =
-        SWTFactory.createComposite(parent, parent.getFont(), 1, 1, GridData.FILL_HORIZONTAL);
+    composite = SWTFactory.createComposite(parent, parent.getFont(), 1, 1, GridData.FILL_HORIZONTAL);
     setControl(composite);
 
     createVerticalSpacer(composite, 1);
@@ -254,8 +231,7 @@ public class GaeSettingsTab extends JavaLaunchTab implements
   }
 
   private void createAppEngineStatusGroup(final Composite parent) {
-    final Group group =
-        SWTFactory.createGroup(parent, "Application Settings:", 2, 1, GridData.FILL_HORIZONTAL);
+    final Group group = SWTFactory.createGroup(parent, "Application Settings:", 2, 1, GridData.FILL_HORIZONTAL);
 
     SWTFactory.createLabel(group, "Application ID:", 1);
     appIdLabel = SWTFactory.createLabel(group, NOT_SET, 1);
@@ -270,25 +246,23 @@ public class GaeSettingsTab extends JavaLaunchTab implements
     setMessage(null);
 
     IJavaProject javaProject = getJavaProject();
-    GaeProject gaeProject =
-        javaProject != null ? GaeProject.create(javaProject.getProject()) : null;
 
-    SWTUtilities.setEnabledRecursive(composite, gaeProject != null);
-
-    if (gaeProject != null) {
-      String appid = gaeProject.getAppId();
-      String version = gaeProject.getAppVersion();
-
-      if (appid != null && appid.length() > 0) {
-        appIdLabel.setText(appid);
-      }
-      if (version != null && version.length() > 0) {
-        appVersionLabel.setText(version);
-      }
-    } else {
-      setMessage(
-          "App Engine is not enabled for this project. You can enable it in the project's properties.");
-    }
+    // TODO ?
+    // SWTUtilities.setEnabledRecursive(composite, gaeProject != null);
+    //
+    // if (gaeProject != null) {
+    // String appid = gaeProject.getAppId();
+    // String version = gaeProject.getAppVersion();
+    //
+    // if (appid != null && appid.length() > 0) {
+    // appIdLabel.setText(appid);
+    // }
+    // if (version != null && version.length() > 0) {
+    // appVersionLabel.setText(version);
+    // }
+    // } else {
+    // setMessage("App Engine is not enabled for this project. You can enable it in the project's properties.");
+    // }
     updateLaunchConfigurationDialog();
   }
 }

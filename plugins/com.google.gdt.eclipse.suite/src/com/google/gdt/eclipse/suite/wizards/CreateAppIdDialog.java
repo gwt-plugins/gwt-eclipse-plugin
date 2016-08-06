@@ -12,10 +12,7 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.wizards;
 
-import com.google.gdt.eclipse.appengine.api.AppengineApiWrapper;
-
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -27,12 +24,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-
-import java.io.IOException;
 
 /**
  * This is the Create App Id dialog. It allows the user to create a new Cloud project app id using
@@ -90,9 +84,7 @@ public class CreateAppIdDialog extends TitleAreaDialog {
     createBtn.addSelectionListener(new SelectionAdapter() {
       @Override
       public void widgetSelected(SelectionEvent e) {
-        if (createAppID()) {
-          okPressed();
-        }
+        okPressed();
       }
     });
     createBtn.setEnabled(false);
@@ -135,22 +127,6 @@ public class CreateAppIdDialog extends TitleAreaDialog {
     appIdLabel.setEnabled(false);
 
     return container;
-  }
-
-  /**
-   * Creates a new Cloud project with the App ID in the "New App Id" text box. If it is successful
-   * the function returns true else an error message is displayed and the function returns false.
-   */
-  private boolean createAppID() {
-    AppengineApiWrapper appEngineApi = new AppengineApiWrapper();
-    try {
-      appEngineApi.insertNewApplication(newAppIdText.getText(), true);
-    } catch (IOException e) {
-      MessageDialog.openError(Display.getDefault().getActiveShell(), "Error creating App Id",
-          e.getMessage());
-      return false;
-    }
-    return true;
   }
 
   /**

@@ -12,12 +12,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.wizards;
 
-import com.google.appengine.eclipse.core.preferences.GaePreferences;
-import com.google.appengine.eclipse.core.preferences.ui.GaePreferencePage;
-import com.google.appengine.eclipse.core.properties.ui.GaeProjectPropertyPage;
-import com.google.appengine.eclipse.core.sdk.GaeSdk;
-import com.google.appengine.eclipse.core.sdk.GaeSdkContainer;
-import com.google.gdt.eclipse.core.browser.BrowserUtilities;
 import com.google.gdt.eclipse.core.sdk.Sdk;
 import com.google.gdt.eclipse.core.sdk.SdkClasspathContainer;
 import com.google.gdt.eclipse.core.ui.SdkSelectionBlock;
@@ -52,11 +46,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
@@ -69,38 +60,6 @@ import java.util.List;
  * Wizard page where the user specifies the parameters for a new GWT project.
  */
 public class NewWebAppProjectWizardPage extends WizardPage {
-
-  /**
-   * Select a {@link GaeSdk} from the set of {@link Sdk} known to the workspace.
-   */
-  private final class GaeWorkspaceSdkSelectionBlock extends SdkSelectionBlock<GaeSdk> {
-    private GaeWorkspaceSdkSelectionBlock(Composite parent, int style) {
-      super(parent, style);
-
-      updateSdkBlockControls();
-      initializeSdkComboBox();
-
-      setSelection(-1);
-    }
-
-    @Override
-    protected void doConfigure() {
-      if (Window.OK == PreferencesUtil.createPreferenceDialogOn(getShell(), GaePreferencePage.ID,
-          new String[] {GaePreferencePage.ID}, null).open()) {
-        NewWebAppProjectWizardPage.this.updateControls();
-      }
-    }
-
-    @Override
-    protected GaeSdk doGetDefaultSdk() {
-      return GaePreferences.getDefaultSdk();
-    }
-
-    @Override
-    protected List<GaeSdk> doGetSpecificSdks() {
-      return new ArrayList<GaeSdk>(GaePreferences.getSdks());
-    }
-  }
 
   /**
    * Select a GWT {@link Sdk} based on the set of {@link Sdk} known to the workspace.
@@ -116,8 +75,9 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
     @Override
     protected void doConfigure() {
-      if (Window.OK == PreferencesUtil.createPreferenceDialogOn(getShell(), GwtPreferencePage.ID,
-          new String[] {GwtPreferencePage.ID}, null).open()) {
+      if (Window.OK == PreferencesUtil
+          .createPreferenceDialogOn(getShell(), GwtPreferencePage.ID, new String[] { GwtPreferencePage.ID }, null)
+          .open()) {
         NewWebAppProjectWizardPage.this.updateControls();
       }
     }
@@ -134,10 +94,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
   }
 
   private final List<String> existingProjectNames = new ArrayList<String>();
-
-  private SdkSelectionBlock<GaeSdk> gaeSelectionBlock;
-
-  private Link gaeHrdLink;
 
   private SdkSelectionBlock<GWTRuntime> gwtSelectionBlock;
 
@@ -156,8 +112,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
   private Text packageText;
 
   private Text projectNameText;
-
-  private Button useGaeCheckbox;
 
   private Button useGwtCheckbox;
 
@@ -242,7 +196,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
     createOtherOptionsGroup(containerOfComponents);
 
-
     scroller.setExpandHorizontal(true);
     scroller.setExpandVertical(true);
     scroller.setContent(containerOfComponents);
@@ -288,18 +241,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     return projectNameText.getText().trim();
   }
 
-  // TODO: Have this return the SDK object
-  public GaeSdk getSelectedGaeSdk() {
-    if (useGaeCheckbox.getSelection()) {
-      SdkSelection<GaeSdk> sdkSelection = gaeSelectionBlock.getSdkSelection();
-      if (sdkSelection != null) {
-        return sdkSelection.getSelectedSdk();
-      }
-    }
-
-    return null;
-  }
-
   public GWTRuntime getSelectedGwtSdk() {
     if (useGwtCheckbox.getSelection()) {
       SdkSelection<GWTRuntime> sdkSelection = gwtSelectionBlock.getSdkSelection();
@@ -315,26 +256,16 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     return !generateSampleCodeCheckbox.getSelection();
   }
 
-  IPath getGaeSdkContainerPath() {
-    return getSdkContainerPath(gaeSelectionBlock.getSdkSelection(), GaeSdkContainer.CONTAINER_ID);
-  }
-
   IPath getGWTSdkContainerPath() {
-    return getSdkContainerPath(gwtSelectionBlock.getSdkSelection(),
-        GWTRuntimeContainer.CONTAINER_ID);
+    return getSdkContainerPath(gwtSelectionBlock.getSdkSelection(), GWTRuntimeContainer.CONTAINER_ID);
   }
 
   IPath getSdkContainerPath(SdkSelection<? extends Sdk> sdkSelection, String containerId) {
     if (sdkSelection != null) {
       return SdkClasspathContainer.computeContainerPath(containerId, sdkSelection.getSelectedSdk(),
-          sdkSelection.isDefault() ? SdkClasspathContainer.Type.DEFAULT
-              : SdkClasspathContainer.Type.NAMED);
+          sdkSelection.isDefault() ? SdkClasspathContainer.Type.DEFAULT : SdkClasspathContainer.Type.NAMED);
     }
     return null;
-  }
-
-  boolean useGae() {
-    return useGaeCheckbox.getSelection();
   }
 
   boolean useGWT() {
@@ -351,53 +282,18 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
   private int convertValidationSeverity(int severity) {
     switch (severity) {
-      case IStatus.ERROR:
-        return ERROR;
-      case IStatus.WARNING:
-        return WARNING;
-      case IStatus.INFO:
-      default:
-        return NONE;
+    case IStatus.ERROR:
+      return ERROR;
+    case IStatus.WARNING:
+      return WARNING;
+    case IStatus.INFO:
+    default:
+      return NONE;
     }
   }
 
-  private void createGaeSdkGroup(Group googleSdkGroup,
-      SelectionListener useSdkCheckboxSelectionListener, int widthIndent) {
-    useGaeCheckbox = new Button(googleSdkGroup, SWT.CHECK);
-    useGaeCheckbox.addSelectionListener(useSdkCheckboxSelectionListener);
-    useGaeCheckbox.setText("Use Google App Engine");
-    useGaeCheckbox.setSelection(true);
-
-    gaeSelectionBlock = new GaeWorkspaceSdkSelectionBlock(googleSdkGroup, SWT.NONE);
-
-    gaeSelectionBlock.addSdkSelectionListener(new SdkSelectionBlock.SdkSelectionListener() {
-      @Override
-      public void onSdkSelection(SdkSelectionEvent e) {
-        updateControls();
-      }
-    });
-    ((GridData) gaeSelectionBlock.getLayoutData()).horizontalIndent = widthIndent;
-
-    gaeHrdLink = new Link(googleSdkGroup, SWT.NONE);
-    GridData layoutData = new GridData(SWT.FILL, SWT.NONE, true, false);
-    layoutData.horizontalIndent = widthIndent;
-    gaeHrdLink.setLayoutData(layoutData);
-    gaeHrdLink.setText("The project will use App Engine's <a href=\""
-        + GaeProjectPropertyPage.APPENGINE_LOCAL_HRD_URL
-        + "\">High Replication Datastore (HRD)</a> by default.");
-    gaeHrdLink.setToolTipText(GaeProjectPropertyPage.APPENGINE_LOCAL_HRD_URL);
-    gaeHrdLink.addListener(SWT.Selection, new Listener() {
-      @Override
-      public void handleEvent(Event ev) {
-        BrowserUtilities.launchBrowserAndHandleExceptions(ev.text);
-      }
-    });
-  }
-
   private void createGoogleSdkGroup(Composite container) {
-    int widthIndent =
-        PixelConverterFactory.createPixelConverter(this.getControl())
-            .convertWidthInCharsToPixels(2);
+    int widthIndent = PixelConverterFactory.createPixelConverter(this.getControl()).convertWidthInCharsToPixels(2);
 
     Group googleSdkGroup = new Group(container, SWT.NONE);
     googleSdkGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -423,12 +319,10 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
     // Add a horizontal spacer
     new Label(googleSdkGroup, SWT.HORIZONTAL);
-
-    createGaeSdkGroup(googleSdkGroup, useSdkCheckboxSelectionListener, widthIndent);
   }
 
-  private void createGwtSdkGroup(Group googleSdkGroup,
-      SelectionListener useSdkCheckboxSelectionListener, int widthIndent) {
+  private void createGwtSdkGroup(Group googleSdkGroup, SelectionListener useSdkCheckboxSelectionListener,
+      int widthIndent) {
     useGwtCheckbox = new Button(googleSdkGroup, SWT.CHECK);
     useGwtCheckbox.addSelectionListener(useSdkCheckboxSelectionListener);
     useGwtCheckbox.setText("Use Google Web Toolkit");
@@ -506,16 +400,15 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     browseAppIdButton.addSelectionListener(new SelectionAdapter() {
       @Override
       public void widgetSelected(SelectionEvent e) {
-//        SelectAppIdDialog dlg = new SelectAppIdDialog(getShell());
-//        if (dlg.open() == Window.OK) {
-//          useAppIdText.setText(dlg.getSelectedAppId());
-//        }
+        // SelectAppIdDialog dlg = new SelectAppIdDialog(getShell());
+        // if (dlg.open() == Window.OK) {
+        // useAppIdText.setText(dlg.getSelectedAppId());
+        // }
       }
     });
 
     Label label = new Label(identifiersGroup, SWT.NONE);
-    label.setText("Your app will be deployed at:\n"
-        + "     -  http://yourappid.appspot.com for regular applications\n"
+    label.setText("Your app will be deployed at:\n" + "     -  http://yourappid.appspot.com for regular applications\n"
         + "     -  http://yourappid.yourdomain.com for domain applications");
     final GridData gd7 = new GridData();
     gd7.horizontalAlignment = GridData.FILL;
@@ -699,8 +592,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     }
 
     gwtSelectionBlock.setEnabled(useGwtCheckbox.getSelection());
-    gaeSelectionBlock.setEnabled(useGaeCheckbox.getSelection());
-    gaeHrdLink.setEnabled(useGaeCheckbox.getSelection());
 
     updateIdentifiersBox();
 
@@ -708,15 +599,18 @@ public class NewWebAppProjectWizardPage extends WizardPage {
   }
 
   private void updateIdentifiersBox() {
-    if (useGaeCheckbox.getSelection()) {
-      enableIdentifierGroup(true);
-      if (noAppIdButton.getSelection()) {
-        useAppIdText.setEnabled(false);
-        browseAppIdButton.setEnabled(false);
-      }
-    } else {
-      enableIdentifierGroup(false);
-    }
+    // TODO ?
+    // if (useGaeCheckbox.getSelection()) {
+    // enableIdentifierGroup(true);
+    // if (noAppIdButton.getSelection()) {
+    // useAppIdText.setEnabled(false);
+    // browseAppIdButton.setEnabled(false);
+    // }
+    // } else {
+    //
+    // }
+
+    enableIdentifierGroup(false);
   }
 
   private boolean validateFromStatus(IStatus status) {
@@ -801,23 +695,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
         return;
       }
 
-      // If we are using GAE then an SDK must be selected
-      if (useGaeCheckbox.getSelection()) {
-        Sdk selectedGaeSdk = getSelectedGaeSdk();
-        if (selectedGaeSdk == null) {
-          setMessage("Please configure an App Engine SDK.", ERROR);
-          return;
-        }
-
-        IStatus gaeSdkValidationStatus = selectedGaeSdk.validate();
-        if (!gaeSdkValidationStatus.isOK()) {
-          setMessage(
-              "The selected App Engine SDK is not valid: " + gaeSdkValidationStatus.getMessage(),
-              ERROR);
-          return;
-        }
-      }
-
       // If we are using GWT then an SDK must be selected
       if (useGwtCheckbox.getSelection()) {
 
@@ -827,17 +704,9 @@ public class NewWebAppProjectWizardPage extends WizardPage {
           setMessage("Please configure a GWT SDK.", ERROR);
           return;
         } else if (!(gwtRuntimeValidationStatus = selectedGwtRuntime.validate()).isOK()) {
-          setMessage(
-              "The selected GWT SDK is not valid: " + gwtRuntimeValidationStatus.getMessage(),
-              ERROR);
+          setMessage("The selected GWT SDK is not valid: " + gwtRuntimeValidationStatus.getMessage(), ERROR);
           return;
         }
-      }
-
-      // Verify that at least one of "Use GWT" or "Use GAE" is checked.
-      if (!useGwtCheckbox.getSelection() && !useGaeCheckbox.getSelection()) {
-        setMessage("Web Application projects require the use of GWT and/or AppEngine.", ERROR);
-        return;
       }
 
       // Check that an App Id is provided if the user selected "Use App Id" or

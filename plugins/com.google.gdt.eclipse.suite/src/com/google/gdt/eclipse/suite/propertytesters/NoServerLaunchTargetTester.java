@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.propertytesters;
 
-import com.google.appengine.eclipse.core.nature.GaeNature;
 import com.google.gdt.eclipse.core.AdapterUtilities;
 import com.google.gdt.eclipse.core.ResourceUtils;
 import com.google.gwt.eclipse.core.nature.GWTNature;
@@ -50,7 +49,6 @@ public class NoServerLaunchTargetTester extends LaunchTargetTester {
   }
 
   private boolean isGaeProjectButNotGwtProject(IResource resource) {
-    return GaeNature.isGaeProject(resource.getProject())
-        && !GWTNature.isGWTProject(resource.getProject());
+    return !GWTNature.isGWTProject(resource.getProject());
   }
 }

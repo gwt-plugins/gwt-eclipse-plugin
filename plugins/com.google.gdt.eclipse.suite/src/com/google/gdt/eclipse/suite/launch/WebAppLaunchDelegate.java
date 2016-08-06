@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.launch;
 
-import com.google.appengine.eclipse.core.properties.GoogleCloudSqlProperties;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.NetworkUtilities;
 import com.google.gdt.eclipse.core.WebAppUtilities;
@@ -56,20 +55,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Launch delegate for webapps.
  */
-@SuppressWarnings({"restriction", "nls"})
+@SuppressWarnings({ "restriction", "nls" })
 public class WebAppLaunchDelegate extends JavaLaunchDelegate {
 
   private static final String ARG_RDBMS_EXTRA_PROPERTIES = "-Drdbms.extra.properties=";
-  private static final String ARG_RDBMS_EXTRA_PROPERTIES_VALUE_FORMAT =
-      "\"oauth2RefreshToken=%s,oauth2AccessToken=%s,oauth2ClientId=%s,oauth2ClientSecret=%s\"";
+  private static final String ARG_RDBMS_EXTRA_PROPERTIES_VALUE_FORMAT = "\"oauth2RefreshToken=%s,oauth2AccessToken=%s,oauth2ClientId=%s,oauth2ClientSecret=%s\"";
 
   /**
-   * Publish any {@link IModule}s that the project has if it is not using a managed war directory
-   * and it is running a server.
+   * Publish any {@link IModule}s that the project has if it is not using a managed war directory and it is running a
+   * server.
    */
-  public static void maybePublishModulesToWarDirectory(ILaunchConfiguration configuration,
-      IProgressMonitor monitor, IJavaProject javaProject, boolean forceFullPublish)
-      throws CoreException {
+  public static void maybePublishModulesToWarDirectory(ILaunchConfiguration configuration, IProgressMonitor monitor,
+      IJavaProject javaProject, boolean forceFullPublish) throws CoreException {
 
     if (javaProject == null) {
       // No Java Project
@@ -94,20 +91,17 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
     IModule[] modules = ServerUtil.getModules(project);
     if (modules.length > 0) {
       Path unmanagedWarPath = new Path(parser.resolvedUnverifiedWarDir);
-      WtpPublisher.publishModulesToWarDirectory(project, modules, unmanagedWarPath,
-          forceFullPublish, monitor);
+      WtpPublisher.publishModulesToWarDirectory(project, modules, unmanagedWarPath, forceFullPublish, monitor);
     }
   }
 
   @Override
-  public boolean buildForLaunch(ILaunchConfiguration configuration, String mode,
-      IProgressMonitor monitor) throws CoreException {
-    ExtensionQuery<IBuildForLaunchCallback> extQuery =
-        new ExtensionQuery<IBuildForLaunchCallback>(GdtPlugin.PLUGIN_ID, "buildForLaunchCallback",
-            "class");
+  public boolean buildForLaunch(ILaunchConfiguration configuration, String mode, IProgressMonitor monitor)
+      throws CoreException {
+    ExtensionQuery<IBuildForLaunchCallback> extQuery = new ExtensionQuery<IBuildForLaunchCallback>(GdtPlugin.PLUGIN_ID,
+        "buildForLaunchCallback", "class");
 
-    List<ExtensionQuery.Data<IBuildForLaunchCallback>> buildBeforeLaunchCallbacks =
-        extQuery.getData();
+    List<ExtensionQuery.Data<IBuildForLaunchCallback>> buildBeforeLaunchCallbacks = extQuery.getData();
     for (ExtensionQuery.Data<IBuildForLaunchCallback> callback : buildBeforeLaunchCallbacks) {
       callback.getExtensionPointData().buildForLaunch(configuration, mode, monitor);
     }
@@ -116,8 +110,8 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
   }
 
   @Override
-  public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch,
-      IProgressMonitor monitor) throws CoreException {
+  public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor)
+      throws CoreException {
     if (!addVmArgs(configuration)) {
       return;
     }
@@ -130,8 +124,7 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
 
     } catch (Throwable t) {
       // Play safely and continue launch
-      GdtPlugin.getLogger().logError(t,
-          "Could not ensure WAR argument existence for the unmanaged WAR project.");
+      GdtPlugin.getLogger().logError(t, "Could not ensure WAR argument existence for the unmanaged WAR project.");
     }
 
     // explicitly ask the user to continue if the port is not available
@@ -143,8 +136,7 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
     List<String> args = null;
     if (launch != null) {
       try {
-        args =
-            LaunchConfigurationProcessorUtilities.parseProgramArgs(launch.getLaunchConfiguration());
+        args = LaunchConfigurationProcessorUtilities.parseProgramArgs(launch.getLaunchConfiguration());
       } catch (CoreException e) {
         GWTPluginLog.logError(e);
       }
@@ -154,9 +146,9 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
     if (args != null && args.contains(RemoteUiArgumentProcessor.ARG_REMOTE_UI)
         && !args.contains(SuperDevModeArgumentProcessor.SUPERDEVMODE_ENABLED_ARG)) {
       /*
-       * Add the launch to the DevMode view. This is tightly coupled because at the time of
-       * ILaunchListener's changed callback, the launch's process does not have a command-line set.
-       * Unfortunately there isn't another listener to solve our needs, so we add this glue here.
+       * Add the launch to the DevMode view. This is tightly coupled because at the time of ILaunchListener's changed
+       * callback, the launch's process does not have a command-line set. Unfortunately there isn't another listener to
+       * solve our needs, so we add this glue here.
        */
       WebAppDebugModel.getInstance().addOrReturnExistingLaunchConfiguration(launch, null, null);
     }
@@ -165,14 +157,12 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
   }
 
   @Override
-  protected File getDefaultWorkingDirectory(ILaunchConfiguration configuration)
-      throws CoreException {
+  protected File getDefaultWorkingDirectory(ILaunchConfiguration configuration) throws CoreException {
 
     IJavaProject javaProject = getJavaProject(configuration);
     if (javaProject != null && WarArgumentProcessor.doesMainTypeTakeWarArgument(configuration)) {
-      WarParser warParser =
-          WarArgumentProcessor.WarParser.parse(
-              LaunchConfigurationProcessorUtilities.parseProgramArgs(configuration), javaProject);
+      WarParser warParser = WarArgumentProcessor.WarParser
+          .parse(LaunchConfigurationProcessorUtilities.parseProgramArgs(configuration), javaProject);
       if (warParser.isWarDirValid || warParser.isSpecifiedWithWarArg) {
         return new File(warParser.resolvedUnverifiedWarDir);
       }
@@ -183,9 +173,9 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
   }
 
   /**
-   * Returns <code>true</code> if there are any problems with a severity level greater than or equal
-   * to error. Note that by default {@link JavaLaunchDelegate} only considers java problems to be
-   * launch problems. However, we want GPE errors to also be considered launch problems.
+   * Returns <code>true</code> if there are any problems with a severity level greater than or equal to error. Note that
+   * by default {@link JavaLaunchDelegate} only considers java problems to be launch problems. However, we want GPE
+   * errors to also be considered launch problems.
    */
   @Override
   protected boolean isLaunchProblem(IMarker problemMarker) throws CoreException {
@@ -198,17 +188,17 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
   }
 
   /**
-   * Check to see if the user wants to launch on a specific port and check if that port is available
-   * for use. If it is not, ask the user if they want to cancel the launch or continue anyway
+   * Check to see if the user wants to launch on a specific port and check if that port is available for use. If it is
+   * not, ask the user if they want to cancel the launch or continue anyway
    *
    * Visible for testing
    *
-   * @param configuration A Launch Configuration
+   * @param configuration
+   *          A Launch Configuration
    * @return true if launch should continue, false if user terminated
    * @throws CoreException
    */
-  boolean promptUserToContinueIfPortNotAvailable(ILaunchConfiguration configuration)
-      throws CoreException {
+  boolean promptUserToContinueIfPortNotAvailable(ILaunchConfiguration configuration) throws CoreException {
 
     // ignore the auto select case
     if (WebAppLaunchConfiguration.getAutoPortSelection(configuration)) {
@@ -223,9 +213,9 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
       Display.getDefault().syncExec(new Runnable() {
         @Override
         public void run() {
-          continueLaunch.set(MessageDialog.openQuestion(null, "Port in Use", "The port " + port
-              + " appears to be in use (perhaps by another launch), "
-              + "do you still want to continue with this launch?"));
+          continueLaunch.set(MessageDialog.openQuestion(null, "Port in Use",
+              "The port " + port + " appears to be in use (perhaps by another launch), "
+                  + "do you still want to continue with this launch?"));
         }
       });
     }
@@ -233,18 +223,15 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
   }
 
   /**
-   * @return Returns {@code}false if unsuccessful in adding the VM arguments and the launch should
-   *         be cancelled.
+   * @return Returns {@code}false if unsuccessful in adding the VM arguments and the launch should be cancelled.
    */
   private boolean addVmArgs(ILaunchConfiguration configuration) throws CoreException {
     IProject project = getJavaProject(configuration).getProject();
-    if (!GoogleCloudSqlProperties.getGoogleCloudSqlEnabled(project)
-        || GoogleCloudSqlProperties.getLocalDevMySqlEnabled(project)) {
-      return true;
-    }
+//    if (!GoogleCloudSqlProperties.getGoogleCloudSqlEnabled(project) || GoogleCloudSqlProperties.getLocalDevMySqlEnabled(project)) {
+//      return true;
+//    }
     ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
-    String vmArgs =
-        configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");
+    String vmArgs = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");
     // The regex is -Drdbms\.extra\.properties="\S+" which matches
     // -Drdbms.extra.properties="<non-whitespace chars>".
     String[] vmArgList = vmArgs.split("-Drdbms\\.extra\\.properties=\"\\S+\"");
@@ -259,35 +246,33 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
     String clientId = null;
     String clientSecret = null;
 
-
-//    // If the user is not logged in, prompt him to log in.
-//    GoogleLogin.promptToLogIn("Please Log in to continue launch");
-//    // Try to get the vm arguments.
-//    try {
-//      refreshToken = GoogleLogin.getInstance().fetchOAuth2RefreshToken();
-//      accessToken = GoogleLogin.getInstance().fetchAccessToken();
-//      clientId = GoogleLogin.getInstance().fetchOAuth2ClientId();
-//      clientSecret = GoogleLogin.getInstance().fetchOAuth2ClientSecret();
-//    } catch (SWTException e) {
-//      // The exception is thrown if the user did not log in when prompted. Just
-//      // show an error message and exit.
-//      Display.getDefault().syncExec(new Runnable() {
-//        public void run() {
-//          MessageDialog.openError(null, "Error in authentication",
-//              "Please sign in with your Google account before launching");
-//        }
-//      });
-//    } catch (IOException e) {
-//      CorePluginLog.logError(e);
-//    }
+    // // If the user is not logged in, prompt him to log in.
+    // GoogleLogin.promptToLogIn("Please Log in to continue launch");
+    // // Try to get the vm arguments.
+    // try {
+    // refreshToken = GoogleLogin.getInstance().fetchOAuth2RefreshToken();
+    // accessToken = GoogleLogin.getInstance().fetchAccessToken();
+    // clientId = GoogleLogin.getInstance().fetchOAuth2ClientId();
+    // clientSecret = GoogleLogin.getInstance().fetchOAuth2ClientSecret();
+    // } catch (SWTException e) {
+    // // The exception is thrown if the user did not log in when prompted. Just
+    // // show an error message and exit.
+    // Display.getDefault().syncExec(new Runnable() {
+    // public void run() {
+    // MessageDialog.openError(null, "Error in authentication",
+    // "Please sign in with your Google account before launching");
+    // }
+    // });
+    // } catch (IOException e) {
+    // CorePluginLog.logError(e);
+    // }
 
     if (refreshToken == null || accessToken == null || clientId == null || clientSecret == null) {
       return false;
     }
 
-    String rdbmsExtraPropertiesValue =
-        String.format(ARG_RDBMS_EXTRA_PROPERTIES_VALUE_FORMAT, refreshToken, accessToken, clientId,
-            clientSecret);
+    String rdbmsExtraPropertiesValue = String.format(ARG_RDBMS_EXTRA_PROPERTIES_VALUE_FORMAT, refreshToken, accessToken,
+        clientId, clientSecret);
     vmArgs += " " + ARG_RDBMS_EXTRA_PROPERTIES + rdbmsExtraPropertiesValue;
     workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArgs);
     ILaunchConfiguration config = workingCopy.doSave();
@@ -305,17 +290,16 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
   }
 
   /**
-   * In the case of a project with an unmanaged WAR directory or when the project is not a web app
-   * but the main type takes a WAR argument, we need to check at launch-time whether the launch
-   * config has a runtime WAR. If it does not, then we ask the user for one and insert it into the
-   * launch config.
+   * In the case of a project with an unmanaged WAR directory or when the project is not a web app but the main type
+   * takes a WAR argument, we need to check at launch-time whether the launch config has a runtime WAR. If it does not,
+   * then we ask the user for one and insert it into the launch config.
    *
-   * @param configuration the launch configuration that may be written to
+   * @param configuration
+   *          the launch configuration that may be written to
    * @return true to continue the launch, false to abort silently
    * @throws CoreException
    */
-  private boolean ensureWarArgumentExistenceInCertainCases(ILaunchConfiguration configuration)
-      throws CoreException {
+  private boolean ensureWarArgumentExistenceInCertainCases(ILaunchConfiguration configuration) throws CoreException {
     IJavaProject javaProject = getJavaProject(configuration);
     if (javaProject != null) {
       IProject project = javaProject.getProject();

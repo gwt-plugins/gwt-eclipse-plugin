@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.propertytesters;
 
-import com.google.appengine.eclipse.core.nature.GaeNature;
 import com.google.gdt.eclipse.core.AdapterUtilities;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.ResourceUtils;
@@ -32,15 +31,15 @@ import org.eclipse.jdt.core.IJavaElement;
 /**
  * A PropertyTester applied to resources to determine if they should have a Web Application launch
  * shortcut applied to them.
- * 
+ *
  * This is the case when a selection is in a project that has the webapp nature and any of the
  * following apply: the selection is the project itself, it's
  * <WAR>/WEB-INF/{web.xml,appengine-web.xml}, it's an html or jsp file somewhere under the war
  * directory, or it's a .gwt.xml file and the containing project has GWT nature.
- * 
+ *
  * For legacy GWT projects, launchable resources include: the project itself, a GWT module (.gwt.xml
  * file), and any .html files.
- * 
+ *
  * FIXME: Unit tests for this. We need a com.google.gdt.eclipse.suite.test plugin first, though.
  */
 public class LaunchTargetTester extends PropertyTester {
@@ -71,8 +70,7 @@ public class LaunchTargetTester extends PropertyTester {
   }
 
   private boolean isGaeOrGwtProject(IResource resource) {
-    return GWTNature.isGWTProject(resource.getProject())
-        || GaeNature.isGaeProject(resource.getProject());
+    return GWTNature.isGWTProject(resource.getProject());
   }
 
   /**
@@ -91,7 +89,7 @@ public class LaunchTargetTester extends PropertyTester {
 
   /**
    * Returns true if the resource is a web.xml or appengine-web.xml in the canonical location.
-   * 
+   *
    * @param resource
    * @return whether the resource is a web.xml or appengine-web.xml file as expected.
    */
@@ -112,7 +110,7 @@ public class LaunchTargetTester extends PropertyTester {
 
   /**
    * If the resource is a .gwt.xml file and we're in a gwt-enabled project, return true.
-   * 
+   *
    * @throws CoreException
    */
   private boolean resourceIsGwtXmlAndInGwt(IResource resource) throws CoreException {
@@ -122,7 +120,7 @@ public class LaunchTargetTester extends PropertyTester {
   /**
    * WAR projects: Is this resource an html or jsp page under the war directory or one of its
    * subdirectories? Legacy GWT projects: Is this resource an html file?
-   * 
+   *
    * @param resource
    * @return whether the resource matches the specified conditions (a servable html/jsp page).
    */
@@ -147,7 +145,7 @@ public class LaunchTargetTester extends PropertyTester {
 
   /**
    * Is this resource a project?
-   * 
+   *
    * @param resource
    * @return true iff the resource is a project.
    */

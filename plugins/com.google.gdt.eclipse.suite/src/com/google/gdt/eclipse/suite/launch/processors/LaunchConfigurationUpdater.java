@@ -14,10 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.launch.processors;
 
-import com.google.appengine.eclipse.core.launch.processors.GoogleCloudSqlArgumentProcessor;
-import com.google.appengine.eclipse.core.launch.processors.HrdArgumentProcessor;
-import com.google.appengine.eclipse.core.launch.processors.JavaAgentArgumentProcessor;
-import com.google.appengine.eclipse.core.launch.processors.XBootclasspathArgumentProcessor;
 import com.google.gdt.eclipse.core.ClasspathUtilities;
 import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import com.google.gdt.eclipse.core.extensions.ExtensionQueryStringAttr;
@@ -81,12 +77,8 @@ public class LaunchConfigurationUpdater {
     PROCESSORS.add(new StartupUrlArgumentProcessor());
     PROCESSORS.add(new RemoteUiArgumentProcessor()); // GWT DevMode
     PROCESSORS.add(new XStartOnFirstThreadArgumentProcessor());
-    PROCESSORS.add(new JavaAgentArgumentProcessor());
-    PROCESSORS.add(new XBootclasspathArgumentProcessor());
     PROCESSORS.add(new DGwtDevJarArgumentProcessor());
     PROCESSORS.add(new XmxArgumentProcessor());
-    PROCESSORS.add(new HrdArgumentProcessor());
-    PROCESSORS.add(new GoogleCloudSqlArgumentProcessor());
     PROCESSORS.add(new SuperDevModeArgumentProcessor()); // GWT DevMode
     PROCESSORS.add(new SuperDevModeCodeServerPortArgumentProcessor()); // GWT CodeServer
     PROCESSORS.add(new SuperDevModeCodeServerLauncherDirArgumentProcessor()); // GWT CodeServer
