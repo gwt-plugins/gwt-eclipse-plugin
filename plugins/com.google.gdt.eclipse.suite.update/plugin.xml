@@ -2,13 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="com.google.gdt.eclipse.suite.ext.updatePing" name="UpdatePing" schema="schema/com.google.gdt.eclipse.suite.ext.updatePing.exsd"/>
-
-   <extension
-         point="com.google.gdt.eclipse.core.deploymentParticipant">
-      <deploymentParticipant
-            class="com.google.gdt.eclipse.suite.update.usage.GaeUsageTrackingDeploymentParticipant">
-      </deploymentParticipant>
-   </extension>
    
    <extension
          point="org.eclipse.jdt.core.compilationParticipant">
@@ -19,6 +12,7 @@
       </compilationParticipant>
    </extension>
    
+   <!-- TODO ?
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
@@ -33,13 +27,6 @@
          </command>
       </menuContribution>
    </extension>
-   <extension
-         point="org.eclipse.ui.commands">
-      <command
-            defaultHandler="com.google.gdt.eclipse.suite.update.importer.ImportGaeDemoAppToolbarHandler"
-            id="com.google.gdt.eclipse.suite.ext.importGaeDemo"
-            name="Import App Engine Sample Apps">
-      </command>
-   </extension>
+   -->
 
 </plugin>
