@@ -49,7 +49,7 @@ public final class WebAppProjectProperties {
   private static final String JARS_EXCLUDED_FROM_WEB_INF_LIB = "jarsExcludedFromWebInfLib";
 
   // File system location of the unmanaged WAR output directory last used by a
-  // launch, GWT compile, or App Engine deploy.
+  // launch, GWT compile
   private static final String LAST_USED_WAR_OUT_LOCATION = "lastWarOutDir";
 
   // Project-relative path to WAR source directory

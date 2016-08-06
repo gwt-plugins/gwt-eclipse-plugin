@@ -26,8 +26,6 @@ import java.util.List;
  */
 public enum GdtProblemCategory {
 
-  APP_ENGINE(2, "App Engine"),
-
   CLIENT_BUNDLE(6, "GWT ClientBundle"),
 
   GWT_RPC(4, "GWT Remote Procedure Calls (RPC)"),
@@ -42,6 +40,7 @@ public enum GdtProblemCategory {
     List<GdtProblemCategory> categories = new ArrayList<GdtProblemCategory>(
         Arrays.asList(GdtProblemCategory.values()));
     Collections.sort(categories, new Comparator<GdtProblemCategory>() {
+      @Override
       public int compare(GdtProblemCategory a, GdtProblemCategory b) {
         return a.getDisplayOrder() - b.getDisplayOrder();
       }

@@ -15,11 +15,9 @@
 package com.google.gdt.eclipse.suite.launch.ui.tabs;
 
 import com.google.gdt.eclipse.core.CorePluginLog;
-import com.google.gdt.eclipse.core.DynamicWebProjectUtilities;
 import com.google.gdt.eclipse.core.launch.UpdateLaunchConfigurationDialogBatcher;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.launch.processors.LaunchConfigurationUpdater;
-import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 
 import org.eclipse.core.resources.IProject;
@@ -211,23 +209,9 @@ public class WebAppMainTab extends JavaMainTab implements UpdateLaunchConfigurat
         return false;
       }
 
-      try {
-        // When WTP configuration is used:
-        // Stop the user using this launcher configuration and tell them to use the WTP Server.
-        // But its ok to use the launcher config when its the GWT SDM CodeServer.
-        if (DynamicWebProjectUtilities.isAppengineDynamicWebProject(project)
-            && !GwtLaunchConfigurationProcessorUtilities.isSuperDevModeCodeServer(launchConfig)) {
-          setErrorMessage("Use \"Run on Server...\" launch shortcut to launch GAE WTP project");
-          return false;
-        }
-      } catch (CoreException e) {
-        GdtPlugin.getLogger().logError(e);
-      }
+      boolean isGwtProject = GWTNature.isGWTProject(project);
 
-      boolean isGwtOrGaeProject;
-      isGwtOrGaeProject = GWTNature.isGWTProject(project);
-
-      if (!isGwtOrGaeProject) {
+      if (!isGwtProject) {
         setErrorMessage("Project does not use GWT or GAE");
         return false;
       }

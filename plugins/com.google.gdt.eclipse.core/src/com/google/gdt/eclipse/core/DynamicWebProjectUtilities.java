@@ -29,7 +29,7 @@ public class DynamicWebProjectUtilities {
   /**
    * Returns the WebContent folder for a Dynamic Web Project, or null if the
    * project does not have a WebContent folder.
-   * 
+   *
    * @return A project-relative path to the WebContent folder
    */
   public static IPath getWebContentFolder(IProject project) {
@@ -43,14 +43,6 @@ public class DynamicWebProjectUtilities {
     }
 
     return null;
-  }
-
-  /**
-   * Returns <code>true</code> if the given project is a App Engine Dynamic Web Project.
-   */
-  public static boolean isAppengineDynamicWebProject(IProject project) throws CoreException {
-    return isDynamicWebProject(project)
-        && FacetedProjectFramework.hasProjectFacet(project, "com.google.appengine.facet", null);
   }
 
   /**

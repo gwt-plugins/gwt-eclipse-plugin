@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Processes the port arguments for App Engine and GWT.
+ * Processes the port arguments for GWT.
  */
 public class PortArgumentProcessor implements ILaunchConfigurationProcessor {
 

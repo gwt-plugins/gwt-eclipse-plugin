@@ -16,9 +16,7 @@ package com.google.gdt.eclipse.suite.launch.ui.tab_groups;
 
 import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import com.google.gdt.eclipse.platform.debug.ui.CommonTab;
-import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.launch.WebAppLaunchUtil;
-import com.google.gdt.eclipse.suite.launch.ui.tabs.GaeSettingsTab;
 import com.google.gdt.eclipse.suite.launch.ui.tabs.WebAppArgumentsTab;
 import com.google.gdt.eclipse.suite.launch.ui.tabs.WebAppMainTab;
 import com.google.gdt.eclipse.suite.launch.ui.tabs.WebAppServerTab;
@@ -69,21 +67,8 @@ public class WebAppTabGroup extends AbstractLaunchConfigurationTabGroup {
       gwtSettingsTab = new GWTSettingsTab(argsTab);
     }
 
-    GaeSettingsTab gaeSettingsTab = null;
-    ExtensionQuery<GaeSettingsTab> extQueryGae = new ExtensionQuery<GaeSettingsTab>(GdtPlugin.PLUGIN_ID,
-        "gaeSettingsTab", "class");
-    List<ExtensionQuery.Data<GaeSettingsTab>> gaeSettingsTabs = extQueryGae.getData();
-    for (ExtensionQuery.Data<GaeSettingsTab> tab : gaeSettingsTabs) {
-      gaeSettingsTab = tab.getExtensionPointData();
-      break;
-    }
-
-    if (gaeSettingsTab == null) {
-      gaeSettingsTab = new GaeSettingsTab();
-    }
-
     ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] { new WebAppMainTab(),
-        new WebAppServerTab(argsTab, true, true), gwtSettingsTab, gaeSettingsTab, argsTab, new JavaJRETab(),
+        new WebAppServerTab(argsTab, true, true), gwtSettingsTab, argsTab, new JavaJRETab(),
         new JavaClasspathTab(), new SourceLookupTab(), new EnvironmentTab(), new CommonTab() };
     setTabs(tabs);
   }

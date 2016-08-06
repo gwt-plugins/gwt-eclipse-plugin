@@ -56,8 +56,7 @@ public class UpdateQueryBuilder {
   public static final String APPS_SCRIPT_IMPORT = "apps_script_import";
 
   /**
-   * Stores count of RPC layers used if Gae Project is App Engine Connected
-   * Android Project.
+   * Stores count of RPC layers
    */
   public static synchronized void incrementRPCLayerCount(IProject project, Boolean initialize) {
     try {
@@ -117,8 +116,7 @@ public class UpdateQueryBuilder {
   private Map<String, String> maxSdkVersions;
 
   /**
-   * Stores count of RPC layers used if Gae Project is App Engine Connected
-   * Android Project.
+   * Stores count of RPC layers
    */
   private String rpcLayerCount;
   /**
@@ -199,8 +197,7 @@ public class UpdateQueryBuilder {
   }
 
   /**
-   * Retrieves count of RPC layers used if Gae Project is App Engine Connected
-   * Android Project.
+   * Retrieves count of RPC layers.
    */
   public synchronized void retrieveRPCLayerCount(IProject project) {
     try {
