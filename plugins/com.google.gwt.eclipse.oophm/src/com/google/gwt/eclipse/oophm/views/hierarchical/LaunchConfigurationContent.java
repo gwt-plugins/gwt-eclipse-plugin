@@ -137,13 +137,13 @@ public class LaunchConfigurationContent extends Composite {
       this.viewer = (TreeViewer) viewer;
 
       if (oldInput != null) {
-        ((LaunchConfiguration) oldInput).getModel().removeWebAppDebugModelListener(
-            launchUrlsChangedListener);
+        ((LaunchConfiguration) oldInput).getModel()
+            .removeWebAppDebugModelListener(launchUrlsChangedListener);
       }
 
       if (newInput != null) {
-        ((LaunchConfiguration) newInput).getModel().addWebAppDebugModelListener(
-            launchUrlsChangedListener);
+        ((LaunchConfiguration) newInput).getModel()
+            .addWebAppDebugModelListener(launchUrlsChangedListener);
         updateLaunchUrlsOrLoadingOnViewer();
       }
     }
@@ -196,10 +196,10 @@ public class LaunchConfigurationContent extends Composite {
   private final TextTransfer textTransferInstance = TextTransfer.getInstance();
   private final LaunchConfiguration launchConfiguration;
   private TreeViewer viewer;
-  private BrowserMenuPopulator browserMenuPopulator = new BrowserMenuPopulator(
-      new BrowserMenuPopulator.DefaultBrowserProvider() {
-        private final String ATTR_PREVIOUS_BROWSER = GWTPlugin.PLUGIN_ID + ".oophm."
-            + LaunchConfigurationContent.class.getSimpleName();
+  private BrowserMenuPopulator browserMenuPopulator =
+      new BrowserMenuPopulator(new BrowserMenuPopulator.DefaultBrowserProvider() {
+        private final String ATTR_PREVIOUS_BROWSER =
+            GWTPlugin.PLUGIN_ID + ".oophm." + LaunchConfigurationContent.class.getSimpleName();
 
         @Override
         public String getDefaultBrowserName() {
@@ -269,7 +269,7 @@ public class LaunchConfigurationContent extends Composite {
     viewer.addDoubleClickListener(new IDoubleClickListener() {
       @Override
       public void doubleClick(DoubleClickEvent event) {
-
+        browserMenuPopulator.openDefaultBrowser(getProject(launchConfiguration), getSelectedUrl());
       }
     });
   }
