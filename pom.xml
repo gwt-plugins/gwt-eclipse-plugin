@@ -18,7 +18,6 @@
     <module>features/com.google.gdt.eclipse.suite.e44.feature</module>
     <module>features/com.google.gwt.eclipse.sdkbundle.feature</module>
     <module>features/com.google.appengine.eclipse.sdkbundle.feature</module>
-    <!-- <module>features/com.google.gdt.eclipse.mobile.android.feature</module> -->
 
     <module>plugins/com.google.appengine.eclipse.core</module>
     <module>plugins/com.google.appengine.eclipse.core.test</module>
