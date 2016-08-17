@@ -51,7 +51,7 @@ public class GWTCompileSettings {
   private static final String CDATA_START = "<![CDATA[";
 
   private static final String ENTRY_POINT_MODULES_TAG = "entry-point-module";
-  
+
   private static final String EXTRA_ARGS_TAG = "extra-args";
 
   private static final String LOG_LEVEL_TAG = "log-level";
@@ -66,7 +66,7 @@ public class GWTCompileSettings {
     if (bytes == null || bytes.length == 0) {
       return null;
     }
-    
+
     ByteArrayInputStream byteInputStream = new ByteArrayInputStream(bytes);
     InputStream stream = new BufferedInputStream(byteInputStream);
 
@@ -121,7 +121,7 @@ public class GWTCompileSettings {
           settings.setVmArgs(getElementText(element));
           continue;
         }
-        
+
         if (nodeName.equalsIgnoreCase(ENTRY_POINT_MODULES_TAG)) {
           settings.entryPointModules.add(getElementText(element));
           continue;
@@ -130,7 +130,7 @@ public class GWTCompileSettings {
     }
 
     settings.initEntryPointModules();
-    
+
     return settings;
   }
 
@@ -182,22 +182,22 @@ public class GWTCompileSettings {
   private String extraArgs = "";
 
   private String logLevel = (String) GWTLaunchAttributes.LOG_LEVEL.getDefaultValue();
-  
+
   private String outputStyle = (String) GWTLaunchAttributes.OUTPUT_STYLE.getDefaultValue();
 
   private final IProject project;
 
-  private String vmArgs = "-Xmx512m";
-  
+  private String vmArgs = "-Xmx1g";
+
   public GWTCompileSettings() {
     this(null);
   }
-  
+
   public GWTCompileSettings(IProject project) {
     this.project = project;
     initEntryPointModules();
   }
-  
+
   @Override
   public boolean equals(Object o) {
 
@@ -279,17 +279,17 @@ public class GWTCompileSettings {
   }
 
   private boolean shouldSaveEntryPointModules() {
-    
+
     if (entryPointModules == null) {
       return false;
     }
-    
+
     // project will be null if we're doing hashCode or equals, or if something
     // went wrong in toXml, in which case we should err on the safe side
     if (project == null) {
       return true;
     }
-    
+
     // don't persist default settings, so check if the settings we have are the
     // same as the defaults from the project
     List<String> defaultModules = GWTProjectProperties.getDefaultEntryPointModules(project);
@@ -303,7 +303,7 @@ public class GWTCompileSettings {
         }
       }
     }
-    
+
     return true;
   }
 
@@ -315,7 +315,7 @@ public class GWTCompileSettings {
     sb.append(createXmlElement(OUTPUT_STYLE_TAG, outputStyle));
     sb.append(createXmlElement(EXTRA_ARGS_TAG, createCDATAElement(extraArgs)));
     sb.append(createXmlElement(VM_ARGS_TAG, createCDATAElement(vmArgs)));
-            
+
     if (shouldSaveEntryPointModules()) {
       for (String moduleName : entryPointModules) {
         sb.append(createXmlElement(ENTRY_POINT_MODULES_TAG, moduleName));
