@@ -82,7 +82,7 @@ public class NewWebAppProjectWizard extends NewElementWizard implements INewWiza
   @Override
   public void init(IWorkbench workbench, IStructuredSelection selection) {
     setHelpAvailable(false);
-    setWindowTitle("New Web Application Project");
+    setWindowTitle("New GWT Application Project");
     setNeedsProgressMonitor(true);
     setDefaultPageImageDescriptor(GdtPlugin.getDefault().getImageDescriptor(GdtImages.GDT_NEW_PROJECT_LARGE));
   }

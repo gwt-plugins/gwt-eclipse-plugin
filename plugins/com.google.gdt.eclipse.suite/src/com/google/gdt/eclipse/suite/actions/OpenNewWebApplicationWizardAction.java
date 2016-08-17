@@ -23,14 +23,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.INewWizard;
 
 /**
- * 
+ *
  */
 @SuppressWarnings("restriction")
 public class OpenNewWebApplicationWizardAction extends AbstractOpenWizardAction {
   public OpenNewWebApplicationWizardAction() {
-    setText("New Web Application Project");
-    setDescription("New Web Application Project");
-    setToolTipText("New Web Application Project");
+    setText("New GWT Application Project");
+    setDescription("New GWT Application Project");
+    setToolTipText("New GWT Application Project");
     // setImageDescriptor(JavaPluginImages.DESC_WIZBAN_NEWJPRJ);
     // PlatformUI.getWorkbench().getHelpSystem().setHelp(this,
     // IJavaHelpContextIds.OPEN_PROJECT_WIZARD_ACTION);

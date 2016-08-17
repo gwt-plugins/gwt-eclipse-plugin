@@ -47,7 +47,7 @@ public class SelectAppIdDialogTest extends TestCase {
 //    // Log in
 //    TestGoogleLogin.logIn();
 //
-//    // Open the "New Web Application Project" wizard and then the
+//    // Open the "New GWT Application Project" wizard and then the
 //    // "Select App Id" dialog
 //    openSelectAppIdDialog();
 //
@@ -77,7 +77,7 @@ public class SelectAppIdDialogTest extends TestCase {
 //    // Log off
 //    TestGoogleLogin.logOut();
 //
-//    // Open the "New Web Application Project" wizard and then the
+//    // Open the "New GWT Application Project" wizard and then the
 //    // "Select App Id" dialog
 //    openSelectAppIdDialog();
 //
@@ -101,18 +101,18 @@ public class SelectAppIdDialogTest extends TestCase {
 //  }
 
   /**
-   * Open the "Select App Id" dialog by first opening the "New Web Application Project" wizard and
+   * Open the "Select App Id" dialog by first opening the "New GWT Application Project" wizard and
    * then selecting "Use App Id" and then clicking its "Browse..." button.
    */
   private void openSelectAppIdDialog() {
     // Open the list of new project wizards
     bot.menu("File").menu("New").menu("Project...").click();
 
-    // Select the "New Web Application Project" wizard
+    // Select the "New GWT Application Project" wizard
     SWTBotTree projectSelectionTree = bot.tree();
     SWTBotTreeItem projectSelectionGoogleTreeItem =
         SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree,
-            SwtBotProjectActions.GOOGLE_MENU_LABELS, "Web Application Project").expand();
+            SwtBotProjectActions.GOOGLE_MENU_LABELS, "GWT Application Project").expand();
     SwtBotTestingUtilities.selectTreeItem(bot, projectSelectionGoogleTreeItem,
         "Web Application Project");
     bot.button("Next >").click();
