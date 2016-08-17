@@ -73,13 +73,6 @@ public interface IWebAppProjectCreator {
       BackingStoreException, IOException;
 
   /**
-   * Set the appId field.
-   *
-   * @param appId
-   */
-  void setAppId(String appId);
-
-  /**
    * Set the isGenerateEmptyProject field.
    *
    * @param generateEmptyProject

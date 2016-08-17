@@ -122,13 +122,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
   private Button generateMavenCodeCheckbox;
   private Button generateAntCodeCheckbox;
 
-  private Button noAppIdButton;
-
-  private Button useAppIdButton;
-
-  private Text useAppIdText;
-
-  private Button browseAppIdButton;
   private Group otherOptionsGroup;
 
   public NewWebAppProjectWizardPage() {
@@ -192,8 +185,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
     createGoogleSdkGroup(containerOfComponents);
 
-    createIdentifiersGroup(containerOfComponents);
-
     createOtherOptionsGroup(containerOfComponents);
 
     scroller.setExpandHorizontal(true);
@@ -203,17 +194,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
     updateControls();
     projectNameText.forceFocus();
-  }
-
-  /**
-   * Returns the App ID.
-   */
-  public String getAppId() {
-    if (noAppIdButton.getSelection()) {
-      return "";
-    } else {
-      return useAppIdText.getText().trim();
-    }
   }
 
   public String getCreationLocation() {
@@ -338,83 +318,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     });
 
     ((GridData) gwtSelectionBlock.getLayoutData()).horizontalIndent = widthIndent;
-  }
-
-  private void createIdentifiersGroup(Composite container) {
-    final Group identifiersGroup = new Group(container, SWT.NULL);
-    final GridData gd3 = new GridData(GridData.FILL_HORIZONTAL);
-    gd3.horizontalSpan = 3;
-    identifiersGroup.setLayoutData(gd3);
-    identifiersGroup.setText("Identifiers for Google App Engine");
-
-    final GridLayout outDirGridLayout = new GridLayout();
-    outDirGridLayout.numColumns = 3;
-    identifiersGroup.setLayout(outDirGridLayout);
-
-    noAppIdButton = new Button(identifiersGroup, SWT.RADIO);
-    noAppIdButton.setText("Leave App Id field blank");
-    noAppIdButton.setSelection(true);
-    final GridData gd51 = new GridData();
-    gd51.horizontalSpan = 3;
-    noAppIdButton.setLayoutData(gd51);
-    noAppIdButton.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-        if (noAppIdButton.getSelection()) {
-          updateControls();
-        }
-      }
-    });
-
-    useAppIdButton = new Button(identifiersGroup, SWT.RADIO);
-    useAppIdButton.setText("Use App Id");
-    useAppIdButton.setSelection(false);
-    final GridData gd5 = new GridData();
-    gd5.horizontalSpan = 1;
-    useAppIdButton.setLayoutData(gd5);
-    useAppIdButton.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-        if (useAppIdButton.getSelection()) {
-          updateControls();
-        }
-      }
-    });
-
-    useAppIdText = new Text(identifiersGroup, SWT.BORDER);
-    final GridData gd61 = new GridData();
-    gd61.horizontalAlignment = GridData.FILL;
-    gd61.grabExcessHorizontalSpace = true;
-    gd61.horizontalSpan = 1;
-    useAppIdText.setLayoutData(gd61);
-    useAppIdText.setEditable(true);
-    useAppIdText.addModifyListener(new ModifyListener() {
-      @Override
-      public void modifyText(ModifyEvent e) {
-        validatePageAndSetCompletionStatus();
-      }
-    });
-
-    browseAppIdButton = new Button(identifiersGroup, SWT.BUTTON1);
-    browseAppIdButton.setText("Browse...");
-    browseAppIdButton.addSelectionListener(new SelectionAdapter() {
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-        // SelectAppIdDialog dlg = new SelectAppIdDialog(getShell());
-        // if (dlg.open() == Window.OK) {
-        // useAppIdText.setText(dlg.getSelectedAppId());
-        // }
-      }
-    });
-
-    Label label = new Label(identifiersGroup, SWT.NONE);
-    label.setText("Your app will be deployed at:\n" + "     -  http://yourappid.appspot.com for regular applications\n"
-        + "     -  http://yourappid.yourdomain.com for domain applications");
-    final GridData gd7 = new GridData();
-    gd7.horizontalAlignment = GridData.FILL;
-    gd7.grabExcessHorizontalSpace = true;
-    gd7.horizontalSpan = 3;
-    label.setLayoutData(gd7);
   }
 
   private void createLocationGroup(Composite container) {
@@ -561,13 +464,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     generateMavenCodeCheckbox.setSelection(false);
   }
 
-  private void enableIdentifierGroup(boolean enable) {
-    noAppIdButton.setEnabled(enable);
-    useAppIdButton.setEnabled(enable);
-    useAppIdText.setEnabled(enable);
-    browseAppIdButton.setEnabled(enable);
-  }
-
   private String getOutputDirectory() {
     return outDirText.getText().trim();
   }
@@ -593,24 +489,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
     gwtSelectionBlock.setEnabled(useGwtCheckbox.getSelection());
 
-    updateIdentifiersBox();
-
     validatePageAndSetCompletionStatus();
-  }
-
-  private void updateIdentifiersBox() {
-    // TODO ?
-    // if (useGaeCheckbox.getSelection()) {
-    // enableIdentifierGroup(true);
-    // if (noAppIdButton.getSelection()) {
-    // useAppIdText.setEnabled(false);
-    // browseAppIdButton.setEnabled(false);
-    // }
-    // } else {
-    //
-    // }
-
-    enableIdentifierGroup(false);
   }
 
   private boolean validateFromStatus(IStatus status) {
@@ -705,14 +584,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
           return;
         } else if (!(gwtRuntimeValidationStatus = selectedGwtRuntime.validate()).isOK()) {
           setMessage("The selected GWT SDK is not valid: " + gwtRuntimeValidationStatus.getMessage(), ERROR);
-          return;
-        }
-      }
-
-      // Check that an App Id is provided if the user selected "Use App Id" or
-      if (useAppIdButton.getSelection()) {
-        if (useAppIdText.getText().isEmpty()) {
-          setMessage("Enter an App Id");
           return;
         }
       }

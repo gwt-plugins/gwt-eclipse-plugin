@@ -45,10 +45,7 @@ import java.net.URI;
  * TODO: The progress monitors are not being used correctly.
  */
 @SuppressWarnings("restriction")
-public class NewWebAppProjectWizard extends NewElementWizard
-    implements INewWizard {
-
-  private IPath gaeSdkContainerPath;
+public class NewWebAppProjectWizard extends NewElementWizard implements INewWizard {
 
   private IPath gwtSdkContainerPath;
 
@@ -59,8 +56,6 @@ public class NewWebAppProjectWizard extends NewElementWizard
   private String packageName;
 
   private String projectName;
-
-  private String appId;
 
   private boolean useGWT;
 
@@ -89,13 +84,12 @@ public class NewWebAppProjectWizard extends NewElementWizard
     setHelpAvailable(false);
     setWindowTitle("New Web Application Project");
     setNeedsProgressMonitor(true);
-    setDefaultPageImageDescriptor(GdtPlugin.getDefault()
-        .getImageDescriptor(GdtImages.GDT_NEW_PROJECT_LARGE));
+    setDefaultPageImageDescriptor(GdtPlugin.getDefault().getImageDescriptor(GdtImages.GDT_NEW_PROJECT_LARGE));
   }
 
   /**
-   * We initialize these members here so that finishPage can access them without
-   * triggering a SWT InvalidThreadAccessException.
+   * We initialize these members here so that finishPage can access them without triggering a SWT
+   * InvalidThreadAccessException.
    */
   @Override
   public boolean performFinish() {
@@ -105,20 +99,16 @@ public class NewWebAppProjectWizard extends NewElementWizard
     packageName = newProjectWizardPage.getPackage();
     locationURI = newProjectWizardPage.getCreationLocationURI();
     isGenerateEmptyProject = newProjectWizardPage.isGenerateEmptyProject();
-    appId = newProjectWizardPage.getAppId();
     buildAnt = newProjectWizardPage.getBuildAnt();
     buildMaven = newProjectWizardPage.getBuildMaven();
 
     /**
-     * HACK: We need to make sure that the DebugUITools plugin (and the
-     * DebugUIPlugin plugin) is loaded via the main thread. before we call
-     * super.performFinish(). Otherwise, a race condition in Eclipse 3.5 occurs
-     * where LaunchConfigurationManager.loadLaunchGroups() is called from two
-     * threads. The first call comes from our query for launch groups in
-     * WebAppProjectCreator.createLaunchConfiguration() (which is part of a
-     * ModalContext runnable). The second comes about due to the initialization
-     * of the DebugUIPlugin plugin (which we cause, by accessing classes in this
-     * plugin through the DebugUITools plugin).
+     * HACK: We need to make sure that the DebugUITools plugin (and the DebugUIPlugin plugin) is loaded via the main
+     * thread. before we call super.performFinish(). Otherwise, a race condition in Eclipse 3.5 occurs where
+     * LaunchConfigurationManager.loadLaunchGroups() is called from two threads. The first call comes from our query for
+     * launch groups in WebAppProjectCreator.createLaunchConfiguration() (which is part of a ModalContext runnable). The
+     * second comes about due to the initialization of the DebugUIPlugin plugin (which we cause, by accessing classes in
+     * this plugin through the DebugUITools plugin).
      */
     DebugUITools.getLaunchGroups();
 
@@ -131,11 +121,9 @@ public class NewWebAppProjectWizard extends NewElementWizard
   }
 
   @Override
-  protected void finishPage(IProgressMonitor monitor)
-      throws InterruptedException, CoreException {
+  protected void finishPage(IProgressMonitor monitor) throws InterruptedException, CoreException {
     try {
       IWebAppProjectCreator wapc = ProjectUtilities.createWebAppProjectCreator();
-      wapc.setAppId(appId);
       wapc.setProjectName(projectName);
       wapc.setPackageName(packageName);
       wapc.setLocationURI(locationURI);
@@ -151,23 +139,17 @@ public class NewWebAppProjectWizard extends NewElementWizard
       wapc.create(monitor);
 
     } catch (MalformedURLException e) {
-      throw new CoreException(new Status(
-          IStatus.ERROR, GdtPlugin.PLUGIN_ID, e.getMessage(), e));
+      throw new CoreException(new Status(IStatus.ERROR, GdtPlugin.PLUGIN_ID, e.getMessage(), e));
     } catch (UnsupportedEncodingException e) {
-      throw new CoreException(new Status(
-          IStatus.ERROR, GdtPlugin.PLUGIN_ID, e.getMessage(), e));
+      throw new CoreException(new Status(IStatus.ERROR, GdtPlugin.PLUGIN_ID, e.getMessage(), e));
     } catch (SdkException e) {
-      throw new CoreException(new Status(
-          IStatus.ERROR, GdtPlugin.PLUGIN_ID, e.getMessage(), e));
+      throw new CoreException(new Status(IStatus.ERROR, GdtPlugin.PLUGIN_ID, e.getMessage(), e));
     } catch (ClassNotFoundException e) {
-      throw new CoreException(new Status(
-          IStatus.ERROR, GdtPlugin.PLUGIN_ID, e.getMessage(), e));
+      throw new CoreException(new Status(IStatus.ERROR, GdtPlugin.PLUGIN_ID, e.getMessage(), e));
     } catch (IOException e) {
-      throw new CoreException(new Status(
-          IStatus.ERROR, GdtPlugin.PLUGIN_ID, e.getMessage(), e));
+      throw new CoreException(new Status(IStatus.ERROR, GdtPlugin.PLUGIN_ID, e.getMessage(), e));
     } catch (BackingStoreException e) {
-      throw new CoreException(new Status(
-          IStatus.ERROR, GdtPlugin.PLUGIN_ID, e.getMessage(), e));
+      throw new CoreException(new Status(IStatus.ERROR, GdtPlugin.PLUGIN_ID, e.getMessage(), e));
     }
   }
 }

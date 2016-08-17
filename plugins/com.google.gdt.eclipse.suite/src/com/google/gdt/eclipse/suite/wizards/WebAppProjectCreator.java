@@ -457,11 +457,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
   }
 
   @Override
-  public void setAppId(String appId) {
-    this.appId = appId;
-  }
-
-  @Override
   public void setBuildAnt(boolean buildAnt) {
     this.buildAnt = buildAnt;
     if (buildAnt) {
