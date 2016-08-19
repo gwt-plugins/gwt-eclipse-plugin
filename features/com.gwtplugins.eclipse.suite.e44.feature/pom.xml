@@ -4,12 +4,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.google.eclipse.gpe</groupId>
+    <groupId>com.gwtplugins.eclipse</groupId>
     <artifactId>trunk</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <relativePath>../../</relativePath>
   </parent>
-  <groupId>com.google.eclipse.gpe</groupId>
+  <groupId>com.gwtplugins.eclipse</groupId>
   <artifactId>com.gwtplugins.eclipse.suite.e44.feature</artifactId>
   <version>0.0.0-SNAPSHOT</version>
   <packaging>eclipse-feature</packaging>

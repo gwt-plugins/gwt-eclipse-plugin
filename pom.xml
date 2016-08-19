@@ -2,7 +2,8 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
   xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.google.eclipse.gpe</groupId>
+  
+  <groupId>com.gwtplugins.eclipse</groupId>
   <artifactId>trunk</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -46,36 +47,36 @@
     <module>features/com.gwtplugins.eclipse.sdkbundle.feature</module>
 
     <!-- Core Plugins -->
-    <module>plugins/com.google.gdt.eclipse.apiclientlib</module>
-    <module>plugins/com.google.gdt.eclipse.core</module>
-    <module>plugins/com.google.gdt.eclipse.core.test</module>
-    <module>plugins/com.google.gdt.eclipse.maven</module>
-    <module>plugins/com.google.gdt.eclipse.platform</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.apiclientlib</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.core</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.core.test</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.maven</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.platform</module>
 
     <!-- Run the Eclipse Application from the suite -->
-    <module>plugins/com.google.gdt.eclipse.suite</module>
-    <module>plugins/com.google.gdt.eclipse.suite.test</module>
-    <module>plugins/com.google.gdt.eclipse.suite.test.swtbot</module>
-    <module>plugins/com.google.gdt.eclipse.suite.update</module>
-    <module>plugins/com.google.gdt.eclipse.swtbot</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.suite</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.suite.test</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.suite.test.swtbot</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.suite.update</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.swtbot</module>
 
     <!-- GWT -->
-    <module>plugins/com.google.gwt.eclipse.core</module>
-    <module>plugins/com.google.gwt.eclipse.core.test</module>
-    <module>plugins/com.google.gwt.eclipse.core.test.swtbot</module>
-    <module>plugins/com.google.gwt.eclipse.libs</module>
-    <module>plugins/com.google.gwt.eclipse.oophm</module>
-    <module>plugins/com.google.gwt.eclipse.oophm.test</module>
-    <module>plugins/com.google.gwt.eclipse.testing</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.core</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.core.test</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.core.test.swtbot</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.libs</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.oophm</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.oophm.test</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.testing</module>
 
     <!-- GWT Facet -->
-    <module>plugins/com.google.gwt.eclipse.wtp</module>
-    <module>plugins/com.google.gwt.eclipse.wtp.maven</module>
-    <module>plugins/com.google.gwt.eclipse.wtp.test</module>
-    <module>plugins/com.google.gwt.eclipse.wtp.maven.test</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.wtp</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.wtp.maven</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.wtp.test</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.wtp.maven.test</module>
 
     <!-- SDK Bundles -->
-    <module>plugins/com.google.gwt.eclipse.sdkbundle</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle</module>
   </modules>
 
   <repositories>

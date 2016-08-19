@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="com.gwtplugins.eclipse.sdkbundle.feature"
+      id="com.gwtplugins.eclipse.sdkbundle.e45.feature"
       label="%featureName"
       version="0.0.0.qualifier"
       provider-name="%providerName">

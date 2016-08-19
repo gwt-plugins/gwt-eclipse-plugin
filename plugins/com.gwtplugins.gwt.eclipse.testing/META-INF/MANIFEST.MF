@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: com.google.gwt.eclipse.testing.GwtTestingPlugin
+Bundle-ManifestVersion: 2
+Bundle-Name: GWT Testing Plug-in
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.testing;singleton:=true
+Bundle-Vendor: Google, Inc.
+Bundle-Version: 0.0.0.qualifier
+Export-Package: com.google.gwt.eclipse.testing
+Require-Bundle: com.gwtplugins.gcp.eclipse.testing,
+ com.gwtplugins.gdt.eclipse.core,
+ com.gwtplugins.gdt.eclipse.suite,
+ com.gwtplugins.gwt.eclipse.core,
+ org.eclipse.core.filesystem,
+ org.eclipse.core.runtime,
+ org.eclipse.debug.ui,
+ org.eclipse.jdt.core,
+ org.eclipse.m2e.core,
+ org.junit,
+ org.eclipse.wst.common.project.facet.core,
+ com.gwtplugins.gwt.eclipse.wtp

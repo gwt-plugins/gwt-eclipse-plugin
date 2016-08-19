@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: com.google.gdt.eclipse.suite.update.GdtExtPlugin
+Bundle-ClassPath: .
+Bundle-ManifestVersion: 2
+Bundle-Name: Google Suite Plugin
+Bundle-SymbolicName: com.gwtplugins.gdt.eclipse.suite.update;singleton:=true
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Google, Inc.
+Bundle-Version: 0.0.0.qualifier
+Export-Package: com.google.gdt.eclipse.suite.update,
+ com.google.gdt.eclipse.suite.update.builders,
+ com.google.gdt.eclipse.suite.update.ui,
+ com.google.gdt.eclipse.suite.update.usage
+Require-Bundle: 
+ com.gwtplugins.gdt.eclipse.apiclientlib,
+ com.gwtplugins.gdt.eclipse.core,
+ com.gwtplugins.gdt.eclipse.platform,
+ com.gwtplugins.gdt.eclipse.suite,
+ com.gwtplugins.gwt.eclipse.core,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
+ org.eclipse.mylyn.commons.ui,
+ org.eclipse.ui,
+ org.eclipse.ui.ide,
+ org.eclipse.update.configurator

@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.google.eclipse.gpe</groupId>
+    <groupId>com.gwtplugins.eclipse</groupId>
     <artifactId>trunk</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <relativePath>../</relativePath>
