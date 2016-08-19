@@ -7,6 +7,34 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
+  <properties>
+    <tycho.version>0.25.0</tycho.version>
+    <tycho-extras.version>0.25.0</tycho-extras.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- These constants are currently set up to build against Eclipse Mars. -->
+    <eclipse.target>mars</eclipse.target>
+    <jettyMinVersion>8.1</jettyMinVersion>
+    <jettyMaxVersion>8.2</jettyMaxVersion>
+
+    <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
+    <!-- <adt-repo.url>http://dl-ssl.google.com/android/eclipse/</adt-repo.url> -->
+    <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
+    <swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/latest/</swtbot-repo.url>
+
+    <!-- TODO maybe add release version to url -->
+    <comparator.repo>http://storage.googleapis.com/gwt-eclipse-plugin/release</comparator.repo>
+
+    <!-- OS-specific JVM flags, empty for the default case but redefined below -->
+    <os-jvm-flags />
+
+    <!-- Used In: GwtRuntimeTestUtilities.java -->
+    <gwt.version>2.7.0</gwt.version>
+
+    <!-- Don't kill the test early -->
+    <surefire.timeout>120000</surefire.timeout>
+  </properties>
+
   <modules>
     <!-- GWT_HOME and GAE_HOME SDKs downloaded here -->
     <module>resources</module>
@@ -14,39 +42,13 @@
     <module>repo</module>
 
     <!-- Features located in ./repo/category.xml -->
-    <module>features/com.google.appengine.eclipse.wtp.maven.feature</module>
-    <module>features/com.google.gdt.eclipse.suite.e44.feature</module>
-    <module>features/com.google.gwt.eclipse.sdkbundle.feature</module>
-    <module>features/com.google.appengine.eclipse.sdkbundle.feature</module>
+    <module>features/com.gwtplugins.eclipse.suite.e44.feature</module>
+    <module>features/com.gwtplugins.eclipse.sdkbundle.feature</module>
 
-    <module>plugins/com.google.appengine.eclipse.core</module>
-    <module>plugins/com.google.appengine.eclipse.core.test</module>
-    <module>plugins/com.google.appengine.eclipse.core.test.swtbot</module>
-    <module>plugins/com.google.appengine.eclipse.datatools</module>
-    <module>plugins/com.google.appengine.eclipse.dependencies</module>
-    <module>plugins/com.google.appengine.eclipse.webtools</module>
-    <module>plugins/com.google.appengine.eclipse.webtools.test</module>
-    <module>plugins/com.google.appengine.eclipse.wtp</module>
-    <module>plugins/com.google.appengine.eclipse.wtp.jpa</module>
-    <module>plugins/com.google.appengine.eclipse.wtp.jpa.e43</module>
-    <module>plugins/com.google.appengine.eclipse.wtp.maven</module>
-    <module>plugins/com.google.appengine.eclipse.wtp.swarm</module>
-    <module>plugins/com.google.cloudsdk.eclipse.wtp</module>
-    <module>plugins/com.google.cloudsdk.eclipse.wtp.test</module>
-    <module>plugins/com.google.gcp.eclipse.testing</module>
+    <!-- Core Plugins -->
     <module>plugins/com.google.gdt.eclipse.apiclientlib</module>
-    <module>plugins/com.google.gdt.eclipse.appengine.api</module>
-    <module>plugins/com.google.gdt.eclipse.appengine.api.test</module>
-    <module>plugins/com.google.gdt.eclipse.appengine.swarm</module>
-    <module>plugins/com.google.gdt.eclipse.appengine.swarm_backend</module>
-    <module>plugins/com.google.gdt.eclipse.appengine.swarm_backend.test.swtbot</module>
-    <module>plugins/com.google.gdt.eclipse.appengine.swarm.test.swtbot</module>
     <module>plugins/com.google.gdt.eclipse.core</module>
     <module>plugins/com.google.gdt.eclipse.core.test</module>
-    <module>plugins/com.google.gdt.eclipse.login</module>
-    <module>plugins/com.google.gdt.eclipse.login.test.swtbot</module>
-    <module>plugins/com.google.gdt.eclipse.managedapis</module>
-    <module>plugins/com.google.gdt.eclipse.managedapis.test</module>
     <module>plugins/com.google.gdt.eclipse.maven</module>
     <module>plugins/com.google.gdt.eclipse.platform</module>
 
@@ -74,43 +76,7 @@
 
     <!-- SDK Bundles -->
     <module>plugins/com.google.gwt.eclipse.sdkbundle</module>
-    <module>plugins/com.google.appengine.eclipse.sdkbundle</module>
-
   </modules>
-
-  <properties>
-    <tycho.version>0.22.0</tycho.version>
-    <tycho-extras.version>0.22.0</tycho-extras.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-    <!-- These constants are currently set up to build against Eclipse Luna. -->
-    <eclipse.target>luna</eclipse.target>
-    <jettyMinVersion>8.1</jettyMinVersion>
-    <jettyMaxVersion>8.2</jettyMaxVersion>
-
-    <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
-    <!-- <adt-repo.url>http://dl-ssl.google.com/android/eclipse/</adt-repo.url> -->
-    <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
-    <swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/latest/</swtbot-repo.url>
-
-    <!-- <comparator.repo>https://dl.google.com/eclipse/plugin/4.4</comparator.repo> TODO GPE remove later -->
-    <!-- TODO maybe add release version to url -->
-    <comparator.repo>http://storage.googleapis.com/gwt-eclipse-plugin/release</comparator.repo>
-
-    <!-- OS-specific JVM flags, empty for the default case but redefined below -->
-    <os-jvm-flags />
-
-    <!-- Development build resources -->
-    <!-- Used In: GaeProjectTestUtil.java -->
-    <!-- Used In: App Engine SDK bundle. TODO pass along the variable in the SDK bundle -->
-    <!-- Check SdkBundleRegistratnt.properties -->
-    <appengine.version>1.9.30</appengine.version>
-    <!-- Used In: GwtRuntimeTestUtilities.java -->
-    <gwt.version>2.7.0</gwt.version>
-
-    <!-- Don't kill the test early -->
-    <surefire.timeout>120000</surefire.timeout>
-  </properties>
 
   <repositories>
     <repository>

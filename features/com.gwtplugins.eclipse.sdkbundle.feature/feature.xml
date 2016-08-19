@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="com.google.gwt.eclipse.sdkbundle.feature"
+      id="com.gwtplugins.eclipse.sdkbundle.feature"
       label="%featureName"
       version="0.0.0.qualifier"
       provider-name="%providerName">
@@ -10,7 +10,7 @@
    </description>
 
    <copyright>
-      Copyright 2015
+      Copyright 2015 to 2017
    </copyright>
 
    <license>
@@ -18,7 +18,7 @@
    </license>
 
    <url>
-      <update label="GWT Plugin for Eclipse Update Site" url="@FEATURE_UPDATE_SITE_URL@" />
+      <update label="GWT Plugin for Eclipse Update Site" url="http://storage.googleapis.com/gwt-eclipse-plugin/v2/release"/>
    </url>
 
    <plugin
@@ -27,5 +27,5 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
 </feature>
