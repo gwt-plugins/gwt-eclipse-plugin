@@ -68,27 +68,25 @@ import java.util.List;
 public class WebappProjectPropertyPage extends AbstractProjectPropertyPage {
 
   /**
-   * Interface to be used by extensions that determine whether this project is
-   * eligible to be a Web Application.
+   * Interface to be used by extensions that determine whether this project is eligible to be a Web Application.
    */
   public interface WebAppProjectEnablementFinder {
     boolean isWebAppEnabled(IProject project);
   }
 
   /**
-   * Interface to be used by extension to dermine if the "launch and deploy from
-   * this directory" option should be enabled.
+   * Interface to be used by extension to dermine if the "launch and deploy from this directory" option should be
+   * enabled.
    */
   public interface ManagedWarOptionEnablementFinder {
     /**
-     * @return null to indicate that the option should be enabled, or a string
-     * indicating why it's disabled to disable it.
+     * @return null to indicate that the option should be enabled, or a string indicating why it's disabled to disable
+     *         it.
      */
     String isManagedWarOptionEnabled(IProject project);
   }
-  
-  private static class ExcludedJarLabelProvider extends LabelProvider
-      implements ITableLabelProvider {
+
+  private static class ExcludedJarLabelProvider extends LabelProvider implements ITableLabelProvider {
 
     private final Image elementImage;
 
@@ -97,6 +95,7 @@ public class WebappProjectPropertyPage extends AbstractProjectPropertyPage {
       elementImage = registry.get(JavaPluginImages.DESC_OBJS_JAR);
     }
 
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
       if (columnIndex == 0) {
         return elementImage;
@@ -104,6 +103,7 @@ public class WebappProjectPropertyPage extends AbstractProjectPropertyPage {
       return null;
     }
 
+    @Override
     public String getColumnText(Object element, int columnIndex) {
       IPath path = (IPath) element;
       if (columnIndex == 0) {
@@ -115,21 +115,25 @@ public class WebappProjectPropertyPage extends AbstractProjectPropertyPage {
 
   private class ExcludedJarSelectionAdapter implements IListAdapter {
 
+    @Override
     public void customButtonPressed(ListDialogField field, int index) {
       if (index == IDX_ADD) {
         addEntry();
       }
     }
 
+    @Override
     public void doubleClicked(ListDialogField field) {
     }
 
+    @Override
     public void selectionChanged(ListDialogField field) {
     }
   }
 
   private class WarDirEventHandler extends SelectionAdapter implements ModifyListener {
 
+    @Override
     public void modifyText(ModifyEvent e) {
       fieldChanged();
     }
@@ -186,13 +190,11 @@ public class WebappProjectPropertyPage extends AbstractProjectPropertyPage {
     createExcludedJarsComponent(panel);
 
     boolean initializeAndEnable = true;
-    ExtensionQuery<WebappProjectPropertyPage.WebAppProjectEnablementFinder> extQuery =
-        new ExtensionQuery<WebappProjectPropertyPage.WebAppProjectEnablementFinder>(
-            CorePlugin.PLUGIN_ID, "webApplicationEnablementFinder", "class");
-    List<ExtensionQuery.Data<WebappProjectPropertyPage.WebAppProjectEnablementFinder>>
-        enablementFinders = extQuery.getData();
-    for (ExtensionQuery.Data<WebappProjectPropertyPage.WebAppProjectEnablementFinder>
-        enablementFinder : enablementFinders) {
+    ExtensionQuery<WebappProjectPropertyPage.WebAppProjectEnablementFinder> extQuery = new ExtensionQuery<WebappProjectPropertyPage.WebAppProjectEnablementFinder>(
+        CorePlugin.PLUGIN_ID, "webApplicationEnablementFinder", "class");
+    List<ExtensionQuery.Data<WebappProjectPropertyPage.WebAppProjectEnablementFinder>> enablementFinders = extQuery
+        .getData();
+    for (ExtensionQuery.Data<WebappProjectPropertyPage.WebAppProjectEnablementFinder> enablementFinder : enablementFinders) {
       initializeAndEnable = enablementFinder.getExtensionPointData().isWebAppEnabled(getProject());
     }
     if (!initializeAndEnable) {
@@ -225,8 +227,8 @@ public class WebappProjectPropertyPage extends AbstractProjectPropertyPage {
 
   @SuppressWarnings("unchecked")
   private void addEntry() {
-    BuildpathJarSelectionDialog dialog = new BuildpathJarSelectionDialog(
-        getShell(), JavaCore.create(getProject()), excludedJarsField.getElements());
+    BuildpathJarSelectionDialog dialog = new BuildpathJarSelectionDialog(getShell(), JavaCore.create(getProject()),
+        excludedJarsField.getElements());
     if (dialog.open() == Window.OK) {
       excludedJarsField.addElements(dialog.getJars());
     }
@@ -244,14 +246,8 @@ public class WebappProjectPropertyPage extends AbstractProjectPropertyPage {
     IProject project = getProject();
     IResource warDirRes = project.findMember(warDir);
 
-    ResourceTreeSelectionDialog dialog = new ResourceTreeSelectionDialog(getShell(),
-        WAR_DIR_SELECTION_DIALOG_TITLE,
-        WAR_DIR_SELECTION_DIALOG_MESSAGE,
-        project,
-        warDirRes,
-        IResource.FOLDER,
-        IResource.FOLDER,
-        false);
+    ResourceTreeSelectionDialog dialog = new ResourceTreeSelectionDialog(getShell(), WAR_DIR_SELECTION_DIALOG_TITLE,
+        WAR_DIR_SELECTION_DIALOG_MESSAGE, project, warDirRes, IResource.FOLDER, IResource.FOLDER, false);
     List<IPath> paths = dialog.chooseResourcePaths();
     if (paths != null) {
       assert (paths.size() == 1);
@@ -275,20 +271,17 @@ public class WebappProjectPropertyPage extends AbstractProjectPropertyPage {
     label.setLayoutData(labelGridData);
     label.setText("Suppress warnings about these build path entries being outside of WEB-INF/lib:");
 
-    String[] buttons = new String[] {"Add...", null, "Remove"};
-    excludedJarsField = new ListDialogField(
-        new ExcludedJarSelectionAdapter(), buttons, new ExcludedJarLabelProvider());
+    String[] buttons = new String[] { "Add...", null, "Remove" };
+    excludedJarsField = new ListDialogField(new ExcludedJarSelectionAdapter(), buttons, new ExcludedJarLabelProvider());
 
-    ColumnLayoutData[] columns = new ColumnLayoutData[] {
-        new ColumnWeightData(1, 100, true), new ColumnWeightData(2, 100, true)};
-    String[] columnHeaderNames = {"JAR file", "Location"};
-    excludedJarsField.setTableColumns(
-        new ListDialogField.ColumnsDescription(columns, columnHeaderNames, false));
+    ColumnLayoutData[] columns = new ColumnLayoutData[] { new ColumnWeightData(1, 100, true),
+        new ColumnWeightData(2, 100, true) };
+    String[] columnHeaderNames = { "JAR file", "Location" };
+    excludedJarsField.setTableColumns(new ListDialogField.ColumnsDescription(columns, columnHeaderNames, false));
     excludedJarsField.setRemoveButtonIndex(IDX_REMOVE);
     excludedJarsField.doFillIntoGrid(excludedJarsComponent, 3);
 
-    GridData layoutData =
-        (GridData) excludedJarsField.getListControl(excludedJarsComponent).getLayoutData();
+    GridData layoutData = (GridData) excludedJarsField.getListControl(excludedJarsComponent).getLayoutData();
     layoutData.grabExcessHorizontalSpace = true;
     layoutData.grabExcessVerticalSpace = true;
     excludedJarsField.getListControl(excludedJarsComponent).setLayoutData(layoutData);
@@ -327,25 +320,21 @@ public class WebappProjectPropertyPage extends AbstractProjectPropertyPage {
     isWarSrcDirOutputButtonGridData.horizontalSpan = numColumns;
     isWarSrcDirOutputButton.setLayoutData(isWarSrcDirOutputButtonGridData);
     isWarSrcDirOutputButton.setText("Launch and deploy from this directory");
-    
+
     String enableString = null;
-    ExtensionQuery<ManagedWarOptionEnablementFinder> extQuery =
-        new ExtensionQuery<ManagedWarOptionEnablementFinder>(
-            CorePlugin.PLUGIN_ID, "managedWarOptionEnablementFinder", "class");
-    List<ExtensionQuery.Data<ManagedWarOptionEnablementFinder>>
-        enablementFinders = extQuery.getData();
-    for (ExtensionQuery.Data<ManagedWarOptionEnablementFinder>
-        enablementFinder : enablementFinders) {
+    ExtensionQuery<ManagedWarOptionEnablementFinder> extQuery = new ExtensionQuery<ManagedWarOptionEnablementFinder>(
+        CorePlugin.PLUGIN_ID, "managedWarOptionEnablementFinder", "class");
+    List<ExtensionQuery.Data<ManagedWarOptionEnablementFinder>> enablementFinders = extQuery.getData();
+    for (ExtensionQuery.Data<ManagedWarOptionEnablementFinder> enablementFinder : enablementFinders) {
       enableString = enablementFinder.getExtensionPointData().isManagedWarOptionEnabled(getProject());
       if (enableString != null) {
         break; // take the first "disable" response
       }
     }
-    
+
     if (enableString != null) {
       isWarSrcDirOutputButton.setEnabled(false);
-      isWarSrcDirOutputButton.setText(isWarSrcDirOutputButton.getText() + 
-        " (" + enableString + ")");
+      isWarSrcDirOutputButton.setText(isWarSrcDirOutputButton.getText() + " (" + enableString + ")");
     }
   }
 
@@ -390,8 +379,7 @@ public class WebappProjectPropertyPage extends AbstractProjectPropertyPage {
   private void updateControls() {
     boolean enableWarDirComponent = hasWarDirButton.getSelection();
     SWTUtilities.setEnabledRecursive(warDirComponent, enableWarDirComponent);
-    boolean enableExcludedJarsComponent =
-        (enableWarDirComponent && isWarSrcDirOutputButton.getSelection());
+    boolean enableExcludedJarsComponent = (enableWarDirComponent && isWarSrcDirOutputButton.getSelection());
     SWTUtilities.setEnabledRecursive(excludedJarsComponent, enableExcludedJarsComponent);
   }
 
@@ -418,8 +406,8 @@ public class WebappProjectPropertyPage extends AbstractProjectPropertyPage {
     IProject project = getProject();
 
     if (!(project.findMember(path) instanceof IFolder)) {
-      return StatusUtilities.newErrorStatus(
-          "The folder ''{0}/{1}'' does not exist", CorePlugin.PLUGIN_ID, project.getName(), path);
+      return StatusUtilities.newErrorStatus("The folder ''{0}/{1}'' does not exist", CorePlugin.PLUGIN_ID,
+          project.getName(), path);
     }
 
     warDir = new Path(warDirString);
