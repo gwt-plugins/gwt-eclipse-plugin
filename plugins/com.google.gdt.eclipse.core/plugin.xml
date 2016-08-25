@@ -31,10 +31,7 @@
       <page
             class="com.google.gdt.eclipse.core.properties.ui.CoreProjectPropertyPage"
             id="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage"
-            name="Google Classic">
-         <enabledWhen>
-            <reference definitionId="com.google.gdt.eclipse.core.isGpeSelected"/>
-         </enabledWhen>
+            name="GWT">
       </page>
       <page
             category="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage"

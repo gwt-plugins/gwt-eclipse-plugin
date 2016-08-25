@@ -123,7 +123,7 @@ public class MavenProjectConfigurator extends AbstracMavenProjectConfigurator {
       throws BackingStoreException {
     IPath warOutDir = getWarOutDir(project, mavenProject);
 
-    WebAppProjectProperties.setWarSrcDir(project, new Path(getWarSrcDir(mavenConfig))); // src/main/webapp
+    WebAppProjectProperties.setWarSrcDir(project, getWarSrcDir(mavenProject, mavenConfig)); // src/main/webapp
     WebAppProjectProperties.setWarSrcDirIsOutput(project, getLaunchFromHere(mavenConfig)); // false
 
     // TODO the extension should be used, from WarArgProcessor
@@ -337,7 +337,8 @@ public class MavenProjectConfigurator extends AbstracMavenProjectConfigurator {
       } catch (CoreException exception) {
         Activator.logError(
             "MavenProjectConfigurator: Problem configuring the maven project because it could not download the "
-                + "gwt-dev.jar which is used to determine the version.", exception);
+                + "gwt-dev.jar which is used to determine the version.",
+            exception);
       }
     }
   }
@@ -345,21 +346,37 @@ public class MavenProjectConfigurator extends AbstracMavenProjectConfigurator {
   /**
    * Returns the war source directory such as src/main/webapp
    *
+   * @param mavenProject
+   *
    * @param config
    *          gwt-maven-maven config DOM
    * @return the {@link #WAR_SRC_DIR_PROPERTY_KEY} value from the config if it exists, {@link #WAR_SRC_DIR_DEFAULT}
    *         otherwise or if config is null
    */
-  private static final String getWarSrcDir(Xpp3Dom config) {
-    if (config == null) {
-      return WAR_SRC_DIR_DEFAULT;
-    }
-    for (Xpp3Dom child : config.getChildren()) {
-      if (child != null && WAR_SRC_DIR_PROPERTY_KEY.equals(child.getName())) {
-        return child.getValue() == null ? WAR_SRC_DIR_DEFAULT : child.getValue().trim();
+  private static final IPath getWarSrcDir(MavenProject mavenProject, Xpp3Dom config) {
+    String spath = WAR_SRC_DIR_DEFAULT;
+
+    if (config != null) {
+      for (Xpp3Dom child : config.getChildren()) {
+        if (child != null && WAR_SRC_DIR_PROPERTY_KEY.equals(child.getName())) {
+          spath = child.getValue() == null ? WAR_SRC_DIR_DEFAULT : child.getValue().trim();
+        }
       }
     }
-    return WAR_SRC_DIR_DEFAULT;
+
+    IPath path = null;
+    if (spath != null) {
+      path = new Path(spath);
+
+      String basePath = mavenProject.getBasedir().toPath().toAbsolutePath().toString();
+      String fullPath = basePath + "/" + spath;
+      java.io.File fullPathFile = new java.io.File(fullPath);
+      if (!fullPathFile.exists()) {
+        path = null;
+      }
+    }
+
+    return path;
   }
 
   /**
@@ -376,8 +393,8 @@ public class MavenProjectConfigurator extends AbstracMavenProjectConfigurator {
     }
     for (Xpp3Dom child : config.getChildren()) {
       if (child != null && ECLIPSE_LAUNCH_SRC_DIR_PROPERTY_KEY.equals(child.getName())) {
-        return child.getValue() == null ? ECLIPSE_LAUNCH_SRC_DIR_DEFAULT : Boolean
-            .parseBoolean(child.getValue().trim());
+        return child.getValue() == null ? ECLIPSE_LAUNCH_SRC_DIR_DEFAULT
+            : Boolean.parseBoolean(child.getValue().trim());
       }
     }
     return ECLIPSE_LAUNCH_SRC_DIR_DEFAULT;

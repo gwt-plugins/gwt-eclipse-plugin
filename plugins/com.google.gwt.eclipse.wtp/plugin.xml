@@ -91,18 +91,9 @@
   <!-- GWT Facet Properties -->
   <extension
 	     point="org.eclipse.ui.propertyPages">
-	  <!-- GWT -->
-	  <page
-	        class="com.google.gwt.eclipse.wtp.properties.ui.GWTRootProjectPropertyPage"
-	        id="com.google.gwt.eclipse.wtp.properties.ui.gwtRootProjectPropertyPage"
-	        name="GWT">
-	     <enabledWhen>
-	        <reference definitionId="com.google.gwt.eclipse.wtp.isGWTFacet"/>
-	     </enabledWhen>
-	  </page>
 	  <!-- GWT Facet -->
 	  <page
-	        category="com.google.gwt.eclipse.wtp.properties.ui.gwtRootProjectPropertyPage" 
+	        category="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage" 
 	        class="com.google.gwt.eclipse.wtp.properties.ui.GWTFacetProjectPropertyPage"
 	        id="com.google.gwt.eclipse.wtp.properties.ui.gwtFacetProjectPropertyPage" 
 	        name="Facet Settings">
