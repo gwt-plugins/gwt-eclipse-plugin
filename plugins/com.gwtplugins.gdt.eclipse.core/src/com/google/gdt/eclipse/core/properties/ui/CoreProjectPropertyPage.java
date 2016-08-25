@@ -39,7 +39,7 @@ public class CoreProjectPropertyPage extends PropertyPage implements
     panel.setLayout(new GridLayout(1, false));
 
     Label blank = new Label(panel, SWT.NONE);
-    blank.setText("Expand the tree to configure your Google project properties.");
+    blank.setText("Expand the tree to configure your GWT project properties.");
 
     return panel;
   }

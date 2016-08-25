@@ -691,10 +691,7 @@
             category="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage"
             class="com.google.gwt.eclipse.core.properties.ui.GWTProjectPropertyPage"
             id="com.google.gwt.eclipse.core.properties.ui.gwtProjectPropertyPage"
-            name="GWT Classic">
-         <enabledWhen>
-            <reference definitionId="com.google.gdt.eclipse.core.isGpeSelected"/>
-         </enabledWhen>
+            name="Settings">
       </page>
    </extension>
    <!--
