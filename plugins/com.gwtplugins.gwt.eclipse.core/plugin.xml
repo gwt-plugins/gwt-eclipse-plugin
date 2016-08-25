@@ -261,6 +261,11 @@
             icon="icons/gwt-junit_small.gif"
          id="com.google.gwt.eclipse.core.launch.gwtJUnitImage">
       </launchConfigurationTypeImage>
+      <launchConfigurationTypeImage
+             icon="icons/gwt_16x16.png"
+             configTypeID="com.google.gwt.eclipse.core.sdmCodeServer"
+             id="com.google.gwt.eclipse.core.sdmCodeServerImage">
+       </launchConfigurationTypeImage>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
@@ -691,7 +696,7 @@
             category="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage"
             class="com.google.gwt.eclipse.core.properties.ui.GWTProjectPropertyPage"
             id="com.google.gwt.eclipse.core.properties.ui.gwtProjectPropertyPage"
-            name="Settings">
+            name="General Settings">
       </page>
    </extension>
    <!--
