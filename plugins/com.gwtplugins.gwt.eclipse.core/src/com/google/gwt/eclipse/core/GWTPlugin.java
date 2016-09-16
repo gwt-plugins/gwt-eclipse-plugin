@@ -47,7 +47,7 @@ import org.osgi.framework.Constants;
 public class GWTPlugin extends AbstractGooglePlugin {
 
   // Plug-in ID
-  public static final String PLUGIN_ID = GWTPlugin.class.getPackage().getName();
+  public static final String PLUGIN_ID = "com.gwtplugins.gwt.eclipse.core";
 
   // TODO: Expose this via an accessor.
   public static final String SDK_DOWNLOAD_URL;

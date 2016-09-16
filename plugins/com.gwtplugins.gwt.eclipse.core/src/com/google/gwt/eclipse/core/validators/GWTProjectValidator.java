@@ -16,11 +16,8 @@ package com.google.gwt.eclipse.core.validators;
 
 import com.google.gdt.eclipse.core.JavaProjectUtilities;
 import com.google.gdt.eclipse.core.MarkerUtilities;
-import com.google.gdt.eclipse.core.WebAppUtilities;
-import com.google.gdt.eclipse.core.markers.ProjectStructureOrSdkProblemType;
 import com.google.gdt.eclipse.core.sdk.Sdk;
 import com.google.gdt.eclipse.core.validators.AbstractProjectValidator;
-import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.runtime.GWTProjectsRuntime;
 import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 
@@ -40,7 +37,7 @@ import java.util.Map;
  * projects with the GWT nature. It validates that the project is using a valid
  * GWT SDK, and that if the project has the Web App nature, that it is using GWT
  * 1.6+.
- * 
+ *
  * If any problems are detected, the appropriate resources are decorated with
  * problem markers. Each of these problem markers has a quick fix available for
  * it.
@@ -49,13 +46,11 @@ public class GWTProjectValidator extends AbstractProjectValidator {
 
   private static final String MIN_SDK_VERSION = "2.0.0";
 
-  public static final String BUILDER_ID = GWTPlugin.PLUGIN_ID
-      + ".gwtProjectValidator";
+  public static final String BUILDER_ID = "com.google.gwt.eclipse.core.gwtProjectValidator";
 
   public static final String GWT_SDK_TYPE_NAME = "GWT";
 
-  public static final String PROBLEM_MARKER_ID = GWTPlugin.PLUGIN_ID
-      + ".gwtProjectProblemMarker";
+  public static final String PROBLEM_MARKER_ID = "com.google.gwt.eclipse.core.gwtProjectProblemMarker";
 
   @Override
   protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor)

@@ -14,8 +14,8 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.core.projects;
 
+import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.jobs.JobsUtilities;
-import com.google.gdt.eclipse.core.natures.NatureUtils;
 import com.google.gdt.eclipse.core.sdk.Sdk.SdkException;
 
 import org.eclipse.core.resources.IProject;
@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
+import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
 import org.osgi.service.prefs.BackingStoreException;
 
 import java.io.FileNotFoundException;
@@ -186,10 +187,17 @@ public final class ProjectUtilities {
   /**
    * @return true if the project has any GPE natures on it
    */
-  public static boolean isGpeProject(IProject project) throws CoreException {
-    return NatureUtils.hasNature(project, "com.google.gwt.eclipse.core.gwtNature")
-        || NatureUtils.hasNature(project,
-            "com.google.appengine.eclipse.core.gaeNature");
+  public static boolean isGwtProject(IProject project) throws CoreException {
+    String natureId = "com.gwtplugins.gwt.eclipse.core.gwtNature"; // GWTNature.NATURE_ID
+    String facetId = "com.google.gwt.facet";
+    try {
+      return project.isAccessible()
+          && (project.hasNature(natureId) || FacetedProjectFramework.hasProjectFacet(project,
+              facetId));
+    } catch (CoreException e) {
+      CorePluginLog.logError(e);
+    }
+    return false;
   }
 
   /**
