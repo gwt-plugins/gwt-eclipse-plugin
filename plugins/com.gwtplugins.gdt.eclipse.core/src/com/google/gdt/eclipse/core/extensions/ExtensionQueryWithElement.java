@@ -45,6 +45,11 @@ public class ExtensionQueryWithElement<T> extends ExtensionQuery<T> {
     this.elementName = elementName;
   }
 
+  public ExtensionQueryWithElement(String extensionPointName, String elementName, String attributeName) {
+    super(extensionPointName, attributeName);
+    this.elementName = elementName;
+  }
+
   @Override
   protected List<com.google.gdt.eclipse.core.extensions.ExtensionQuery.Data<T>> getDataImpl(
       com.google.gdt.eclipse.core.extensions.ExtensionQuery.DataRetriever<T> c) {

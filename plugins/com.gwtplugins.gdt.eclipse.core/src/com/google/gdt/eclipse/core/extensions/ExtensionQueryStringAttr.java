@@ -26,7 +26,7 @@ public class ExtensionQueryStringAttr extends ExtensionQuery<String> {
 
   /**
    * Create a new instance.
-   * 
+   *
    * @param pluginId The id of the plugin providing the extension point.
    * @param extensionPointName the name of the extension point
    * @param attributeName the name of the attribute for which string data is to
@@ -37,9 +37,15 @@ public class ExtensionQueryStringAttr extends ExtensionQuery<String> {
     super(pluginId, extensionPointName, attributeName);
   }
 
+  public ExtensionQueryStringAttr(String extensionPointName,
+      String attributeName) {
+    super(extensionPointName, attributeName);
+  }
+
   @Override
   public List<Data<String>> getData() {
     return getDataImpl(new DataRetriever<String>() {
+      @Override
       public String getData(IConfigurationElement configurationElement,
           String attrName) {
         return configurationElement.getAttribute(attrName);

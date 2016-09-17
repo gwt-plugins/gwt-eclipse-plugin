@@ -47,7 +47,7 @@ import java.util.Set;
  * Eclipse classpath, but it is still accessible by generators.)
  * 
  * This only tracks changes to GPE projects (see
- * {@link ProjectUtilities#isGpeProject(org.eclipse.core.resources.IProject)}.)
+ * {@link ProjectUtilities#isGwtProject(org.eclipse.core.resources.IProject)}.)
  */
 public enum ProjectChangeTimestampTracker implements IResourceChangeListener {
   INSTANCE;
@@ -148,7 +148,7 @@ public enum ProjectChangeTimestampTracker implements IResourceChangeListener {
     // Skip over non-GPE projects
     IResource resource = delta.getResource();
     IProject project = resource.getProject();
-    if (project != null && !ProjectUtilities.isGpeProject(project)) {
+    if (project != null && !ProjectUtilities.isGwtProject(project)) {
       return;
     }
 
