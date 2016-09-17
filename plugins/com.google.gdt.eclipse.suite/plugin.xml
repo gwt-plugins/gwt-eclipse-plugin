@@ -57,11 +57,11 @@
          <launchMode 
                mode="debug"
                perspective="org.eclipse.debug.ui.DebugPerspective"
-               description="Debug a Web Application">
+               description="Debug a Web Application with DevMode">
          </launchMode>
          <launchMode
                mode="run"
-               description="Run a Web Application">
+               description="Run a Web Application with DevMode">
          </launchMode>
       </launchConfigurationTabGroup>
       
@@ -72,12 +72,12 @@
             type="com.google.gwt.eclipse.core.sdmCodeServer"
             description="Launch GWT Super Dev Mode with the CodeServer">
          <launchMode
-               description="Run GWT Super Dev Mode"
+               description="Debug GWT Super Dev Mode with CodeServer"
                mode="debug"
                perspective="org.eclipse.debug.ui.DebugPerspective">
          </launchMode>
          <launchMode
-               description="Run GWT Super Dev Mode"
+               description="Run GWT Super Dev Mode with CodeServer"
                mode="run">
          </launchMode>
       </launchConfigurationTabGroup>
