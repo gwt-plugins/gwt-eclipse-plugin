@@ -64,7 +64,6 @@
     <module>plugins/com.gwtplugins.gwt.eclipse.core</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.core.test</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.core.test.swtbot</module>
-    <module>plugins/com.gwtplugins.gwt.eclipse.libs</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.oophm</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.oophm.test</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.testing</module>
