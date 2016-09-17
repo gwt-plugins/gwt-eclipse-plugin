@@ -19,7 +19,7 @@
                <not>
                   <adapt type="org.eclipse.core.resources.IProject">
                      <test property="org.eclipse.wst.common.project.facet.core.projectFacet"
-                           value="com.google.appengine.facet">
+                           value="com.google.appengine.facet"> <!-- TODO remove? -->
                      </test>
                   </adapt>
                </not>

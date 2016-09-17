@@ -337,13 +337,6 @@
       </propertyTester>      
    </extension>
    <extension
-         point="org.eclipse.ui.ide.markerResolution">
-      <markerResolutionGenerator
-            class="com.google.gdt.eclipse.suite.markers.quickfixes.GaeValidatorProblemMarkerResolutionGenerator"
-            markerType="com.google.appengine.eclipse.core.problemMarker">
-      </markerResolutionGenerator>
-   </extension>
-   <extension
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"

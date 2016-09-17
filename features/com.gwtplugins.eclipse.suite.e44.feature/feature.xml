@@ -111,77 +111,7 @@
    </requires>
 
    <plugin
-         id="com.google.appengine.eclipse.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.appengine.eclipse.datatools"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.appengine.eclipse.webtools"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.appengine.eclipse.wtp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.appengine.eclipse.wtp.jpa"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.appengine.eclipse.wtp.jpa.e43"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.appengine.eclipse.wtp.swarm"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.gdt.eclipse.appengine.api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
          id="com.google.gdt.eclipse.apiclientlib"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.gdt.eclipse.appengine.swarm"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.gdt.eclipse.appengine.swarm_backend"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
