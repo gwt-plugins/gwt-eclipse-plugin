@@ -18,7 +18,6 @@ import com.google.gdt.eclipse.core.BuilderUtilities;
 import com.google.gdt.eclipse.core.MarkerUtilities;
 import com.google.gdt.eclipse.core.natures.NatureUtils;
 import com.google.gdt.eclipse.core.validators.WebAppProjectValidator;
-import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.util.Util;
 import com.google.gwt.eclipse.core.validators.GWTProjectValidator;
@@ -34,7 +33,7 @@ import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
  */
 public class GWTNature implements IProjectNature {
 
-  public static final String NATURE_ID = GWTPlugin.PLUGIN_ID + ".gwtNature";
+  public static final String NATURE_ID = "com.google.gwt.eclipse.core.gwtNature";
 
   // TODO: do this in background (WorkspaceJob)?
   public static void addNatureToProject(IProject project) throws CoreException {

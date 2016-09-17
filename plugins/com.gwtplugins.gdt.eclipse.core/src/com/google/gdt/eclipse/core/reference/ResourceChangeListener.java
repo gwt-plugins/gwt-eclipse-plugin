@@ -45,6 +45,7 @@ class ResourceChangeListener implements IResourceChangeListener {
     this.referenceManager = referenceManager;
   }
 
+  @Override
   public void resourceChanged(IResourceChangeEvent event) {
     if (event.getDelta() == null) {
       return;
@@ -54,14 +55,16 @@ class ResourceChangeListener implements IResourceChangeListener {
 
     try {
       event.getDelta().accept(new IResourceDeltaVisitor() {
+        @Override
         public boolean visit(IResourceDelta delta) throws CoreException {
           IResource resource = delta.getResource();
 
           try {
             // Only track references within GPE projects
             boolean isRoot = resource.getType() == IResource.ROOT;
+            // FIXME: USe GWTNature.isGWTProject()?
             if (!isRoot
-                && !ProjectUtilities.isGpeProject(resource.getProject())) {
+                && !ProjectUtilities.isGwtProject(resource.getProject())) {
               return false;
             } else if (isRoot) {
               return true;
@@ -71,16 +74,16 @@ class ResourceChangeListener implements IResourceChangeListener {
                 + resource.getProject().getName());
             return false;
           }
-          
+
           if (!ResourceUtils.isRelevantResourceChange(delta)) {
             return true; // keep exploring the tree
           }
-          
+
           // Reference managers do not track changes to .class files.
           if ("class".equals(resource.getProjectRelativePath().getFileExtension())) {
             return false;
-          }          
-          
+          }
+
           Set<IReference> references = referenceManager.getReferencesWithMatchingResource(
               resource, EnumSet.of(ReferenceLocationType.TARGET));
           if (references != null && references.size() > 0) {

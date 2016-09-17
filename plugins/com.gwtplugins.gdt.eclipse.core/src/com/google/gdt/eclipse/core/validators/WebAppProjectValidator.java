@@ -53,7 +53,7 @@ public class WebAppProjectValidator extends IncrementalProjectBuilder {
       throws CoreException {
     // Unfortunately, we can't access GWTNature or GaeNature from here, so we
     // have to hard-code the nature IDs (which are unlikely to change anyway).
-    if (!ProjectUtilities.isGpeProject(project)) {
+    if (!ProjectUtilities.isGwtProject(project)) {
       BuilderUtilities.removeBuilderFromProject(project, BUILDER_ID);
     }
   }

@@ -18,7 +18,7 @@
       </page>
    </extension>
    <extension
-         id="gwtNature"
+         id="com.google.gwt.eclipse.core.gwtNature"
          name="GWT Nature"
          point="org.eclipse.core.resources.natures">
       <runtime>
@@ -148,7 +148,7 @@
       <content-type
             base-type="org.eclipse.jdt.core.javaSource"
             file-extensions="java"
-            id="gwtJavaSource"
+            id="com.google.gwt.eclipse.core.gwtJavaSource"
             name="GWT Java Source File"
             priority="high">
       </content-type>
@@ -176,7 +176,7 @@
       <content-type
             base-type="org.eclipse.jdt.core.javaSource"
             file-extensions="java"
-            id="gwtJavaSource"
+            id="com.google.gwt.eclipse.core.gwtJavaSource"
             name="GWT Java Source File"
             priority="high">
       </content-type>
@@ -758,7 +758,7 @@
       </objectContribution>      
    </extension>
    <extension
-         id="gwtProjectValidator"
+         id="com.google.gwt.eclipse.core.gwtProjectValidator"
          name="GWT Project Validator"
          point="org.eclipse.core.resources.builders">
       <builder
@@ -771,7 +771,7 @@
       </builder>
    </extension>
    <extension
-         id="gwtProjectProblemMarker"
+         id="com.google.gwt.eclipse.core.gwtProjectProblemMarker"
          name="GWT Problem"
          point="org.eclipse.core.resources.markers">
       <super
@@ -977,7 +977,7 @@
        </command>
     </extension>
     <extension
-          id="GWTCodeFormatterApplication"
+          id="com.google.gwt.eclipse.core.formatter.GWTCodeFormatterApplication"
           point="org.eclipse.core.runtime.applications">
        <application
              cardinality="singleton-global"

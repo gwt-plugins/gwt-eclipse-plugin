@@ -208,20 +208,6 @@
                id="com.google.gdt.eclipse.suite.webapp"/>
       </shortcut>
    </extension>  
-   <extension  
-        point="org.eclipse.jdt.launching.classpathProviders">
-      <classpathProvider
-             class="com.google.gdt.eclipse.suite.launch.processors.AppengineClasspathProvider"
-             id="com.google.gdt.eclipse.suite.appengineClasspathProvider">
-      </classpathProvider>
-   </extension>
-   <extension
-        point="com.google.gwt.eclipse.core.moduleClasspathProvider">
-      <moduleClasspathProvider
-            priority="20"
-            providerClass="com.google.gdt.eclipse.suite.launch.processors.AppengineClasspathProvider$AppengineClasspathProviderIdProvider">
-      </moduleClasspathProvider>
-   </extension>
    <extension
          point="org.eclipse.ui.newWizards">
       <category

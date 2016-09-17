@@ -15,7 +15,6 @@
 package com.google.gwt.eclipse.core.runtime;
 
 import com.google.gdt.eclipse.core.sdk.SdkClasspathContainer;
-import com.google.gwt.eclipse.core.GWTPlugin;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -26,12 +25,11 @@ import java.util.List;
 
 /**
  * A GWT library containing the gwt-user and gwt-dev classes.
- * 
+ *
  * TODO: Move this and subtypes into the sdk package.
  */
 public class GWTRuntimeContainer extends SdkClasspathContainer<GWTRuntime> {
-  public static final String CONTAINER_ID = GWTPlugin.PLUGIN_ID
-      + ".GWT_CONTAINER";
+  public static final String CONTAINER_ID = "com.google.gwt.eclipse.core.GWT_CONTAINER";
   public static final Path CONTAINER_PATH = new Path(CONTAINER_ID);
 
   public static IPath getDefaultRuntimePath() {

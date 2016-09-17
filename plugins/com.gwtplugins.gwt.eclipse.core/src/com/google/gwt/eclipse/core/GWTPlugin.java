@@ -58,7 +58,8 @@ public class GWTPlugin extends AbstractGooglePlugin {
   static {
     PluginProperties props = new PluginProperties(GWTPlugin.class);
     SDK_DOWNLOAD_URL =
-        props.getProperty("gwtplugin.sdk_download_url", "http://code.google.com/webtoolkit/download.html");
+        props.getProperty("gwtplugin.sdk_download_url",
+            "http://www.gwtproject.org/download.html");
   }
 
   public static Shell getActiveWorkbenchShell() {
