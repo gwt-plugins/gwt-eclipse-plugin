@@ -227,25 +227,33 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
    */
   private boolean addVmArgs(ILaunchConfiguration configuration) throws CoreException {
     IProject project = getJavaProject(configuration).getProject();
-//    if (!GoogleCloudSqlProperties.getGoogleCloudSqlEnabled(project) || GoogleCloudSqlProperties.getLocalDevMySqlEnabled(project)) {
-//      return true;
-//    }
+
+    // TODO remove?
+    // if (!GoogleCloudSqlProperties.getGoogleCloudSqlEnabled(project) ||
+    // GoogleCloudSqlProperties.getLocalDevMySqlEnabled(project)) {
+    // return true;
+    // }
+
     ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
     String vmArgs = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");
+
+    // TODO remove?
     // The regex is -Drdbms\.extra\.properties="\S+" which matches
     // -Drdbms.extra.properties="<non-whitespace chars>".
+
     String[] vmArgList = vmArgs.split("-Drdbms\\.extra\\.properties=\"\\S+\"");
     vmArgs = "";
     for (String string : vmArgList) {
       vmArgs += string;
     }
 
-    // TODO
+    // TODO remove?
     String refreshToken = null;
     String accessToken = null;
     String clientId = null;
     String clientSecret = null;
 
+    // TODO remove leaving a trace for just in case
     // // If the user is not logged in, prompt him to log in.
     // GoogleLogin.promptToLogIn("Please Log in to continue launch");
     // // Try to get the vm arguments.
@@ -266,10 +274,10 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
     // } catch (IOException e) {
     // CorePluginLog.logError(e);
     // }
-
-    if (refreshToken == null || accessToken == null || clientId == null || clientSecret == null) {
-      return false;
-    }
+    //
+    // if (refreshToken == null || accessToken == null || clientId == null || clientSecret == null) {
+    // return false;
+    // }
 
     String rdbmsExtraPropertiesValue = String.format(ARG_RDBMS_EXTRA_PROPERTIES_VALUE_FORMAT, refreshToken, accessToken,
         clientId, clientSecret);

@@ -25,7 +25,7 @@
       </page>
    </extension>
    
-   <!-- Web Application -->
+   <!-- Web Application Launcher-->
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
