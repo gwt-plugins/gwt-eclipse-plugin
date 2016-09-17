@@ -25,7 +25,6 @@ import com.google.gdt.eclipse.core.launch.WebAppLaunchConfigurationWorkingCopy;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.launch.processors.PortArgumentProcessor;
 import com.google.gdt.eclipse.suite.launch.processors.PortArgumentProcessor.PortParser;
-import com.google.gdt.eclipse.suite.launch.processors.ServerArgumentProcessor;
 import com.google.gdt.eclipse.suite.resources.GdtImages;
 import com.google.gwt.eclipse.core.launch.processors.NoServerArgumentProcessor;
 
@@ -130,7 +129,9 @@ public class WebAppServerTab extends JavaLaunchTab implements WebAppArgumentsTab
     }
 
     LaunchConfigurationProcessorUtilities.updateViaProcessor(new NoServerArgumentProcessor(), configuration);
-    LaunchConfigurationProcessorUtilities.updateViaProcessor(new ServerArgumentProcessor(), configuration);
+
+    // TODO remove and have folks use the CodeServerLauncher
+    //LaunchConfigurationProcessorUtilities.updateViaProcessor(new ServerArgumentProcessor(), configuration);
 
     WebAppLaunchConfigurationWorkingCopy.setServerPort(configuration, serverPortText.getText().trim());
 

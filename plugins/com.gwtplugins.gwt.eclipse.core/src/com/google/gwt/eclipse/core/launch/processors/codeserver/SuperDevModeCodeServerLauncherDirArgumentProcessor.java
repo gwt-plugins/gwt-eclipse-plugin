@@ -33,8 +33,7 @@ import java.util.List;
  * <br/>
  * Super Dev Mode Code Server only.
  */
-public class SuperDevModeCodeServerLauncherDirArgumentProcessor implements
-    ILaunchConfigurationProcessor {
+public class SuperDevModeCodeServerLauncherDirArgumentProcessor implements ILaunchConfigurationProcessor {
 
   public static final String LAUNCHERDIR_ARG = "-launcherDir";
 
@@ -42,8 +41,8 @@ public class SuperDevModeCodeServerLauncherDirArgumentProcessor implements
    * Only update this argument when in GWT SDM mode.
    */
   @Override
-  public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject,
-      List<String> programArgs, List<String> vmArgs) throws CoreException {
+  public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject, List<String> programArgs,
+      List<String> vmArgs) throws CoreException {
     // Only GWT projects
     if (!GWTNature.isGWTProject(javaProject.getProject())) {
       return;
@@ -84,16 +83,14 @@ public class SuperDevModeCodeServerLauncherDirArgumentProcessor implements
     // Not a WTP project or classic launcher config
     // TODO, should it prompt for one?
     if (pathToWarOutDir == null || pathToWarOutDir.isEmpty()) {
-      String msg =
-          "SuperDevModeCodeServerLauncherDirArgumentProcessor > update: couldn't not determin pathtoWarOutDir.";
+      String msg = "SuperDevModeCodeServerLauncherDirArgumentProcessor > update: couldn't determine pathtoWarOutDir.";
       GWTPluginLog.logWarning(msg);
       return;
     }
 
     // Then remove previous arg and replace it with launcherDir arg
     int insertionIndex =
-        LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(programArgs,
-            argIndex, true);
+        LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(programArgs, argIndex, true);
 
     // Add the args to the list
     programArgs.add(insertionIndex, LAUNCHERDIR_ARG);
@@ -101,8 +98,8 @@ public class SuperDevModeCodeServerLauncherDirArgumentProcessor implements
   }
 
   @Override
-  public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject,
-      List<String> programArgs, List<String> vmArgs) throws CoreException {
+  public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject, List<String> programArgs,
+      List<String> vmArgs) throws CoreException {
     // TODO Possibly verify if actual war output directory exists.
     return null;
   }
