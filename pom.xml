@@ -16,7 +16,7 @@
     <!-- These constants are currently set up to build against Eclipse Mars. -->
     <eclipse.target>mars</eclipse.target>
     
-    <!-- TODO increment the max version ? -->
+    <!-- TODO increment the max version ? There is a problem using 8.1 to 8.2-->
     <jettyMinVersion>8.1</jettyMinVersion>
     <jettyMaxVersion>8.2</jettyMaxVersion>
 
@@ -40,8 +40,6 @@
   <modules>
     <!-- GWT_HOME SDKs downloaded here -->
     <module>resources</module>
-    <!-- Use `mvn package` - repository located in ./repo/target/repository -->
-    <module>repo</module>
 
     <!-- Features located in ./repo/category.xml -->
     <module>features/com.gwtplugins.eclipse.suite.e44.feature</module>
@@ -77,6 +75,9 @@
 
     <!-- SDK Bundles -->
     <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle</module>
+    
+    <!-- Use `mvn package` - repository located in ./repo/target/repository -->
+    <module>repo</module>
   </modules>
 
   <repositories>
@@ -106,13 +107,14 @@
         <artifactId>target-platform-configuration</artifactId>
         <configuration>
           <filters>
-            <filter>
+            <!-- TODO: This creates a problem when 8.1 to 8.2 remove? -->
+            <!-- <filter>
               <type>java-package</type>
               <id>org.eclipse.jetty.http</id>
               <restrictTo>
                 <versionRange>[${jettyMinVersion},${jettyMaxVersion})</versionRange>
               </restrictTo>
-            </filter>
+            </filter> -->
           </filters>
           <environments>
             <environment>
