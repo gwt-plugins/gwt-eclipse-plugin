@@ -8,8 +8,8 @@
   <packaging>pom</packaging>
 
   <properties>
-    <tycho.version>0.22.0</tycho.version>
-    <tycho-extras.version>0.22.0</tycho-extras.version>
+    <tycho.version>0.26.0</tycho.version>
+    <tycho-extras.version>0.26.0</tycho-extras.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- These constants are currently set up to build against Eclipse Luna. -->
