@@ -215,9 +215,10 @@ public class GdtPlugin extends AbstractGooglePlugin {
     super.initializeImageRegistry(reg);
 
     reg.put(GdtImages.GDT_ICON, imageDescriptorFromPath("icons/gdt_16x16.png"));
+    reg.put(GdtImages.GWT_SERVER_ICON, imageDescriptorFromPath("icons/gwt_server_16x16.png"));
+
     reg.put(GdtImages.GDT_NEW_PROJECT_ICON, imageDescriptorFromPath("icons/gdt-new-project_16x16.png"));
     reg.put(GdtImages.GDT_NEW_PROJECT_LARGE, imageDescriptorFromPath("icons/gdt-new-project_75x66.png"));
-    reg.put(GdtImages.GAE_ICON, imageDescriptorFromPath("icons/ae_16x16.png"));
   }
 
   /**

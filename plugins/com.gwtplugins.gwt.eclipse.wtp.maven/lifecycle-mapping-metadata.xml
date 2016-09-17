@@ -17,6 +17,22 @@
                 </configurator>
             </action>
         </pluginExecution>
+        
+        <pluginExecution>
+            <pluginExecutionFilter>
+                <groupId>net.ltgt.gwt.maven</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <versionRange>[1.0,)</versionRange>
+                <goals>
+                    <goal>generate-module</goal>
+                </goals>
+            </pluginExecutionFilter>
+            <action>
+                <configurator>
+                    <id>com.google.gwt.eclipse.wtp.maven.gwtConfigurator</id>
+                </configurator>
+            </action>
+        </pluginExecution>
 
     </pluginExecutions> 
 </lifecycleMappingMetadata>

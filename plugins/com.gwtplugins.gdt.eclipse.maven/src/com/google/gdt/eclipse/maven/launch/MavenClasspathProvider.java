@@ -137,12 +137,6 @@ public class MavenClasspathProvider extends ModuleClasspathProvider {
     IRuntimeClasspathEntry[] resolvedEntries =
         classpath.toArray(new IRuntimeClasspathEntry[classpath.size()]);
 
-    // Add GWT super dev mode legacy jar to the first of the library list
-    if (GWTNature.isGWTProject(proj.getProject()) && resolvedEntries.length > 0) {
-      resolvedEntries =
-          addGwtSuperDevModeLegacyJarToRuntimeClasspathPossibly(config, resolvedEntries);
-    }
-
     return resolvedEntries;
   }
 

@@ -21,15 +21,13 @@ import com.google.gdt.eclipse.suite.GdtPlugin;
  */
 public final class GdtImages {
 
-  public static final String GAE_ICON = GdtPlugin.PLUGIN_ID + ".images.gaeIcon";
-
   public static final String GDT_ICON = GdtPlugin.PLUGIN_ID + ".images.gdtIcon";
 
-  public static final String GDT_NEW_PROJECT_ICON = GdtPlugin.PLUGIN_ID
-      + ".images.newGdtProjectIcon";
+  public static final String GWT_SERVER_ICON = GdtPlugin.PLUGIN_ID + ".images.gwtServerIcon";
 
-  public static final String GDT_NEW_PROJECT_LARGE = GdtPlugin.PLUGIN_ID
-      + ".images.newGdtProjectLarge";
+  public static final String GDT_NEW_PROJECT_ICON = GdtPlugin.PLUGIN_ID + ".images.newGdtProjectIcon";
+
+  public static final String GDT_NEW_PROJECT_LARGE = GdtPlugin.PLUGIN_ID + ".images.newGdtProjectLarge";
 
   private GdtImages() {
     // not instantiable.

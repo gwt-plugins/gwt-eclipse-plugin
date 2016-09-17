@@ -58,8 +58,7 @@ public class GWTPlugin extends AbstractGooglePlugin {
   static {
     PluginProperties props = new PluginProperties(GWTPlugin.class);
     SDK_DOWNLOAD_URL =
-        props.getProperty("gwtplugin.sdk_download_url",
-            "http://code.google.com/webtoolkit/download.html");
+        props.getProperty("gwtplugin.sdk_download_url", "http://code.google.com/webtoolkit/download.html");
   }
 
   public static Shell getActiveWorkbenchShell() {
@@ -106,10 +105,9 @@ public class GWTPlugin extends AbstractGooglePlugin {
     plugin = this;
 
     // Load problem severities
-    GdtProblemSeverities.getInstance().addProblemTypeEnums(
-        new Class<?>[] {GWTProblemType.class, RemoteServiceProblemType.class,
-            UiBinderJavaProblemType.class, ClientBundleProblemType.class,
-            UiBinderTemplateProblemType.class});
+    GdtProblemSeverities.getInstance()
+        .addProblemTypeEnums(new Class<?>[] {GWTProblemType.class, RemoteServiceProblemType.class,
+            UiBinderJavaProblemType.class, ClientBundleProblemType.class, UiBinderTemplateProblemType.class});
 
     addLaunchListener();
 
@@ -141,6 +139,8 @@ public class GWTPlugin extends AbstractGooglePlugin {
     super.initializeImageRegistry(reg);
 
     reg.put(GWTImages.GWT_ICON, imageDescriptorFromPath("icons/gwt_16x16.png"));
+    reg.put(GWTImages.GWT_ICON_CODESERVER, imageDescriptorFromPath("icons/gwt_codeserver_16x16.png"));
+
     reg.put(GWTImages.GWT_LOGO, imageDescriptorFromPath("icons/gwt_75x46.png"));
     reg.put(GWTImages.JAVA_ICON, imageDescriptorFromPath("icons/jcu_obj.gif"));
 
@@ -149,41 +149,27 @@ public class GWTPlugin extends AbstractGooglePlugin {
     reg.put(GWTImages.JSNI_PROTECTED_METHOD_SMALL, imageDescriptorFromPath("icons/methpro_obj.gif"));
     reg.put(GWTImages.JSNI_PUBLIC_METHOD_SMALL, imageDescriptorFromPath("icons/methpub_obj.gif"));
 
-    reg.put(GWTImages.NEW_ASYNC_INTERFACE_LARGE,
-        imageDescriptorFromPath("icons/gwt-new-asyncinterface_large.png"));
-    reg.put(GWTImages.NEW_ASYNC_INTERFACE_SMALL,
-        imageDescriptorFromPath("icons/gwt-new-asyncinterface_small.png"));
+    reg.put(GWTImages.NEW_ASYNC_INTERFACE_LARGE, imageDescriptorFromPath("icons/gwt-new-asyncinterface_large.png"));
+    reg.put(GWTImages.NEW_ASYNC_INTERFACE_SMALL, imageDescriptorFromPath("icons/gwt-new-asyncinterface_small.png"));
 
     reg.put(GWTImages.EDITOR_SELECTION_INFO, imageDescriptorFromPath("icons/wordassist_co.gif"));
-    reg.put(GWTImages.NEW_ENTRY_POINT_LARGE,
-        imageDescriptorFromPath("icons/gwt-new-entrypoint_large.png"));
-    reg.put(GWTImages.NEW_ENTRY_POINT_SMALL,
-        imageDescriptorFromPath("icons/gwt-new-entrypoint_small.png"));
+    reg.put(GWTImages.NEW_ENTRY_POINT_LARGE, imageDescriptorFromPath("icons/gwt-new-entrypoint_large.png"));
+    reg.put(GWTImages.NEW_ENTRY_POINT_SMALL, imageDescriptorFromPath("icons/gwt-new-entrypoint_small.png"));
 
-    reg.put(GWTImages.NEW_HOST_PAGE_LARGE,
-        imageDescriptorFromPath("icons/gwt-new-hostpage_large.png"));
-    reg.put(GWTImages.NEW_HOST_PAGE_SMALL,
-        imageDescriptorFromPath("icons/gwt-new-hostpage_small.png"));
+    reg.put(GWTImages.NEW_HOST_PAGE_LARGE, imageDescriptorFromPath("icons/gwt-new-hostpage_large.png"));
+    reg.put(GWTImages.NEW_HOST_PAGE_SMALL, imageDescriptorFromPath("icons/gwt-new-hostpage_small.png"));
     reg.put(GWTImages.NEW_MODULE_LARGE, imageDescriptorFromPath("icons/gwt-new-module_large.png"));
     reg.put(GWTImages.NEW_MODULE_SMALL, imageDescriptorFromPath("icons/gwt-new-module_small.png"));
     reg.put(GWTImages.MODULE_ICON, imageDescriptorFromPath("icons/gwt-module-file_small.gif"));
     reg.put(GWTImages.GWT_COMPILE_LARGE, imageDescriptorFromPath("icons/gwt_75x46.png"));
-    reg.put(GWTImages.NEW_CLIENT_BUNDLE_LARGE,
-        imageDescriptorFromPath("icons/gwt-new-clientbundle_large.png"));
-    reg.put(GWTImages.NEW_CLIENT_BUNDLE_SMALL,
-        imageDescriptorFromPath("icons/gwt-new-clientbundle_small.png"));
-    reg.put(GWTImages.NEW_UI_BINDER_LARGE,
-        imageDescriptorFromPath("icons/gwt-new-uibinder_large.png"));
-    reg.put(GWTImages.NEW_UI_BINDER_SMALL,
-        imageDescriptorFromPath("icons/gwt-new-uibinder_small.png"));
-    reg.put(GWTImages.SPEED_TRACER_LARGE, imageDescriptorFromPath("icons/speed-tracer_large.png"));
-    reg.put(GWTImages.SPEED_TRACER_SMALL, imageDescriptorFromPath("icons/speed-tracer_small.png"));
+    reg.put(GWTImages.NEW_CLIENT_BUNDLE_LARGE, imageDescriptorFromPath("icons/gwt-new-clientbundle_large.png"));
+    reg.put(GWTImages.NEW_CLIENT_BUNDLE_SMALL, imageDescriptorFromPath("icons/gwt-new-clientbundle_small.png"));
+    reg.put(GWTImages.NEW_UI_BINDER_LARGE, imageDescriptorFromPath("icons/gwt-new-uibinder_large.png"));
+    reg.put(GWTImages.NEW_UI_BINDER_SMALL, imageDescriptorFromPath("icons/gwt-new-uibinder_small.png"));
   }
 
-  private void addLaunchListener() {
-  }
+  private void addLaunchListener() {}
 
-  private void removeLaunchListener() {
-  }
+  private void removeLaunchListener() {}
 
 }
