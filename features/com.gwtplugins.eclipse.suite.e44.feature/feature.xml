@@ -4,7 +4,7 @@
       label="%featureName"
       version="0.0.0.qualifier"
       provider-name="%providerName"
-      plugin="com.google.gdt.eclipse.suite">
+      plugin="com.gwtplugins.gdt.eclipse.suite">
 
    <description>
       Support for the development of GWT Projects in Eclipse
@@ -111,84 +111,70 @@
    </requires>
 
    <plugin
-         id="com.google.gdt.eclipse.apiclientlib"
+         id="com.gwtplugins.gdt.eclipse.apiclientlib"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.core"
+         id="com.gwtplugins.gdt.eclipse.core"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.login"
+         id="com.gwtplugins.gdt.eclipse.maven"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.maven"
+         id="com.gwtplugins.gdt.eclipse.platform"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.platform"
+         id="com.gwtplugins.gdt.eclipse.suite"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.suite"
+         id="com.gwtplugins.gdt.eclipse.suite.update"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gdt.eclipse.suite.update"
+         id="com.gwtplugins.gwt.eclipse.core"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gwt.eclipse.core"
+         id="com.gwtplugins.gwt.eclipse.oophm"
          download-size="0"
          install-size="0"
          version="0.0.0.qualifier"
          unpack="false"/>
 
    <plugin
-         id="com.google.gwt.eclipse.libs"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.gwt.eclipse.oophm"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.google.gwt.eclipse.wtp"
+         id="com.gwtplugins.gwt.eclipse.wtp"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="com.google.gwt.eclipse.wtp.maven"
+         id="com.gwtplugins.gwt.eclipse.wtp.maven"
          download-size="0"
          install-size="0"
          version="0.0.0"
