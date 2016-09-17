@@ -54,10 +54,11 @@ public class XmxArgumentProcessor implements ILaunchConfigurationProcessor {
     if (mem > 0) {
       defaultMemory = mem + "m";
     } else {
-      defaultMemory = "512m";
+      defaultMemory = "1024m";
     }
   }
 
+  @Override
   public void update(ILaunchConfigurationWorkingCopy launchConfig,
       IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
       throws CoreException {
@@ -68,6 +69,7 @@ public class XmxArgumentProcessor implements ILaunchConfigurationProcessor {
     }
   }
 
+  @Override
   public String validate(ILaunchConfiguration launchConfig,
       IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
       throws CoreException {

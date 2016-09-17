@@ -141,6 +141,8 @@ public class GWTPlugin extends AbstractGooglePlugin {
     super.initializeImageRegistry(reg);
 
     reg.put(GWTImages.GWT_ICON, imageDescriptorFromPath("icons/gwt_16x16.png"));
+    reg.put(GWTImages.GWT_ICON_CODESERVER, imageDescriptorFromPath("icons/gwt_codeserver_16x16.png"));
+
     reg.put(GWTImages.GWT_LOGO, imageDescriptorFromPath("icons/gwt_75x46.png"));
     reg.put(GWTImages.JAVA_ICON, imageDescriptorFromPath("icons/jcu_obj.gif"));
 
@@ -176,8 +178,6 @@ public class GWTPlugin extends AbstractGooglePlugin {
         imageDescriptorFromPath("icons/gwt-new-uibinder_large.png"));
     reg.put(GWTImages.NEW_UI_BINDER_SMALL,
         imageDescriptorFromPath("icons/gwt-new-uibinder_small.png"));
-    reg.put(GWTImages.SPEED_TRACER_LARGE, imageDescriptorFromPath("icons/speed-tracer_large.png"));
-    reg.put(GWTImages.SPEED_TRACER_SMALL, imageDescriptorFromPath("icons/speed-tracer_small.png"));
   }
 
   private void addLaunchListener() {

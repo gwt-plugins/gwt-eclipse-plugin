@@ -74,6 +74,11 @@ public final class WebAppProjectProperties {
    */
   private static final String GWT_MAVEN_MODULE_NAME = "gwtMavenModuleName";
 
+  /**
+   * GWT Maven Plugin 2 ModuleName Short
+   */
+  private static final String GWT_MAVEN_MODULE_SHORT_NAME = "gwtMavenModuleShortName";
+
   public static void addWarOutLocationChangedListener(
       IWarOutLocationChangedListener listener) {
     synchronized (warOutLocationChangedListeners) {
@@ -246,6 +251,10 @@ public final class WebAppProjectProperties {
     return getProjectProperties(project).get(GWT_MAVEN_MODULE_NAME, "");
   }
 
+  public static String getGwtMavenModuleShortName(IProject project) {
+    return getProjectProperties(project).get(GWT_MAVEN_MODULE_SHORT_NAME, "");
+  }
+
   public static void setGwtMavenModuleName(IProject project, String gwtMavenModuleName) throws BackingStoreException {
     IEclipsePreferences prefs = getProjectProperties(project);
     if (gwtMavenModuleName == null) {
@@ -260,6 +269,19 @@ public final class WebAppProjectProperties {
     }
   }
 
+  public static void setGwtMavenModuleShortName(IProject project, String gwtMavenModuleShortName) throws BackingStoreException {
+    IEclipsePreferences prefs = getProjectProperties(project);
+    if (gwtMavenModuleShortName == null) {
+      try {
+        prefs.remove(GWT_MAVEN_MODULE_SHORT_NAME);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    } else {
+      prefs.put(GWT_MAVEN_MODULE_SHORT_NAME, gwtMavenModuleShortName);
+      prefs.flush();
+    }
+  }
 
   private WebAppProjectProperties() {
     // Not instantiable

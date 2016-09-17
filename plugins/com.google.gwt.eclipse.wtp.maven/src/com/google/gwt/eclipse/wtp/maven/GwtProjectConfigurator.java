@@ -36,6 +36,8 @@ import java.util.List;
 @SuppressWarnings("restriction")
 public class GwtProjectConfigurator extends WTPProjectConfigurator {
 
+  
+  
   @Override
   public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
     // Given a pom.xml configuration
