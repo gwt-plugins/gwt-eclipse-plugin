@@ -377,10 +377,10 @@
             </enablement>
          </contextualLaunch>
          <description
-               description="Run GWT Super Dev Mode Code Server"
+               description="Run GWT Super Dev Mode CodeServer"
                mode="run" />
          <description
-               description="Run GWT Super Dev Mode Code Server"
+               description="Debug GWT Super Dev Mode CodeServer"
                mode="debug" />
          <configurationType
                id="com.google.gwt.eclipse.core.sdmCodeServer"/>
