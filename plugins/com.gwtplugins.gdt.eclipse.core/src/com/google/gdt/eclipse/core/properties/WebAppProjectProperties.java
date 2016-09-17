@@ -39,8 +39,7 @@ import java.util.List;
 public final class WebAppProjectProperties {
 
   /**
-   * Interface definition to be called when a project's output WAR directory
-   * changes.
+   * Interface definition to be called when a project's output WAR directory changes.
    */
   public interface IWarOutLocationChangedListener {
     void warOutLocationChanged(IProject project);
@@ -74,43 +73,42 @@ public final class WebAppProjectProperties {
    */
   private static final String GWT_MAVEN_MODULE_NAME = "gwtMavenModuleName";
 
-  public static void addWarOutLocationChangedListener(
-      IWarOutLocationChangedListener listener) {
+  /**
+   * GWT Maven Plugin 2 ModuleName Short
+   */
+  private static final String GWT_MAVEN_MODULE_SHORT_NAME = "gwtMavenModuleShortName";
+
+  public static void addWarOutLocationChangedListener(IWarOutLocationChangedListener listener) {
     synchronized (warOutLocationChangedListeners) {
       warOutLocationChangedListeners.add(listener);
     }
   }
 
   public static List<IPath> getJarsExcludedFromWebInfLib(IProject project) {
-    String rawPatterns = getProjectProperties(project).get(
-        JARS_EXCLUDED_FROM_WEB_INF_LIB, null);
+    String rawPatterns = getProjectProperties(project).get(JARS_EXCLUDED_FROM_WEB_INF_LIB, null);
     return PropertiesUtilities.deserializePaths(rawPatterns);
   }
 
   /**
-   * Returns the location last selected as a WAR output directory. If no WAR
-   * outputs directory has been chosen for this project, null is returned.
+   * Returns the location last selected as a WAR output directory. If no WAR outputs directory has been chosen for this
+   * project, null is returned.
    */
   public static IPath getLastUsedWarOutLocation(IProject project) {
-    String path = getProjectProperties(project).get(
-        LAST_USED_WAR_OUT_LOCATION, null);
+    String path = getProjectProperties(project).get(LAST_USED_WAR_OUT_LOCATION, null);
     return path != null ? new Path(path) : null;
   }
 
   /**
-   * Returns the location last selected as a WAR output directory. If no WAR
-   * outputs directory has been chosen for this project, the project root
-   * directory is returned.
+   * Returns the location last selected as a WAR output directory. If no WAR outputs directory has been chosen for this
+   * project, the project root directory is returned.
    */
-  public static IPath getLastUsedWarOutLocationOrProjectLocation(
-      IProject project) {
+  public static IPath getLastUsedWarOutLocationOrProjectLocation(IProject project) {
     IPath path = getLastUsedWarOutLocation(project);
     return path != null ? path : project.getLocation();
   }
 
   public static String getLaunchConfigExternalUrlPrefix(IProject project) {
-    String launchConfigExternalUrlPrefix = getProjectProperties(project).get(
-        LAUNCH_CONFIG_EXTERNAL_URL_PREFIX, "");
+    String launchConfigExternalUrlPrefix = getProjectProperties(project).get(LAUNCH_CONFIG_EXTERNAL_URL_PREFIX, "");
     return launchConfigExternalUrlPrefix;
   }
 
@@ -118,10 +116,9 @@ public final class WebAppProjectProperties {
     String warSrcDir = getProjectProperties(project).get(WAR_SRC_DIR, null);
     if (warSrcDir == null) {
       /*
-       * If the property value is null, that means it was never set for this
-       * project (setWarSrcDir automatically converts null to empty string). To
-       * handle legacy projects (pre-GPE 1.3), we'll check to see if it contains
-       * a root folder named "war" and if does, use that as the default setting.
+       * If the property value is null, that means it was never set for this project (setWarSrcDir automatically
+       * converts null to empty string). To handle legacy projects (pre-GPE 1.3), we'll check to see if it contains a
+       * root folder named "war" and if does, use that as the default setting.
        */
       IFolder defaultWar = project.getFolder(WebAppUtilities.DEFAULT_WAR_DIR_NAME);
       if (defaultWar.exists()) {
@@ -137,18 +134,15 @@ public final class WebAppProjectProperties {
   }
 
   public static boolean isWarSrcDirOutput(IProject project) {
-    return getProjectProperties(project).getBoolean(WAR_SRC_DIR_IS_OUTPUT,
-        WAR_SRC_DIR_IS_OUTPUT_DEFAULT_VALUE);
+    return getProjectProperties(project).getBoolean(WAR_SRC_DIR_IS_OUTPUT, WAR_SRC_DIR_IS_OUTPUT_DEFAULT_VALUE);
   }
 
   /**
-   * If the given project is not already a Web App (i.e. it does not have a
-   * defined WAR directory), and it is a Dynamic Web Project, then set the WAR
-   * directory to be equivalent to the Web Project's WebContent directory, and
-   * ensure that the directory is set to be "input-only".
+   * If the given project is not already a Web App (i.e. it does not have a defined WAR directory), and it is a Dynamic
+   * Web Project, then set the WAR directory to be equivalent to the Web Project's WebContent directory, and ensure that
+   * the directory is set to be "input-only".
    */
-  public static void maybeSetWebAppPropertiesForDynamicWebProject(
-      IProject project) throws BackingStoreException {
+  public static void maybeSetWebAppPropertiesForDynamicWebProject(IProject project) throws BackingStoreException {
     if (WebAppUtilities.isWebApp(project)) {
       return;
     }
@@ -168,30 +162,28 @@ public final class WebAppProjectProperties {
     }
   }
 
-  public static void removeWarOutLocationChangedListener(
-      IWarOutLocationChangedListener listener) {
+  public static void removeWarOutLocationChangedListener(IWarOutLocationChangedListener listener) {
     synchronized (warOutLocationChangedListeners) {
       warOutLocationChangedListeners.remove(listener);
     }
   }
 
-  public static void setJarsExcludedFromWebInfLib(IProject project,
-      List<IPath> excludedJars) throws BackingStoreException {
+  public static void setJarsExcludedFromWebInfLib(IProject project, List<IPath> excludedJars)
+      throws BackingStoreException {
     IEclipsePreferences prefs = getProjectProperties(project);
     String rawPropVal = PropertiesUtilities.serializePaths(excludedJars);
     prefs.put(JARS_EXCLUDED_FROM_WEB_INF_LIB, rawPropVal);
     prefs.flush();
   }
 
-  public static void setLastUsedWarOutLocation(IProject project,
-      IPath warOutLocation) throws BackingStoreException {
+  public static void setLastUsedWarOutLocation(IProject project, IPath warOutLocation) throws BackingStoreException {
     IEclipsePreferences prefs = getProjectProperties(project);
     prefs.put(LAST_USED_WAR_OUT_LOCATION, warOutLocation.toString());
     prefs.flush();
   }
 
-  public static void setLaunchConfigExternalUrlPrefix(IProject project,
-      String launchConfigExternalUrlPrefix) throws BackingStoreException {
+  public static void setLaunchConfigExternalUrlPrefix(IProject project, String launchConfigExternalUrlPrefix)
+      throws BackingStoreException {
     IEclipsePreferences prefs = getProjectProperties(project);
     if (launchConfigExternalUrlPrefix == null) {
       launchConfigExternalUrlPrefix = "";
@@ -200,8 +192,7 @@ public final class WebAppProjectProperties {
     prefs.flush();
   }
 
-  public static void setWarSrcDir(IProject project, IPath warDir)
-      throws BackingStoreException {
+  public static void setWarSrcDir(IProject project, IPath warDir) throws BackingStoreException {
     if (warDir == null) {
       warDir = new Path("");
     }
@@ -214,8 +205,7 @@ public final class WebAppProjectProperties {
     }
   }
 
-  public static void setWarSrcDirIsOutput(IProject project, boolean isOutput)
-      throws BackingStoreException {
+  public static void setWarSrcDirIsOutput(IProject project, boolean isOutput) throws BackingStoreException {
     IEclipsePreferences prefs = getProjectProperties(project);
     prefs.putBoolean(WAR_SRC_DIR_IS_OUTPUT, isOutput);
     prefs.flush();
@@ -233,8 +223,7 @@ public final class WebAppProjectProperties {
   private static void notifyWarOutLocationChangedListeners(IProject project) {
     List<IWarOutLocationChangedListener> safeListeners;
     synchronized (warOutLocationChangedListeners) {
-      safeListeners = new ArrayList<IWarOutLocationChangedListener>(
-          warOutLocationChangedListeners);
+      safeListeners = new ArrayList<IWarOutLocationChangedListener>(warOutLocationChangedListeners);
     }
 
     for (IWarOutLocationChangedListener listener : safeListeners) {
@@ -244,6 +233,10 @@ public final class WebAppProjectProperties {
 
   public static String getGwtMavenModuleName(IProject project) {
     return getProjectProperties(project).get(GWT_MAVEN_MODULE_NAME, "");
+  }
+
+  public static String getGwtMavenModuleShortName(IProject project) {
+    return getProjectProperties(project).get(GWT_MAVEN_MODULE_SHORT_NAME, "");
   }
 
   public static void setGwtMavenModuleName(IProject project, String gwtMavenModuleName) throws BackingStoreException {
@@ -260,8 +253,23 @@ public final class WebAppProjectProperties {
     }
   }
 
+  public static void setGwtMavenModuleShortName(IProject project, String gwtMavenModuleShortName)
+      throws BackingStoreException {
+    IEclipsePreferences prefs = getProjectProperties(project);
+    if (gwtMavenModuleShortName == null) {
+      try {
+        prefs.remove(GWT_MAVEN_MODULE_SHORT_NAME);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    } else {
+      prefs.put(GWT_MAVEN_MODULE_SHORT_NAME, gwtMavenModuleShortName);
+      prefs.flush();
+    }
+  }
 
   private WebAppProjectProperties() {
     // Not instantiable
   }
+
 }

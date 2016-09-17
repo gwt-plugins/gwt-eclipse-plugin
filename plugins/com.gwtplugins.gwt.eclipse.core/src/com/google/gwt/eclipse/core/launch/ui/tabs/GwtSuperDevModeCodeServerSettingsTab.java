@@ -445,7 +445,7 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
 
   @Override
   public Image getImage() {
-    return GWTPlugin.getDefault().getImage(GWTImages.GWT_ICON);
+    return GWTPlugin.getDefault().getImage(GWTImages.GWT_ICON_CODESERVER);
   }
 
   @Override

@@ -25,27 +25,30 @@
       </page>
    </extension>
    
+   <!-- Web Application Launcher-->
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
             delegate="com.google.gdt.eclipse.suite.launch.WebAppLaunchDelegate"
             delegateDescription="Runs a Web Application"
-            delegateName="Web Application Launcher"
+            delegateName="GWT Web Application Launcher"
             id="com.google.gdt.eclipse.suite.webapp"
             modes="run, debug"
-            name="Web Application"
+            name="GWT Web Application"
             sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
             sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
    </extension>
    
-      <extension
+   <!-- icon -->
+   <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
-            icon="icons/gdt_16x16.png"
+            icon="icons/gwt_server_16x16.png"
             configTypeID="com.google.gdt.eclipse.suite.webapp"
             id="com.google.gdt.eclipse.suite.launch.webappImage">
       </launchConfigurationTypeImage>
    </extension>
+
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
@@ -56,11 +59,11 @@
          <launchMode 
                mode="debug"
                perspective="org.eclipse.debug.ui.DebugPerspective"
-               description="Debug a Web Application">
+               description="Debug a Web Application with DevMode">
          </launchMode>
          <launchMode
                mode="run"
-               description="Run a Web Application">
+               description="Run a Web Application with DevMode">
          </launchMode>
       </launchConfigurationTabGroup>
       
@@ -68,23 +71,25 @@
       <launchConfigurationTabGroup
             class="com.google.gdt.eclipse.suite.launch.ui.tab_groups.GwtSuperDevModeCodeServerTabGroup"
             id="com.google.gwt.eclipse.core.launch.gwtSdmCodeServerTabGroup"
-            type="com.google.gwt.eclipse.core.sdmCodeServer">
+            type="com.google.gwt.eclipse.core.sdmCodeServer"
+            description="Launch GWT Super Dev Mode with the CodeServer">
          <launchMode
-               description="Run GWT Super Dev Mode"
+               description="Debug GWT Super Dev Mode with the CodeServer"
                mode="debug"
                perspective="org.eclipse.debug.ui.DebugPerspective">
          </launchMode>
          <launchMode
-               description="Run GWT Super Dev Mode"
+               description="Run GWT Super Dev Mode with the CodeServer"
                mode="run">
          </launchMode>
       </launchConfigurationTabGroup>
    </extension>
       
-   <!-- Web Application shortcut -->
+   <!-- Shortcuts -->
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">
-      <shortcut
+      <!-- Web Application shortcut -->
+      <!-- <shortcut
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppLaunchShortcut"
             description="Launch a Web Application"
             icon="icons/gdt_16x16.png"
@@ -96,9 +101,6 @@
                <with variable="selection">
                   <count value= "1"/>
                      <iterate>
-                        <!--
-                        see code in com.google.gdt.eclipse.suite.propertytesters.LaunchTargetTester.java
-                        -->
                         <test property="com.google.gdt.eclipse.suite.isLaunchTarget"/>
                      </iterate>
                </with>
@@ -113,15 +115,15 @@
                mode="debug" />
          <configurationType
                id="com.google.gdt.eclipse.suite.webapp"/>
-      </shortcut>
+      </shortcut> -->
       
       <!-- Web Application No Server shortcut -->
-      <shortcut
+      <!-- <shortcut
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppNoServerLaunchShortcut"
-            description="Launch a Web Application using an External Server"
-            icon="icons/gdt_16x16.png"
+            description="Launch a Web Application with DevMode using an External Server"
+            icon="icons/gwt_server_16x16.png"
             id="com.google.gdt.eclipse.suite.ui.webappNoServerLaunchShortcut"
-            label="Web Application (running on an external server)"
+            label="GWT Web Application with DevMode (Super Dev Mode with External Server)"
             modes="run, debug">            
          <contextualLaunch>
             <enablement>
@@ -149,15 +151,15 @@
          <configurationType
                id="com.google.gdt.eclipse.suite.webapp">
          </configurationType>
-      </shortcut>
+      </shortcut> -->
       
       <!-- GWT Super Dev Mode Launch shortcut when using GWT -->
       <shortcut
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTSuperDevModeLaunchShortcut"
-            description="Launch a Web Application using GWT super dev mode"
-            icon="icons/gdt_16x16.png"
+            description="Launch a Web Application using GWT super dev mode with DevMode"
+            icon="icons/gwt_server_16x16.png"
             id="com.google.gdt.eclipse.suite.launch.ui.webappLaunchShortcutGwtSuperDevMode"
-            label="Web Application (GWT Super Dev Mode)"
+            label="GWT Web Application with DevMode (Super Dev Mode)"
             modes="run, debug">
          <contextualLaunch>
             <enablement>
@@ -170,10 +172,10 @@
             </enablement>
          </contextualLaunch>
          <description
-               description="Run a Web Application (GWT Super Dev Mode)"
+               description="Run a Web Application with DevMode (SDM)"
                mode="run" />
          <description
-               description="Debug a Web Application (GWT Super Dev Mode)"
+               description="Debug a Web Application (GWT SDM)"
                mode="debug" />
          <configurationType
                id="com.google.gdt.eclipse.suite.webapp"/>
@@ -181,10 +183,10 @@
       <!-- GWT Classic Dev Mode Launch shortcut when using GWT -->
       <shortcut
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTClassicDevModeLaunchShortcut"
-            description="Launch a Web Application using GWT classic dev mode"
-            icon="icons/gdt_16x16.png"
+            description="Launch a Web Application using GWT classic DevMode"
+            icon="icons/gwt_server_16x16.png"
             id="com.google.gdt.eclipse.suite.launch.ui.webappLaunchShortcutGwtClassicDevMode"
-            label="Web Application (GWT Classic Dev Mode)"
+            label="GWT Web Application with DevMode (Classic Dev Mode)"
             modes="run, debug">
          <contextualLaunch>
             <enablement>
@@ -197,10 +199,10 @@
             </enablement>
          </contextualLaunch>
          <description
-               description="Run a Web Application (GWT Classic Dev Mode)"
+               description="Run a Web Application with DevMode (Classic Dev Mode)"
                mode="run" />
          <description
-               description="Debug a Web Application (GWT Classic Dev Mode)"
+               description="Debug a Web Application With DevMode (Classic Dev Mode)"
                mode="debug" />
          <configurationType
                id="com.google.gdt.eclipse.suite.webapp"/>
@@ -215,9 +217,9 @@
       <wizard
             category="com.google.gdt.eclipse.suite.newWizards"
             class="com.google.gdt.eclipse.suite.wizards.NewWebAppProjectWizard"
-            icon="icons/gdt-new-project_16x16-old.png"
+            icon="icons/gdt-new-project_16x16.png"
             id="com.google.gdt.eclipse.suite.wizards.newProjectWizard"
-            name="Web Application Project"
+            name="GWT Web Application Project"
             preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective"
             project="true">
       </wizard>      
@@ -327,7 +329,7 @@
             locationURI="toolbar:org.eclipse.ui.main.toolbar?before=additions">
          <toolbar
                id="com.google.gdt.eclipse.suite.GDTPulldownToolbar"
-               label="Google">
+               label="GWT">
             <command
                   commandId="com.google.gdt.eclipse.suite.GDTPulldown"
                   icon="icons/gdt_16x16.png"

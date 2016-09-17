@@ -6,7 +6,6 @@
    <extension-point id="com.google.gwt.eclipse.core.moduleClasspathProvider" name="ModuleClasspathProvider" schema="schema/com.google.gwt.eclipse.core.moduleClasspathProvider.exsd"/>
    <extension-point id="com.google.gwt.eclipse.core.gwtSdkSelectionEnablementFinder" name="GwtSdkSelectionEnablementFinder" schema="schema/com.google.gwt.eclipse.core.gwtSdkSelectionEnablementFinder.exsd"/>
    <extension-point id="com.google.gwt.eclipse.core.gwtProjectBoundSdkFactory" name="GWT Project-Bound SDK Factory" schema="schema/com.google.gwt.eclipse.core.gwtProjectBoundSdkFactory.exsd"/>
-   <extension-point id="com.google.gwt.eclipse.core.alternateSpeedTracerDialog" name="alternateSpeedTracerDialog" schema="schema/com.google.gwt.eclipse.core.alternateSpeedTracerDialog.exsd"/>
    <extension-point id="com.google.gwt.eclipse.core.gwtCompileProjectValidator" name="gwtCompileProjectValidator" schema="schema/com.google.gwt.eclipse.core.gwtCompileProjectValidator.exsd"/>
    <extension-point id="com.google.gwt.eclipse.core.gwtSettingsTabFactory" name="GwtSettingsTabFactory" schema="schema/com.google.gwt.eclipse.core.gwtSettingsTabFactory.exsd"/>
    <extension
@@ -232,6 +231,8 @@
          </part>
       </actionSetPartAssociation>
    </extension>
+   
+   <!-- Launch Types -->
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
@@ -244,29 +245,37 @@
             sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
             sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer">
       </launchConfigurationType>
+      
       <launchConfigurationType
             delegate="com.google.gwt.eclipse.core.launch.GwtSuperDevModeCodeServerDelegate"
-            delegateDescription="Runs the GWT Super Dev Mode Code Server"
-            delegateName="GWT SDM Code Server"
+            delegateDescription="Runs the GWT Super Dev Mode with CodeServer"
+            delegateName="GWT Super Dev Mode (CodeServer)"
             id="com.google.gwt.eclipse.core.sdmCodeServer"
             modes="run, debug"
-            name="GWT SDM Code Server"
+            name="GWT Super Dev Mode"
             sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
             sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
-   </extension>   
+   </extension>
+
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      
+      <!-- GWT SDM Code Server -->
+      <launchConfigurationTypeImage
+            configTypeID="com.google.gwt.eclipse.core.sdmCodeServer"
+            icon="icons/gwt_codeserver_16x16.png"
+            id="com.google.gwt.eclipse.core.sdmCodeServerImage">
+       </launchConfigurationTypeImage>
+       
+      <!-- GWT Junit -->
       <launchConfigurationTypeImage
             configTypeID="com.google.gwt.eclipse.core.launch.gwtJUnit"
             icon="icons/gwt-junit_small.gif"
-         id="com.google.gwt.eclipse.core.launch.gwtJUnitImage">
+            id="com.google.gwt.eclipse.core.launch.gwtJUnitImage">
       </launchConfigurationTypeImage>
-      <launchConfigurationTypeImage
-             icon="icons/gwt_16x16.png"
-             configTypeID="com.google.gwt.eclipse.core.sdmCodeServer"
-             id="com.google.gwt.eclipse.core.sdmCodeServerImage">
-       </launchConfigurationTypeImage>
+
    </extension>
+
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
@@ -351,10 +360,10 @@
       
       <shortcut
             class="com.google.gwt.eclipse.core.launch.ui.GwtSuperDevModeCodeServerLaunchShortcut"
-            description="Run the GWT super dev mode code server."
-            icon="icons/gwt_16x16.png"
+            description="Run the GWT Super Dev Mode with CodeServer."
+            icon="icons/gwt_codeserver_16x16.png"
             id="com.google.gwt.eclipse.core.launch.ui.gwtSdmCodeServerLaunchShortcut"
-            label="Run GWT Super Dev Mode Code Server"
+            label="GWT Super Dev Mode"
             modes="run, debug">
          <contextualLaunch>
             <enablement>
@@ -718,7 +727,8 @@
          <action
                class="com.google.gwt.eclipse.core.actions.ProjectPropertiesAction"
                id="com.google.gwt.eclipse.core.popupMenu.project.gwtSettings"
-               label="GWT Classic Settings..."
+               icon="icons/gwt_16x16.png"
+               label="GWT Settings..."
                menubarPath="com.google.gdt.eclipse.suite.popupMenu.project/settingsContent">
          </action>
       </objectContribution>

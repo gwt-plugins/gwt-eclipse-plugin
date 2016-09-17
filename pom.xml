@@ -9,22 +9,23 @@
   <packaging>pom</packaging>
 
   <properties>
-    <tycho.version>0.25.0</tycho.version>
-    <tycho-extras.version>0.25.0</tycho-extras.version>
+    <tycho.version>0.26.0</tycho.version>
+    <tycho-extras.version>0.26.0</tycho-extras.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- These constants are currently set up to build against Eclipse Mars. -->
     <eclipse.target>mars</eclipse.target>
+    
+    <!-- TODO increment the max version ? There is a problem using 8.1 to 8.2-->
     <jettyMinVersion>8.1</jettyMinVersion>
     <jettyMaxVersion>8.2</jettyMaxVersion>
 
     <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
-    <!-- <adt-repo.url>http://dl-ssl.google.com/android/eclipse/</adt-repo.url> -->
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/latest/</swtbot-repo.url>
 
-    <!-- TODO maybe add release version to url -->
-    <comparator.repo>http://storage.googleapis.com/gwt-eclipse-plugin/release</comparator.repo>
+    <!-- Release url determined by upload in upload-release.sh -->
+    <comparator.repo>http://storage.googleapis.com/gwt-eclipse-plugin/v2/release</comparator.repo>
 
     <!-- OS-specific JVM flags, empty for the default case but redefined below -->
     <os-jvm-flags />
@@ -37,10 +38,8 @@
   </properties>
 
   <modules>
-    <!-- GWT_HOME and GAE_HOME SDKs downloaded here -->
+    <!-- GWT_HOME SDKs downloaded here -->
     <module>resources</module>
-    <!-- Use `mvn package` - repository located in ./repo/target/repository -->
-    <module>repo</module>
 
     <!-- Features located in ./repo/category.xml -->
     <module>features/com.gwtplugins.eclipse.suite.e44.feature</module>
@@ -64,7 +63,6 @@
     <module>plugins/com.gwtplugins.gwt.eclipse.core</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.core.test</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.core.test.swtbot</module>
-    <module>plugins/com.gwtplugins.gwt.eclipse.libs</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.oophm</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.oophm.test</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.testing</module>
@@ -77,6 +75,9 @@
 
     <!-- SDK Bundles -->
     <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle</module>
+    
+    <!-- Use `mvn package` - repository located in ./repo/target/repository -->
+    <module>repo</module>
   </modules>
 
   <repositories>
@@ -106,13 +107,14 @@
         <artifactId>target-platform-configuration</artifactId>
         <configuration>
           <filters>
-            <filter>
+            <!-- TODO: This creates a problem when 8.1 to 8.2 remove? -->
+            <!-- <filter>
               <type>java-package</type>
               <id>org.eclipse.jetty.http</id>
               <restrictTo>
                 <versionRange>[${jettyMinVersion},${jettyMaxVersion})</versionRange>
               </restrictTo>
-            </filter>
+            </filter> -->
           </filters>
           <environments>
             <environment>

@@ -30,6 +30,7 @@ import java.util.List;
 /**
  * Processes the "-server" argument. This is only present in GWT + GAE when running a server.
  */
+@Deprecated // remove - have folks use the code server launcher
 public class ServerArgumentProcessor implements ILaunchConfigurationProcessor {
 
   private static final String ARG_SERVER = "-server";

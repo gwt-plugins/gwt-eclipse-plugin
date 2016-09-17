@@ -21,33 +21,6 @@
 
   <build>
     <plugins>
-      <!-- This is used when GAE_HOME is not set and this is for GaeProjectTestUtil.installGaeTestSdk() -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>get-appengine</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <!-- Downloads App Engine SDK and deposits it in the ./resources directory -->
-                <artifactItem>
-                  <groupId>com.google.appengine</groupId>
-                  <artifactId>appengine-java-sdk</artifactId>
-                  <version>${appengine.version}</version>
-                  <type>zip</type>
-                  <outputDirectory>${project.build.directory}/resources</outputDirectory>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
@@ -76,20 +49,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
         <version>1.6</version>
-        <executions>
-          <execution>
-            <id>unzip-gae</id>
-            <phase>process-resources</phase>
-            <configuration>
-              <tasks>
-                <unzip src="${project.build.directory}/resources/appengine-java-sdk-${appengine.version}.zip" dest="${project.build.directory}/resources/" />
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-          
+        <executions>          
           <execution>
             <id>unzip-gwt</id>
             <phase>process-resources</phase>

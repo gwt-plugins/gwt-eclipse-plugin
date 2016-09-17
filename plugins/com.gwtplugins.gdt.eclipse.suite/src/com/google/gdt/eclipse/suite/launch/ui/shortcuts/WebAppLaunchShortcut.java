@@ -55,11 +55,10 @@ public class WebAppLaunchShortcut implements ILaunchShortcut {
 
   /**
    * Calculate launch configuration name.
-   * 
+   *
    * @return a launch configuration name.
    */
-  private static String calculateLaunchConfigName(String startupUrl, boolean isExternal,
-      IResource resource) {
+  private static String calculateLaunchConfigName(String startupUrl, boolean isExternal, IResource resource) {
     String launchConfigName = "";
     if ("".equals(startupUrl)) {
       launchConfigName = resource.getProject().getName();
@@ -111,20 +110,19 @@ public class WebAppLaunchShortcut implements ILaunchShortcut {
 
   /**
    * Create a new launch configuration.
-   * 
-   * @param isGwtSuperDevModeEnabled is used to turn on GWT super dev mode.
+   *
+   * @param isGwtSuperDevModeEnabled
+   *          is used to turn on GWT super dev mode.
    */
-  protected ILaunchConfiguration createNewLaunchConfiguration(IResource resource,
-      String startupUrl, boolean isExternal, boolean isGwtSuperDevModeEnabled)
-      throws CoreException, OperationCanceledException {
+  protected ILaunchConfiguration createNewLaunchConfiguration(IResource resource, String startupUrl, boolean isExternal,
+      boolean isGwtSuperDevModeEnabled) throws CoreException, OperationCanceledException {
     String initialName = calculateLaunchConfigName(startupUrl, isExternal, resource);
     ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
     String launchConfigName = manager.generateUniqueLaunchConfigurationNameFrom(initialName);
 
     IProject project = resource.getProject();
-    ILaunchConfigurationWorkingCopy wc =
-        WebAppLaunchUtil.createLaunchConfigWorkingCopy(launchConfigName, project, startupUrl,
-            isExternal, isGwtSuperDevModeEnabled);
+    ILaunchConfigurationWorkingCopy wc = WebAppLaunchUtil.createLaunchConfigWorkingCopy(launchConfigName, project,
+        startupUrl, isExternal, isGwtSuperDevModeEnabled);
 
     ILaunchConfiguration toReturn = wc.doSave();
 
@@ -132,39 +130,37 @@ public class WebAppLaunchShortcut implements ILaunchShortcut {
   }
 
   /**
-   * Finds and returns an <b>existing</b> configuration to re-launch for the given URL, or
-   * <code>null</code> if there is no existing configuration.
-   * 
+   * Finds and returns an <b>existing</b> configuration to re-launch for the given URL, or <code>null</code> if there is
+   * no existing configuration.
+   *
    * @return a configuration to use for launching the given type or <code>null
    *         </code> if none
    * @throws CoreException
    */
-  protected ILaunchConfiguration findLaunchConfiguration(IResource resource, String startupUrl,
-      boolean isExternal) throws CoreException {
+  protected ILaunchConfiguration findLaunchConfiguration(IResource resource, String startupUrl, boolean isExternal)
+      throws CoreException {
 
     ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
-    ILaunchConfigurationType typeid =
-        launchManager.getLaunchConfigurationType(WebAppLaunchConfiguration.TYPE_ID);
+    ILaunchConfigurationType typeid = launchManager.getLaunchConfigurationType(WebAppLaunchConfiguration.TYPE_ID);
     ILaunchConfiguration[] configs = launchManager.getLaunchConfigurations(typeid);
 
     return searchMatchingUrlAndProject(startupUrl, resource.getProject(), isExternal, configs);
   }
 
   /**
-   * Given a resource, infer the startup URL that the resource points at, then look for an existing
-   * launch configuration that points at this URL. If none exists, we'll create a new one.
-   * 
-   * @param isGwtSuperDevModeEnabled is used to turn on GWT super dev mode.
+   * Given a resource, infer the startup URL that the resource points at, then look for an existing launch configuration
+   * that points at this URL. If none exists, we'll create a new one.
+   *
+   * @param isGwtSuperDevModeEnabled
+   *          is used to turn on GWT super dev mode.
    * @return the found or newly created launch configuration
    */
-  protected ILaunchConfiguration findOrCreateLaunchConfiguration(IResource resource,
-      String startupUrl, boolean isExternal, boolean isGwtSuperDevModeEnabled)
-      throws CoreException, OperationCanceledException {
+  protected ILaunchConfiguration findOrCreateLaunchConfiguration(IResource resource, String startupUrl,
+      boolean isExternal, boolean isGwtSuperDevModeEnabled) throws CoreException, OperationCanceledException {
     ILaunchConfiguration config = findLaunchConfiguration(resource, startupUrl, isExternal);
 
     if (config == null) {
-      config =
-          createNewLaunchConfiguration(resource, startupUrl, isExternal, isGwtSuperDevModeEnabled);
+      config = createNewLaunchConfiguration(resource, startupUrl, isExternal, isGwtSuperDevModeEnabled);
     } else if (GWTNature.isGWTProject(resource.getProject())
         && GWTLaunchConfigurationWorkingCopy.getSuperDevModeEnabled(config) != isGwtSuperDevModeEnabled) {
       config = turnOnOrOffSuperDevMode(config, isGwtSuperDevModeEnabled);
@@ -174,8 +170,8 @@ public class WebAppLaunchShortcut implements ILaunchShortcut {
   }
 
   /**
-   * Given a specific resource, launch for that resource. This will involve either finding an
-   * existing launch configuration, or making a new one.
+   * Given a specific resource, launch for that resource. This will involve either finding an existing launch
+   * configuration, or making a new one.
    */
   protected void launch(IResource resource, String mode) {
 
@@ -189,8 +185,7 @@ public class WebAppLaunchShortcut implements ILaunchShortcut {
     try {
       String startupUrl = WebAppLaunchUtil.determineStartupURL(resource, false);
       if (startupUrl != null) {
-        ILaunchConfiguration config =
-            findOrCreateLaunchConfiguration(resource, startupUrl, false, false);
+        ILaunchConfiguration config = findOrCreateLaunchConfiguration(resource, startupUrl, false, true);
 
         assert (config != null);
 
@@ -207,15 +202,14 @@ public class WebAppLaunchShortcut implements ILaunchShortcut {
     return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
   }
 
-  private ILaunchConfiguration searchMatchingUrlAndProject(String startupUrl, IProject project,
-      boolean isExternal, ILaunchConfiguration[] configs) throws CoreException {
+  private ILaunchConfiguration searchMatchingUrlAndProject(String startupUrl, IProject project, boolean isExternal,
+      ILaunchConfiguration[] configs) throws CoreException {
     List<ILaunchConfiguration> candidates = new ArrayList<ILaunchConfiguration>();
 
     for (ILaunchConfiguration config : configs) {
       String configUrl = GWTLaunchConfiguration.getStartupUrl(config);
 
-      if (configUrl.equals(startupUrl)
-          && LaunchConfigurationUtilities.getProjectName(config).equals(project.getName())
+      if (configUrl.equals(startupUrl) && LaunchConfigurationUtilities.getProjectName(config).equals(project.getName())
           && WebAppLaunchConfiguration.getRunServer(config) == !isExternal) {
         candidates.add(config);
       }
@@ -231,13 +225,12 @@ public class WebAppLaunchShortcut implements ILaunchShortcut {
   }
 
   /**
-   * Turn on GWT Super Dev Mode in the case that dev mode was run first. This depends on which
-   * shortcut was used.
-   * 
+   * Turn on GWT Super Dev Mode in the case that dev mode was run first. This depends on which shortcut was used.
+   *
    * @param isGwtSuperDevModeEnabled
    */
-  private ILaunchConfiguration turnOnOrOffSuperDevMode(ILaunchConfiguration config,
-      boolean isGwtSuperDevModeEnabled) throws CoreException {
+  private ILaunchConfiguration turnOnOrOffSuperDevMode(ILaunchConfiguration config, boolean isGwtSuperDevModeEnabled)
+      throws CoreException {
     ILaunchConfigurationWorkingCopy workingCopy = config.getWorkingCopy();
 
     GWTLaunchConfigurationWorkingCopy.setSuperDevModeEnabled(workingCopy, isGwtSuperDevModeEnabled);

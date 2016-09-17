@@ -238,9 +238,15 @@ public class ModuleFile extends AbstractModule {
     IFolder moduleFolder = (IFolder) getFile().getParent();
     IJavaElement javaElement = JavaCore.create(moduleFolder);
 
-    // For GWT maven plugin 2, its module is in src/main
-    if (getQualifiedName() != null && getQualifiedName().contains("module")) {
-      javaElement = getGwtMavenModuleNameForGwtMavenPlugin2(moduleFolder.getProject());
+    // Maven module name - maven 1 or maven 2 plugins
+    String mavenModuleName = WebAppProjectProperties.getGwtMavenModuleName(moduleFolder.getProject());
+
+    // not null, then it must be a gwt maven project 2
+    String shortName = WebAppProjectProperties.getGwtMavenModuleShortName(moduleFolder.getProject());
+    if (mavenModuleName != null && !mavenModuleName.isEmpty() && shortName != null && !shortName.isEmpty()
+        && mavenModuleName.contains(".")) {
+      String gwtMavenPackage2 = mavenModuleName.replaceAll("(.*)\\..*", "$1");
+      return gwtMavenPackage2;
     }
 
     if (javaElement != null) {

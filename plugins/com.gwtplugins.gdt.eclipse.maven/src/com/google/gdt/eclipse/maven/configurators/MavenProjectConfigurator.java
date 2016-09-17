@@ -59,6 +59,7 @@ public class MavenProjectConfigurator extends AbstracMavenProjectConfigurator {
   private static final String WEB_APP_DIRECTORY = "webappDirectory";
   private static final String HOSTED_WEB_APP_DIRECTORY = "hostedWebapp"; // GWT Maven Plugin 1 only
   private static final String GWT_MAVEN_MODULENAME = "moduleName";
+  private static final String GWT_MAVEN_MODULESHORTNAME = "moduleShortName";
 
   private static final String WAR_SRC_DIR_DEFAULT = "src/main/webapp";
 
@@ -130,6 +131,7 @@ public class MavenProjectConfigurator extends AbstracMavenProjectConfigurator {
     WebAppProjectProperties.setLastUsedWarOutLocation(project, warOutDir);
 
     WebAppProjectProperties.setGwtMavenModuleName(project, getGwtModuleName(mavenProject));
+    WebAppProjectProperties.setGwtMavenModuleShortName(project, getGwtModuleShortName(mavenProject));
 
     String message = "MavenProjectConfiguratior Maven: Success with setting up GWT Nature\n";
     message += "\tartifactId=" + mavenProject.getArtifactId() + "\n";
@@ -162,6 +164,36 @@ public class MavenProjectConfigurator extends AbstracMavenProjectConfigurator {
     String moduleName = null;
     for (Xpp3Dom child : gwtPluginConfig.getChildren()) {
       if (child != null && GWT_MAVEN_MODULENAME.equals(child.getName())) {
+        moduleName = child.getValue().trim();
+      }
+    }
+    return moduleName;
+  }
+
+  /**
+   * Get the GWT Maven plugin 2 <moduleShort=Name/>.
+   *
+   * @param mavenProject
+   * @return the moduleName from configuration
+   */
+  private String getGwtModuleShortName(MavenProject mavenProject) {
+    if (!isGwtMavenPlugin2(mavenProject)) {
+      return null;
+    }
+
+    Plugin gwtPlugin2 = getGwtMavenPlugin2(mavenProject);
+    if (gwtPlugin2 == null) {
+      return null;
+    }
+
+    Xpp3Dom gwtPluginConfig = (Xpp3Dom) gwtPlugin2.getConfiguration();
+    if (gwtPluginConfig == null) {
+      return null;
+    }
+
+    String moduleName = null;
+    for (Xpp3Dom child : gwtPluginConfig.getChildren()) {
+      if (child != null && GWT_MAVEN_MODULESHORTNAME.equals(child.getName())) {
         moduleName = child.getValue().trim();
       }
     }

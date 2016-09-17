@@ -23,16 +23,13 @@ import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.GWTProjectUtilities;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.runtime.GWTProjectsRuntime;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
 import com.google.gwt.eclipse.core.runtime.RuntimeClasspathEntryResolver;
-import com.google.gwt.eclipse.libs.AboutSuperDevModeLegacyJar;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.core.IJavaProject;
@@ -43,8 +40,6 @@ import org.eclipse.jdt.launching.StandardClasspathProvider;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
-import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -223,11 +218,6 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
       resolvedEntries = all.toArray(new IRuntimeClasspathEntry[all.size()]);
     }
 
-    // Add GWT super dev mode legacy jar to the first of the library list
-    if (GWTNature.isGWTProject(proj.getProject()) && resolvedEntries.length > 0) {
-      resolvedEntries = addGwtSuperDevModeLegacyJarToRuntimeClasspathPossibly(configuration, resolvedEntries);
-    }
-
     // Log duplicate jars
     try {
       logErrorIfMoreThanGWTSdkOnClassPath(proj, resolvedEntries);
@@ -304,50 +294,6 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
       }
     }
 
-  }
-
-  protected IRuntimeClasspathEntry[] addGwtSuperDevModeLegacyJarToRuntimeClasspathPossibly(
-      ILaunchConfiguration configuration, IRuntimeClasspathEntry[] resolvedEntries) throws CoreException {
-    IJavaProject javaProject = JavaRuntime.getJavaProject(configuration);
-    GWTRuntime gwtSdk = GWTRuntime.findSdkFor(javaProject);
-    if (gwtSdk == null) {
-      return resolvedEntries;
-    }
-
-    boolean superDevModeEnabled = GWTLaunchConfigurationWorkingCopy.getSuperDevModeEnabled(configuration);
-    String version = gwtSdk.getVersion();
-    boolean legacySuperDevModePossibleForGwtVersion =
-        GWTLaunchConstants.SUPERDEVMODE_LAUNCH_LEGACY_VERSIONS.contains(version);
-
-    Set<IRuntimeClasspathEntry> all = new LinkedHashSet<IRuntimeClasspathEntry>();
-
-    // Valid for GWT versions 2.5.0 to < 2.7
-    // This will only add if super dev mode is enabled and < GWT 2.7
-    if (superDevModeEnabled && legacySuperDevModePossibleForGwtVersion) {
-      // Add the super dev mode legacy jar first in the list
-      all.addAll(Arrays.asList(getSuperDevModeLauncherJarOverride()));
-    } else {
-      all.removeAll(Arrays.asList(getSuperDevModeLauncherJarOverride()));
-    }
-
-    // Add all the other libraries
-    all.addAll(Arrays.asList(resolvedEntries));
-
-    return all.toArray(new IRuntimeClasspathEntry[all.size()]);
-  }
-
-  /**
-   * Get the embedded legacy launcher library path. This includes an override for DevMode EntryPoint
-   * to run DevMode with Super Dev Mode easily in < 2.7.
-   *
-   * These classes will be out in GWT 2.7, and this is a workaround for GWT 2.5.0+
-   */
-  protected IRuntimeClasspathEntry getSuperDevModeLauncherJarOverride() throws CoreException {
-    // ie. ./google-plugin-for-eclipse/plugins/com.google.gwt.eclipse.core/
-    URL location = AboutSuperDevModeLegacyJar.class.getProtectionDomain().getCodeSource().getLocation();
-    File dir = new File(location.getFile(), "/libs/" + GWTLaunchConstants.SUPERDEVMODE_LEGACY_LAUNCHER_JAR);
-    IPath path = Path.fromOSString(dir.getAbsolutePath());
-    return JavaRuntime.newArchiveRuntimeClasspathEntry(path);
   }
 
 }

@@ -67,7 +67,7 @@ public class LaunchConfigurationUpdater {
 
     PROCESSORS.add(new ClasspathProviderProcessor());
     PROCESSORS.add(new MainTypeProcessor(classFinder));
-    PROCESSORS.add(new ServerArgumentProcessor());
+    //PROCESSORS.add(new ServerArgumentProcessor()); // TODO remove and have folks use the CodeServer launcher
     PROCESSORS.add(new WarArgumentProcessor());
     PROCESSORS.add(new PortArgumentProcessor());
     PROCESSORS.add(new DevModeCodeServerPortArgumentProcessor()); // GWT DevMode
