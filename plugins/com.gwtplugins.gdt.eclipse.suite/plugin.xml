@@ -118,7 +118,7 @@
       </shortcut> -->
       
       <!-- Web Application No Server shortcut -->
-      <shortcut
+      <!-- <shortcut
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppNoServerLaunchShortcut"
             description="Launch a Web Application with DevMode using an External Server"
             icon="icons/gwt_server_16x16.png"
@@ -151,7 +151,7 @@
          <configurationType
                id="com.google.gdt.eclipse.suite.webapp">
          </configurationType>
-      </shortcut>
+      </shortcut> -->
       
       <!-- GWT Super Dev Mode Launch shortcut when using GWT -->
       <shortcut
