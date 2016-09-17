@@ -67,34 +67,32 @@ public class GdtPlugin extends AbstractGooglePlugin {
   // TODO(nhcohen): Import this constant once all supported platforms define it in the same place.
   public static final String BUNDLE_VERSION = "Bundle-Version";
 
-
   private static Logger logger;
   /**
    * Perspectives that we monitor and optionally add our new wizards to.
    */
-  private static final List<String> PERSPECTIVES_TO_ADD_WIZARDS_TO = new ArrayList<String>(
-      Arrays.asList(new String[] {
-          "org.eclipse.jdt.ui.JavaPerspective", "org.eclipse.jdt.ui.JavaBrowsingPerspective",
-          "org.eclipse.jdt.ui.JavaHierarchyPerspective", "org.eclipse.jst.j2ee.J2EEPerspective"}));
+  private static final List<String> PERSPECTIVES_TO_ADD_WIZARDS_TO = new ArrayList<String>(Arrays.asList(new String[] {
+      "org.eclipse.jdt.ui.JavaPerspective", "org.eclipse.jdt.ui.JavaBrowsingPerspective",
+      "org.eclipse.jdt.ui.JavaHierarchyPerspective", "org.eclipse.jst.j2ee.J2EEPerspective" }));
 
   private static GdtPlugin plugin;
 
   // The following constant is referenced only in commented-out lines of the method
   // maybeAddNewWizardActionsToPerspective:
-//  /**
-//   * Wizards that we add to perspectives.
-//   *
-//   * TODO: If we add more wizards, this list should grow. Alternatively, we
-//   * could query the extension registry and add all GDT contributed wizards.
-//   */
-//  private static final List<String> WIZARDS_TO_ADD_TO_PERSPECTIVES = new ArrayList<String>(
-//      Arrays.asList(new String[] {
-//          "com.google.gdt.eclipse.suite.wizards.newProjectWizard",
-//          "com.google.gwt.eclipse.core.newModuleWizard",
-//          "com.google.gwt.eclipse.core.newHostPageWizard",
-//          "com.google.gwt.eclipse.core.newEntryPointWizard",
-//          "com.google.gwt.eclipse.core.newClientBundleWizard",
-//          "com.google.gwt.eclipse.core.newUiBinderWizard"}));
+  // /**
+  // * Wizards that we add to perspectives.
+  // *
+  // * TODO: If we add more wizards, this list should grow. Alternatively, we
+  // * could query the extension registry and add all GDT contributed wizards.
+  // */
+  // private static final List<String> WIZARDS_TO_ADD_TO_PERSPECTIVES = new ArrayList<String>(
+  // Arrays.asList(new String[] {
+  // "com.google.gdt.eclipse.suite.wizards.newProjectWizard",
+  // "com.google.gwt.eclipse.core.newModuleWizard",
+  // "com.google.gwt.eclipse.core.newHostPageWizard",
+  // "com.google.gwt.eclipse.core.newEntryPointWizard",
+  // "com.google.gwt.eclipse.core.newClientBundleWizard",
+  // "com.google.gwt.eclipse.core.newUiBinderWizard"}));
 
   public static GdtPlugin getDefault() {
     return plugin;
@@ -132,8 +130,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
   private static void rebuildGoogleProjectIfPluginVersionChanged(IProject project) {
     try {
       // We're only worried about Google projects
-      if (GWTNature.isGWTProject(project.getProject())
-          || NatureUtils.hasNature(project, GaeNature.NATURE_ID)) {
+      if (GWTNature.isGWTProject(project.getProject()) || NatureUtils.hasNature(project, GaeNature.NATURE_ID)) {
         // Find the last plugin version that know the project was built with
         Version lastForcedRebuildAt = GdtPreferences.getVersionForLastForcedRebuild(project);
         Version currentPluginVersion = GdtPlugin.getVersion();
@@ -143,8 +140,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
 
           BuilderUtilities.scheduleRebuild(project);
           CorePluginLog.logInfo("Scheduled rebuild of project " + project.getName()
-              + " because of plugin update (current version: " + currentPluginVersion.toString()
-              + ")");
+              + " because of plugin update (current version: " + currentPluginVersion.toString() + ")");
         }
       }
     } catch (CoreException e) {
@@ -174,8 +170,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
           IResourceDelta delta = event.getDelta();
           if (delta != null) {
             // Find any project-level changes
-            IResourceDelta[] projectDeltas = delta.getAffectedChildren(IResourceDelta.CHANGED,
-                IResource.PROJECT);
+            IResourceDelta[] projectDeltas = delta.getAffectedChildren(IResourceDelta.CHANGED, IResource.PROJECT);
 
             // The master delta may include more than one project delta
             for (IResourceDelta projectDelta : projectDeltas) {
@@ -227,16 +222,16 @@ public class GdtPlugin extends AbstractGooglePlugin {
     super.initializeImageRegistry(reg);
 
     reg.put(GdtImages.GDT_ICON, imageDescriptorFromPath("icons/gdt_16x16.png"));
-    reg.put(GdtImages.GDT_NEW_PROJECT_ICON,
-        imageDescriptorFromPath("icons/gdt-new-project_16x16.png"));
-    reg.put(GdtImages.GDT_NEW_PROJECT_LARGE,
-        imageDescriptorFromPath("icons/gdt-new-project_75x66.png"));
+    reg.put(GdtImages.GWT_SERVER_ICON, imageDescriptorFromPath("icons/gwt_server_16x16.png"));
+
+    reg.put(GdtImages.GDT_NEW_PROJECT_ICON, imageDescriptorFromPath("icons/gdt-new-project_16x16.png"));
+    reg.put(GdtImages.GDT_NEW_PROJECT_LARGE, imageDescriptorFromPath("icons/gdt-new-project_75x66.png"));
     reg.put(GdtImages.GAE_ICON, imageDescriptorFromPath("icons/ae_16x16.png"));
   }
 
   /**
-   * If we haven't added them in the past, add the new wizard actions that this
-   * to the perspective which is being displayed on the workbench page.
+   * If we haven't added them in the past, add the new wizard actions that this to the perspective which is being
+   * displayed on the workbench page.
    *
    * Note: This method can only be called once the workbench has been started.
    */
@@ -284,10 +279,9 @@ public class GdtPlugin extends AbstractGooglePlugin {
   }
 
   /**
-   * Adds the new wizards to the current perspective displayed in
-   * <code>activeWorkbenchWindow</code>, if they've not been added already. Adds
-   * listeners on the window so that the same is done whenever the user switches
-   * perspectives in the window.
+   * Adds the new wizards to the current perspective displayed in <code>activeWorkbenchWindow</code>, if they've not
+   * been added already. Adds listeners on the window so that the same is done whenever the user switches perspectives
+   * in the window.
    *
    * Note: This method can only be called once the workbench has been started.
    */
@@ -308,10 +302,9 @@ public class GdtPlugin extends AbstractGooglePlugin {
   }
 
   /**
-   * Adds the new wizards to the current perspective displayed in the
-   * workbench's active window, if they've not been added already. Adds
-   * listeners on the workbench so that the same is done for any new workbench
-   * windows that are created.
+   * Adds the new wizards to the current perspective displayed in the workbench's active window, if they've not been
+   * added already. Adds listeners on the workbench so that the same is done for any new workbench windows that are
+   * created.
    *
    * Note: This method can only be called once the workbench has been started.
    */
@@ -339,9 +332,8 @@ public class GdtPlugin extends AbstractGooglePlugin {
     ProjectUtilities.setWebAppProjectCreatorFactory(WebAppProjectCreator.FACTORY);
 
     /*
-     * Execute this on the UI thread. This has the effect of delaying the
-     * execution until the Workbench is running and the UI is available. This is
-     * necessary because the code in this method manipulates the Workbench UI.
+     * Execute this on the UI thread. This has the effect of delaying the execution until the Workbench is running and
+     * the UI is available. This is necessary because the code in this method manipulates the Workbench UI.
      */
     Display.getDefault().asyncExec(new Runnable() {
       @Override
@@ -353,18 +345,14 @@ public class GdtPlugin extends AbstractGooglePlugin {
     LaunchConfigAffectingChangesListener.INSTANCE.start();
 
     /*
-     * We've already loaded the specific problem type enums in the specific
-     * plugin activators that define them (GWTPlugin.java,
-     * AppEngineCorePlugin.java). Now we need to load the problem severities.
+     * We've already loaded the specific problem type enums in the specific plugin activators that define them
+     * (GWTPlugin.java, AppEngineCorePlugin.java). Now we need to load the problem severities.
      *
-     * There is a small window between the time that this plugin is loaded and a
-     * plugin-specific builder (i.e. for GWT, or App Engine) can be invoked. It
-     * may be the case that a user will get a problem marker that has a severity
-     * that mismatches what they've defined. This will be fixed up on their next
-     * rebuild. If we hear of reports of this being a nuisance, we can work out
-     * a clever way to rebuild possibly-affected projects when this plugin loads
-     * (or, perhaps have a latch that prevents problem markers from being
-     * created until this plugin loads).
+     * There is a small window between the time that this plugin is loaded and a plugin-specific builder (i.e. for GWT,
+     * or App Engine) can be invoked. It may be the case that a user will get a problem marker that has a severity that
+     * mismatches what they've defined. This will be fixed up on their next rebuild. If we hear of reports of this being
+     * a nuisance, we can work out a clever way to rebuild possibly-affected projects when this plugin loads (or,
+     * perhaps have a latch that prevents problem markers from being created until this plugin loads).
      */
     GdtProblemSeverities.getInstance().loadSeverities(GdtPreferences.getEncodedProblemSeverities());
 

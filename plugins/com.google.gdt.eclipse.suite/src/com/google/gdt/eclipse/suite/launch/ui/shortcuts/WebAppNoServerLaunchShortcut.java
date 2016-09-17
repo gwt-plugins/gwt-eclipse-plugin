@@ -44,7 +44,7 @@ public class WebAppNoServerLaunchShortcut extends WebAppLaunchShortcut {
       String startupUrl = WebAppLaunchUtil.determineStartupURL(resource, true);
       if (startupUrl != null) {
         ILaunchConfiguration config =
-            findOrCreateLaunchConfiguration(resource, startupUrl, true, false);
+            findOrCreateLaunchConfiguration(resource, startupUrl, true, true);
 
         assert (config != null);
 

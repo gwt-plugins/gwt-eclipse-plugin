@@ -86,13 +86,11 @@ public class EntryPointModulesSelectionBlock {
     }
 
     @Override
-    public void doubleClicked(ListDialogField<String> field) {
-    }
+    public void doubleClicked(ListDialogField<String> field) {}
 
     @Override
     public void selectionChanged(ListDialogField<String> field) {
-      modulesField.enableButton(IDX_REMOVE,
-          !modulesField.getSelectedElements().isEmpty());
+      modulesField.enableButton(IDX_REMOVE, !modulesField.getSelectedElements().isEmpty());
     }
   }
 
@@ -118,8 +116,7 @@ public class EntryPointModulesSelectionBlock {
     this(null, listener);
   }
 
-  public EntryPointModulesSelectionBlock(String labelText,
-      IModulesChangeListener listener) {
+  public EntryPointModulesSelectionBlock(String labelText, IModulesChangeListener listener) {
     this.labelText = labelText;
     this.listener = listener;
 
@@ -130,8 +127,7 @@ public class EntryPointModulesSelectionBlock {
     this.parent = parent;
     modulesField.doFillIntoGrid(parent, columns);
 
-    GridData modulesFieldGridData = (GridData) modulesField.getListControl(
-        parent).getLayoutData();
+    GridData modulesFieldGridData = (GridData) modulesField.getListControl(parent).getLayoutData();
     modulesFieldGridData.grabExcessHorizontalSpace = true;
     modulesFieldGridData.grabExcessVerticalSpace = true;
     modulesField.getListControl(parent).setLayoutData(modulesFieldGridData);
@@ -184,13 +180,11 @@ public class EntryPointModulesSelectionBlock {
 
   private void addEntry() {
     if (javaProject == null) {
-      MessageDialog.openError(parent.getShell(), "Module Selection Error",
-          "A valid Java project must be selected.");
+      MessageDialog.openError(parent.getShell(), "Module Selection Error", "A valid Java project must be selected.");
       return;
     }
 
-    IModule module = ModuleSelectionDialog.show(parent.getShell(), javaProject,
-        false);
+    IModule module = ModuleSelectionDialog.show(parent.getShell(), javaProject, false);
     if (module != null) {
       String moduleName = module.getQualifiedName();
       if (!modulesField.getElements().contains(moduleName)) {
@@ -200,15 +194,11 @@ public class EntryPointModulesSelectionBlock {
   }
 
   private void createListField() {
-    String[] buttons = new String[] {
-        "Add...", "Remove", null, "Restore Defaults"};
+    String[] buttons = new String[] {"Add...", "Remove", null, "Restore Defaults"};
 
-    modulesField =
-        new ListDialogField<String>(new ModulesSelectionAdapter(), buttons,
-        new ModulesLabelProvider());
+    modulesField = new ListDialogField<String>(new ModulesSelectionAdapter(), buttons, new ModulesLabelProvider());
     modulesField.setLabelText(labelText);
-    modulesField.setTableColumns(new ListDialogField.ColumnsDescription(1,
-        false));
+    modulesField.setTableColumns(new ListDialogField.ColumnsDescription(1, false));
 
     // Remove button disabled by default
     modulesField.enableButton(IDX_REMOVE, false);

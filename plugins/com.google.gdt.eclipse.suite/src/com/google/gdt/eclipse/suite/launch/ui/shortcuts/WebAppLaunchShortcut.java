@@ -55,7 +55,7 @@ public class WebAppLaunchShortcut implements ILaunchShortcut {
 
   /**
    * Calculate launch configuration name.
-   * 
+   *
    * @return a launch configuration name.
    */
   private static String calculateLaunchConfigName(String startupUrl, boolean isExternal,
@@ -111,7 +111,7 @@ public class WebAppLaunchShortcut implements ILaunchShortcut {
 
   /**
    * Create a new launch configuration.
-   * 
+   *
    * @param isGwtSuperDevModeEnabled is used to turn on GWT super dev mode.
    */
   protected ILaunchConfiguration createNewLaunchConfiguration(IResource resource,
@@ -134,7 +134,7 @@ public class WebAppLaunchShortcut implements ILaunchShortcut {
   /**
    * Finds and returns an <b>existing</b> configuration to re-launch for the given URL, or
    * <code>null</code> if there is no existing configuration.
-   * 
+   *
    * @return a configuration to use for launching the given type or <code>null
    *         </code> if none
    * @throws CoreException
@@ -153,7 +153,7 @@ public class WebAppLaunchShortcut implements ILaunchShortcut {
   /**
    * Given a resource, infer the startup URL that the resource points at, then look for an existing
    * launch configuration that points at this URL. If none exists, we'll create a new one.
-   * 
+   *
    * @param isGwtSuperDevModeEnabled is used to turn on GWT super dev mode.
    * @return the found or newly created launch configuration
    */
@@ -190,7 +190,7 @@ public class WebAppLaunchShortcut implements ILaunchShortcut {
       String startupUrl = WebAppLaunchUtil.determineStartupURL(resource, false);
       if (startupUrl != null) {
         ILaunchConfiguration config =
-            findOrCreateLaunchConfiguration(resource, startupUrl, false, false);
+            findOrCreateLaunchConfiguration(resource, startupUrl, false, true);
 
         assert (config != null);
 
@@ -233,7 +233,7 @@ public class WebAppLaunchShortcut implements ILaunchShortcut {
   /**
    * Turn on GWT Super Dev Mode in the case that dev mode was run first. This depends on which
    * shortcut was used.
-   * 
+   *
    * @param isGwtSuperDevModeEnabled
    */
   private ILaunchConfiguration turnOnOrOffSuperDevMode(ILaunchConfiguration config,
