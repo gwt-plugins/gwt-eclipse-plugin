@@ -727,6 +727,7 @@
          <action
                class="com.google.gwt.eclipse.core.actions.ProjectPropertiesAction"
                id="com.google.gwt.eclipse.core.popupMenu.project.gwtSettings"
+               icon="icons/gwt_16x16.png"
                label="GWT Settings..."
                menubarPath="com.google.gdt.eclipse.suite.popupMenu.project/settingsContent">
          </action>
