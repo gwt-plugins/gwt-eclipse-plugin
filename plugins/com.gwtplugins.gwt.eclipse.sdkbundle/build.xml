@@ -7,9 +7,9 @@
               value="com.gwtplugins.gwt.eclipse.sdkbundle" />
     <property name="project.tail" value="plugins/${plugin_name}" />
 
-    <import file="${build.project.dir}/common.ant.xml" />
+    
     <property name="plugin.version" value="${gwt.sdkbundle.version}" />
-    <import file="${build.project.dir}/plugins/plugins.common.ant.xml" />
+    
 
     <target name="build">
         <copy.plugin.src />
