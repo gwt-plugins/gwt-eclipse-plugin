@@ -11,22 +11,5 @@
             id="com.google.gdt.eclipse.suite.updateTriggerCompilationParticipant">
       </compilationParticipant>
    </extension>
-   
-   <!-- TODO ?
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            allPopups="false"
-            locationURI="menu:com.google.gdt.eclipse.suite.GDTPulldown?after=toolbarGroup.new">
-         <command
-               commandId="com.google.gdt.eclipse.suite.ext.importGaeDemo"
-               icon="icons/ae_16x16.png"
-               label="Import App Engine Sample Apps..."
-               style="push"
-               tooltip="Import App Engine Sample Apps">
-         </command>
-      </menuContribution>
-   </extension>
-   -->
 
 </plugin>

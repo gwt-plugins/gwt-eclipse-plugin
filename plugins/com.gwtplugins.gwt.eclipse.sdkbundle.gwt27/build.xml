@@ -1,10 +1,10 @@
-<project name="com.gwtplugins.gwt.eclipse.sdkbundle"
+<project name="com.gwtplugins.gwt.eclipse.sdkbundle.gwt27"
          default="build"
          basedir=".">
 
     <!-- Project-specific properties -->
     <property name="plugin_name"
-              value="com.gwtplugins.gwt.eclipse.sdkbundle" />
+              value="com.gwtplugins.gwt.eclipse.sdkbundle.gwt27" />
     <property name="project.tail" value="plugins/${plugin_name}" />
 
     

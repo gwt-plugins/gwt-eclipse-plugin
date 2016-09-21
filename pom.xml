@@ -43,7 +43,7 @@
 
     <!-- Features located in ./repo/category.xml -->
     <module>features/com.gwtplugins.eclipse.suite.v3.feature</module>
-    <module>features/com.gwtplugins.eclipse.sdkbundle.feature</module>
+    <module>features/com.gwtplugins.eclipse.sdkbundle.gwt27.feature</module>
 
     <!-- Core Plugins -->
     <module>plugins/com.gwtplugins.gdt.eclipse.apiclientlib</module>
@@ -74,7 +74,7 @@
     <module>plugins/com.gwtplugins.gwt.eclipse.wtp.maven.test</module>
 
     <!-- SDK Bundles -->
-    <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle.gwt27</module>
     
     <!-- Use `mvn package` - repository located in ./repo/target/repository -->
     <module>repo</module>

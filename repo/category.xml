@@ -3,7 +3,7 @@
    <feature url="../features/com.gwtplugins.eclipse.suite.v3.feature" id="com.gwtplugins.eclipse.suite.v3.feature" version="0.0.0.qualifier">
       <category name="GWT"/>
    </feature>
-   <feature url="features/com.gwtplugins.gwt.eclipse.sdkbundle.feature_0.0.0.qualifier.jar" id="com.gwtplugins.gwt.eclipse.sdkbundle.feature" version="0.0.0.qualifier">
+   <feature url="features/com.gwtplugins.gwt.eclipse.sdkbundle.gwt27.feature_0.0.0.qualifier.jar" id="com.gwtplugins.gwt.eclipse.sdkbundle.gwt27.feature" version="0.0.0.qualifier">
       <category name="GWT"/>
    </feature>
    <category-def name="GWT" label="GWT Plugin for Eclipse"/>

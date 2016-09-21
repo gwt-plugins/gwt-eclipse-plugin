@@ -10,7 +10,7 @@
     <relativePath>../../</relativePath>
   </parent>
 
-  <artifactId>com.gwtplugins.gwt.eclipse.sdkbundle</artifactId>
+  <artifactId>com.gwtplugins.gwt.eclipse.sdkbundle.gwt27</artifactId>
   <version>0.0.0.qualifier</version>
   <packaging>eclipse-plugin</packaging>
 

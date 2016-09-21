@@ -60,7 +60,7 @@ public class GdtExtPlugin extends AbstractGooglePlugin {
   public static final PluginVersionIdentifier FEATURE_VERSION;
   public static final String PLUGIN_ID = GdtExtPlugin.class.getPackage().getName();
 
-  public static final String GWT_SDK_BUNDLE_FEATURE_ID = "com.gwtplugins.gwt.eclipse.sdkbundle.feature";
+  public static final String GWT_SDK_BUNDLE_FEATURE_ID = "com.gwtplugins.gwt.eclipse.sdkbundle.gwt27.feature";
   public static final String APP_ENGINE_SDK_BUNDLE_FEATURE_ID = "com.google.appengine.eclipse.sdkbundle.feature";
 
   private static BundleContext context;

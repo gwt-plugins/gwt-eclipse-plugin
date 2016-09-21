@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="com.gwtplugins.eclipse.sdkbundle.e45.feature"
+      id="com.gwtplugins.eclipse.sdkbundle.gwt27.feature"
       label="%featureName"
-      version="0.0.0.qualifier"
+      version="2.7.0.qualifier"
       provider-name="%providerName">
 
    <description>
-      GWT SDK
+      GWT 2.7.0 SDK
    </description>
 
    <copyright>
@@ -22,10 +22,10 @@
    </url>
 
    <plugin
-         id="com.gwtplugins.gwt.eclipse.sdkbundle"
+         id="com.gwtplugins.gwt.eclipse.sdkbundle.gwt27"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.7.0"
          unpack="false"/>
 
 </feature>

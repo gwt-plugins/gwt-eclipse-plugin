@@ -10,7 +10,7 @@
     <relativePath>../../</relativePath>
   </parent>
 
-  <artifactId>com.gwtplugins.eclipse.sdkbundle.e45.feature</artifactId>
+  <artifactId>com.gwtplugins.eclipse.sdkbundle.gwt27.feature</artifactId>
   <version>0.0.0-SNAPSHOT</version>
   <packaging>eclipse-feature</packaging>
 
