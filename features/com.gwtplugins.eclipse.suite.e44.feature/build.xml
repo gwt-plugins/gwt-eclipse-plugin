@@ -1,11 +1,9 @@
-<project name="com.google.gdt.eclipse.suite.e44.feature"
+<project name="com.gwtplugins.eclipse.suite.v3.feature"
          basedir=".">
     <property name="feature_name"
-              value="com.google.gdt.eclipse.suite.e44.feature" />
+              value="com.gwtplugins.eclipse.suite.v3.feature" />
     <property name="project.tail" value="features/${feature_name}" />
 
-    <import file="${build.project.dir}/common.ant.xml" />
     <property name="feature.version" value="${gdt.version}" />
     <loadfile property="feature.license" srcfile="../../COPYING" />
-    <import file="${build.project.dir}/features/features.common.ant.xml" />
 </project>
