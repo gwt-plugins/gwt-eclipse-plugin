@@ -16,7 +16,6 @@
 
     
     <property name="plugin.version" value="${gdt.version}" />
-    <import file="${build.project.dir}/plugins/test.plugins.common.ant.xml" />
 
     <target name="build">
         <copy.plugin.src />

@@ -4,11 +4,7 @@
     <property name="plugin_name" value="com.google.gcp.eclipse.testing" />
     <property name="project.tail" value="plugins/${plugin_name}" />
 
-    
-
     <property name="plugin.version" value="${gdt.version}" />
-
-    
 
     <target name="build">
         <copy.plugin.src />
