@@ -19,7 +19,7 @@ The Eclipse repositories for this plugin.
 * [http://storage.googleapis.com/gwt-eclipse-plugin/v2/release](http://storage.googleapis.com/gwt-eclipse-plugin/v2/release)
 
 
-### Build
+## Build
 Sencha has provided an internal build agent to build. 
 [Sencha Eclipse Build](https://teamcity.sencha.com/viewType.html?buildTypeId=Gxt3_Gwt_GwtEclipsePlugin)
 
@@ -31,3 +31,11 @@ Google storage write permissions are needed to deploy.
 * `sh ./build-deploy-release.sh` - deploy production version
 * `sh ./build-deploy-snapshot.sh` - deploy snapshot version
 
+
+## Project
+
+### Importing
+Simply use Maven to import all the plugins and modules. 
+
+* Use Eclipse Maven Import and import with recursion. 
+* Select all the projects and import. 
