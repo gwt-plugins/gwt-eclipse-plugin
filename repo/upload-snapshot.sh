@@ -11,4 +11,4 @@ cd repo/target/repository
 
 # upload snapshot
 # url locaiton: http://storage.googleapis.com/gwt-eclipse-plugin/snapshot
-gsutil cp -r . gs://gwt-eclipse-plugin/v2/snapshot
+gsutil cp -r . gs://gwt-eclipse-plugin/v3/snapshot
