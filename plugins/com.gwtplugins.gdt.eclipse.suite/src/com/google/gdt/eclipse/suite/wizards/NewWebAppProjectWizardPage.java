@@ -281,7 +281,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     googleSdkGroupLayout.verticalSpacing = 0;
     googleSdkGroupLayout.numColumns = 1;
     googleSdkGroup.setLayout(googleSdkGroupLayout);
-    googleSdkGroup.setText("Google SDKs");
+    googleSdkGroup.setText("SDKs");
 
     SelectionListener useSdkCheckboxSelectionListener = new SelectionListener() {
       @Override

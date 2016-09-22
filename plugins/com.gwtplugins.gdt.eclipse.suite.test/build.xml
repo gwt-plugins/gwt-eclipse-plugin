@@ -10,9 +10,7 @@
         <pathelement location="${gwt.plugin.root}/plugins/com.google.gdt.eclipse.suite/src" />
     </path>
 
-    <import file="${build.project.dir}/common.ant.xml" />
     <property name="plugin.version" value="${gdt.version}" />
-    <import file="${build.project.dir}/plugins/test.plugins.common.ant.xml" />
 
     <target name="build">
         <copy.plugin.src />

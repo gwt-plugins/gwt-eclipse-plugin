@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="../features/com.google.gdt.eclipse.suite.e44.feature" id="com.google.gdt.eclipse.suite.e44.feature" version="0.0.0.qualifier">
+   <feature url="../features/com.gwtplugins.eclipse.suite.v3.feature" id="com.gwtplugins.eclipse.suite.v3.feature" version="0.0.0.qualifier">
       <category name="GWT"/>
    </feature>
-   <feature url="features/com.google.gwt.eclipse.sdkbundle.feature_0.0.0.qualifier.jar" id="com.google.gwt.eclipse.sdkbundle.feature" version="0.0.0.qualifier">
-      <category name="GWT"/>
+   <feature url="features/com.gwtplugins.eclipse.sdkbundle.gwt27.feature_2.7.0.qualifier.jar" id="com.gwtplugins.eclipse.sdkbundle.gwt27.feature" version="2.7.0.qualifier">
+      <category name="GWT_SDK"/>
    </feature>
    <category-def name="GWT" label="GWT Plugin for Eclipse"/>
+   <category-def name="GWT_SDK" label="GWT SDK">
+      <description>
+         GWT SDKs
+      </description>
+   </category-def>
 </site>

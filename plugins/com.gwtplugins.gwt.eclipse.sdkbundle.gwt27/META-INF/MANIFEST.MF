@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: GWT SDK
-Bundle-SymbolicName: com.google.gwt.eclipse.sdkbundle;singleton:=true
-Bundle-Version: 0.0.0.qualifier
+Bundle-Name: GWT 2.7.0 SDK
+Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.sdkbundle.gwt27;singleton:=true
+Bundle-Version: 2.7.0.qualifier
 Bundle-Vendor: Google, Inc.
 Require-Bundle: org.eclipse.core.runtime,
  com.gwtplugins.gwt.eclipse.core;visibility:=reexport

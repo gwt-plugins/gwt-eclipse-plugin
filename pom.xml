@@ -5,7 +5,7 @@
   
   <groupId>com.gwtplugins.eclipse</groupId>
   <artifactId>trunk</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
@@ -15,10 +15,6 @@
 
     <!-- These constants are currently set up to build against Eclipse Mars. -->
     <eclipse.target>mars</eclipse.target>
-    
-    <!-- TODO increment the max version ? There is a problem using 8.1 to 8.2-->
-    <jettyMinVersion>8.1</jettyMinVersion>
-    <jettyMaxVersion>8.2</jettyMaxVersion>
 
     <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
@@ -42,8 +38,8 @@
     <module>resources</module>
 
     <!-- Features located in ./repo/category.xml -->
-    <module>features/com.gwtplugins.eclipse.suite.e44.feature</module>
-    <module>features/com.gwtplugins.eclipse.sdkbundle.feature</module>
+    <module>features/com.gwtplugins.eclipse.suite.v3.feature</module>
+    <module>features/com.gwtplugins.eclipse.sdkbundle.gwt27.feature</module>
 
     <!-- Core Plugins -->
     <module>plugins/com.gwtplugins.gdt.eclipse.apiclientlib</module>
@@ -52,11 +48,11 @@
     <module>plugins/com.gwtplugins.gdt.eclipse.maven</module>
     <module>plugins/com.gwtplugins.gdt.eclipse.platform</module>
 
-    <!-- Run the Eclipse Application from the suite -->
+    <!-- Suite - Run the Eclipse Application from the suite -->
     <module>plugins/com.gwtplugins.gdt.eclipse.suite</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.suite.update</module>
     <module>plugins/com.gwtplugins.gdt.eclipse.suite.test</module>
     <module>plugins/com.gwtplugins.gdt.eclipse.suite.test.swtbot</module>
-    <module>plugins/com.gwtplugins.gdt.eclipse.suite.update</module>
     <module>plugins/com.gwtplugins.gdt.eclipse.swtbot</module>
 
     <!-- GWT -->
@@ -74,7 +70,10 @@
     <module>plugins/com.gwtplugins.gwt.eclipse.wtp.maven.test</module>
 
     <!-- SDK Bundles -->
-    <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle.gwt27</module>
+    
+    <!-- Testing utils -->
+    <module>plugins/com.gwtplugins.gcp.eclipse.testing</module>
     
     <!-- Use `mvn package` - repository located in ./repo/target/repository -->
     <module>repo</module>
@@ -107,14 +106,6 @@
         <artifactId>target-platform-configuration</artifactId>
         <configuration>
           <filters>
-            <!-- TODO: This creates a problem when 8.1 to 8.2 remove? -->
-            <!-- <filter>
-              <type>java-package</type>
-              <id>org.eclipse.jetty.http</id>
-              <restrictTo>
-                <versionRange>[${jettyMinVersion},${jettyMaxVersion})</versionRange>
-              </restrictTo>
-            </filter> -->
           </filters>
           <environments>
             <environment>

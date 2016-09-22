@@ -10,6 +10,7 @@
     <relativePath>../../</relativePath>
   </parent>
 
-  <artifactId>com.gwtplugins.gdt.eclipse.swtbot</artifactId>
-  <packaging>eclipse-plugin</packaging>
+  <artifactId>com.gwtplugins.eclipse.suite.v3.feature</artifactId>
+  <packaging>eclipse-feature</packaging>
+
 </project>
