@@ -22,11 +22,11 @@ The Eclipse repositories for this plugin.
 
 ### Snapshot
 
-* [http://storage.googleapis.com/gwt-eclipse-plugin/v2/snapshot](http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot)
+* [http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot](http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot)
 
 ### Production
 
-* [http://storage.googleapis.com/gwt-eclipse-plugin/v2/release](http://storage.googleapis.com/gwt-eclipse-plugin/v3/release)
+* [http://storage.googleapis.com/gwt-eclipse-plugin/v3/release](http://storage.googleapis.com/gwt-eclipse-plugin/v3/release)
 
 
 ## Build
