@@ -21,7 +21,7 @@
     <swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/latest/</swtbot-repo.url>
 
     <!-- Release url determined by upload in upload-release.sh -->
-    <comparator.repo>http://storage.googleapis.com/gwt-eclipse-plugin/v2/release</comparator.repo>
+    <comparator.repo>http://storage.googleapis.com/gwt-eclipse-plugin/v3/release</comparator.repo>
 
     <!-- OS-specific JVM flags, empty for the default case but redefined below -->
     <os-jvm-flags />
