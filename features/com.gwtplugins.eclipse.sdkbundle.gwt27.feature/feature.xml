@@ -25,7 +25,7 @@
          id="com.gwtplugins.gwt.eclipse.sdkbundle.gwt27"
          download-size="0"
          install-size="0"
-         version="2.7.0"
+         version="2.7.0.qualifier"
          unpack="false"/>
 
 </feature>
