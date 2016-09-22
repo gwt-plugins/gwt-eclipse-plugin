@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="com.google.gdt.eclipse.suite.ext.updatePing" name="UpdatePing" schema="schema/com.google.gdt.eclipse.suite.ext.updatePing.exsd"/>
+   
+   <extension
+         point="org.eclipse.jdt.core.compilationParticipant">
+      <compilationParticipant
+            class="com.google.gdt.eclipse.suite.update.builders.UpdateTriggerCompilationParticipant"
+            createsProblems="false"
+            id="com.google.gdt.eclipse.suite.updateTriggerCompilationParticipant">
+      </compilationParticipant>
+   </extension>
+
+</plugin>

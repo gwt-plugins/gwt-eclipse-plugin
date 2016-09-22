@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Test Fragment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-SymbolicName: com.google.gdt.eclipse.core.test
-Bundle-Vendor: Google, Inc.
-Bundle-Version: 0.0.0.qualifier
-Fragment-Host: com.google.gdt.eclipse.core
-Require-Bundle: org.junit

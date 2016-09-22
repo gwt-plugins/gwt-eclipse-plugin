@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Google OOPHM Plugin Test Fragment
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.oophm.test
+Bundle-Version: 0.0.0.qualifier
+Fragment-Host: com.gwtplugins.gwt.eclipse.oophm
+Require-Bundle: org.junit

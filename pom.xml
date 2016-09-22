@@ -2,115 +2,82 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
   xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.google.eclipse.gpe</groupId>
+  
+  <groupId>com.gwtplugins.eclipse</groupId>
   <artifactId>trunk</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <modules>
-    <!-- GWT_HOME and GAE_HOME SDKs downloaded here -->
-    <module>resources</module>
-    <!-- Use `mvn package` - repository located in ./repo/target/repository -->
-    <module>repo</module>
-
-    <!-- Features located in ./repo/category.xml -->
-    <module>features/com.google.appengine.eclipse.wtp.maven.feature</module>
-    <module>features/com.google.gdt.eclipse.suite.e44.feature</module>
-    <module>features/com.google.gwt.eclipse.sdkbundle.feature</module>
-    <module>features/com.google.appengine.eclipse.sdkbundle.feature</module>
-
-    <module>plugins/com.google.appengine.eclipse.core</module>
-    <module>plugins/com.google.appengine.eclipse.core.test</module>
-    <module>plugins/com.google.appengine.eclipse.core.test.swtbot</module>
-    <module>plugins/com.google.appengine.eclipse.datatools</module>
-    <module>plugins/com.google.appengine.eclipse.dependencies</module>
-    <module>plugins/com.google.appengine.eclipse.webtools</module>
-    <module>plugins/com.google.appengine.eclipse.webtools.test</module>
-    <module>plugins/com.google.appengine.eclipse.wtp</module>
-    <module>plugins/com.google.appengine.eclipse.wtp.jpa</module>
-    <module>plugins/com.google.appengine.eclipse.wtp.jpa.e43</module>
-    <module>plugins/com.google.appengine.eclipse.wtp.maven</module>
-    <module>plugins/com.google.appengine.eclipse.wtp.swarm</module>
-    <module>plugins/com.google.cloudsdk.eclipse.wtp</module>
-    <module>plugins/com.google.cloudsdk.eclipse.wtp.test</module>
-    <module>plugins/com.google.gcp.eclipse.testing</module>
-    <module>plugins/com.google.gdt.eclipse.apiclientlib</module>
-    <module>plugins/com.google.gdt.eclipse.appengine.api</module>
-    <module>plugins/com.google.gdt.eclipse.appengine.api.test</module>
-    <module>plugins/com.google.gdt.eclipse.appengine.swarm</module>
-    <module>plugins/com.google.gdt.eclipse.appengine.swarm_backend</module>
-    <module>plugins/com.google.gdt.eclipse.appengine.swarm_backend.test.swtbot</module>
-    <module>plugins/com.google.gdt.eclipse.appengine.swarm.test.swtbot</module>
-    <module>plugins/com.google.gdt.eclipse.core</module>
-    <module>plugins/com.google.gdt.eclipse.core.test</module>
-    <module>plugins/com.google.gdt.eclipse.login</module>
-    <module>plugins/com.google.gdt.eclipse.login.test.swtbot</module>
-    <module>plugins/com.google.gdt.eclipse.managedapis</module>
-    <module>plugins/com.google.gdt.eclipse.managedapis.test</module>
-    <module>plugins/com.google.gdt.eclipse.maven</module>
-    <module>plugins/com.google.gdt.eclipse.platform</module>
-
-    <!-- Run the Eclipse Application from the suite -->
-    <module>plugins/com.google.gdt.eclipse.suite</module>
-    <module>plugins/com.google.gdt.eclipse.suite.test</module>
-    <module>plugins/com.google.gdt.eclipse.suite.test.swtbot</module>
-    <module>plugins/com.google.gdt.eclipse.suite.update</module>
-    <module>plugins/com.google.gdt.eclipse.swtbot</module>
-
-    <!-- GWT -->
-    <module>plugins/com.google.gwt.eclipse.core</module>
-    <module>plugins/com.google.gwt.eclipse.core.test</module>
-    <module>plugins/com.google.gwt.eclipse.core.test.swtbot</module>
-    <module>plugins/com.google.gwt.eclipse.libs</module>
-    <module>plugins/com.google.gwt.eclipse.oophm</module>
-    <module>plugins/com.google.gwt.eclipse.oophm.test</module>
-    <module>plugins/com.google.gwt.eclipse.testing</module>
-
-    <!-- GWT Facet -->
-    <module>plugins/com.google.gwt.eclipse.wtp</module>
-    <module>plugins/com.google.gwt.eclipse.wtp.maven</module>
-    <module>plugins/com.google.gwt.eclipse.wtp.test</module>
-    <module>plugins/com.google.gwt.eclipse.wtp.maven.test</module>
-
-    <!-- SDK Bundles -->
-    <module>plugins/com.google.gwt.eclipse.sdkbundle</module>
-    <module>plugins/com.google.appengine.eclipse.sdkbundle</module>
-
-  </modules>
-
   <properties>
-    <tycho.version>0.22.0</tycho.version>
-    <tycho-extras.version>0.22.0</tycho-extras.version>
+    <tycho.version>0.26.0</tycho.version>
+    <tycho-extras.version>0.26.0</tycho-extras.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <!-- These constants are currently set up to build against Eclipse Luna. -->
-    <eclipse.target>luna</eclipse.target>
-    <jettyMinVersion>8.1</jettyMinVersion>
-    <jettyMaxVersion>8.2</jettyMaxVersion>
+    <!-- These constants are currently set up to build against Eclipse Mars. -->
+    <eclipse.target>mars</eclipse.target>
 
     <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
-    <!-- <adt-repo.url>http://dl-ssl.google.com/android/eclipse/</adt-repo.url> -->
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/latest/</swtbot-repo.url>
 
-    <!-- <comparator.repo>https://dl.google.com/eclipse/plugin/4.4</comparator.repo> TODO GPE remove later -->
-    <!-- TODO maybe add release version to url -->
-    <comparator.repo>http://storage.googleapis.com/gwt-eclipse-plugin/release</comparator.repo>
+    <!-- Release url determined by upload in upload-release.sh -->
+    <comparator.repo>http://storage.googleapis.com/gwt-eclipse-plugin/v2/release</comparator.repo>
 
     <!-- OS-specific JVM flags, empty for the default case but redefined below -->
     <os-jvm-flags />
 
-    <!-- Development build resources -->
-    <!-- Used In: GaeProjectTestUtil.java -->
-    <!-- Used In: App Engine SDK bundle. TODO pass along the variable in the SDK bundle -->
-    <!-- Check SdkBundleRegistratnt.properties -->
-    <appengine.version>1.9.30</appengine.version>
     <!-- Used In: GwtRuntimeTestUtilities.java -->
     <gwt.version>2.7.0</gwt.version>
 
     <!-- Don't kill the test early -->
     <surefire.timeout>120000</surefire.timeout>
   </properties>
+
+  <modules>
+    <!-- GWT_HOME SDKs downloaded here -->
+    <module>resources</module>
+
+    <!-- Features located in ./repo/category.xml -->
+    <module>features/com.gwtplugins.eclipse.suite.v3.feature</module>
+    <module>features/com.gwtplugins.eclipse.sdkbundle.gwt27.feature</module>
+
+    <!-- Core Plugins -->
+    <module>plugins/com.gwtplugins.gdt.eclipse.apiclientlib</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.core</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.core.test</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.maven</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.platform</module>
+
+    <!-- Suite - Run the Eclipse Application from the suite -->
+    <module>plugins/com.gwtplugins.gdt.eclipse.suite</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.suite.update</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.suite.test</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.suite.test.swtbot</module>
+    <module>plugins/com.gwtplugins.gdt.eclipse.swtbot</module>
+
+    <!-- GWT -->
+    <module>plugins/com.gwtplugins.gwt.eclipse.core</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.core.test</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.core.test.swtbot</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.oophm</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.oophm.test</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.testing</module>
+
+    <!-- GWT Facet -->
+    <module>plugins/com.gwtplugins.gwt.eclipse.wtp</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.wtp.maven</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.wtp.test</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.wtp.maven.test</module>
+
+    <!-- SDK Bundles -->
+    <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle.gwt27</module>
+    
+    <!-- Testing utils -->
+    <module>plugins/com.gwtplugins.gcp.eclipse.testing</module>
+    
+    <!-- Use `mvn package` - repository located in ./repo/target/repository -->
+    <module>repo</module>
+  </modules>
 
   <repositories>
     <repository>
@@ -139,13 +106,6 @@
         <artifactId>target-platform-configuration</artifactId>
         <configuration>
           <filters>
-            <filter>
-              <type>java-package</type>
-              <id>org.eclipse.jetty.http</id>
-              <restrictTo>
-                <versionRange>[${jettyMinVersion},${jettyMaxVersion})</versionRange>
-              </restrictTo>
-            </filter>
           </filters>
           <environments>
             <environment>

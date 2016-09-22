@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="com.gwtplugins.eclipse.sdkbundle.gwt27.feature"
+      label="%featureName"
+      version="2.7.0.qualifier"
+      provider-name="%providerName">
+
+   <description>
+      GWT 2.7.0 SDK
+   </description>
+
+   <copyright>
+      Copyright 2015 to 2017
+   </copyright>
+
+   <license>
+      @FEATURE_LICENSE@
+   </license>
+
+   <url>
+      <update label="GWT Plugin for Eclipse Update Site" url="http://storage.googleapis.com/gwt-eclipse-plugin/v2/release"/>
+   </url>
+
+   <plugin
+         id="com.gwtplugins.gwt.eclipse.sdkbundle.gwt27"
+         download-size="0"
+         install-size="0"
+         version="2.7.0"
+         unpack="false"/>
+
+</feature>

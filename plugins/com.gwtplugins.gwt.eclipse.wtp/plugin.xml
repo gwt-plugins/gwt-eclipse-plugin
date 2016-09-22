@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>  
+
+  <!-- Is gwt facet -->
+  <extension point="org.eclipse.core.expressions.definitions">
+    <definition id="com.google.gwt.eclipse.wtp.isGWTFacet">
+	<and>
+	   <adapt type="org.eclipse.core.resources.IProject">
+	       <test property="org.eclipse.core.resources.projectNature"
+	             value="org.eclipse.jdt.core.javanature">
+	       </test>
+	   </adapt>
+       <adapt type="org.eclipse.core.resources.IProject">
+         <test property="org.eclipse.wst.common.project.facet.core.projectFacet"
+               value="com.google.gwt.facet">
+         </test>
+      </adapt>
+	</and>
+    </definition>
+  </extension>  	
+
+  <extension point="org.eclipse.wst.common.project.facet.ui.images">
+    <image facet="com.google.gwt.facet" path="icons/gwt_16x16.png"/>
+  </extension>
+
+  <!-- GWT Facet -->
+  <extension point="org.eclipse.wst.common.project.facet.core.facets">
+    
+    <!-- Facet -->   
+    <project-facet id="com.google.gwt.facet">
+      <label>GWT</label>
+      <description>Enables GWT SDK use for the project.</description>
+    </project-facet>  
+    
+    <!-- Version -->
+    <project-facet-version facet="com.google.gwt.facet" version="1.0">
+      <constraint>
+	 	<and>
+	 	   <!-- Only require the bare minimum -->
+	       <requires facet="jst.java" version="[5.0"></requires>
+	 	</and>
+      </constraint>
+    </project-facet-version>
+  
+  	<!-- Install -->
+    <action 
+    	facet="com.google.gwt.facet"
+        id="com.google.gwt.facet.install"
+        type="install">
+     	<delegate class="com.google.gwt.eclipse.wtp.facet.GwtFacetInstallSdkDelegate"/>
+        
+        <config-factory 
+        	class="com.google.gwt.eclipse.wtp.facet.data.GwtFacetInstallDataModelProvider">
+        </config-factory>
+    </action>
+    
+    <!-- Uninstall -->
+    <action
+		  facet="com.google.gwt.facet"
+		  id="com.google.gwt.facet.uninstall"
+		  type="uninstall">
+		<delegate class="com.google.gwt.eclipse.wtp.facet.GwtFacetUninstallDelegate"/>
+	</action>
+  </extension> <!-- End of org.eclipse.wst.common.project.facet.core.facets -->
+
+
+  <!-- Wizards -->
+  <extension point="org.eclipse.wst.common.project.facet.ui.wizardPages">
+    <wizard-pages action="com.google.gwt.facet.install">
+    <page class="com.google.gwt.eclipse.wtp.wizards.GwtFacetWizardPage"/>
+    </wizard-pages>
+  </extension>
+   
+  <!-- TODO why can't I remove this, it causes the plugin not to load -->
+  <extension point="org.eclipse.wst.server.core.internalStartup">
+    <startup
+        class="com.google.gwt.eclipse.wtp.clients.GwtRuntimeConfigurator"
+        id="com.google.gwt.eclipse.wtp.runtime.startup">
+    </startup>
+  </extension>
+  
+  <!-- TODO won't work -->
+  <extension point="org.eclipse.wst.server.core.launchableAdapters">
+      <launchableAdapter
+        id="com.google.gwt.server.http.web"
+        class="com.google.gwt.eclipse.wtp.facet.GwtLaunchableAdapterDelegate"
+        typeIds="*" priority="1000" />
+   </extension>
+   
+  <!-- GWT Facet Properties -->
+  <extension
+	     point="org.eclipse.ui.propertyPages">
+	  <!-- GWT Facet -->
+	  <page
+	        category="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage" 
+	        class="com.google.gwt.eclipse.wtp.properties.ui.GWTFacetProjectPropertyPage"
+	        id="com.google.gwt.eclipse.wtp.properties.ui.gwtFacetProjectPropertyPage" 
+	        name="Facet Settings">
+	     <enabledWhen>
+	       <reference definitionId="com.google.gwt.eclipse.wtp.isGWTFacet"/> 
+	     </enabledWhen>
+	  </page>	
+  </extension>
+  
+  <!-- Allows facet to work with runtime -->
+  <extension point="org.eclipse.wst.common.project.facet.core.runtimes">
+    <supported>
+	  <runtime-component any="true"></runtime-component>
+	  <facet id="com.google.gwt.facet" version="[1.0"></facet>
+	</supported>
+  </extension>
+</plugin>

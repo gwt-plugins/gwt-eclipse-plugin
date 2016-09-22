@@ -4,14 +4,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.google.eclipse.gpe</groupId>
+    <groupId>com.gwtplugins.eclipse</groupId>
     <artifactId>trunk</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <relativePath>../</relativePath>
   </parent>
 
   <artifactId>repo</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
   <packaging>eclipse-repository</packaging>
 
   <build>
