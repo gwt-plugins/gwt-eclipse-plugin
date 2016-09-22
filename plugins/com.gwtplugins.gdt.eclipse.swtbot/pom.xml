@@ -11,5 +11,6 @@
   </parent>
 
   <artifactId>com.gwtplugins.gdt.eclipse.swtbot</artifactId>
+  <version>0.0.0</version>
   <packaging>eclipse-plugin</packaging>
 </project>
