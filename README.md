@@ -10,11 +10,10 @@ This plugin does not contain the cloud tools as they have been split into
 ## Reference
 
 * [Documentation](http://gwt-plugins.github.io/documentation/)
-* [GPE Fork V2 GWT Eclipse Plugin](https://github.com/gwt-plugins/gwt-eclipse-plugin/tree/gpe-fork) * Recommended use
 
 ## V2 Repository (GPE-Fork)
 
-* [GPE Fork V2 GWT Eclipse Plugin](https://github.com/gwt-plugins/gwt-eclipse-plugin/tree/gpe-fork)
+* [GPE Fork V2 GWT Eclipse Plugin](https://github.com/gwt-plugins/gwt-eclipse-plugin/tree/gpe-fork) * Recommended use
 
 
 ## V3 Repository

@@ -2,7 +2,7 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
   xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  
+
   <groupId>com.gwtplugins.eclipse</groupId>
   <artifactId>trunk</artifactId>
   <version>1.0.0-SNAPSHOT</version>
@@ -71,10 +71,10 @@
 
     <!-- SDK Bundles -->
     <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle.gwt27</module>
-    
+
     <!-- Testing utils -->
     <module>plugins/com.gwtplugins.gcp.eclipse.testing</module>
-    
+
     <!-- Use `mvn package` - repository located in ./repo/target/repository -->
     <module>repo</module>
   </modules>
@@ -213,11 +213,15 @@
           </archive> <additionalFileSets> <fileSet> <directory>${project.build.directory}</directory> <includes> <include>.api_description</include> 
           </includes> </fileSet> </additionalFileSets> </configuration> </plugin> -->
 
+        <!-- https://eclipse.org/tycho/sitedocs/tycho-surefire/tycho-surefire-plugin/test-mojo.html -->
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-surefire-plugin</artifactId>
           <version>${tycho.version}</version>
           <configuration>
+            <!-- https://wiki.eclipse.org/Tycho/FAQ#How_to_use_SWTBot_or_some_UI_tool_for_testing.3F -->
+            <useUIHarness>true</useUIHarness> <!-- https://wiki.eclipse.org/SWTBot/Automate_test_execution -->
+            <useUIThread>false</useUIThread>
             <argLine>-Dorg.eclipse.swtbot.search.timeout=120000 -Xms128M -Xmx2G ${os-jvm-flags}</argLine>
           </configuration>
         </plugin>
