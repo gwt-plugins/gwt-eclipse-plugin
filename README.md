@@ -5,7 +5,7 @@ This plugin does not contain the cloud tools as they have been split into
 
 # RoadMap
 
-* V3 release EA is scheduled for November 2016 @ GWTCon (In the meantime use the GPE fork version)
+* V3 release EA is scheduled for November 2016 @ GWTCon (In the meantime use the GPE fork version).
 
 ## Reference
 
