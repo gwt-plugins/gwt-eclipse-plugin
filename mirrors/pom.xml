@@ -12,20 +12,15 @@
     <tycho-extras.version>0.26.0</tycho-extras.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <!-- These constants are currently set up to build against Eclipse Luna. -->
-    <eclipse.target>luna</eclipse.target>
-    <jettyMinVersion>8.1</jettyMinVersion>
-    <jettyMaxVersion>8.2</jettyMaxVersion>
-    <swtbotVersion>2.2.1</swtbotVersion>
+    <!-- These constants are currently set up to build against Eclipse mars. -->
+    <eclipse.target>mars</eclipse.target>
 
     <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
-    <!-- <adt-repo.url>http://dl-ssl.google.com/android/eclipse/</adt-repo.url> -->
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
-    <swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/${swtbotVersion}/</swtbot-repo.url>
+    <swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/latest/</swtbot-repo.url>
 
-    <!-- <comparator.repo>https://dl.google.com/eclipse/plugin/4.4</comparator.repo> TODO GPE remove later -->
-    <!-- TODO maybe add release version to url -->
-    <comparator.repo>http://storage.googleapis.com/gwt-eclipse-plugin/release</comparator.repo>
+    <!-- Release url determined by upload in upload-release.sh -->
+    <comparator.repo>http://storage.googleapis.com/gwt-eclipse-plugin/v3/release</comparator.repo>
   </properties>
 
   <repositories>
@@ -54,15 +49,6 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
         <configuration>
-          <filters>
-            <filter>
-              <type>java-package</type>
-              <id>org.eclipse.jetty.http</id>
-              <restrictTo>
-                <versionRange>[${jettyMinVersion},${jettyMaxVersion})</versionRange>
-              </restrictTo>
-            </filter>
-          </filters>
           <environments>
             <environment>
               <os>linux</os>
