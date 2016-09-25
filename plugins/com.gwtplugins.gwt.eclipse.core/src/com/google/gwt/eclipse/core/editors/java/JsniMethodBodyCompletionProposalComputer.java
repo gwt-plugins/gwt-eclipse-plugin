@@ -269,7 +269,7 @@ public class JsniMethodBodyCompletionProposalComputer implements
       
 
       IJavaElement prevElement = compilationUnit.getElementAt(sourceRange.getOffset() - 1);
-      if (IJavaElement.METHOD == prevElement.getElementType()){
+      if (prevElement != null && IJavaElement.METHOD == prevElement.getElementType()){
         
         IMethod prevMethod = (IMethod) prevElement;
         
