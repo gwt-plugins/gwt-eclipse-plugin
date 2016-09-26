@@ -15,12 +15,18 @@
 
   <build>
     <resources>
+      <!-- Add these contents to the output directory or classes directory, then it gets moved to repository -->
       <resource>
         <directory>src/main/resources</directory>
+        <includes>
+          <include>**</include>
+        </includes>
       </resource>
     </resources>
-
+  
     <plugins>
+      <!-- Assemble the Site -->
+      <!-- https://eclipse.org/tycho/sitedocs/tycho-p2/tycho-p2-repository-plugin/assemble-repository-mojo.html -->
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-p2-repository-plugin</artifactId>
@@ -28,26 +34,12 @@
           <includeAllDependencies>false</includeAllDependencies>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-p2-director-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>materialize-products</id>
-            <goals>
-              <goal>materialize-products</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>archive-products</id>
-            <goals>
-              <goal>archive-products</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
-
 </project>
 
