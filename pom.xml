@@ -39,6 +39,7 @@
 
     <!-- Features located in ./repo/category.xml -->
     <module>features/com.gwtplugins.eclipse.suite.v3.feature</module>
+    <module>features/com.gwtplugins.eclipse.suite.v3.sdbg.feature</module>
     <module>features/com.gwtplugins.eclipse.sdkbundle.gwt27.feature</module>
 
     <!-- Core Plugins -->
@@ -94,6 +95,16 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-maven-plugin</artifactId>

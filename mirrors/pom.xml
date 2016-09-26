@@ -27,7 +27,7 @@
             <configuration>
               <source>
                 <repository>
-                  <url>http://sdbg.github.io/p2</url>
+                  <url>http://storage.googleapis.com/sdbg/release</url>
                 </repository>
               </source>
               <append>true</append>
