@@ -7,15 +7,15 @@
       plugin="com.gwtplugins.gdt.eclipse.suite">
 
    <description>
-      Support for the development of GWT Projects in Eclipse
+      %description
    </description>
 
    <copyright>
-      Copyright 2009 - 2017
+      Copyright 2009 to 2017
    </copyright>
 
-   <license>
-      @FEATURE_LICENSE@
+   <license url="%licenseURL">
+      %license
    </license>
 
    <url>

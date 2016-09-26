@@ -6,15 +6,15 @@
       provider-name="%providerName">
 
    <description>
-      GWT 2.7.0 SDK
+      %description
    </description>
 
    <copyright>
       Copyright 2015 to 2017
    </copyright>
 
-   <license>
-      @FEATURE_LICENSE@
+   <license url="%licenseURL">
+      %license
    </license>
 
    <url>
