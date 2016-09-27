@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension-point id="com.google.gdt.eclipse.suite.launchConfigVmArgProcessor" name="Launch Configuration VM Argument Processor" schema="schema/com.google.gdt.eclipse.suite.launchConfigVmArgProcessor.exsd"/>
-   <extension-point id="com.google.gdt.eclipse.suite.xMxArgumentProcessorMem" name="XmxArgumentProcessor Memory" schema="schema/com.google.gdt.eclipse.suite.xMxArgumentProcessorMem.exsd"/>
-   <extension-point id="com.google.gdt.eclipse.suite.gaeSettingsTab" name="GaeSettingsTab" schema="schema/com.google.gdt.eclipse.suite.gaeSettingsTab.exsd"/>
-   <extension-point id="com.google.gdt.eclipse.suite.mainTypeFinder" name="MainTypeFinder" schema="schema/com.google.gdt.eclipse.suite.mainTypeFinder.exsd"/>
-   <extension-point id="com.google.gdt.eclipse.suite.warArgFinder" name="WarArgFinder" schema="schema/com.google.gdt.eclipse.suite.warArgFinder.exsd"/>
-   <extension-point id="com.google.gdt.eclipse.suite.launchConfigurationType" name="LaunchConfigurationType" schema="schema/com.google.gdt.eclipse.suite.launchConfigurationType.exsd"/>
-   <extension-point id="com.google.gdt.eclipse.suite.buildForLaunchCallback" name="Launch Configuration Build-For-Launch Callback" schema="schema/com.google.gdt.eclipse.suite.buildForLaunchCallback.exsd"/>
-   <extension-point id="com.google.gdt.eclipse.suite.webAppCreatorParticipant" name="Web App Creator Participant" schema="schema/com.google.gdt.eclipse.suite.webAppCreatorParticipant.exsd"/>
+   <extension-point id="com.gwtplugins.gdt.eclipse.suite.launchConfigVmArgProcessor" name="Launch Configuration VM Argument Processor" schema="schema/com.google.gdt.eclipse.suite.launchConfigVmArgProcessor.exsd"/>
+   <extension-point id="com.gwtplugins.gdt.eclipse.suite.xMxArgumentProcessorMem" name="XmxArgumentProcessor Memory" schema="schema/com.google.gdt.eclipse.suite.xMxArgumentProcessorMem.exsd"/>
+   <extension-point id="com.gwtplugins.gdt.eclipse.suite.gaeSettingsTab" name="GaeSettingsTab" schema="schema/com.google.gdt.eclipse.suite.gaeSettingsTab.exsd"/>
+   <extension-point id="com.gwtplugins.gdt.eclipse.suite.mainTypeFinder" name="MainTypeFinder" schema="schema/com.google.gdt.eclipse.suite.mainTypeFinder.exsd"/>
+   <extension-point id="com.gwtplugins.gdt.eclipse.suite.warArgFinder" name="WarArgFinder" schema="schema/com.google.gdt.eclipse.suite.warArgFinder.exsd"/>
+   <extension-point id="com.gwtplugins.gdt.eclipse.suite.launchConfigurationType" name="LaunchConfigurationType" schema="schema/com.google.gdt.eclipse.suite.launchConfigurationType.exsd"/>
+   <extension-point id="com.gwtplugins.gdt.eclipse.suite.buildForLaunchCallback" name="Launch Configuration Build-For-Launch Callback" schema="schema/com.google.gdt.eclipse.suite.buildForLaunchCallback.exsd"/>
+   <extension-point id="com.gwtplugins.gdt.eclipse.suite.webAppCreatorParticipant" name="Web App Creator Participant" schema="schema/com.google.gdt.eclipse.suite.webAppCreatorParticipant.exsd"/>
 	
    <extension
          point="org.eclipse.ui.preferencePages">

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension-point id="com.google.gdt.eclipse.core.deploymentParticipant" name="Deployment Participant" schema="schema/com.google.gdt.eclipse.core.deployParticipant.exsd"/>
-   <extension-point id="com.google.gdt.eclipse.core.webApplicationEnablementFinder" name="webApplicationEnablementFinder" schema="schema/com.google.gdt.eclipse.core.webApplicationEnablementFinder.exsd"/>
-   <extension-point id="com.google.gdt.eclipse.core.warOutputDirectoryLocator" name="WAR Folder Output Directory Locator" schema="schema/com.google.gdt.eclipse.core.warOutputDirectoryLocator.exsd"/>
-   <extension-point id="com.google.gdt.eclipse.core.managedWarOptionEnablementFinder" name="managedWarOptionEnablementFinder" schema="schema/com.google.gdt.eclipse.core.managedWarOptionEnablementFinder.exsd"/>
-   <extension-point id="com.google.gdt.eclipse.core.updateQueryArgContributor" name="UpdateQueryArgContributor" schema="schema/com.google.gdt.eclipse.core.updateQueryArgContributor.exsd"/>
-   <extension-point id="com.google.gdt.eclipse.core.debugLauncher" name="Debug Launcher" schema="schema/com.google.gdt.eclipse.core.debugLauncher.exsd"/>
+   <extension-point id="com.gwtplugins.gdt.eclipse.core.deploymentParticipant" name="Deployment Participant" schema="schema/com.google.gdt.eclipse.core.deployParticipant.exsd"/>
+   <extension-point id="com.gwtplugins.gdt.eclipse.core.webApplicationEnablementFinder" name="webApplicationEnablementFinder" schema="schema/com.google.gdt.eclipse.core.webApplicationEnablementFinder.exsd"/>
+   <extension-point id="com.gwtplugins.gdt.eclipse.core.warOutputDirectoryLocator" name="WAR Folder Output Directory Locator" schema="schema/com.google.gdt.eclipse.core.warOutputDirectoryLocator.exsd"/>
+   <extension-point id="com.gwtplugins.gdt.eclipse.core.managedWarOptionEnablementFinder" name="managedWarOptionEnablementFinder" schema="schema/com.google.gdt.eclipse.core.managedWarOptionEnablementFinder.exsd"/>
+   <extension-point id="com.gwtplugins.gdt.eclipse.core.updateQueryArgContributor" name="UpdateQueryArgContributor" schema="schema/com.google.gdt.eclipse.core.updateQueryArgContributor.exsd"/>
+   <extension-point id="com.gwtplugins.gdt.eclipse.core.debugLauncher" name="Debug Launcher" schema="schema/com.google.gdt.eclipse.core.debugLauncher.exsd"/>
    
    <extension point="org.eclipse.core.expressions.definitions">
         <definition id="com.google.gdt.eclipse.core.isGpeSelected">

@@ -9,32 +9,32 @@
       </classpathProvider>
    </extension>
    <extension
-         point="com.google.gwt.eclipse.core.moduleClasspathProvider">
+         point="com.gwtplugins.gwt.eclipse.core.moduleClasspathProvider">
       <moduleClasspathProvider
             priority="30"
             providerClass="com.google.gdt.eclipse.maven.launch.MavenClasspathProvider$MavenClasspathProviderIdProvider">
       </moduleClasspathProvider>
    </extension>
    <extension
-         point="com.google.gwt.eclipse.core.gwtProjectBoundSdkFactory">
+         point="com.gwtplugins.gwt.eclipse.core.gwtProjectBoundSdkFactory">
       <gwtProjectBoundSdkFactory
             class="com.google.gdt.eclipse.maven.sdk.GWTMavenSdkFactory">
       </gwtProjectBoundSdkFactory>
    </extension>
    <extension
-         point="com.google.gdt.eclipse.core.warOutputDirectoryLocator">
+         point="com.gwtplugins.gdt.eclipse.core.warOutputDirectoryLocator">
       <outputWarDir
             class="com.google.gdt.eclipse.maven.web.MavenOutputWarDirectoryLocator">
       </outputWarDir>
    </extension>
    <extension
-         point="com.google.gdt.eclipse.core.managedWarOptionEnablementFinder">
+         point="com.gwtplugins.gdt.eclipse.core.managedWarOptionEnablementFinder">
       <managedWarOptionEnablementFinder
             class="com.google.gdt.eclipse.maven.properties.MavenManagedWarOptionDisabler">
       </managedWarOptionEnablementFinder>
    </extension>
    <extension
-         point="com.google.gdt.eclipse.suite.launchConfigVmArgProcessor">
+         point="com.gwtplugins.gdt.eclipse.suite.launchConfigVmArgProcessor">
       <launchConfigVmArgProcessor
             class="com.google.gdt.eclipse.maven.launch.processors.XXMaxPermSizeArgumentProcessor">
       </launchConfigVmArgProcessor>
@@ -66,7 +66,7 @@
    </extension>
    
    <extension
-         point="com.google.gdt.eclipse.suite.webAppCreatorParticipant">
+         point="com.gwtplugins.gdt.eclipse.suite.webAppCreatorParticipant">
       <client
             class="com.google.gdt.eclipse.maven.projects.MavenEnablingWebAppCreatorParicipant"></client>
    </extension>
