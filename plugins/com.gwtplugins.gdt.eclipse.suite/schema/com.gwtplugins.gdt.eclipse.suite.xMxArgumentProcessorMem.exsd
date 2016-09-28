@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="com.google.gdt.eclipse.suite" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="com.gwtplugins.gdt.eclipse.suite" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="com.google.gdt.eclipse.suite" id="com.google.gdt.eclipse.suite.webAppCreatorParticipant" name="Web App Creator Participant"/>
+         <meta.schema plugin="com.gwtplugins.gdt.eclipse.suite" id="com.gwtplugins.gdt.eclipse.suite.xMxArgumentProcessorMem" name="XmxArgumentProcessor Memory"/>
       </appInfo>
       <documentation>
-         [Enter description of this extension point.]
+         This is an internal-only extension point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
       </documentation>
    </annotation>
 
@@ -17,9 +17,9 @@
          </appInfo>
       </annotation>
       <complexType>
-         <choice minOccurs="1" maxOccurs="unbounded">
-            <element ref="client"/>
-         </choice>
+         <sequence>
+            <element ref="xMxArgumentProcessorMem"/>
+         </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
                <documentation>
@@ -47,56 +47,29 @@
       </complexType>
    </element>
 
-   <element name="client">
+   <element name="xMxArgumentProcessorMem">
       <complexType>
-         <attribute name="class" type="string">
+         <attribute name="memory" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  An integer value indicating the memory amount (in megabytes) to be used by the XmxArgumentProcessor.
                </documentation>
-               <appInfo>
-                  <meta.attribute kind="java" basedOn=":com.google.gdt.eclipse.core.projects.IWebAppProjectCreator$Participant"/>
-               </appInfo>
             </annotation>
          </attribute>
       </complexType>
    </element>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="since"/>
-      </appInfo>
-      <documentation>
-         [Enter the first release in which this extension point appears.]
-      </documentation>
-   </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="examples"/>
-      </appInfo>
-      <documentation>
-         [Enter extension point usage example here.]
-      </documentation>
-   </annotation>
 
    <annotation>
       <appInfo>
          <meta.section type="apiinfo"/>
       </appInfo>
       <documentation>
-         [Enter API information here.]
+         This is an internal-only extension point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="implementation"/>
-      </appInfo>
-      <documentation>
-         [Enter information about supplied implementation of this extension point.]
-      </documentation>
-   </annotation>
 
 
 </schema>

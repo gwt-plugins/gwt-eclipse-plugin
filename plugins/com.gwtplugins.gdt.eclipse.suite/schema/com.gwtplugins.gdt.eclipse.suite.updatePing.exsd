@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="com.google.gwt.eclipse.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="com.gwtplugins.gdt.eclipse.suite" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="com.google.gwt.eclipse.core" id="com.google.gwt.eclipse.core.gwtSettingsTabFactory" name="GWTSettingsTabFactory"/>
+         <meta.schema plugin="com.gwtplugins.gdt.eclipse.suite" id="com.gwtplugins.gdt.eclipse.suite.updatePing" name="updatePing"/>
       </appInfo>
       <documentation>
          This is an internal-only extension point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="gwtSettingsTabFactory"/>
+            <element ref="updatePing"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="gwtSettingsTabFactory">
+   <element name="updatePing">
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":com.google.gwt.eclipse.core.launch.ui.tabs.GWTSettingsTab.IGWTSettingsTabFactory"/>
+                  <meta.attribute kind="java" basedOn=":com.gwtplugins.gdt.eclipse.suite.DownloadJobCreator"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -64,14 +64,6 @@
 
 
 
-   <annotation>
-      <appInfo>
-         <meta.section type="apiinfo"/>
-      </appInfo>
-      <documentation>
-         This is an internal-only extension point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
-      </documentation>
-   </annotation>
 
 
 

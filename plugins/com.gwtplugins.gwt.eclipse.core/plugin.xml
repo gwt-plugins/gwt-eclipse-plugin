@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension-point id="com.google.gwt.eclipse.core.moduleInfo" name="ModuleInfo" schema="schema/com.google.gwt.eclipse.core.moduleInfo.exsd"/>
-   <extension-point id="com.google.gwt.eclipse.core.launchShortcutStrategy" name="LaunchShortcutStrategy" schema="schema/com.google.gwt.eclipse.core.launchShortcutStrategy.exsd"/>
-   <extension-point id="com.google.gwt.eclipse.core.moduleClasspathProvider" name="ModuleClasspathProvider" schema="schema/com.google.gwt.eclipse.core.moduleClasspathProvider.exsd"/>
-   <extension-point id="com.google.gwt.eclipse.core.gwtSdkSelectionEnablementFinder" name="GwtSdkSelectionEnablementFinder" schema="schema/com.google.gwt.eclipse.core.gwtSdkSelectionEnablementFinder.exsd"/>
-   <extension-point id="com.google.gwt.eclipse.core.gwtProjectBoundSdkFactory" name="GWT Project-Bound SDK Factory" schema="schema/com.google.gwt.eclipse.core.gwtProjectBoundSdkFactory.exsd"/>
-   <extension-point id="com.google.gwt.eclipse.core.gwtCompileProjectValidator" name="gwtCompileProjectValidator" schema="schema/com.google.gwt.eclipse.core.gwtCompileProjectValidator.exsd"/>
-   <extension-point id="com.google.gwt.eclipse.core.gwtSettingsTabFactory" name="GwtSettingsTabFactory" schema="schema/com.google.gwt.eclipse.core.gwtSettingsTabFactory.exsd"/>
+   <extension-point id="com.gwtplugins.gwt.eclipse.core.moduleInfo" name="ModuleInfo" schema="schema/com.gwtplugins.gwt.eclipse.core.moduleInfo.exsd"/>
+   <extension-point id="com.gwtplugins.gwt.eclipse.core.launchShortcutStrategy" name="LaunchShortcutStrategy" schema="schema/com.gwtplugins.gwt.eclipse.core.launchShortcutStrategy.exsd"/>
+   <extension-point id="com.gwtplugins.gwt.eclipse.core.moduleClasspathProvider" name="ModuleClasspathProvider" schema="schema/com.gwtplugins.gwt.eclipse.core.moduleClasspathProvider.exsd"/>
+   <extension-point id="com.gwtplugins.gwt.eclipse.core.gwtSdkSelectionEnablementFinder" name="GwtSdkSelectionEnablementFinder" schema="schema/com.gwtplugins.gwt.eclipse.core.gwtSdkSelectionEnablementFinder.exsd"/>
+   <extension-point id="com.gwtplugins.gwt.eclipse.core.gwtProjectBoundSdkFactory" name="GWT Project-Bound SDK Factory" schema="schema/com.gwtplugins.gwt.eclipse.core.gwtProjectBoundSdkFactory.exsd"/>
+   <extension-point id="com.gwtplugins.gwt.eclipse.core.gwtCompileProjectValidator" name="gwtCompileProjectValidator" schema="schema/com.gwtplugins.gwt.eclipse.core.gwtCompileProjectValidator.exsd"/>
+   <extension-point id="com.gwtplugins.gwt.eclipse.core.gwtSettingsTabFactory" name="GwtSettingsTabFactory" schema="schema/com.gwtplugins.gwt.eclipse.core.gwtSettingsTabFactory.exsd"/>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
@@ -712,7 +712,7 @@
    		Participate in the Google deployment process
    -->
    <extension
-         point="com.google.gdt.eclipse.core.deploymentParticipant">
+         point="com.gwtplugins.gdt.eclipse.core.deploymentParticipant">
       <deploymentParticipant
             class="com.google.gwt.eclipse.core.GWTDeploymentParticipant">
       </deploymentParticipant>

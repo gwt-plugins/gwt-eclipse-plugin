@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="com.google.gdt.eclipse.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="com.gwtplugins.gdt.eclipse.suite" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="com.google.gdt.eclipse.core" id="com.google.gdt.eclipse.core.managedWarOptionEnablementFinder" name="managedWarOptionEnablementFinder"/>
+         <meta.schema plugin="com.gwtplugins.gdt.eclipse.suite" id="com.gwtplugins.gdt.eclipse.suite.mainTypeFinder" name="mainTypeFinder"/>
       </appInfo>
       <documentation>
-         This is an internal-only extenstion point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
+         This is an internal-only extension point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
       </documentation>
    </annotation>
 
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="managedWarOptionEnablementFinder"/>
+            <element ref="mainTypeFinder"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,15 +47,15 @@
       </complexType>
    </element>
 
-   <element name="managedWarOptionEnablementFinder">
+   <element name="mainTypeFinder">
       <complexType>
-         <attribute name="class" type="string">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":com.google.gdt.eclipse.core.properties.ui.WebappProjectPropertyPage$ManagedWarOptionEnablementFinder"/>
+                  <meta.attribute kind="java" basedOn=":com.gwtplugins.gdt.eclipse.suite.launch.processors.MainTypeProcessor$MainTypeFinder"/>
                </appInfo>
             </annotation>
          </attribute>

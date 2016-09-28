@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="com.google.gdt.eclipse.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="com.gwtplugins.gwt.eclipse.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="com.google.gdt.eclipse.core" id="com.google.gdt.eclipse.core.webApplicationEnablementFinder" name="webApplicationEnablementFinder"/>
+         <meta.schema plugin="com.gwtplugins.gwt.eclipse.core" id="com.gwtplugins.gwt.eclipse.core.gwtSdkSelectionEnablementFinder" name="GwtSdkSelectionEnablementFinder"/>
       </appInfo>
       <documentation>
-         This is an internal-only extenstion point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
+         This is an internal-only extension point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
       </documentation>
    </annotation>
 
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="webApplicationEnablementFinder"/>
+            <element ref="gwtSdkSelectionEnablementFinder"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,15 +47,15 @@
       </complexType>
    </element>
 
-   <element name="webApplicationEnablementFinder">
+   <element name="gwtSdkSelectionEnablementFinder">
       <complexType>
-         <attribute name="class" type="string">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":com.google.gdt.eclipse.core.properties.ui.WebappProjectPropertyPage$WebAppProjectEnablementFinder"/>
+                  <meta.attribute kind="java" basedOn=":com.gwtplugins.gwt.eclipse.core.properties.ui.GWTProjectPropertyPage$GwtSdkSelectionEnablementFinder"/>
                </appInfo>
             </annotation>
          </attribute>

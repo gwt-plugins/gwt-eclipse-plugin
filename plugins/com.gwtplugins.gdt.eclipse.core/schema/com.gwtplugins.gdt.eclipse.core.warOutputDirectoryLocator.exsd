@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="com.google.gwt.eclipse.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="com.gwtplugins.gdt.eclipse.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="com.google.gwt.eclipse.core" id="com.google.gwt.eclipse.core.gwtCompileProjectValidator" name="gwtCompileProjectValidator"/>
+         <meta.schema plugin="com.gwtplugins.gdt.eclipse.core" id="com.gwtplugins.gdt.eclipse.core.warOutputDirectoryLocator" name="WAR Folder Output Directory Locator"/>
       </appInfo>
       <documentation>
-         This is an internal-only extension point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
+         This is an internal-only extenstion point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
       </documentation>
    </annotation>
 
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="gwtCompileProjectValidator"/>
+            <element ref="outputWarDir"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="gwtCompileProjectValidator">
+   <element name="outputWarDir">
       <complexType>
          <attribute name="class" type="string" use="required">
             <annotation>
@@ -55,16 +55,11 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":com.google.gwt.eclipse.core.compile.ui.GWTCompileDialog$GWTCompileProjectValidator"/>
+                  <meta.attribute kind="java" basedOn=":com.gwtplugins.gdt.eclipse.core.WebAppUtilities$OutputWarDirectoryProvider"/>
                </appInfo>
             </annotation>
          </attribute>
       </complexType>
    </element>
-
-
-
-
-
 
 </schema>
