@@ -17,15 +17,12 @@ package com.google.gdt.eclipse.suite.launch.processors;
 import com.google.gdt.eclipse.core.ClasspathUtilities.ClassFinder;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorTestingHelper;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
-import com.google.gdt.eclipse.core.properties.WebAppProjectProperties;
-import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.projects.GwtEnablingProjectCreationParticipant;
 import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
 import com.google.gwt.eclipse.testing.GwtTestUtilities;
 
 import junit.framework.TestCase;
 
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 
@@ -46,52 +43,6 @@ public class MainTypeProcessorTest extends TestCase {
         new GwtEnablingProjectCreationParticipant());
   }
 
-  public void testGaeOnly() throws Exception {
-    GWTNature.removeNatureFromProject(helper.getProject());
-    new MainTypeProcessor(new ClassFinder()).update(helper.getLaunchConfig(),
-        JavaCore.create(helper.getProject()), null, null);
-    assertEquals(
-        LaunchConfigurationProcessorUtilities.getMainTypeName(helper.getLaunchConfig()),
-        MainTypeProcessor.MainType.GAE_APP_SERVER.mainTypeName);
-  }
-
-  public void testGwtCapabilityDetection() throws Exception {
-    // Ensure it chooses dev mode if the class is around
-    new MainTypeProcessor(new ClassFinder() {
-      @Override
-      public boolean exists(ClassLoader classLoader, String className) {
-        // GWT 2.0+ include all classes
-        return true;
-      }
-    }).update(helper.getLaunchConfig(), JavaCore.create(helper.getProject()), null, null);
-    assertEquals(
-        LaunchConfigurationProcessorUtilities.getMainTypeName(helper.getLaunchConfig()),
-        MainTypeProcessor.MainType.GWT_DEV_MODE.mainTypeName);
-
-    // Ensure it picks hosted mode when dev mode is not around
-    new MainTypeProcessor(new ClassFinder() {
-      @Override
-      public boolean exists(ClassLoader classLoader, String className) {
-        return !className.equals(MainTypeProcessor.MainType.GWT_DEV_MODE.mainTypeName);
-      }
-    }).update(helper.getLaunchConfig(), JavaCore.create(helper.getProject()), null, null);
-    assertEquals(
-        LaunchConfigurationProcessorUtilities.getMainTypeName(helper.getLaunchConfig()),
-        MainTypeProcessor.MainType.GWT_HOSTED_MODE.mainTypeName);
-
-    // Ensure it falls back to shell
-    new MainTypeProcessor(new ClassFinder() {
-      @Override
-      public boolean exists(ClassLoader classLoader, String className) {
-        return !className.equals(MainTypeProcessor.MainType.GWT_DEV_MODE.mainTypeName)
-            && !className.equals(MainTypeProcessor.MainType.GWT_HOSTED_MODE.mainTypeName);
-      }
-    }).update(helper.getLaunchConfig(), JavaCore.create(helper.getProject()), null, null);
-    assertEquals(
-        LaunchConfigurationProcessorUtilities.getMainTypeName(helper.getLaunchConfig()),
-        MainTypeProcessor.MainType.GWT_SHELL.mainTypeName);
-  }
-
   public void testManuallyChanged() throws Exception {
     // Ensure the processor does not overwrite manual changes
     String otherMainType = "example.OtherMainType";
@@ -105,16 +56,6 @@ public class MainTypeProcessorTest extends TestCase {
     assertEquals(
         LaunchConfigurationProcessorUtilities.getMainTypeName(helper.getLaunchConfig()),
         otherMainType);
-  }
-
-  public void testNoWar() throws Exception {
-    // Ensure shell is used when there isn't a WAR dir
-    WebAppProjectProperties.setWarSrcDir(helper.getProject(), new Path(""));
-    new MainTypeProcessor(new ClassFinder()).update(helper.getLaunchConfig(),
-        JavaCore.create(helper.getProject()), null, null);
-    assertEquals(
-        LaunchConfigurationProcessorUtilities.getMainTypeName(helper.getLaunchConfig()),
-        MainTypeProcessor.MainType.GWT_SHELL.mainTypeName);
   }
 
   @Override
