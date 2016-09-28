@@ -1,8 +1,8 @@
-<project name="com.google.gwt.eclipse.oophm.test" default="build" basedir=".">
+<project name="com.gwtplugins.gwt.eclipse.oophm.test" default="build" basedir=".">
 
     <!-- Project-specific properties -->
-    <property name="plugin_name" value="com.google.gwt.eclipse.oophm.test" />
-    <property name="host.plugin.name" value="com.google.gwt.eclipse.oophm" />
+    <property name="plugin_name" value="com.gwtplugins.gwt.eclipse.oophm.test" />
+    <property name="host.plugin.name" value="com.gwtplugins.gwt.eclipse.oophm" />
 
     <property name="project.tail" value="plugins/${plugin_name}" />
 

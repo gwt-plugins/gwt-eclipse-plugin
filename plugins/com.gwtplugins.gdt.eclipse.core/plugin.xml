@@ -9,21 +9,13 @@
    <extension-point id="com.gwtplugins.gdt.eclipse.core.debugLauncher" name="Debug Launcher" schema="schema/com.gwtplugins.gdt.eclipse.core.debugLauncher.exsd"/>
    
    <extension point="org.eclipse.core.expressions.definitions">
-        <definition id="com.google.gdt.eclipse.core.isGpeSelected">
+        <definition id="com.gwtplugins.gdt.eclipse.core.isGpeSelected">
             <and>
                <adapt type="org.eclipse.core.resources.IProject">
                    <test property="org.eclipse.core.resources.projectNature"
                          value="org.eclipse.jdt.core.javanature">
                    </test>
                </adapt>
-               <!-- TODO remove -->
-               <!--<not>
-                  <adapt type="org.eclipse.core.resources.IProject">
-                     <test property="org.eclipse.wst.common.project.facet.core.projectFacet"
-                           value="com.google.appengine.facet">
-                     </test>
-                  </adapt>
-               </not> -->
             </and>
         </definition>
    </extension>
@@ -31,19 +23,19 @@
          point="org.eclipse.ui.propertyPages">
       <page
             class="com.google.gdt.eclipse.core.properties.ui.CoreProjectPropertyPage"
-            id="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage"
+            id="com.gwtplugins.gdt.eclipse.core.properties.coreProjectPropertyPage"
             name="GWT">
          <enabledWhen>
-            <reference definitionId="com.google.gdt.eclipse.core.isGpeSelected"/>
+            <reference definitionId="com.gwtplugins.gdt.eclipse.core.isGpeSelected"/>
          </enabledWhen>
       </page>
       <page
-            category="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage"
+            category="com.gwtplugins.gdt.eclipse.core.properties.coreProjectPropertyPage"
             class="com.google.gdt.eclipse.core.properties.ui.WebappProjectPropertyPage"
-            id="com.google.gdt.eclipse.core.properties.ui.webappProjectPropertyPage"
+            id="com.gwtplugins.gdt.eclipse.core.properties.ui.webappProjectPropertyPage"
             name="Web Application">
          <enabledWhen>
-            <reference definitionId="com.google.gdt.eclipse.core.isGpeSelected"/>
+            <reference definitionId="com.gwtplugins.gdt.eclipse.core.isGpeSelected"/>
          </enabledWhen>
       </page>
    </extension>
@@ -75,14 +67,14 @@
          point="org.eclipse.ui.ide.markerResolution">
       <markerResolutionGenerator
             class="com.google.gdt.eclipse.core.markers.quickfixes.ValidatorProblemMarkerResolutionGenerator"
-            markerType="com.google.gdt.eclipse.core.webAppProblemMarker">
+            markerType="com.gwtplugins.gdt.eclipse.core.webAppProblemMarker">
       </markerResolutionGenerator>
    </extension>
    <extension
          point="org.eclipse.ui.console.consolePageParticipants">
       <consolePageParticipant
             class="com.google.gdt.eclipse.core.console.CustomMessageConsole$ConsolePageParticipant"
-            id="com.google.gdt.eclipse.core.console.customMessageConsoleConsolePageParticipant">
+            id="com.gwtplugins.gdt.eclipse.core.console.customMessageConsoleConsolePageParticipant">
          <enablement>
             <instanceof
                   value="com.google.gdt.eclipse.core.console.CustomMessageConsole">
@@ -93,13 +85,13 @@
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
-            id="com.google.gdt.eclipse.core.actionSet"
+            id="com.gwtplugins.gdt.eclipse.core.actionSet"
             label="Sample Action Set"
             visible="true">
          <!-- This action is here just to get selection changed events -->
          <action
                class="com.google.gdt.eclipse.core.ActiveProjectFinder"
-               id="com.google.gdt.eclipse.core.actions.ActiveProjectFinder"
+               id="com.gwtplugins.gdt.eclipse.core.actions.ActiveProjectFinder"
                label="ActiveProjectFinder">
          </action>
       </actionSet>

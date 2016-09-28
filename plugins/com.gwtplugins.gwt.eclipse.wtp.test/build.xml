@@ -1,17 +1,17 @@
-<project name="com.google.gwt.eclipse.wtp.test"
+<project name="com.gwtplugins.gwt.eclipse.wtp.test"
          default="build"
          basedir=".">
 
     <!-- Project-specific properties -->
     <property name="plugin_name"
-              value="com.google.gwt.eclipse.wtp.test" />
+              value="com.gwtplugins.gwt.eclipse.wtp.test" />
     <property name="host.plugin.name"
-              value="com.google.gwt.eclipse.core" />
+              value="com.gwtplugins.gwt.eclipse.core" />
 
     <property name="project.tail" value="plugins/${plugin_name}" />
 
     <path id="plugin.src">
-        <pathelement location="${build.project.dir}/plugins/com.google.gwt.eclipse.core/src" />
+        <pathelement location="${build.project.dir}/plugins/com.gwtplugins.gwt.eclipse.core/src" />
     </path>
 
     

@@ -1,7 +1,7 @@
-<project name="com.google.gcp.eclipse.testing" default="build" basedir=".">
+<project name="com.gwtplugins.gcp.eclipse.testing" default="build" basedir=".">
 
     <!-- Project-specific properties -->
-    <property name="plugin_name" value="com.google.gcp.eclipse.testing" />
+    <property name="plugin_name" value="com.gwtplugins.gcp.eclipse.testing" />
     <property name="project.tail" value="plugins/${plugin_name}" />
 
     <property name="plugin.version" value="${gdt.version}" />

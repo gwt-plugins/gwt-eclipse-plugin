@@ -1,12 +1,12 @@
-<project name="com.google.gwt.eclipse.core.test.swtbot"
+<project name="com.gwtplugins.gwt.eclipse.core.test.swtbot"
          default="build"
          basedir=".">
 
     <!-- Project-specific properties -->
     <property name="plugin_name"
-              value="com.google.gwt.eclipse.core.test.swtbot" />
+              value="com.gwtplugins.gwt.eclipse.core.test.swtbot" />
     <property name="host.plugin.name"
-              value="com.google.gwt.eclipse.core" />
+              value="com.gwtplugins.gwt.eclipse.core" />
 
     <property name="project.tail" value="plugins/${plugin_name}" />
 

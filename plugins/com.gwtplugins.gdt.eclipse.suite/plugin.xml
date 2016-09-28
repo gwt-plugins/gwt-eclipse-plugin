@@ -14,13 +14,13 @@
          point="org.eclipse.ui.preferencePages">
       <page
             class="com.google.gdt.eclipse.suite.preferences.ui.GooglePreferencePage"
-            id="com.google.gdt.eclipse.suite.preferences.ui.googlePreferences"
+            id="com.gwtplugins.gdt.eclipse.suite.preferences.ui.googlePreferences"
             name="%gpe.menu.label">
       </page>
       <page
-            category="com.google.gdt.eclipse.suite.preferences.ui.googlePreferences"
+            category="com.gwtplugins.gdt.eclipse.suite.preferences.ui.googlePreferences"
             class="com.google.gdt.eclipse.suite.preferences.ui.ErrorsWarningsPage"
-            id="com.google.gdt.eclipse.suite.preferences.ui.errorsWarnings"
+            id="com.gwtplugins.gdt.eclipse.suite.preferences.ui.errorsWarnings"
             name="Errors/Warnings">
       </page>
    </extension>
@@ -32,7 +32,7 @@
             delegate="com.google.gdt.eclipse.suite.launch.WebAppLaunchDelegate"
             delegateDescription="Runs a Web Application"
             delegateName="GWT Web Application Launcher"
-            id="com.google.gdt.eclipse.suite.webapp"
+            id="com.gwtplugins.gdt.eclipse.suite.webapp"
             modes="run, debug"
             name="GWT Web Application"
             sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
@@ -44,18 +44,18 @@
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
             icon="icons/gwt_server_16x16.png"
-            configTypeID="com.google.gdt.eclipse.suite.webapp"
-            id="com.google.gdt.eclipse.suite.launch.webappImage">
+            configTypeID="com.gwtplugins.gdt.eclipse.suite.webapp"
+            id="com.gwtplugins.gdt.eclipse.suite.launch.webappImage">
       </launchConfigurationTypeImage>
    </extension>
 
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
-            type="com.google.gdt.eclipse.suite.webapp"
+            type="com.gwtplugins.gdt.eclipse.suite.webapp"
             helpContextId="org.eclipse.jdt.debug.ui.launchConfigHelpContext.local_java_application"
             class="com.google.gdt.eclipse.suite.launch.ui.tab_groups.WebAppTabGroup"
-            id="com.google.gdt.eclipse.suite.launch.ui.webappTabGroup">
+            id="com.gwtplugins.gdt.eclipse.suite.launch.ui.webappTabGroup">
          <launchMode 
                mode="debug"
                perspective="org.eclipse.debug.ui.DebugPerspective"
@@ -70,8 +70,8 @@
       <!-- GWT SDM Code Server -->
       <launchConfigurationTabGroup
             class="com.google.gdt.eclipse.suite.launch.ui.tab_groups.GwtSuperDevModeCodeServerTabGroup"
-            id="com.google.gwt.eclipse.core.launch.gwtSdmCodeServerTabGroup"
-            type="com.google.gwt.eclipse.core.sdmCodeServer"
+            id="com.gwtplugins.gwt.eclipse.core.launch.gwtSdmCodeServerTabGroup"
+            type="com.gwtplugins.gwt.eclipse.core.sdmCodeServer"
             description="Launch GWT Super Dev Mode with the CodeServer">
          <launchMode
                description="Debug GWT Super Dev Mode with the CodeServer"
@@ -93,7 +93,7 @@
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppLaunchShortcut"
             description="Launch a Web Application"
             icon="icons/gdt_16x16.png"
-            id="com.google.gdt.eclipse.suite.launch.ui.webappLaunchShortcut"
+            id="com.gwtplugins.gdt.eclipse.suite.launch.ui.webappLaunchShortcut"
             label="Web Application"
             modes="run, debug">
          <contextualLaunch>
@@ -101,7 +101,7 @@
                <with variable="selection">
                   <count value= "1"/>
                      <iterate>
-                        <test property="com.google.gdt.eclipse.suite.isLaunchTarget"/>
+                        <test property="com.gwtplugins.gdt.eclipse.suite.isLaunchTarget"/>
                      </iterate>
                </with>
             </enablement>
@@ -114,7 +114,7 @@
                description="Debug a Web Application"
                mode="debug" />
          <configurationType
-               id="com.google.gdt.eclipse.suite.webapp"/>
+               id="com.gwtplugins.gdt.eclipse.suite.webapp"/>
       </shortcut> -->
       
       <!-- Web Application No Server shortcut -->
@@ -122,7 +122,7 @@
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppNoServerLaunchShortcut"
             description="Launch a Web Application with DevMode using an External Server"
             icon="icons/gwt_server_16x16.png"
-            id="com.google.gdt.eclipse.suite.ui.webappNoServerLaunchShortcut"
+            id="com.gwtplugins.gdt.eclipse.suite.ui.webappNoServerLaunchShortcut"
             label="GWT Web Application with DevMode (Super Dev Mode with External Server)"
             modes="run, debug">            
          <contextualLaunch>
@@ -134,7 +134,7 @@
                   </count>
                   <iterate>
                      <test
-                           property="com.google.gdt.eclipse.suite.isNoServerLaunchTarget">
+                           property="com.gwtplugins.gdt.eclipse.suite.isNoServerLaunchTarget">
                      </test>
                   </iterate>
                </with>
@@ -149,7 +149,7 @@
                mode="debug">
          </description>
          <configurationType
-               id="com.google.gdt.eclipse.suite.webapp">
+               id="com.gwtplugins.gdt.eclipse.suite.webapp">
          </configurationType>
       </shortcut> -->
       
@@ -158,7 +158,7 @@
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTSuperDevModeLaunchShortcut"
             description="Launch a Web Application using GWT super dev mode with DevMode"
             icon="icons/gwt_server_16x16.png"
-            id="com.google.gdt.eclipse.suite.launch.ui.webappLaunchShortcutGwtSuperDevMode"
+            id="com.gwtplugins.gdt.eclipse.suite.launch.ui.webappLaunchShortcutGwtSuperDevMode"
             label="GWT Web Application with DevMode (Super Dev Mode)"
             modes="run, debug">
          <contextualLaunch>
@@ -166,7 +166,7 @@
                <with variable="selection">
                   <count value= "1"/>
                      <iterate>
-                        <test property="com.google.gdt.eclipse.suite.isGwtLaunchTarget"/>
+                        <test property="com.gwtplugins.gdt.eclipse.suite.isGwtLaunchTarget"/>
                      </iterate>
                </with>
             </enablement>
@@ -178,14 +178,14 @@
                description="Debug a Web Application (GWT SDM)"
                mode="debug" />
          <configurationType
-               id="com.google.gdt.eclipse.suite.webapp"/>
+               id="com.gwtplugins.gdt.eclipse.suite.webapp"/>
       </shortcut>
       <!-- GWT Classic Dev Mode Launch shortcut when using GWT -->
       <shortcut
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTClassicDevModeLaunchShortcut"
             description="Launch a Web Application using GWT classic DevMode"
             icon="icons/gwt_server_16x16.png"
-            id="com.google.gdt.eclipse.suite.launch.ui.webappLaunchShortcutGwtClassicDevMode"
+            id="com.gwtplugins.gdt.eclipse.suite.launch.ui.webappLaunchShortcutGwtClassicDevMode"
             label="GWT Web Application with DevMode (Classic Dev Mode)"
             modes="run, debug">
          <contextualLaunch>
@@ -193,7 +193,7 @@
                <with variable="selection">
                   <count value= "1"/>
                      <iterate>
-                        <test property="com.google.gdt.eclipse.suite.isGwtLaunchTarget"/>
+                        <test property="com.gwtplugins.gdt.eclipse.suite.isGwtLaunchTarget"/>
                      </iterate>
                </with>
             </enablement>
@@ -205,20 +205,20 @@
                description="Debug a Web Application With DevMode (Classic Dev Mode)"
                mode="debug" />
          <configurationType
-               id="com.google.gdt.eclipse.suite.webapp"/>
+               id="com.gwtplugins.gdt.eclipse.suite.webapp"/>
       </shortcut>
    </extension>  
    <extension
          point="org.eclipse.ui.newWizards">
       <category
-            id="com.google.gdt.eclipse.suite.newWizards"
+            id="com.gwtplugins.gdt.eclipse.suite.newWizards"
             name="%gpe.menu.label">
       </category>
       <wizard
-            category="com.google.gdt.eclipse.suite.newWizards"
+            category="com.gwtplugins.gdt.eclipse.suite.newWizards"
             class="com.google.gdt.eclipse.suite.wizards.NewWebAppProjectWizard"
             icon="icons/gdt-new-project_16x16.png"
-            id="com.google.gdt.eclipse.suite.wizards.newProjectWizard"
+            id="com.gwtplugins.gdt.eclipse.suite.wizards.newProjectWizard"
             name="GWT Web Application Project"
             preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective"
             project="true">
@@ -227,7 +227,7 @@
    <extension
          point="org.eclipse.ui.importWizards">
       <category
-            id="com.google.gdt.eclipse.suite.importWizards"
+            id="com.gwtplugins.gdt.eclipse.suite.importWizards"
             name="%gpe.menu.label">
       </category>
    </extension>
@@ -236,25 +236,25 @@
       <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaPerspective">
          <newWizardShortcut
-               id="com.google.gdt.eclipse.suite.wizards.newProjectWizard">
+               id="com.gwtplugins.gdt.eclipse.suite.wizards.newProjectWizard">
          </newWizardShortcut>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaBrowsingPerspective">
          <newWizardShortcut
-               id="com.google.gdt.eclipse.suite.wizards.newProjectWizard">
+               id="com.gwtplugins.gdt.eclipse.suite.wizards.newProjectWizard">
          </newWizardShortcut>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaHierarchyPerspective">
          <newWizardShortcut
-               id="com.google.gdt.eclipse.suite.wizards.newProjectWizard">
+               id="com.gwtplugins.gdt.eclipse.suite.wizards.newProjectWizard">
          </newWizardShortcut>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="org.eclipse.jst.j2ee.J2EEPerspective">
          <newWizardShortcut
-               id="com.google.gdt.eclipse.suite.wizards.newProjectWizard">
+               id="com.gwtplugins.gdt.eclipse.suite.wizards.newProjectWizard">
          </newWizardShortcut>
       </perspectiveExtension>
    </extension>
@@ -265,10 +265,10 @@
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="true"
-            id="com.google.gdt.eclipse.suite.projectGoogleSettings"
+            id="com.gwtplugins.gdt.eclipse.suite.projectGoogleSettings"
             objectClass="org.eclipse.core.resources.IProject">
          <menu
-               id="com.google.gdt.eclipse.suite.popupMenu.project"
+               id="com.gwtplugins.gdt.eclipse.suite.popupMenu.project"
                label="%gpe.menu.label"
                icon="icons/gdt_16x16.png"
                path="additions">
@@ -285,10 +285,10 @@
       </objectContribution>
       <objectContribution
             adaptable="true"
-            id="com.google.gdt.eclipse.suite.fileActions"
+            id="com.gwtplugins.gdt.eclipse.suite.fileActions"
             objectClass="org.eclipse.core.resources.IFile">
          <menu
-               id="com.google.gdt.eclipse.suite.popupMenu.file"
+               id="com.gwtplugins.gdt.eclipse.suite.popupMenu.file"
                label="%gpe.menu.label"
                path="additions">
             <groupMarker
@@ -301,23 +301,23 @@
    <extension
          point="org.eclipse.core.expressions.propertyTesters">
       <propertyTester
-         id="com.google.gdt.eclipse.suite.launchTargetPropertyTester"
-         namespace="com.google.gdt.eclipse.suite"
+         id="com.gwtplugins.gdt.eclipse.suite.launchTargetPropertyTester"
+         namespace="com.gwtplugins.gdt.eclipse.suite"
          properties="isLaunchTarget"
          type="org.eclipse.core.runtime.IAdaptable"
          class="com.google.gdt.eclipse.suite.propertytesters.LaunchTargetTester">
       </propertyTester>
       <propertyTester
-         id="com.google.gdt.eclipse.suite.noServerLaunchTargetPropertyTester"
-         namespace="com.google.gdt.eclipse.suite"
+         id="com.gwtplugins.gdt.eclipse.suite.noServerLaunchTargetPropertyTester"
+         namespace="com.gwtplugins.gdt.eclipse.suite"
          properties="isNoServerLaunchTarget"
          type="org.eclipse.core.runtime.IAdaptable"
          class="com.google.gdt.eclipse.suite.propertytesters.NoServerLaunchTargetTester">
       </propertyTester>
       <propertyTester
             class="com.google.gdt.eclipse.suite.propertytesters.GwtLaunchTargetTester"
-            id="com.google.gdt.eclipse.suite.propertytesters.gwtLaunchTargetTester"
-            namespace="com.google.gdt.eclipse.suite"
+            id="com.gwtplugins.gdt.eclipse.suite.propertytesters.gwtLaunchTargetTester"
+            namespace="com.gwtplugins.gdt.eclipse.suite"
             properties="isGwtLaunchTarget"
             type="org.eclipse.core.runtime.IAdaptable">
       </propertyTester>      
@@ -328,10 +328,10 @@
             allPopups="false"
             locationURI="toolbar:org.eclipse.ui.main.toolbar?before=additions">
          <toolbar
-               id="com.google.gdt.eclipse.suite.GDTPulldownToolbar"
+               id="com.gwtplugins.gdt.eclipse.suite.GDTPulldownToolbar"
                label="GWT">
             <command
-                  commandId="com.google.gdt.eclipse.suite.GDTPulldown"
+                  commandId="com.gwtplugins.gdt.eclipse.suite.GDTPulldown"
                   icon="icons/gdt_16x16.png"
                   label="Google Services and Development Tools"
                   style="pulldown">
@@ -340,9 +340,9 @@
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="menu:com.google.gdt.eclipse.suite.GDTPulldown?after=toolbarGroup.new">
+            locationURI="menu:com.gwtplugins.gdt.eclipse.suite.GDTPulldown?after=toolbarGroup.new">
          <command
-               commandId="com.google.gdt.eclipse.suite.newWebAppProject"
+               commandId="com.gwtplugins.gdt.eclipse.suite.newWebAppProject"
                icon="icons/gdt-new-project_16x16.png"
                label="New GWT Application Project..."
                style="push"
@@ -350,7 +350,7 @@
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="menu:com.google.gdt.eclipse.suite.GDTPulldown">
+            locationURI="menu:com.gwtplugins.gdt.eclipse.suite.GDTPulldown">
          <separator
                name="toolbarGroup.new"
                visible="true">
@@ -385,12 +385,12 @@
          point="org.eclipse.ui.commands">
       <command
             defaultHandler="com.google.gdt.eclipse.suite.actions.PulldownHandler"
-            id="com.google.gdt.eclipse.suite.GDTPulldown"
+            id="com.gwtplugins.gdt.eclipse.suite.GDTPulldown"
             name="GDT Pulldown">
       </command>
       <command
             defaultHandler="com.google.gdt.eclipse.suite.actions.NewWebAppToolbarHandler"
-            id="com.google.gdt.eclipse.suite.newWebAppProject"
+            id="com.gwtplugins.gdt.eclipse.suite.newWebAppProject"
             name="New GWT Application Project">
       </command>
    </extension>

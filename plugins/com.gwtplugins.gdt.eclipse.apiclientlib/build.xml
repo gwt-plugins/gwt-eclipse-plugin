@@ -1,7 +1,7 @@
-<project name="com.google.gdt.eclipse.apiclientlib" default="build" basedir=".">
+<project name="com.gwtplugins.gdt.eclipse.apiclientlib" default="build" basedir=".">
 
     <!-- Project-specific properties -->
-    <property name="plugin_name" value="com.google.gdt.eclipse.apiclientlib" />
+    <property name="plugin_name" value="com.gwtplugins.gdt.eclipse.apiclientlib" />
     <property name="project.tail" value="plugins/${plugin_name}" />
 
     <property name="plugin.version" value="${gdt.version}" />
