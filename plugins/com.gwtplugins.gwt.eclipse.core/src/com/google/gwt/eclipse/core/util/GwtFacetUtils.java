@@ -16,7 +16,7 @@ public class GwtFacetUtils {
   public static boolean hasGwtFacet(IProject project) {
     boolean hasFacet = false;
     try {
-      hasFacet = FacetedProjectFramework.hasProjectFacet(project, "com.google.gwt.facet");
+      hasFacet = FacetedProjectFramework.hasProjectFacet(project, "com.gwtplugins.gwt.facet");
     } catch (CoreException e) {
       CorePluginLog.logInfo("hasGetFacet: Error, can't figure GWT facet.", e);
     }

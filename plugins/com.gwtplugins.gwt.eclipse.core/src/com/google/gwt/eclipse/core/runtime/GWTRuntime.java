@@ -231,8 +231,7 @@ public abstract class GWTRuntime extends AbstractSdk {
     public IStatus validate() {
       if (getInstallationPath() == null) {
         return StatusUtilities.newErrorStatus(
-            "Could not determine an installation path based on the project's classpath.",
-            GWTPlugin.PLUGIN_ID);
+            "Could not determine an installation path based on the project's classpath.", GWTPlugin.PLUGIN_ID);
       }
 
       if (usesGwtDevProject()) {
@@ -250,8 +249,7 @@ public abstract class GWTRuntime extends AbstractSdk {
      * defined.
      */
     private IPath computeGwtDevJarVariableValue() {
-      IStringVariableManager variableManager =
-          VariablesPlugin.getDefault().getStringVariableManager();
+      IStringVariableManager variableManager = VariablesPlugin.getDefault().getStringVariableManager();
       IValueVariable valueVariable = variableManager.getValueVariable("gwt_devjar");
       if (valueVariable != null) {
         String value = valueVariable.getValue();
@@ -317,18 +315,15 @@ public abstract class GWTRuntime extends AbstractSdk {
       IPath buildStagingDirectory = null;
       for (IClasspathEntry rawClasspath : jProject.getRawClasspath()) {
         if (rawClasspath.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-          IPath sourcePathLocation =
-              getAbsoluteLocation(rawClasspath.getPath(), jProject.getProject());
+          IPath sourcePathLocation = getAbsoluteLocation(rawClasspath.getPath(), jProject.getProject());
 
           // Project could be gwt-user or gwt-dev and their source paths vary
           // from 2 to 3 segments - Hack.
           IPath outputLocation =
-              sourcePathLocation.removeLastSegments(3).append(
-                  GWTProjectsRuntime.STAGING_FOLDER_RELATIVE_LOCATION);
+              sourcePathLocation.removeLastSegments(3).append(GWTProjectsRuntime.STAGING_FOLDER_RELATIVE_LOCATION);
           if (!outputLocation.toFile().exists()) {
             outputLocation =
-                sourcePathLocation.removeLastSegments(2).append(
-                    GWTProjectsRuntime.STAGING_FOLDER_RELATIVE_LOCATION);
+                sourcePathLocation.removeLastSegments(2).append(GWTProjectsRuntime.STAGING_FOLDER_RELATIVE_LOCATION);
           }
 
           if (outputLocation.toFile().exists()) {
@@ -358,22 +353,19 @@ public abstract class GWTRuntime extends AbstractSdk {
     }
 
     private IClasspathEntry findGwtCodeServerClasspathEntry() throws JavaModelException {
-      IClasspathEntry entry =
-          ClasspathUtilities.findRawClasspathEntryFor(javaProject,
-              GwtLaunchConfigurationProcessorUtilities.SUPERDEVMODE_CODESERVER_MAIN_TYPE);
+      IClasspathEntry entry = ClasspathUtilities.findRawClasspathEntryFor(javaProject,
+          GwtLaunchConfigurationProcessorUtilities.SUPERDEVMODE_CODESERVER_MAIN_TYPE);
       return entry;
     }
 
     private IClasspathEntry findGwtDevClasspathEntry() throws JavaModelException {
-      IClasspathEntry gwtDev =
-          ClasspathUtilities.findRawClasspathEntryFor(javaProject, "com.google.gwt.dev.About");
+      IClasspathEntry gwtDev = ClasspathUtilities.findRawClasspathEntryFor(javaProject, "com.google.gwt.dev.About");
       return gwtDev;
     }
 
     private IClasspathEntry findGwtUserClasspathEntry() throws JavaModelException {
       IClasspathEntry gwtUser =
-          ClasspathUtilities
-              .findRawClasspathEntryFor(javaProject, "com.google.gwt.core.client.GWT");
+          ClasspathUtilities.findRawClasspathEntryFor(javaProject, "com.google.gwt.core.client.GWT");
       return gwtUser;
     }
   }
@@ -404,10 +396,9 @@ public abstract class GWTRuntime extends AbstractSdk {
    * been registered.
    */
   public static GWTRuntime findSdkFor(IJavaProject javaProject) {
-
     ExtensionQuery<GWTRuntime.IProjectBoundSdkFactory> extQuery =
-        new ExtensionQuery<GWTRuntime.IProjectBoundSdkFactory>(GWTPlugin.PLUGIN_ID,
-            "gwtProjectBoundSdkFactory", "class");
+        new ExtensionQuery<GWTRuntime.IProjectBoundSdkFactory>(GWTPlugin.PLUGIN_ID, "gwtProjectBoundSdkFactory",
+            "class");
     List<ExtensionQuery.Data<GWTRuntime.IProjectBoundSdkFactory>> sdkFactories = extQuery.getData();
     for (ExtensionQuery.Data<GWTRuntime.IProjectBoundSdkFactory> sdkFactory : sdkFactories) {
 

@@ -19,7 +19,7 @@ import org.osgi.framework.BundleContext;
 
 public class GwtTestingPlugin extends Plugin {
   // The plug-in ID
-  public static final String PLUGIN_ID = "com.google.gwt.eclipse.testing";
+  public static final String PLUGIN_ID = "com.gwtplugins.gwt.eclipse.testing";
 
   // The shared instance
   private static GwtTestingPlugin instance;

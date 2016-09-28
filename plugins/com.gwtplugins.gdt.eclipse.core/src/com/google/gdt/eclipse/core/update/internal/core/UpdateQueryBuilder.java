@@ -31,6 +31,8 @@ import java.util.Map.Entry;
 
 /**
  * Builds the query string to include with a feature update check request.
+ *
+ * TODO remove GAE...
  */
 public class UpdateQueryBuilder {
 
@@ -43,8 +45,6 @@ public class UpdateQueryBuilder {
   public static final String GPH_PROJECT_IMPORT = "gph_import";
 
   private static final String ACTION_PARAM = "&action=";
-
-  private static final String APP_ENGINE_CORE_PLUGIN_ID = "com.google.appengine.eclipse.core";
 
   public static final String ENDPOINTS_GEN_APP_ENGINE_BACKEND = "endpoints_genbackend";
 

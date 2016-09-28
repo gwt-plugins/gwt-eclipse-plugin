@@ -455,7 +455,7 @@ public class WebAppLaunchView extends ViewPart {
    * The ID of the view as specified by the extension. Note this is hard-coded since the ID differs
    * from the plugin package name.
    */
-  public static final String ID = "com.google.gwt.eclipse.DevModeView";
+  public static final String ID = "com.gwtplugins.gwt.eclipse.DevModeView";
 
   protected static final Object[] NO_ELEMENTS = new Object[0];
 

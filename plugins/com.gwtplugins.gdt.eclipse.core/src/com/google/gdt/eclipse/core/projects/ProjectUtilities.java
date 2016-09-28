@@ -189,7 +189,7 @@ public final class ProjectUtilities {
    */
   public static boolean isGwtProject(IProject project) throws CoreException {
     String natureId = "com.gwtplugins.gwt.eclipse.core.gwtNature"; // GWTNature.NATURE_ID
-    String facetId = "com.google.gwt.facet";
+    String facetId = "com.gwtplugins.gwt.facet";
     try {
       return project.isAccessible()
           && (project.hasNature(natureId) || FacetedProjectFramework.hasProjectFacet(project,

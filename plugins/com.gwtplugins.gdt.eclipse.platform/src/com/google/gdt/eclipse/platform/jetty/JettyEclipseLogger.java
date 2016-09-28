@@ -29,7 +29,7 @@ public class JettyEclipseLogger implements Logger {
 
   private static final String LOGGER_NAME = "org.eclipse.jetty";
 
-  private static final String PLUGIN_ID = "com.google.gdt.eclipse.platform.shared";
+  private static final String PLUGIN_ID = "com.gwtplugins.gdt.eclipse.platform.shared";
 
   static {
     platformLog = Platform.getLog(Platform.getBundle(PLUGIN_ID));
@@ -155,6 +155,7 @@ public class JettyEclipseLogger implements Logger {
     warn("", thrown);
   }
 
+  @Override
   public void debug(String msg, long value) {
     log(IStatus.INFO, format(msg, value), null);
   }

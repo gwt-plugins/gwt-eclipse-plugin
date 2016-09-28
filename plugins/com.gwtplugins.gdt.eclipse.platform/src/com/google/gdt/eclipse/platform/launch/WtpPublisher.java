@@ -101,7 +101,7 @@ public class WtpPublisher {
              * This type of module represents a dependent WTP "utility" project.
              * We need to take the resource for this module and package them up
              * into a jar.
-             * 
+             *
              * Later, we'll copy the resulting jar over to the WEB-INF/lib
              * folder.
              */
@@ -119,7 +119,7 @@ public class WtpPublisher {
              * not copy such libraries over automatically; we need to do it
              * explicitly.
              */
-            File file = (File) mr[0].getAdapter(File.class);
+            File file = mr[0].getAdapter(File.class);
             extraResources.add(new ModuleFile(file, file.getName(),
                 WEB_INF_LIB_PATH));
           }
@@ -162,7 +162,7 @@ public class WtpPublisher {
 
     if (publishResult.size() > 0) {
       throw new CoreException(new MultiStatus(
-          "com.google.gdt.eclipse.platform.shared", 0,
+          "com.gwtplugins.gdt.eclipse.platform.shared", 0,
           publishResult.toArray(new IStatus[publishResult.size()]), NLS.bind(
               "Publishing of ''{0}'' failed", project.getName()), null));
     }

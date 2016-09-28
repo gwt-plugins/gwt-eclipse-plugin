@@ -25,7 +25,7 @@ import java.util.LinkedList;
 
 /**
  * A circular buffer to temporarily store debug/trace information.
- * 
+ *
  * Added to investigate
  * http://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=13
  */
@@ -42,7 +42,7 @@ public class LogSniffer extends AbstractHandler {
   private static final int logSize;
   private static final Object logLock = new Object();
 
-  private static final String CMD_PARAM_ID = "com.google.gwt.eclipse.oophm.logSniffer.param1";
+  private static final String CMD_PARAM_ID = "com.gwtplugins.gwt.eclipse.oophm.logSniffer.param1";
 
   static {
     PluginProperties props = new PluginProperties(Activator.class);
@@ -59,7 +59,7 @@ public class LogSniffer extends AbstractHandler {
     sb.append(MessageFormat.format("[{0,number,#}] ",
         System.currentTimeMillis()));
     sb.append(MessageFormat.format(msg, args));
-    
+
     doLog(sb.toString());
   }
 
@@ -75,6 +75,7 @@ public class LogSniffer extends AbstractHandler {
   /**
    * Handles user commands.
    */
+  @Override
   public Object execute(ExecutionEvent event) {
     switch (Commands.valueOf((String) event.getParameters().get(CMD_PARAM_ID))) {
       case CMD_DUMP:

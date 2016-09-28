@@ -1,11 +1,11 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
- * 
+ *
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
  * accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -37,15 +37,15 @@ import org.osgi.framework.Version;
 /**
  */
 public class CorePlugin extends AbstractGooglePlugin {
-  public static final String PLUGIN_ID = CorePlugin.class.getPackage().getName();
-  
+  public static final String PLUGIN_ID = "com.gwtplugins.gdt.eclipse.core";
+
   private static final Version MIN_GPE_JAVA_VERSION = new Version(1, 7, 0);
 
   private static CorePlugin plugin;
 
   /**
    * Returns the shared instance.
-   * 
+   *
    * @return the shared instance
    */
   public static CorePlugin getDefault() {
@@ -64,7 +64,7 @@ public class CorePlugin extends AbstractGooglePlugin {
   public void start(BundleContext context) throws Exception {
     super.start(context);
     plugin = this;
-    
+
     // Make sure the executing JRE is up to date. This plugin and everything it depends on
     // are Java 1.5 compatible, so this check will run at workbench startup in any JRE at level
     // 1.5 or later. However, some other parts of GPE require MIN_GPE_JAVA_VERSION or later. If we
@@ -92,14 +92,14 @@ public class CorePlugin extends AbstractGooglePlugin {
       //
       // throw e; // Prevent plugin from starting up.
     }
-    
+
     // Load problem severities
     GdtProblemSeverities.getInstance().addProblemTypeEnums(
         new Class<?>[] {ProjectStructureOrSdkProblemType.class});
 
     ProjectChangeTimestampTracker.INSTANCE.startTracking();
   }
-  
+
   private static void checkVersion(String key, Version minVersion) throws GpeVersionException {
     String detectedVersionString = System.getProperty(key);
     if (key == null) {

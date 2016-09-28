@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 
 /**
- * 
+ *
  */
 public class WebAppLaunchConfiguration {
 
@@ -27,7 +27,7 @@ public class WebAppLaunchConfiguration {
    * in the suite plugin. It was moved here after some non-suite plugins
    * depended on this configuration's type.
    */
-  public static final String TYPE_ID = "com.google.gdt.eclipse.suite.webapp";
+  public static final String TYPE_ID = "com.gwtplugins.gdt.eclipse.suite.webapp";
 
   public static boolean getAutoPortSelection(
       ILaunchConfiguration launchConfiguration) throws CoreException {

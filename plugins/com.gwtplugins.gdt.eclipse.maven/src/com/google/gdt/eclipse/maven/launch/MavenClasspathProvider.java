@@ -56,7 +56,7 @@ public class MavenClasspathProvider extends ModuleClasspathProvider {
         return null;
       }
 
-      return "com.google.gdt.eclipse.maven.mavenClasspathProvider";
+      return "com.gwtplugins.gdt.eclipse.maven.mavenClasspathProvider";
     }
   }
 

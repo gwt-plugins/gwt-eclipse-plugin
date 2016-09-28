@@ -18,7 +18,6 @@ import com.google.gdt.eclipse.core.ClasspathUtilities;
 import com.google.gdt.eclipse.core.ClasspathUtilities.ClassFinder;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.StringUtilities;
-import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
@@ -35,10 +34,10 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import java.util.List;
 
 /**
- * Sets the main type for a launch configuration. The policy is to set a relevant main type, unless
- * the user has manually changed the main type since we last set it. We detect this by storing our
- * previously set main type and comparing it to the current value. If equal, we try to update to the
- * main type applicable to the current project configuration.
+ * Sets the main type for a launch configuration. The policy is to set a relevant main type, unless the user has
+ * manually changed the main type since we last set it. We detect this by storing our previously set main type and
+ * comparing it to the current value. If equal, we try to update to the main type applicable to the current project
+ * configuration.
  */
 public class MainTypeProcessor implements ILaunchConfigurationProcessor {
 
@@ -46,19 +45,10 @@ public class MainTypeProcessor implements ILaunchConfigurationProcessor {
    * Possible main types for a launch configuration.
    */
   public enum MainType {
-    GAE_APP_SERVER("com.google.appengine.tools.development.DevAppServerMain"),
     /**
      * GWT 2.0+
      */
-    GWT_DEV_MODE("com.google.gwt.dev.DevMode"),
-    /**
-     * GWT 1.6+ (Jetty with War layout)
-     */
-    GWT_HOSTED_MODE("com.google.gwt.dev.HostedMode"),
-    /**
-     * GWT < 1.6 (servlets in gwt.xml)
-     */
-    GWT_SHELL("com.google.gwt.dev.GWTShell");
+    GWT_DEV_MODE("com.google.gwt.dev.DevMode");
 
     public final String mainTypeName;
 
@@ -92,47 +82,31 @@ public class MainTypeProcessor implements ILaunchConfigurationProcessor {
     return false;
   }
 
-  private static String computeMainTypeName(ILaunchConfigurationWorkingCopy config,
-      IJavaProject javaProject, ClassFinder classFinder) throws CoreException {
+  private static String computeMainTypeName(ILaunchConfigurationWorkingCopy config, IJavaProject javaProject,
+      ClassFinder classFinder) throws CoreException {
 
     IProject project = javaProject.getProject();
 
-    ExtensionQuery<MainTypeProcessor.MainTypeFinder> extQuery =
-        new ExtensionQuery<MainTypeProcessor.MainTypeFinder>(GdtPlugin.PLUGIN_ID, "mainTypeFinder",
-            "class");
-    List<ExtensionQuery.Data<MainTypeProcessor.MainTypeFinder>> mainTypeFinders =
-        extQuery.getData();
+    ExtensionQuery<MainTypeProcessor.MainTypeFinder> extQuery = new ExtensionQuery<MainTypeProcessor.MainTypeFinder>(
+        GdtPlugin.PLUGIN_ID, "mainTypeFinder", "class");
+    List<ExtensionQuery.Data<MainTypeProcessor.MainTypeFinder>> mainTypeFinders = extQuery.getData();
     for (ExtensionQuery.Data<MainTypeProcessor.MainTypeFinder> mainTypeFinder : mainTypeFinders) {
-      String mainTypeFromExtension =
-          mainTypeFinder.getExtensionPointData().findMainType(javaProject);
+      String mainTypeFromExtension = mainTypeFinder.getExtensionPointData().findMainType(javaProject);
       if (mainTypeFromExtension != null) {
         return mainTypeFromExtension;
       }
     }
 
     if (GWTNature.isGWTProject(project)) {
-
-      if (!WebAppUtilities.isWebApp(project)) {
-        // We can use GWT shell for non-WAR projects (typically these are GWT
-        // 1.5 and older projects)
-
-        return MainType.GWT_SHELL.mainTypeName;
-      }
-
       ClassLoader classLoader = LaunchConfigurationProcessorUtilities.getClassLoaderFor(config);
       if (classFinder.exists(classLoader, MainType.GWT_DEV_MODE.mainTypeName)) {
         return MainType.GWT_DEV_MODE.mainTypeName;
       }
 
-      if (classFinder.exists(classLoader, MainType.GWT_HOSTED_MODE.mainTypeName)) {
-        return MainType.GWT_HOSTED_MODE.mainTypeName;
-      }
-
-      // Fallback
-      return MainType.GWT_SHELL.mainTypeName;
-
+      return MainType.GWT_DEV_MODE.mainTypeName;
     } else {
-      return null;
+      // TODO would this work?
+      return MainType.GWT_DEV_MODE.mainTypeName;
     }
   }
 
@@ -157,8 +131,8 @@ public class MainTypeProcessor implements ILaunchConfigurationProcessor {
   }
 
   @Override
-  public void update(ILaunchConfigurationWorkingCopy config, IJavaProject javaProject,
-      List<String> programArgs, List<String> vmArgs) throws CoreException {
+  public void update(ILaunchConfigurationWorkingCopy config, IJavaProject javaProject, List<String> programArgs,
+      List<String> vmArgs) throws CoreException {
     String currentMainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
     String previouslySetMainTypeName = getPreviouslySetMainTypeName(config);
 
@@ -177,8 +151,8 @@ public class MainTypeProcessor implements ILaunchConfigurationProcessor {
   }
 
   @Override
-  public String validate(ILaunchConfiguration config, IJavaProject javaProject,
-      List<String> programArgs, List<String> vmArgs) {
+  public String validate(ILaunchConfiguration config, IJavaProject javaProject, List<String> programArgs,
+      List<String> vmArgs) {
     return null;
   }
 }
