@@ -266,10 +266,6 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
         if (entry.getPath().toString().toLowerCase().contains("gwt-user")) {
           countDupsGwtUser++;
         }
-
-        if (entry.getPath().toString().toLowerCase().contains("gwt-codeserver")) {
-          countDupsCodeServer++;
-        }
       }
     }
 
@@ -284,11 +280,6 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
 
         if (countDupsGwtUser > 1 && entry.getPath().toString().toLowerCase().contains("gwt-user")) {
           String m = message.replace("jar", "gwt-user.jar") + " ::: path=" + entry.getPath();
-          out.println(m);
-        }
-
-        if (countDupsCodeServer > 1 && entry.getPath().toString().toLowerCase().contains("gwt-codeserver")) {
-          String m = message.replace("jar", "gwt-codeserver.jar") + " ::: path=" + entry.getPath();
           out.println(m);
         }
       }

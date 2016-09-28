@@ -101,7 +101,7 @@ public class ModuleArgumentProcessor implements ILaunchConfigurationProcessor {
   }
 
   private static boolean doesGwtMainTypeTakeModuleArguments(ILaunchConfiguration config) throws CoreException {
-    return !GwtLaunchConfigurationProcessorUtilities.isGwtShell(config);
+    return true;
   }
 
   private static Set<String> getAllPossibleModules(ILaunchConfiguration configuration, IProject project)

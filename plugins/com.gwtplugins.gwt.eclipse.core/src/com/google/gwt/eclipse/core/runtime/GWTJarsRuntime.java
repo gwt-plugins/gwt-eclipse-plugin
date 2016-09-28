@@ -135,14 +135,6 @@ public class GWTJarsRuntime extends GWTRuntime {
       return Util.newErrorStatus(gwtServletPath.toOSString() + " is missing");
     }
 
-    // The codeserver jar is not present in GWT SDKs earlier than version 2.5.
-    if (GwtVersionUtil.isGwtVersionKnownAndAtLeast25(sdkLocation.lastSegment())) {
-      IPath gwtCodeServerPath = sdkLocation.append(GWT_CODESERVER_JAR);
-      if (!gwtCodeServerPath.toFile().exists()) {
-        return Util.newErrorStatus(gwtCodeServerPath.toOSString() + " is missing");
-      }
-    }
-
     return Status.OK_STATUS;
   }
 

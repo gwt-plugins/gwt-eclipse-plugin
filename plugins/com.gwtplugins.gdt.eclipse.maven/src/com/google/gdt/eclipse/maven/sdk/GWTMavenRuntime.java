@@ -50,7 +50,6 @@ import java.util.Set;
  * A project-based GWT SDK for Maven-based project.
  */
 public class GWTMavenRuntime extends ProjectBoundSdk {
-  public static final String MAVEN_GWT_CODESERVER_JAR_ARTIFACT_ID = "gwt-codeserver";
   public static final String MAVEN_GWT_GROUP_ID = "com.google.gwt";
   public static final String MAVEN_GWT_DEV_JAR_ARTIFACT_ID = "gwt-dev";
   public static final String MAVEN_GWT_USER_ARTIFACT_ID = "gwt-user";
@@ -73,16 +72,8 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
       // gwt-dev.jar
       classloaderURLs.add(getDevJar().toURI().toURL());
 
-      // findGwtUserClasspathEntry won't be null, because validate passed
-      // gwt-user.jar
+      // findGwtUserClasspathEntry won't be null, because validate passed gwt-user.jar
       classloaderURLs.add(findGwtUserClasspathEntry().getPath().toFile().toURI().toURL());
-
-      // gwt-codeserver.jar
-      IClasspathEntry codeServerJar = findGwtCodeServerClasspathEntry();
-      // could be null on older GWT projects
-      if (codeServerJar != null) {
-        classloaderURLs.add(codeServerJar.getPath().toFile().toURI().toURL());
-      }
 
       // validation jars
       IClasspathEntry javaxValidationJar = findJavaXValidationClasspathEntry();
@@ -100,15 +91,15 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
   /**
    * This method's implementation breaks the general contract of
    * {@link com.google.gwt.eclipse.core.runtime.GWTRuntime#getClasspathEntries()} .
-   * 
+   *
    * The general contract states that the entries returned should be the raw entries on the build
    * path that correspond to the SDK. This method returns the resolved entry on the build path that
    * corresponds to the gwt-user library. It then returns the path to the gwt-dev library that's a
    * peer of the gwt-user library in the Maven repository. This library may not be on the build
    * classpath.
-   * 
+   *
    * TODO: Reconsider the general contract of this method.
-   * 
+   *
    * TODO: Get rid of this method; I don't think its used at all in the Maven case.
    */
   @Override
@@ -233,9 +224,9 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
   }
 
   /**
-   * Find the classpath for get-codeserver.jar which is used to run super dev mode.
-   * 
-   * @return IClasspathEntry for the path to gwt-codeserver.jar
+   * Find the classpath for get-dev.jar which is used to run super dev mode.
+   *
+   * @return IClasspathEntry for the path to gwt-dev.jar
    * @throws JavaModelException
    */
   private IClasspathEntry findGwtCodeServerClasspathEntry() throws JavaModelException {
@@ -260,9 +251,9 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
      * is different than the one that is used by the superclass. This is because the class that the
      * superclass is querying for, "com.google.gwt.core.client.GWT", also exists in the gwt-servlet
      * library, and for some reason, this sometimes ends up on the build path for Maven projects.
-     * 
+     *
      * TODO: See why Maven is putting gwt-servlet on the build path.
-     * 
+     *
      * TODO: Change the class query in the superclass to "com.google.gwt.junit.client.GWTTestCase"
      */
     IType type = javaProject.findType("com.google.gwt.junit.client.GWTTestCase");

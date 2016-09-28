@@ -25,8 +25,6 @@ import com.google.gwt.eclipse.testing.GwtTestUtilities;
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 
 import java.util.List;
 
@@ -48,21 +46,21 @@ public class RemoteUiArgumentProcessorTest extends TestCase {
 
   public void testGwtShellSupportsRemoteUi() throws Exception {
     List<String> args = LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
-    
+
     // Get rid of the "web app"-ness
     WebAppProjectProperties.setWarSrcDir(helper.getProject(), new Path(""));
     assertFalse(WebAppUtilities.isWebApp(helper.getProject()));
 
-    // Change to GWTShell main type
-    helper.getLaunchConfig().setAttribute(
-        IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
-        GwtLaunchConfigurationProcessorUtilities.GWT_SHELL_MAIN_TYPE);
-
-    // Ensure the remote UI arg remains on the command-line
-    assertTrue(args.indexOf("-remoteUI") >= 0);
-    new RemoteUiArgumentProcessor().update(helper.getLaunchConfig(),
-        JavaCore.create(helper.getProject()), args, null);
-    assertTrue(args.indexOf("-remoteUI") >= 0);
+    // TODO remove
+    // // Change to GWTShell main type
+    // helper.getLaunchConfig().setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
+    // GwtLaunchConfigurationProcessorUtilities.GWT_SHELL_MAIN_TYPE);
+    //
+    // // Ensure the remote UI arg remains on the command-line
+    // assertTrue(args.indexOf("-remoteUI") >= 0);
+    // new RemoteUiArgumentProcessor().update(helper.getLaunchConfig(),
+    // JavaCore.create(helper.getProject()), args, null);
+    // assertTrue(args.indexOf("-remoteUI") >= 0);
   }
 
   @Override

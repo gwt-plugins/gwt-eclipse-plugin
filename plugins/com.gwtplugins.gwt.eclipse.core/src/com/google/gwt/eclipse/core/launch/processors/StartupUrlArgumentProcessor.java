@@ -71,19 +71,19 @@ public class StartupUrlArgumentProcessor implements
               persistedStartupUrl);
         }
 
-        /*
-         * If the above did not work (e.g. user changing value) and the main
-         * type is GWTShell, try to find the last extra arg. This succeeds when
-         * the user is changing values, but can lead to incorrect results when
-         * the project configuration is changing (e.g. SDK changes) since the
-         * last extra arg could be a different type (e.g. module or WAR).
-         * Remember, the block above matches thus preventing this from executing
-         * if the project configuration is changing.
-         */
-        if (gwtShellStyleStartupUrlIndex == -1
-            && GwtLaunchConfigurationProcessorUtilities.isGwtShell(config)) {
-          gwtShellStyleStartupUrlIndex = findStartupUrlFromGwtShellArgs(args);
-        }
+        // /* TODO remove
+        // * If the above did not work (e.g. user changing value) and the main
+        // * type is GWTShell, try to find the last extra arg. This succeeds when
+        // * the user is changing values, but can lead to incorrect results when
+        // * the project configuration is changing (e.g. SDK changes) since the
+        // * last extra arg could be a different type (e.g. module or WAR).
+        // * Remember, the block above matches thus preventing this from executing
+        // * if the project configuration is changing.
+        // */
+        // if (gwtShellStyleStartupUrlIndex == -1
+        // && GwtLaunchConfigurationProcessorUtilities.isGwtShell(config)) {
+        // gwtShellStyleStartupUrlIndex = findStartupUrlFromGwtShellArgs(args);
+        // }
 
         // Assemble the list of startup URLs
         if (gwtShellStyleStartupUrlIndex >= 0) {
@@ -201,6 +201,7 @@ public class StartupUrlArgumentProcessor implements
     return insertionIndex == -1 ? 0 : insertionIndex;
   }
 
+  @Override
   public void update(ILaunchConfigurationWorkingCopy launchConfig,
       IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
       throws CoreException {
@@ -215,25 +216,17 @@ public class StartupUrlArgumentProcessor implements
       removeStartupUrlsWithStartupUrlArg(programArgs, parser, false);
 
     } else {
-      if (GwtLaunchConfigurationProcessorUtilities.isGwtShell(launchConfig)) {
-        removeStartupUrlsWithStartupUrlArg(programArgs, parser, false);
-        removeStartupUrlForGwtShell(programArgs, parser);
-        if (!StringUtilities.isEmpty(persistedStartupUrl)) {
-          programArgs.add(persistedStartupUrl);
-        }
-
-      } else {
-        removeStartupUrlForGwtShell(programArgs, parser);
-        int insertionIndex = removeStartupUrlsWithStartupUrlArg(programArgs,
-            parser, true);
-        if (!StringUtilities.isEmpty(persistedStartupUrl)) {
-          programArgs.add(insertionIndex, ARG_STARTUP_URL);
-          programArgs.add(insertionIndex + 1, persistedStartupUrl);
-        }
+      removeStartupUrlForGwtShell(programArgs, parser);
+      int insertionIndex = removeStartupUrlsWithStartupUrlArg(programArgs,
+          parser, true);
+      if (!StringUtilities.isEmpty(persistedStartupUrl)) {
+        programArgs.add(insertionIndex, ARG_STARTUP_URL);
+        programArgs.add(insertionIndex + 1, persistedStartupUrl);
       }
     }
   }
 
+  @Override
   public String validate(ILaunchConfiguration launchConfig,
       IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
       throws CoreException {
