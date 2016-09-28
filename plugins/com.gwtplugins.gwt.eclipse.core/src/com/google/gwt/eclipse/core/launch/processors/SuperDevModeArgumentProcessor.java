@@ -109,20 +109,6 @@ public class SuperDevModeArgumentProcessor implements ILaunchConfigurationProces
       }
     }
 
-    // Validate gwt-codeserver.jar exists
-    // TODO this could be removed possibly in GWT >= 2.7, check with contributor team
-    // because the source may be in the gwt-dev.jar
-    String error = validateSuperDevModeCodeServer(javaProject);
-    if (error != null) {
-      errors.add(error);
-    }
-
-    // Validate gwt-dev[.*].jar exists
-    error = validateGwtDev(javaProject);
-    if (error != null) {
-      errors.add(error);
-    }
-
     // some errors exist tell the user
     if (errors.size() > 0) {
       return ERRORS + " " + StringUtilities.join(errors, ", ");
@@ -194,22 +180,6 @@ public class SuperDevModeArgumentProcessor implements ILaunchConfigurationProces
     if (!superDevModeEnabled) {
       programArgs.add(0, SUPERDEVMODE_DISABLED_ARG);
     }
-  }
-
-  private String validateSuperDevModeCodeServer(IJavaProject javaProject) {
-    boolean alreadyExists = false;
-    try {
-      IType type =
-          javaProject
-              .findType(GwtLaunchConfigurationProcessorUtilities.SUPERDEVMODE_CODESERVER_MAIN_TYPE);
-      if (type != null) {
-        alreadyExists = true;
-      }
-    } catch (JavaModelException e) {}
-    if (!alreadyExists) {
-      return ERROR_NO_JAR_CODESERVER;
-    }
-    return null;
   }
 
   private String validateGwtDev(IJavaProject javaProject) {

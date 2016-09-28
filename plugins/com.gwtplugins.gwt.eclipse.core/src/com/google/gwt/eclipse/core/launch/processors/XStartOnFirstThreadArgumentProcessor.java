@@ -42,10 +42,10 @@ public class XStartOnFirstThreadArgumentProcessor implements
   /**
    * Returns <code>true</code> if -XstartOnFirstThread needs to be added as a VM
    * argument.
-   * 
+   *
    * @param javaProject if <code>null</code>
    */
-  private static boolean needsStartOnFirstThreadHack(IJavaProject javaProject, 
+  private static boolean needsStartOnFirstThreadHack(IJavaProject javaProject,
       ILaunchConfiguration config)
       throws CoreException {
 
@@ -71,25 +71,27 @@ public class XStartOnFirstThreadArgumentProcessor implements
      * We're using a platform-independent version of GWT, which means we don't
      * need the hack. Except that the hack prevents us from ending in the OSX
      * dock, so we do want it.
-     * 
+     *
      * If the user wants to use the Swing UI (by setting USE_REMOTE_UI = false)
      * or if the launch config is using a main type that will bring up the Swing
      * UI, then the hack is not needed.
      */
-    boolean userWantsToUseSwingUi = RemoteUiArgumentProcessor.isUseRemoteUiEnvVarFalse(config);
-    boolean usingOldMainTypes = GwtLaunchConfigurationProcessorUtilities.isGwtShell(config)
-        || GwtLaunchConfigurationProcessorUtilities.isHostedMode(config);
-    if (userWantsToUseSwingUi || usingOldMainTypes) {
-      return false;
-    } else {
-      return true;
-    }
+    // boolean userWantsToUseSwingUi = RemoteUiArgumentProcessor.isUseRemoteUiEnvVarFalse(config);
+    // boolean usingOldMainTypes = false;
+    // if (userWantsToUseSwingUi || usingOldMainTypes) {
+    // return false;
+    // } else {
+    // return true;
+    // }
+
+    return true;
   }
 
+  @Override
   public void update(ILaunchConfigurationWorkingCopy launchConfig,
       IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
       throws CoreException {
-    
+
     // As of Eclipse Kepler(4.3), the use of -XStartOnFirstThread is a built-in launch config
     // attribute so it is not necessary to make it an explicit argument. This prevents issues when
     // sharing a launch config file across multiple OS platforms.
@@ -104,6 +106,7 @@ public class XStartOnFirstThreadArgumentProcessor implements
     }
   }
 
+  @Override
   public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject,
       List<String> programArgs, List<String> vmArgs) throws CoreException {
     return null;
@@ -119,7 +122,7 @@ public class XStartOnFirstThreadArgumentProcessor implements
       /*
        * If we're on a mac, we might need the -XstartOnFirstThread attribute set to true in order to work
        * around a UI threading issue with the Mac platform.
-       * 
+       *
        * We need to do this whether we're running GWT by itself, GWT + GAE, or GAE by itself.
        */
       if (!startOnFirstThread) {
@@ -142,7 +145,7 @@ public class XStartOnFirstThreadArgumentProcessor implements
       /*
        * If we're on a mac, we might need the -XstartOnFirstThread argument in order
        * to work around a UI threading issue with the Mac platform.
-       *  
+       *
        * We need to do this whether we're running GWT by itself, GWT + GAE, or
        * GAE by itself.
        */

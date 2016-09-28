@@ -22,7 +22,6 @@ import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.suite.GdtPlugin;
-import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 
 import org.eclipse.core.runtime.CoreException;
@@ -150,7 +149,7 @@ public class WarArgumentProcessor implements ILaunchConfigurationProcessor {
       + "WarArgumentProcessor.IS_WAR_FROM_PROJECT_PROPERTIES";
 
   public static boolean doesMainTypeTakeWarArgument(ILaunchConfiguration config) throws CoreException {
-    return !GwtLaunchConfigurationProcessorUtilities.isGwtShell(config);
+    return true;
   }
 
   private static boolean isWarFromProjectProperties(ILaunchConfiguration config) {

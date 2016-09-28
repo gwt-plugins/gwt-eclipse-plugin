@@ -25,7 +25,6 @@ import com.google.gwt.eclipse.core.launch.GWTLaunchConfiguration;
 import com.google.gwt.eclipse.core.launch.GWTLaunchConfigurationWorkingCopy;
 import com.google.gwt.eclipse.core.launch.LegacyGWTLaunchShortcutStrategy;
 import com.google.gwt.eclipse.core.launch.WebAppLaunchShortcutStrategy;
-import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.launch.processors.LogLevelArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.ModuleArgumentProcessor;
 import com.google.gwt.eclipse.core.launch.processors.NoServerArgumentProcessor;
@@ -276,11 +275,7 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
 
       boolean hasNoServerArg =
           NoServerArgumentProcessor.hasNoServerArg(LaunchConfigurationProcessorUtilities.parseProgramArgs(config));
-      boolean showStartupUrl =
-          GwtLaunchConfigurationProcessorUtilities.isGwtShell(config)
-              || GwtLaunchConfigurationProcessorUtilities.isHostedMode(config)
-              || (GwtLaunchConfigurationProcessorUtilities.isSuperDevModeCodeServer(config) && hasNoServerArg)
-              || (GwtLaunchConfigurationProcessorUtilities.isDevMode(config) && hasNoServerArg);
+      boolean showStartupUrl = false; // TODO remove GwtLaunchConfigurationProcessorUtilities.isGwtShell(config) || GwtLaunchConfigurationProcessorUtilities.isHostedMode(config) || (GwtLaunchConfigurationProcessorUtilities.isSuperDevModeCodeServer(config) && hasNoServerArg) || (GwtLaunchConfigurationProcessorUtilities.isDevMode(config) && hasNoServerArg);
       GridData layoutData = (GridData) browserGroup.getLayoutData();
       layoutData.exclude = !showStartupUrl;
       browserGroup.setVisible(showStartupUrl);

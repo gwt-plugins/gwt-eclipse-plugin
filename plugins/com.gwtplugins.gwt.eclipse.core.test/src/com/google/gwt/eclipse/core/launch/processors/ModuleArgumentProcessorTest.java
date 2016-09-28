@@ -26,7 +26,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 
 import java.util.List;
 
@@ -42,17 +41,14 @@ public class ModuleArgumentProcessorTest extends TestCase {
 
     GwtRuntimeTestUtilities.addDefaultRuntime();
 
-    helper.setUp(ModuleArgumentProcessorTest.class.getSimpleName(),
-        new GwtEnablingProjectCreationParticipant());
+    helper.setUp(ModuleArgumentProcessorTest.class.getSimpleName(), new GwtEnablingProjectCreationParticipant());
   }
 
   public void testModulePresenceForNonWebAppProject() throws Exception {
     // Get the modules
     List<String> args = LaunchConfigurationProcessorUtilities.parseProgramArgs(helper.getLaunchConfig());
-    List<String> modules = ModuleArgumentProcessor.getModules(args,
-        helper.getLaunchConfig(),
-        helper.getProject());
-    
+    List<String> modules = ModuleArgumentProcessor.getModules(args, helper.getLaunchConfig(), helper.getProject());
+
     // Get rid of the "web app"-ness
     WebAppProjectProperties.setWarSrcDir(helper.getProject(), new Path(""));
     assertFalse(WebAppUtilities.isWebApp(helper.getProject()));
@@ -60,19 +56,17 @@ public class ModuleArgumentProcessorTest extends TestCase {
     // Ensure the modules still exist on the command-line, since the main
     // type is still one that uses them
     assertTrue(args.indexOf(modules.get(0)) >= 0);
-    new ModuleArgumentProcessor().update(helper.getLaunchConfig(),
-        JavaCore.create(helper.getProject()), args, null);
+    new ModuleArgumentProcessor().update(helper.getLaunchConfig(), JavaCore.create(helper.getProject()), args, null);
     assertTrue(args.indexOf(modules.get(0)) >= 0);
 
+    // TODO remove
     // Drop to GWTShell main type, which does not use them, ensure they are
     // removed
-    helper.getLaunchConfig().setAttribute(
-        IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
-        GwtLaunchConfigurationProcessorUtilities.GWT_SHELL_MAIN_TYPE);
-    assertTrue(args.indexOf(modules.get(0)) >= 0);
-    new ModuleArgumentProcessor().update(helper.getLaunchConfig(),
-        JavaCore.create(helper.getProject()), args, null);
-    assertFalse(args.indexOf(modules.get(0)) >= 0);
+    // helper.getLaunchConfig().setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,GwtLaunchConfigurationProcessorUtilities.GWT_SHELL_MAIN_TYPE);
+    // assertTrue(args.indexOf(modules.get(0)) >= 0);
+    // new ModuleArgumentProcessor().update(helper.getLaunchConfig(),
+    // JavaCore.create(helper.getProject()), args, null);
+    // assertFalse(args.indexOf(modules.get(0)) >= 0);
   }
 
   @Override
