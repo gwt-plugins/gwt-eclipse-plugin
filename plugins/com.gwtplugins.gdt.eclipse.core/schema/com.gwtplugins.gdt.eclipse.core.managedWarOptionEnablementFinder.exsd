@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="com.google.gdt.eclipse.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="com.gwtplugins.gdt.eclipse.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="com.google.gdt.eclipse.core" id="com.google.gdt.eclipse.core.updateQueryArgContributor" name="updateQueryArgContributor"/>
+         <meta.schema plugin="com.gwtplugins.gdt.eclipse.core" id="com.gwtplugins.gdt.eclipse.core.managedWarOptionEnablementFinder" name="managedWarOptionEnablementFinder"/>
       </appInfo>
       <documentation>
-         [Enter description of this extension point.]
+         This is an internal-only extenstion point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
       </documentation>
    </annotation>
 
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="updateQueryArgContributor"/>
+            <element ref="managedWarOptionEnablementFinder"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="updateQueryArgContributor">
+   <element name="managedWarOptionEnablementFinder">
       <complexType>
          <attribute name="class" type="string">
             <annotation>
@@ -55,48 +55,16 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":com.google.gdt.eclipse.core.update.internal.core.UpdateQueryArgContributor"/>
+                  <meta.attribute kind="java" basedOn=":com.gwtplugins.gdt.eclipse.core.properties.ui.WebappProjectPropertyPage$ManagedWarOptionEnablementFinder"/>
                </appInfo>
             </annotation>
          </attribute>
       </complexType>
    </element>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="since"/>
-      </appInfo>
-      <documentation>
-         [Enter the first release in which this extension point appears.]
-      </documentation>
-   </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="examples"/>
-      </appInfo>
-      <documentation>
-         [Enter extension point usage example here.]
-      </documentation>
-   </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="apiinfo"/>
-      </appInfo>
-      <documentation>
-         [Enter API information here.]
-      </documentation>
-   </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="implementation"/>
-      </appInfo>
-      <documentation>
-         [Enter information about supplied implementation of this extension point.]
-      </documentation>
-   </annotation>
 
 
 </schema>

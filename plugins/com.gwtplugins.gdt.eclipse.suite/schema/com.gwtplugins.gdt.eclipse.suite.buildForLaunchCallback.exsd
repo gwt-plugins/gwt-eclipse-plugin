@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="com.google.gwt.eclipse.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="com.gwtplugins.gdt.eclipse.suite" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="com.google.gwt.eclipse.core" id="com.google.gwt.eclipse.core.moduleClasspathProvider" name="ModuleClasspathProvider"/>
+         <meta.schema plugin="com.gwtplugins.gdt.eclipse.suite" id="com.gwtplugins.gdt.eclipse.suite.buildForLaunchCallback" name="Launch Configuration Build-For-Launch Callback"/>
       </appInfo>
       <documentation>
-         This is an internal-only extension point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
+         [Enter description of this extension point.]
       </documentation>
    </annotation>
 
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="moduleClasspathProvider"/>
+            <element ref="buildForLaunchCallback"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,42 +47,56 @@
       </complexType>
    </element>
 
-   <element name="moduleClasspathProvider">
+   <element name="buildForLaunchCallback">
       <complexType>
-         <attribute name="providerClass" type="string" use="required">
+         <attribute name="class" type="string">
             <annotation>
                <documentation>
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":com.google.gwt.eclipse.core.launch.ModuleClasspathProvider$IModuleClasspathProviderIdProvider"/>
-               </appInfo>
-            </annotation>
-         </attribute>
-         <attribute name="priority" type="string" use="default" value="10">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appInfo>
-                  <meta.attribute translatable="true"/>
+                  <meta.attribute kind="java" basedOn=":com.gwtplugins.gdt.eclipse.suite.launch.IBuildForLaunchCallback"/>
                </appInfo>
             </annotation>
          </attribute>
       </complexType>
    </element>
 
+   <annotation>
+      <appInfo>
+         <meta.section type="since"/>
+      </appInfo>
+      <documentation>
+         [Enter the first release in which this extension point appears.]
+      </documentation>
+   </annotation>
 
+   <annotation>
+      <appInfo>
+         <meta.section type="examples"/>
+      </appInfo>
+      <documentation>
+         [Enter extension point usage example here.]
+      </documentation>
+   </annotation>
 
    <annotation>
       <appInfo>
          <meta.section type="apiinfo"/>
       </appInfo>
       <documentation>
-         This is an internal-only extension point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
+         [Enter API information here.]
       </documentation>
    </annotation>
 
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         [Enter information about supplied implementation of this extension point.]
+      </documentation>
+   </annotation>
 
 
 </schema>
