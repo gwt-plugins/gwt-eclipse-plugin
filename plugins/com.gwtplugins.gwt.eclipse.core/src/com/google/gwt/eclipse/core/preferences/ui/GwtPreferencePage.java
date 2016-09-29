@@ -42,12 +42,12 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class GwtPreferencePage extends PreferencePage implements
     IWorkbenchPreferencePage {
 
-  public static final String ID = GwtPreferencePage.class.getName();
+  public static final String ID = "com.gwtplugins.gwt.eclipse.core.preferences.ui.GwtPreferencePage";
 
   private SdkSet<GWTRuntime> sdkSet;
 
   /**
-   *  
+   *
    */
   public GwtPreferencePage() {
   }
@@ -68,6 +68,7 @@ public class GwtPreferencePage extends PreferencePage implements
     // TODO Auto-generated constructor stub
   }
 
+  @Override
   public void init(IWorkbench workbench) {
     // TODO Auto-generated method stub
   }
