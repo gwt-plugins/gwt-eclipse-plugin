@@ -57,10 +57,9 @@ import java.util.Set;
 public final class GdtPreferences {
 
   /*
-   * This preference key was changed for 1.2 since we now store a string array
-   * (of wizard IDs) instead of a boolean flag. If a user upgrades to 1.2 from
-   * 1.0 or 1.1, the old preference will remain in their workspace settings
-   * store, but will be ignored.
+   * This preference key was changed for 1.2 since we now store a string array (of wizard IDs) instead of a boolean
+   * flag. If a user upgrades to 1.2 from 1.0 or 1.1, the old preference will remain in their workspace settings store,
+   * but will be ignored.
    */
   private static final String ADDED_NEW_WIZARD_ACTIONS = "addedNewWizardActions1.2_";
 
@@ -70,9 +69,8 @@ public final class GdtPreferences {
   private static final String INSTALLATION_ID = "id";
 
   /**
-   * The prefix of the key which stores the version associated with the last
-   * update notification that the user acknowledged for a given feature. The
-   * suffix of the key is the feature id.
+   * The prefix of the key which stores the version associated with the last update notification that the user
+   * acknowledged for a given feature. The suffix of the key is the feature id.
    */
   private static final String LAST_ACKNOWLEDGED_UPDATE_NOTIFICATION_PREFIX = "lastAckUpdateNotification_";
 
@@ -82,30 +80,26 @@ public final class GdtPreferences {
   private static final String LAST_UPDATE_TIME_MILLIS = "lastUpdate";
 
   /**
-   * Severities of our custom problem types. We only store severities that
-   * differ from the default, which allows us to add new problem types or modify
-   * the default severity of existing problem types without changing any code.
+   * Severities of our custom problem types. We only store severities that differ from the default, which allows us to
+   * add new problem types or modify the default severity of existing problem types without changing any code.
    */
   private static final String PROBLEM_SEVERITIES = "problemSeverities";
 
   /**
-   * Records the migrator version of the project for use by
-   * {@link com.google.gdt.eclipse.suite.ProjectMigrator}.
+   * Records the migrator version of the project for use by {@link com.google.gdt.eclipse.suite.ProjectMigrator}.
    */
   private static final String PROJECT_MIGRATOR_VERSION = "projectMigratorVersion_";
 
   /*
-   * SDK bundles are discovered using their ID pattern:
-   * "com.google.*.eclipse.sdkbundle"
+   * SDK bundles are discovered using their ID pattern: "com.gwtplugins.*.eclipse.sdkbundle.gwt27"
    */
-  private static final String SDK_BUNDLE_PREFIX = "com.google.";
+  private static final String SDK_BUNDLE_PREFIX = "com.gwtplugins.";
   private static final String SDK_BUNDLE_SUFFIX = ".eclipse.sdkbundle";
 
   /**
-   * The prefix for the key to use for storing the SdkRegistrants. Version 1 key
-   * was just "SdkRegistrants". Version 2 key was
-   * "SdkRegistrants_installationpath" (see computeSdkRegistrantsKeyV2). Version
-   * 3 key is "SdkRegistrants_installationID" (see computeSdkRegistrantsKeyV3).
+   * The prefix for the key to use for storing the SdkRegistrants. Version 1 key was just "SdkRegistrants". Version 2
+   * key was "SdkRegistrants_installationpath" (see computeSdkRegistrantsKeyV2). Version 3 key is
+   * "SdkRegistrants_installationID" (see computeSdkRegistrantsKeyV3).
    */
   private static final String SDK_REGISTRANTS_KEY_PREFIX = "SdkRegistrants";
 
@@ -115,19 +109,13 @@ public final class GdtPreferences {
   private static final String SDK_BUNDLE_MARKER_PROPERTY = "sdkType";
 
   /**
-   * identifies the path local prefix in a bundle to the SDK (default value
-   * <SDKTYPE>_HOME is replaced at build time with the actual path)
+   * identifies the path local prefix in a bundle to the SDK (default value <SDKTYPE>_HOME is replaced at build time
+   * with the actual path)
    */
   private static final String SDK_PATH_PREFIX_PROPERTY = "sdkBundlePath";
 
   /**
-   * The name of the {@link SdkRegistrant} implementor in the SDK bundles.
-   */
-  private static final String SDK_REGISTRANT_CLASS_NAME = "SdkBundleRegistrant";
-
-  /**
-   * The property filename expected at the root of any plugin/bundle that should
-   * be probed for SDK registration.
+   * The property filename expected at the root of any plugin/bundle that should be probed for SDK registration.
    */
   private static final String SDK_REGISTRANT_PROPERTY_FILE = "SdkBundleRegistrant.properties";
 
@@ -137,8 +125,8 @@ public final class GdtPreferences {
   private static final String UPDATE_NOTIFICATIONS = "updateNotifications";
 
   /**
-   * Records the GEP plugin version that most recently forced a rebuild on a
-   * project after install (to clean up and regenerate stale markers, etc.).
+   * Records the GEP plugin version that most recently forced a rebuild on a project after install (to clean up and
+   * regenerate stale markers, etc.).
    */
   private static final String VERSION_FOR_LAST_FORCED_REBUILD_PREFIX = "versionForLastForcedRebuild_";
 
@@ -146,17 +134,14 @@ public final class GdtPreferences {
     return getConfigurationPreferences().getBoolean(UPDATE_NOTIFICATIONS, true);
   }
 
-  public static List<String> getAddedNewWizardActionsForPerspective(
-      String perspectiveId) {
+  public static List<String> getAddedNewWizardActionsForPerspective(String perspectiveId) {
     IEclipsePreferences instancePrefs = getInstancePreferences();
-    return PropertiesUtilities.deserializeStrings(instancePrefs.get(
-        ADDED_NEW_WIZARD_ACTIONS + perspectiveId, ""));
+    return PropertiesUtilities.deserializeStrings(instancePrefs.get(ADDED_NEW_WIZARD_ACTIONS + perspectiveId, ""));
   }
 
   /**
    * Gets the problem severities as an encoded string. See
-   * {@link com.google.gdt.eclipse.core.markers.GdtProblemSeverities} for
-   * details on how this string is decoded.
+   * {@link com.google.gdt.eclipse.core.markers.GdtProblemSeverities} for details on how this string is decoded.
    */
   public static String getEncodedProblemSeverities() {
     IEclipsePreferences instancePrefs = getConfigurationPreferences();
@@ -164,8 +149,7 @@ public final class GdtPreferences {
   }
 
   /**
-   * Returns the installation id for this plugin, or <code>null</code> if the
-   * installation id has never been set.
+   * Returns the installation id for this plugin, or <code>null</code> if the installation id has never been set.
    *
    * @return installation id for this plugin.
    */
@@ -174,8 +158,8 @@ public final class GdtPreferences {
   }
 
   /**
-   * Returns the last update time in milliseconds for this installation or
-   * <code>0</code> if the last update time has never been set.
+   * Returns the last update time in milliseconds for this installation or <code>0</code> if the last update time has
+   * never been set.
    *
    * @return the time in millis
    */
@@ -189,32 +173,27 @@ public final class GdtPreferences {
   }
 
   @SuppressWarnings("deprecation")
-  public static PluginVersionIdentifier getVersionForLastAcknowledgedUpdateNotification(
-      String featureId) {
-    return new PluginVersionIdentifier(getConfigurationPreferences().get(
-        getLastAckFeatureUpdateVersionKey(featureId), "0.0.0.0"));
+  public static PluginVersionIdentifier getVersionForLastAcknowledgedUpdateNotification(String featureId) {
+    return new PluginVersionIdentifier(
+        getConfigurationPreferences().get(getLastAckFeatureUpdateVersionKey(featureId), "0.0.0.0"));
   }
 
   public static Version getVersionForLastForcedRebuild(IProject project) {
     IEclipsePreferences instancePrefs = getInstancePreferences();
-    String versionString = instancePrefs.get(
-        VERSION_FOR_LAST_FORCED_REBUILD_PREFIX + project.getName(), "0.0.0.0");
+    String versionString = instancePrefs.get(VERSION_FOR_LAST_FORCED_REBUILD_PREFIX + project.getName(), "0.0.0.0");
     return new Version(versionString);
   }
 
   /**
-   * Registers all of the {@link SdkRegistrant}s, and records as a workspace
-   * preference which ones those were. Registrants will only be called once per
-   * workspace.
+   * Registers all of the {@link SdkRegistrant}s, and records as a workspace preference which ones those were.
+   * Registrants will only be called once per workspace.
    *
-   * Prior versions of the SDK registration mechanism required adding
-   * implementations of SdkBundleRegistratant that were aware of GPE internals,
-   * and would handle registrations themselves. To decouple the build/release
-   * process of sdkbundles from GPE, this approach has been abandoned.
+   * Prior versions of the SDK registration mechanism required adding implementations of SdkBundleRegistratant that were
+   * aware of GPE internals, and would handle registrations themselves. To decouple the build/release process of
+   * sdkbundles from GPE, this approach has been abandoned.
    *
-   * This implementation inspects bundles with a com.google.*.eclipse.sdkbundle
-   * bundle id and looks for a marker property file for details about the SDK.
-   * If the information resolves as a known SDK type and a valid SDK path, the
+   * This implementation inspects bundles with a com.google.*.eclipse.sdkbundle bundle id and looks for a marker
+   * property file for details about the SDK. If the information resolves as a known SDK type and a valid SDK path, the
    * SDK path is then registered against the proper registrant.
    *
    */
@@ -225,20 +204,17 @@ public final class GdtPreferences {
     ensureUsingNewSdkRegistrantsKey(instancePrefs, sdkRegistrantsKeyV3);
 
     String sdkRegistrantsAsString = instancePrefs.get(sdkRegistrantsKeyV3, "");
-    Set<String> sdkRegistrants = new LinkedHashSet<String>(
-        decodeRegistrants(sdkRegistrantsAsString));
+    Set<String> sdkRegistrants = new LinkedHashSet<String>(decodeRegistrants(sdkRegistrantsAsString));
 
     BundleContext context = GdtPlugin.getDefault().getBundle().getBundleContext();
 
     for (Bundle bundle : context.getBundles()) {
       String bundleName = bundle.getSymbolicName();
-      String bundleVersion = bundle.getHeaders().get(
-          org.osgi.framework.Constants.BUNDLE_VERSION);
+      String bundleVersion = bundle.getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
       String sdkId = bundleName + '_' + bundleVersion;
 
       // The bundle name must match com.google.*.eclipse.sdkbundle
-      if (bundleName.startsWith(SDK_BUNDLE_PREFIX)
-          && bundleName.endsWith(SDK_BUNDLE_SUFFIX)
+      if (bundleName.startsWith(SDK_BUNDLE_PREFIX) && bundleName.contains(SDK_BUNDLE_SUFFIX)
           && !sdkRegistrants.contains(sdkId)) {
 
         GdtPlugin.getLogger().logInfo("Registering: " + sdkId);
@@ -259,11 +235,9 @@ public final class GdtPreferences {
     flushPreferences(instancePrefs);
   }
 
-  public static void setAddedNewWizardActionsForPerspective(
-      String perspectiveId, List<String> wizardIds) {
+  public static void setAddedNewWizardActionsForPerspective(String perspectiveId, List<String> wizardIds) {
     IEclipsePreferences instancePrefs = getInstancePreferences();
-    instancePrefs.put(ADDED_NEW_WIZARD_ACTIONS + perspectiveId,
-        PropertiesUtilities.serializeStrings(wizardIds));
+    instancePrefs.put(ADDED_NEW_WIZARD_ACTIONS + perspectiveId, PropertiesUtilities.serializeStrings(wizardIds));
     flushPreferences(instancePrefs);
   }
 
@@ -287,19 +261,18 @@ public final class GdtPreferences {
   /**
    * Sets the last update time in milliseconds.
    *
-   * @param lastUpdateTimeMillis date of the last update time in milliseconds
+   * @param lastUpdateTimeMillis
+   *          date of the last update time in milliseconds
    */
   public static void setLastUpdateTimeMillis(long lastUpdateTimeMillis) {
     IEclipsePreferences configurationPreferences = getConfigurationPreferences();
-    configurationPreferences.putLong(LAST_UPDATE_TIME_MILLIS,
-        lastUpdateTimeMillis);
+    configurationPreferences.putLong(LAST_UPDATE_TIME_MILLIS, lastUpdateTimeMillis);
     flushPreferences(configurationPreferences);
   }
 
   public static void setProjectMigratorVersion(IProject project, int version) {
     IEclipsePreferences configurationPreferences = getConfigurationPreferences();
-    configurationPreferences.putInt(
-        PROJECT_MIGRATOR_VERSION + project.getName(), version);
+    configurationPreferences.putInt(PROJECT_MIGRATOR_VERSION + project.getName(), version);
     flushPreferences(configurationPreferences);
   }
 
@@ -310,20 +283,15 @@ public final class GdtPreferences {
   }
 
   @SuppressWarnings("deprecation")
-  public static void setVersionForLastAcknowlegedUpdateNotification(
-      String featureId, PluginVersionIdentifier version) {
+  public static void setVersionForLastAcknowlegedUpdateNotification(String featureId, PluginVersionIdentifier version) {
     IEclipsePreferences configurationPreferences = getConfigurationPreferences();
-    configurationPreferences.put(getLastAckFeatureUpdateVersionKey(featureId),
-        version.toString());
+    configurationPreferences.put(getLastAckFeatureUpdateVersionKey(featureId), version.toString());
     flushPreferences(configurationPreferences);
   }
 
-  public static void setVersionForLastForcedRebuild(IProject project,
-      Version version) {
+  public static void setVersionForLastForcedRebuild(IProject project, Version version) {
     IEclipsePreferences instancePrefs = getInstancePreferences();
-    instancePrefs.put(
-        VERSION_FOR_LAST_FORCED_REBUILD_PREFIX + project.getName(),
-        version.toString());
+    instancePrefs.put(VERSION_FOR_LAST_FORCED_REBUILD_PREFIX + project.getName(), version.toString());
     flushPreferences(instancePrefs);
   }
 
@@ -341,9 +309,8 @@ public final class GdtPreferences {
   }
 
   /**
-   * Version 1 key was just "SdkRegistrants". Version 2 key was
-   * "SdkRegistrants_installationpath" (see computeSdkRegistrantsKeyV2 above).
-   * Version 3 key is "SdkRegistrants_installationID".
+   * Version 1 key was just "SdkRegistrants". Version 2 key was "SdkRegistrants_installationpath" (see
+   * computeSdkRegistrantsKeyV2 above). Version 3 key is "SdkRegistrants_installationID".
    */
   private static String computeSdkRegistrantsKeyV3() {
     return SDK_REGISTRANTS_KEY_PREFIX + "_" + getInstallationId();
@@ -373,16 +340,14 @@ public final class GdtPreferences {
     return sb.toString();
   }
 
-  private static void ensureUsingNewSdkRegistrantsKey(
-      IEclipsePreferences instancePrefs, String newKey) {
+  private static void ensureUsingNewSdkRegistrantsKey(IEclipsePreferences instancePrefs, String newKey) {
     try {
       List<String> keys = Arrays.asList(instancePrefs.keys());
       if (!keys.contains(newKey)) {
         String oldKey2;
         // are we using the original "SdkRegistrants" key?
         if (keys.contains(SDK_REGISTRANTS_KEY_PREFIX)) {
-          updateSdkRegistrantsKey(instancePrefs, SDK_REGISTRANTS_KEY_PREFIX,
-              newKey);
+          updateSdkRegistrantsKey(instancePrefs, SDK_REGISTRANTS_KEY_PREFIX, newKey);
         } else if (keys.contains((oldKey2 = computeSdkRegistrantsKeyV2()))) {
           // or are we using the 2nd version "SdkRegistrants_installationpath"
           // key?
@@ -390,8 +355,7 @@ public final class GdtPreferences {
         }
       }
     } catch (BackingStoreException e) {
-      CorePluginLog.logError(e,
-          "Could not check if migration to new SdkRegistrants key format is needed.");
+      CorePluginLog.logError(e, "Could not check if migration to new SdkRegistrants key format is needed.");
     }
   }
 
@@ -437,8 +401,7 @@ public final class GdtPreferences {
         String sdkPrefix = props.getProperty(SDK_PATH_PREFIX_PROPERTY);
         if (sdkType != null && sdkPrefix != null) {
           IPath sdkPrefixPath = new Path(sdkPrefix);
-          URL sdkPathUrl = FileLocator.find(bundle, sdkPrefixPath,
-              (Map<String, String>) null);
+          URL sdkPathUrl = FileLocator.find(bundle, sdkPrefixPath, (Map<String, String>) null);
           if (sdkPathUrl == null) {
             // Automatic SDK registration failed. This is expected in dev mode.
             CorePluginLog.logWarning("Failed to register SDK: " + sdkPrefix);
@@ -448,24 +411,17 @@ public final class GdtPreferences {
           sdkPathUrl = FileLocator.resolve(sdkPathUrl);
           if (sdkPathUrl != null) {
             if ("file".equals(sdkPathUrl.getProtocol())) {
-              if ("GAE".equals(sdkType)) {
-                // TODO ?
-                //GAESdkRegistrant.registerSdk(sdkPathUrl);
-              } else if ("GWT".equals(sdkType)) {
-                GWTSdkRegistrant.registerSdk(sdkPathUrl);
-              }
+              GWTSdkRegistrant.registerSdk(sdkPathUrl);
             }
           }
         }
       }
     } catch (IOException e) {
-      throw new CoreException(new Status(IStatus.WARNING, GdtPlugin.PLUGIN_ID,
-          e.getLocalizedMessage(), e));
+      throw new CoreException(new Status(IStatus.WARNING, GdtPlugin.PLUGIN_ID, e.getLocalizedMessage(), e));
     }
   }
 
-  private static void updateSdkRegistrantsKey(
-      IEclipsePreferences instancePrefs, String oldKey, String newKey) {
+  private static void updateSdkRegistrantsKey(IEclipsePreferences instancePrefs, String oldKey, String newKey) {
 
     // Copy the oldKey's value into the newKey
     instancePrefs.put(newKey, instancePrefs.get(oldKey, ""));
