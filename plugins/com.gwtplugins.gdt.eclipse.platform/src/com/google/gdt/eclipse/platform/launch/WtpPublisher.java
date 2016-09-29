@@ -43,7 +43,7 @@ import java.util.List;
 @SuppressWarnings("restriction")
 public class WtpPublisher {
 
-  private static final IPath[] PUBLISHING_IGNORE_PATHS = {new Path("WEB-INF").append("appengine-generated")};
+  private static final IPath[] PUBLISHING_IGNORE_PATHS = {new Path("WEB-INF").append("appengine-generated")}; // TODO remove
   private static final IPath WEB_INF_LIB_PATH = new Path("WEB-INF").append("lib");
 
   /**

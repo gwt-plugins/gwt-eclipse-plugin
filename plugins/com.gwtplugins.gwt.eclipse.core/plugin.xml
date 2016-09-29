@@ -959,7 +959,7 @@
           point="org.eclipse.ui.menus">
        <menuContribution
              allPopups="false"
-             locationURI="menu:com.google.gdt.eclipse.suite.GDTPulldown?after=toolbarGroup.compile">
+             locationURI="menu:com.gwtplugins.gdt.eclipse.suite.GDTPulldown?after=toolbarGroup.compile">
           <command
                 commandId="com.gwtplugins.gwt.eclipse.core.gwtCompileProject"
                 icon="icons/gwt_16x16.png"

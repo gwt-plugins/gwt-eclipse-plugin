@@ -29,7 +29,7 @@ public class JettyEclipseLogger implements Logger {
 
   private static final String LOGGER_NAME = "org.eclipse.jetty";
 
-  private static final String PLUGIN_ID = "com.gwtplugins.gdt.eclipse.platform.shared";
+  private static final String PLUGIN_ID = "com.google.gdt.eclipse.platform.shared";
 
   static {
     platformLog = Platform.getLog(Platform.getBundle(PLUGIN_ID));
@@ -40,14 +40,12 @@ public class JettyEclipseLogger implements Logger {
   private boolean info;
 
   public JettyEclipseLogger() {
-    debug = info = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID
-        + "/jetty/debug"));
+    debug = info = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID + "/jetty/debug"));
 
     if (debug) {
       info = true;
     } else {
-      info = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID
-          + "/jetty/info"));
+      info = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID + "/jetty/info"));
     }
   }
 
@@ -103,8 +101,7 @@ public class JettyEclipseLogger implements Logger {
   }
 
   @Override
-  public void ignore(Throwable ignored) {
-  }
+  public void ignore(Throwable ignored) {}
 
   @Override
   public void info(String msg, Object... args) {
@@ -129,8 +126,7 @@ public class JettyEclipseLogger implements Logger {
   }
 
   private void log(int severity, String message, Throwable exception) {
-    IStatus status = new Status(severity, PLUGIN_ID, "org.mortbay.jetty: "
-        + message, exception);
+    IStatus status = new Status(severity, PLUGIN_ID, "org.mortbay.jetty: " + message, exception);
 
     platformLog.log(status);
   }
