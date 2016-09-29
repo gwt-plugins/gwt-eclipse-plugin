@@ -19,18 +19,16 @@ import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage;
 import com.google.gwt.eclipse.core.resources.GWTImages;
-import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 /**
  * Wizard for selecting a GWT SDK when editing a GWT Classpath Container.
  */
-public class GWTRuntimeContainerPage extends
-    SdkClasspathContainerPage<GwtSdk> {
+public class GWTRuntimeContainerPage extends SdkClasspathContainerPage<GwtSdk> {
 
   public GWTRuntimeContainerPage() {
-    super("GWT SDK", "GWT SDK", GWTPlugin.getDefault().getImageDescriptor(
-        GWTImages.GWT_LOGO), GWTPreferences.getSdkManager(),
-        GWTRuntimeContainer.CONTAINER_ID, GwtPreferencePage.ID);
+    super("GWT SDK", "GWT SDK", GWTPlugin.getDefault().getImageDescriptor(GWTImages.GWT_LOGO),
+        GWTPreferences.getSdkManager(), GWTRuntimeContainer.CONTAINER_ID, GwtPreferencePage.ID);
   }
 }

@@ -24,13 +24,12 @@ import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.runtime.GWTProjectsRuntime;
-import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateWebInfFolderCommand;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.core.IJavaProject;
@@ -51,8 +50,8 @@ import java.io.FileNotFoundException;
 public class GWTPreferences {
 
   /**
-   * The key for storing the preference for removing terminated launches when a
-   * new launch is launched.
+   * The key for storing the preference for removing terminated launches when a new launch is
+   * launched.
    */
   private static final String REMOVE_TERMINATED_LAUNCHES = "removeTerminatedLaunches";
 
@@ -60,15 +59,10 @@ public class GWTPreferences {
 
   private static final String SOURCE_VIEWER_SERVER_PORT = "sourceViewerServerPort";
 
-  private static final String SPEEDTRACER_GEN_FOLDER_NAME = "speedTracerGenFolderName";
-  private static final String SPEED_TRACER_ENABLED = "speedTracerEnabled";
-
-  private static final String JSO_PROPERTY_TYPE =
-      "com.google.gwt.core.client.debug.JsoInspector$JsoProperty";
+  private static final String JSO_PROPERTY_TYPE = "com.google.gwt.core.client.debug.JsoInspector$JsoProperty";
 
   static {
-    sdkManager = new SdkManager<GwtSdk>(GWTRuntimeContainer.CONTAINER_ID,
-        getEclipsePreferences(), GwtSdk.getFactory());
+    sdkManager = new SdkManager<GwtSdk>(GWTRuntimeContainer.CONTAINER_ID, getEclipsePreferences(), GwtSdk.getFactory());
 
     sdkManager.addSdkUpdateListener(new SdkManager.SdkUpdateListener<GwtSdk>() {
       @Override
@@ -78,11 +72,9 @@ public class GWTPreferences {
             GWTPreferences.sdkManager.new SdkUpdateEventProcessor(sdkUpdateEvent);
 
         // Update all of the WEB-INF/lib files
-        IJavaProject[] projects =
-            JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
+        IJavaProject[] projects = JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects();
         for (IJavaProject project : projects) {
-          if (!GWTNature.isGWTProject(project.getProject())
-              || GWTProjectsRuntime.isGWTRuntimeProject(project)) {
+          if (!GWTNature.isGWTProject(project.getProject()) || GWTProjectsRuntime.isGWTRuntimeProject(project)) {
             continue;
           }
 
@@ -98,25 +90,11 @@ public class GWTPreferences {
           }
         }
 
-        ClasspathContainerUpdateJob classpathContainerUpdateJob = new ClasspathContainerUpdateJob(
-            "ClasspathContainerUpdateJob", GWTRuntimeContainer.CONTAINER_ID);
+        ClasspathContainerUpdateJob classpathContainerUpdateJob =
+            new ClasspathContainerUpdateJob("ClasspathContainerUpdateJob", GWTRuntimeContainer.CONTAINER_ID);
         classpathContainerUpdateJob.schedule();
       }
     });
-  }
-
-  /**
-   * Returns the folder path where the genfiles from the gwt compile are
-   * located. There is no set method, but the user could manually change the
-   * folder name by editing the value in the preferences file.
-   *
-   * @return The folder name where the genfiles from the gwt compile are
-   *         located.
-   */
-  public static IPath computeSpeedTracerGeneratedFolderPath(IPath warOutLocation) {
-    String folderName = getEclipsePreferences().get(SPEEDTRACER_GEN_FOLDER_NAME,
-        "genfilesforspeedtracer");
-    return warOutLocation.append(folderName);
   }
 
   public static GwtSdk getDefaultRuntime() {
@@ -125,19 +103,15 @@ public class GWTPreferences {
   }
 
   /**
-   * Return true if the JSO detail formatter is configured for the current
-   * workspace.
+   * Return true if the JSO detail formatter is configured for the current workspace.
    */
   public static boolean getJsoDetailFormatting() {
     // Unfortunately we cannot use
     // JavaDetailFormattersManager.hasAssociatedDetailFormatter() here because
     // it requires an IJavaType which cannot be resolved without a known
     // context.
-    String[] formatters =
-        JavaDebugOptionsManager.parseList(
-            JDIDebugUIPlugin.getDefault()
-                .getPreferenceStore()
-                .getString(IJDIPreferencesConstants.PREF_DETAIL_FORMATTERS_LIST));
+    String[] formatters = JavaDebugOptionsManager.parseList(JDIDebugUIPlugin.getDefault().getPreferenceStore()
+        .getString(IJDIPreferencesConstants.PREF_DETAIL_FORMATTERS_LIST));
 
     for (String formatter : formatters) {
       if (JSO_PROPERTY_TYPE.equals(formatter)) {
@@ -149,8 +123,8 @@ public class GWTPreferences {
   }
 
   /**
-   * @return If terminated launches should be cleared from the devmode view when
-   *         a new launch is launched.
+   * @return If terminated launches should be cleared from the devmode view when a new launch is
+   *         launched.
    */
   public static boolean getRemoveTerminatedLaunches() {
     return getEclipsePreferences().getBoolean(REMOVE_TERMINATED_LAUNCHES, true);
@@ -185,8 +159,7 @@ public class GWTPreferences {
   }
 
   public static boolean getUiBinderWizardGenerateContentDefault() {
-    return getEclipsePreferences().getBoolean(
-        GwtPreferenceConstants.UIBINDER_WIZARD_GENERATE_CONTENT_DEFAULT, false);
+    return getEclipsePreferences().getBoolean(GwtPreferenceConstants.UIBINDER_WIZARD_GENERATE_CONTENT_DEFAULT, false);
   }
 
   public static boolean hasRuntime(String name) {
@@ -200,16 +173,16 @@ public class GWTPreferences {
     DetailFormatter formatter = new DetailFormatter(JSO_PROPERTY_TYPE, "toString()", true);
     if (formatting) {
       JavaDetailFormattersManager.getDefault().setAssociatedDetailFormatter(formatter);
-      JDIDebugUIPlugin.getDefault().getPreferenceStore().setValue(
-          IJDIPreferencesConstants.PREF_SHOW_DETAILS, IJDIPreferencesConstants.INLINE_FORMATTERS);
+      JDIDebugUIPlugin.getDefault().getPreferenceStore().setValue(IJDIPreferencesConstants.PREF_SHOW_DETAILS,
+          IJDIPreferencesConstants.INLINE_FORMATTERS);
     } else {
       JavaDetailFormattersManager.getDefault().removeAssociatedDetailFormatter(formatter);
     }
   }
 
   /**
-   * Sets whether terminated launches should be cleared from the devmode view
-   * when a new launch is launched
+   * Sets whether terminated launches should be cleared from the devmode view when a new launch is
+   * launched
    */
   public static void setRemoveTerminatedLaunches(boolean remove) {
     IEclipsePreferences workspacePreferences = getEclipsePreferences();
@@ -245,19 +218,9 @@ public class GWTPreferences {
     }
   }
 
-  public static void setSpeedTracerEnabled(boolean enabled) {
-    IEclipsePreferences workspacePreferences = getEclipsePreferences();
-    workspacePreferences.putBoolean(SPEED_TRACER_ENABLED, enabled);
-    try {
-      workspacePreferences.flush();
-    } catch (BackingStoreException e) {
-      CorePluginLog.logError(e);
-    }
-  }
-
   public static void setUiBinderWizardGenerateContentDefault(boolean generateComments) {
-    getEclipsePreferences().putBoolean(
-        GwtPreferenceConstants.UIBINDER_WIZARD_GENERATE_CONTENT_DEFAULT, generateComments);
+    getEclipsePreferences().putBoolean(GwtPreferenceConstants.UIBINDER_WIZARD_GENERATE_CONTENT_DEFAULT,
+        generateComments);
   }
 
   private static IEclipsePreferences getEclipsePreferences() {
@@ -265,6 +228,5 @@ public class GWTPreferences {
     return workspacePrefs;
   }
 
-  private GWTPreferences() {
-  }
+  private GWTPreferences() {}
 }
