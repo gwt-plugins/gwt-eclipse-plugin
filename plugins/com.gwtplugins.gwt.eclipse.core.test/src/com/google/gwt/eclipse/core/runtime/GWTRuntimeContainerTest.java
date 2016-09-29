@@ -33,7 +33,7 @@ import org.eclipse.jdt.core.JavaModelException;
  */
 public class GWTRuntimeContainerTest extends AbstractGWTRuntimeTest {
 
-  private static IClasspathContainer getClasspathContainer(GWTRuntime sdk,
+  private static IClasspathContainer getClasspathContainer(GwtSdk sdk,
       IJavaProject project, SdkClasspathContainer.Type containerType)
       throws JavaModelException {
     IPath containerPath = SdkClasspathContainer.computeContainerPath(
@@ -71,7 +71,7 @@ public class GWTRuntimeContainerTest extends AbstractGWTRuntimeTest {
     // test
     removeGWTRuntimeFromTestProject();
 
-    GWTRuntime sdk = GWTPreferences.getSdkManager().findSdkForPath(
+    GwtSdk sdk = GWTPreferences.getSdkManager().findSdkForPath(
         specificRuntimePath);
     // Replace existing gwt-user.jar with GWT runtime
     GWTUpdateProjectSdkCommand command = new GWTUpdateProjectSdkCommand(
@@ -84,8 +84,8 @@ public class GWTRuntimeContainerTest extends AbstractGWTRuntimeTest {
   public void testUpdateProjectClasspathWithGWTRuntime() throws Exception {
     // Update existing GWT runtime
     IJavaProject project = getTestProject();
-    GWTRuntime oldSdk = GWTRuntime.findSdkFor(project);
-    GWTRuntime newSdk = GWTPreferences.getSdkManager().findSdkForPath(
+    GwtSdk oldSdk = GwtSdk.findSdkFor(project);
+    GwtSdk newSdk = GWTPreferences.getSdkManager().findSdkForPath(
         specificRuntimePath);
 
     // Replace existing gwt-user.jar with GWT runtime

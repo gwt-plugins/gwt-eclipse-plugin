@@ -14,7 +14,7 @@
             category="com.gwtplugins.gdt.eclipse.suite.preferences.ui.googlePreferences"
             class="com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage"
             id="com.gwtplugins.gwt.eclipse.core.preferences.ui.GwtPreferencePage"
-            name="GWT">
+            name="GWT Settings">
       </page>
    </extension>
    <extension
@@ -41,7 +41,7 @@
          point="org.eclipse.ui.newWizards">
       <category
             id="com.gwtplugins.gwt.eclipse.core.newWizards"
-            name="GWT">
+            name="%gwt.label.classes">
       </category>
       <wizard
             category="com.gwtplugins.gwt.eclipse.core.newWizards"

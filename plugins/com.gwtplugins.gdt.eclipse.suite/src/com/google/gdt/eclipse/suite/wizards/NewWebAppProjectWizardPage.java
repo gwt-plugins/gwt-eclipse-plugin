@@ -19,7 +19,7 @@ import com.google.gdt.eclipse.core.ui.SdkSelectionBlock.SdkSelection;
 import com.google.gdt.eclipse.platform.ui.PixelConverterFactory;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
 
 import org.eclipse.core.resources.IProject;
@@ -64,7 +64,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
   /**
    * Select a GWT {@link Sdk} based on the set of {@link Sdk} known to the workspace.
    */
-  private final class GwtWorkspaceSdkSelectionBlock extends SdkSelectionBlock<GWTRuntime> {
+  private final class GwtWorkspaceSdkSelectionBlock extends SdkSelectionBlock<GwtSdk> {
     private GwtWorkspaceSdkSelectionBlock(Composite parent, int style) {
       super(parent, style);
 
@@ -83,19 +83,19 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     }
 
     @Override
-    protected GWTRuntime doGetDefaultSdk() {
+    protected GwtSdk doGetDefaultSdk() {
       return GWTPreferences.getDefaultRuntime();
     }
 
     @Override
-    protected List<GWTRuntime> doGetSpecificSdks() {
-      return new ArrayList<GWTRuntime>(GWTPreferences.getSdks());
+    protected List<GwtSdk> doGetSpecificSdks() {
+      return new ArrayList<GwtSdk>(GWTPreferences.getSdks());
     }
   }
 
   private final List<String> existingProjectNames = new ArrayList<String>();
 
-  private SdkSelectionBlock<GWTRuntime> gwtSelectionBlock;
+  private SdkSelectionBlock<GwtSdk> gwtSelectionBlock;
 
   private Button outDirBrowseButton;
 
@@ -221,9 +221,9 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     return projectNameText.getText().trim();
   }
 
-  public GWTRuntime getSelectedGwtSdk() {
+  public GwtSdk getSelectedGwtSdk() {
     if (useGwtCheckbox.getSelection()) {
-      SdkSelection<GWTRuntime> sdkSelection = gwtSelectionBlock.getSdkSelection();
+      SdkSelection<GwtSdk> sdkSelection = gwtSelectionBlock.getSdkSelection();
       if (sdkSelection != null) {
         return sdkSelection.getSelectedSdk();
       }
@@ -578,7 +578,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
       if (useGwtCheckbox.getSelection()) {
 
         IStatus gwtRuntimeValidationStatus;
-        GWTRuntime selectedGwtRuntime = getSelectedGwtSdk();
+        GwtSdk selectedGwtRuntime = getSelectedGwtSdk();
         if (selectedGwtRuntime == null) {
           setMessage("Please configure a GWT SDK.", ERROR);
           return;

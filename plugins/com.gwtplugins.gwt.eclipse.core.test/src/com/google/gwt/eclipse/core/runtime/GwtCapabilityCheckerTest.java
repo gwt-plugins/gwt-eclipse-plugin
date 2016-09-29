@@ -67,7 +67,7 @@ public class GwtCapabilityCheckerTest extends TestCase {
     super.tearDown();
   }
 
-  private void assertLatestGwtCapabilities(GWTRuntime gwtRuntime) {
+  private void assertLatestGwtCapabilities(GwtSdk gwtRuntime) {
     GwtCapabilityChecker checker = new GwtCapabilityChecker(gwtRuntime);
     assertTrue(checker.doesCompilerAllowMultipleModules());
   }

@@ -29,7 +29,7 @@ public class GwtCapabilityChecker {
    * Creates new instances of the {@link GwtCapabilityChecker}.
    */
   public static class Factory {
-    public GwtCapabilityChecker newGwtCapabilityChecker(GWTRuntime sdk) {
+    public GwtCapabilityChecker newGwtCapabilityChecker(GwtSdk sdk) {
       return new GwtCapabilityChecker(sdk);
     }
   }
@@ -37,7 +37,7 @@ public class GwtCapabilityChecker {
   /**
    * @return whether the fully-qualified class name exists in the GWT SDK
    */
-  private static boolean doesGwtClassExist(GWTRuntime gwtRuntime,
+  private static boolean doesGwtClassExist(GwtSdk gwtRuntime,
       String qualifiedClassName) {
     try {
       URLClassLoader cl = gwtRuntime.createClassLoader();
@@ -57,9 +57,9 @@ public class GwtCapabilityChecker {
     return false;
   }
 
-  private final GWTRuntime sdk;
+  private final GwtSdk sdk;
 
-  public GwtCapabilityChecker(GWTRuntime sdk) {
+  public GwtCapabilityChecker(GwtSdk sdk) {
     this.sdk = sdk;
   }
 

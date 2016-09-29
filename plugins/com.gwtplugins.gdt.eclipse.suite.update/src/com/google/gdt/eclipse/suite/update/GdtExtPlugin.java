@@ -26,7 +26,7 @@ import com.google.gdt.eclipse.suite.preferences.GdtPreferences;
 import com.google.gdt.eclipse.suite.update.FeatureUpdateCheckersMap.UpdateSiteToken;
 import com.google.gdt.eclipse.suite.update.usage.AnalyticsPingManager;
 import com.google.gdt.eclipse.suite.update.usage.PingManager;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -49,7 +49,7 @@ public class GdtExtPlugin extends AbstractGooglePlugin {
   public static final class GwtMaxSdkVersionComputer extends SdkUtils.MaxSdkVersionComputer {
     @Override
     public Sdk doFindSdk(IJavaProject project) throws JavaModelException {
-      return GWTRuntime.findSdkFor(project);
+      return GwtSdk.findSdkFor(project);
     }
   }
 

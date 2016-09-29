@@ -14,7 +14,7 @@ package com.google.gwt.eclipse.wtp.wizards;
 
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -134,7 +134,7 @@ public class GwtFacetWizardPage extends DataModelWizardPage implements IFacetWiz
       @Override
       @SuppressWarnings("unchecked")
       public String getText(Object element) {
-        GWTRuntime sdk = (GWTRuntime) element;
+        GwtSdk sdk = (GwtSdk) element;
         return sdk.getName();
       }
     });
@@ -211,7 +211,7 @@ public class GwtFacetWizardPage extends DataModelWizardPage implements IFacetWiz
       IStructuredSelection structuredSelection = (IStructuredSelection) selection;
 
       // Get the selected SDK
-      GWTRuntime selectedGwtSdk = (GWTRuntime) structuredSelection.getFirstElement();
+      GwtSdk selectedGwtSdk = (GwtSdk) structuredSelection.getFirstElement();
 
       // Set selection to model
       model.setProperty(GWT_SDK, selectedGwtSdk);
@@ -222,7 +222,7 @@ public class GwtFacetWizardPage extends DataModelWizardPage implements IFacetWiz
    * Setup the combo viewer combo with the list of predefined sdks.
    */
   private void addSdkOptionsToCombo() {
-    List<GWTRuntime> sdks = GWTPreferences.getSdkManager().getSdksSortedList();
+    List<GwtSdk> sdks = GWTPreferences.getSdkManager().getSdksSortedList();
 
     // List selections in combo
     comboViewer.setInput(sdks);
@@ -232,7 +232,7 @@ public class GwtFacetWizardPage extends DataModelWizardPage implements IFacetWiz
 
     // Select the first item
     if (comboViewerCombo.getSelectionIndex() < 0 && sdks.size() > 0) {
-      GWTRuntime defaultSdk = GWTPreferences.getDefaultRuntime();
+      GwtSdk defaultSdk = GWTPreferences.getDefaultRuntime();
 
       model.setProperty(GWT_SDK, defaultSdk);
 

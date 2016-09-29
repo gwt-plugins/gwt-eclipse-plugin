@@ -17,7 +17,7 @@ package com.google.gwt.eclipse.core.sdk.ui;
 import com.google.gdt.eclipse.core.sdk.SdkFactory;
 import com.google.gdt.eclipse.core.sdk.SdkSet;
 import com.google.gdt.eclipse.core.ui.AddSdkDialog;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -36,19 +36,19 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * A dialog to add a GWT SDK ("GWT Runtime") to a project. This is special,
- * because with GWT you have the option of running from the GWT source.
+ * A dialog to add a GWT SDK ("GWT Runtime") to a project. This is special, because with GWT you
+ * have the option of running from the GWT source.
  */
-public class AddGwtSdkDialog extends AddSdkDialog<GWTRuntime> {
+public class AddGwtSdkDialog extends AddSdkDialog<GwtSdk> {
   private final boolean contribRuntimeAvailable;
   private Button contribButton;
 
-  public AddGwtSdkDialog(Shell parentShell, SdkSet<GWTRuntime> sdkSet,
-      String pluginId, String shellTitle, SdkFactory<GWTRuntime> sdkFactory) {
+  public AddGwtSdkDialog(Shell parentShell, SdkSet<GwtSdk> sdkSet, String pluginId, String shellTitle,
+      SdkFactory<GwtSdk> sdkFactory) {
     super(parentShell, sdkSet, pluginId, shellTitle, sdkFactory);
 
     IPath workspace = ResourcesPlugin.getWorkspace().getRoot().getLocation();
-    GWTRuntime runtime = GWTRuntime.getFactory().newInstance("", workspace);
+    GwtSdk runtime = GwtSdk.getFactory().newInstance("", workspace);
     IStatus status = runtime.validate();
     contribRuntimeAvailable = status.isOK();
   }
@@ -65,8 +65,7 @@ public class AddGwtSdkDialog extends AddSdkDialog<GWTRuntime> {
     }
 
     directoryText = new Text(container, SWT.BORDER);
-    GridData directoryTextGridData = new GridData(SWT.FILL, SWT.CENTER, true,
-        false);
+    GridData directoryTextGridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
     // TODO: Derive the pixel width from font size
     directoryTextGridData.widthHint = 300;
     directoryText.setLayoutData(directoryTextGridData);
@@ -78,7 +77,6 @@ public class AddGwtSdkDialog extends AddSdkDialog<GWTRuntime> {
     });
 
     browseButton = new Button(container, SWT.NONE);
-
     browseButton.setLayoutData(new GridData());
     browseButton.setText("Browse...");
     browseButton.addSelectionListener(new SelectionAdapter() {
@@ -99,8 +97,7 @@ public class AddGwtSdkDialog extends AddSdkDialog<GWTRuntime> {
 
     if (contribRuntimeAvailable) {
       contribButton = new Button(container, SWT.RADIO);
-      final GridData contribButtonGridData = new GridData(SWT.LEFT, SWT.CENTER,
-          false, false, 3, 1);
+      final GridData contribButtonGridData = new GridData(SWT.LEFT, SWT.CENTER, false, false, 3, 1);
       contribButton.setLayoutData(contribButtonGridData);
       contribButton.setText("Use GWT source projects in my workspace");
       contribButton.addSelectionListener(new SelectionAdapter() {
@@ -118,9 +115,9 @@ public class AddGwtSdkDialog extends AddSdkDialog<GWTRuntime> {
   }
 
   /*
-   * The only differences with validating for adding a GWT SDK are that if a
-   * contributor runtime is selected, there's no need for the directory to be
-   * put in, and the sdkHome is the workspace in that case.
+   * The only differences with validating for adding a GWT SDK are that if a contributor runtime is
+   * selected, there's no need for the directory to be put in, and the sdkHome is the workspace in
+   * that case.
    */
   @Override
   protected IPath getSdkHome(String directory) {

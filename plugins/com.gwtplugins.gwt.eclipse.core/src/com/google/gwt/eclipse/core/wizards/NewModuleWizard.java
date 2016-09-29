@@ -18,7 +18,7 @@ import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.modules.IModule;
 import com.google.gwt.eclipse.core.resources.GWTImages;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.util.Util;
 
 import org.eclipse.core.resources.IFolder;
@@ -142,7 +142,7 @@ public class NewModuleWizard extends AbstractNewFileWizard {
     contents.add("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
     String gwtModuleDtd = NO_VERSION_FOUND_DTD;
 
-    GWTRuntime runtime = GWTRuntime.findSdkFor(javaProject);
+    GwtSdk runtime = GwtSdk.findSdkFor(javaProject);
     if (runtime != null) {
       String versionNum = runtime.getVersion();
 

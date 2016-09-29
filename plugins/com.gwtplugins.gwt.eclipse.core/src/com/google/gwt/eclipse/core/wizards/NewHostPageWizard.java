@@ -23,7 +23,7 @@ import com.google.gwt.eclipse.core.modules.IModule;
 import com.google.gwt.eclipse.core.modules.ModuleFile;
 import com.google.gwt.eclipse.core.modules.ModuleUtils;
 import com.google.gwt.eclipse.core.resources.GWTImages;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -209,7 +209,7 @@ public class NewHostPageWizard extends AbstractNewFileWizard {
   private String getDocType() {
     try {
       IProject project = wizardPage.getProject();
-      GWTRuntime sdk = GWTRuntime.findSdkFor(JavaCore.create(project));
+      GwtSdk sdk = GwtSdk.findSdkFor(JavaCore.create(project));
       if (sdk != null) {
         URLClassLoader cl = sdk.createClassLoader();
         String hostPageTemplate = ResourceUtils.getResourceAsString(

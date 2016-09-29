@@ -19,7 +19,7 @@ import com.google.gdt.eclipse.core.sdk.SdkClasspathContainer.Type;
 import com.google.gdt.eclipse.core.sdk.UpdateProjectSdkCommand.UpdateType;
 import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.nature.GWTNature;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateProjectSdkCommand;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateWebInfFolderCommand;
 
@@ -50,7 +50,7 @@ import java.io.File;
 public class NewProjectCreatorTool {
 
   // FIXME: Why are we throwing Exception?
-  public static IJavaProject createProject(IProgressMonitor progressMonitor, GWTRuntime runtime,
+  public static IJavaProject createProject(IProgressMonitor progressMonitor, GwtSdk runtime,
       SdkClasspathContainer.Type containerType, String projectName, String packageName,
       String outDirPath) throws Exception {
 
@@ -83,7 +83,7 @@ public class NewProjectCreatorTool {
 
     // Replace GWT jar classpath entries with the GWT runtime library
     IJavaProject javaProject = JavaCore.create(project);
-    GWTRuntime oldSdk = GWTRuntime.findSdkFor(javaProject);
+    GwtSdk oldSdk = GwtSdk.findSdkFor(javaProject);
 
     GWTUpdateWebInfFolderCommand updateWebInfCommand = new GWTUpdateWebInfFolderCommand(
         javaProject, runtime);

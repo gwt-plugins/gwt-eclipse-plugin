@@ -104,7 +104,7 @@ public class GWTJarsRuntimeTest extends AbstractGWTPluginTestCase {
     // Look for the validation-specific classpath entries
     List<IClasspathEntry> validationCpEntries = new ArrayList<IClasspathEntry>();
     for (IClasspathEntry cpEntry : cpEntries) {
-      if (cpEntry.getPath().lastSegment().startsWith(GWTRuntime.VALIDATION_API_JAR_PREFIX)) {
+      if (cpEntry.getPath().lastSegment().startsWith(GwtSdk.VALIDATION_API_JAR_PREFIX)) {
         validationCpEntries.add(cpEntry);
       }
     }
@@ -161,7 +161,7 @@ public class GWTJarsRuntimeTest extends AbstractGWTPluginTestCase {
   }
 
   private boolean isGWTJar(GWTJarsRuntime jarsRuntime, String jarName) {
-    return GWTRuntime.GWT_USER_JAR.equals(jarName) || GWTRuntime.GWT_CODESERVER_JAR.equals(jarName)
+    return GwtSdk.GWT_USER_JAR.equals(jarName) || GwtSdk.GWT_CODESERVER_JAR.equals(jarName)
         || jarName.equalsIgnoreCase(Util.getDevJarName(jarsRuntime.getInstallationPath()))
         || "gwt-servlet.jar".equals(jarName);
   }

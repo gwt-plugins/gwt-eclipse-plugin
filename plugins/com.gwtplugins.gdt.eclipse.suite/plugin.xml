@@ -15,7 +15,7 @@
       <page
             class="com.google.gdt.eclipse.suite.preferences.ui.GooglePreferencePage"
             id="com.gwtplugins.gdt.eclipse.suite.preferences.ui.googlePreferences"
-            name="%gpe.menu.label">
+            name="%gwt.label">
       </page>
       <page
             category="com.gwtplugins.gdt.eclipse.suite.preferences.ui.googlePreferences"
@@ -180,6 +180,7 @@
          <configurationType
                id="com.gwtplugins.gdt.eclipse.suite.webapp"/>
       </shortcut>
+
       <!-- GWT Classic Dev Mode Launch shortcut when using GWT -->
       <shortcut
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTClassicDevModeLaunchShortcut"
@@ -208,11 +209,12 @@
                id="com.gwtplugins.gdt.eclipse.suite.webapp"/>
       </shortcut>
    </extension>  
+   
    <extension
          point="org.eclipse.ui.newWizards">
       <category
             id="com.gwtplugins.gdt.eclipse.suite.newWizards"
-            name="%gpe.menu.label">
+            name="%gwt.label.new">
       </category>
       <wizard
             category="com.gwtplugins.gdt.eclipse.suite.newWizards"
@@ -224,13 +226,15 @@
             project="true">
       </wizard>      
    </extension>
+   
    <extension
          point="org.eclipse.ui.importWizards">
       <category
             id="com.gwtplugins.gdt.eclipse.suite.importWizards"
-            name="%gpe.menu.label">
+            name="%gwt.label">
       </category>
    </extension>
+   
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
@@ -269,7 +273,7 @@
             objectClass="org.eclipse.core.resources.IProject">
          <menu
                id="com.gwtplugins.gdt.eclipse.suite.popupMenu.project"
-               label="%gpe.menu.label"
+               label="%gwt.label"
                icon="icons/gdt_16x16.png"
                path="additions">
             <groupMarker
@@ -289,7 +293,7 @@
             objectClass="org.eclipse.core.resources.IFile">
          <menu
                id="com.gwtplugins.gdt.eclipse.suite.popupMenu.file"
-               label="%gpe.menu.label"
+               label="%gwt.label"
                path="additions">
             <groupMarker
                   name="content">

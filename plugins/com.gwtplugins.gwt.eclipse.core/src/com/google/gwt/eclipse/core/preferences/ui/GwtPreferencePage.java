@@ -20,7 +20,7 @@ import com.google.gdt.eclipse.core.ui.AddSdkDialog;
 import com.google.gdt.eclipse.core.ui.SdkTable;
 import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.sdk.ui.AddGwtSdkDialog;
 
 import org.eclipse.core.runtime.IStatus;
@@ -39,18 +39,16 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 /**
  * Page to manage preferences for GWT that apply across the workspace.
  */
-public class GwtPreferencePage extends PreferencePage implements
-    IWorkbenchPreferencePage {
+public class GwtPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
   public static final String ID = "com.gwtplugins.gwt.eclipse.core.preferences.ui.GwtPreferencePage";
 
-  private SdkSet<GWTRuntime> sdkSet;
+  private SdkSet<GwtSdk> sdkSet;
 
   /**
    *
    */
-  public GwtPreferencePage() {
-  }
+  public GwtPreferencePage() {}
 
   /**
    * @param title
@@ -87,14 +85,13 @@ public class GwtPreferencePage extends PreferencePage implements
 
     sdkSet = GWTPreferences.getSdks();
 
-    return new SdkTable<GWTRuntime>(parent, SWT.NONE, sdkSet, null, this) {
+    return new SdkTable<GwtSdk>(parent, SWT.NONE, sdkSet, null, this) {
       @Override
       protected IStatus doAddSdk() {
-        AddSdkDialog<GWTRuntime> addGaeSdkDialog = new AddGwtSdkDialog(
-            getShell(), sdkSet, GWTPlugin.PLUGIN_ID,
-            "Add Google Web Toolkit SDK", GWTRuntime.getFactory());
+        AddSdkDialog<GwtSdk> addGaeSdkDialog = new AddGwtSdkDialog(getShell(), sdkSet, GWTPlugin.PLUGIN_ID,
+            "Add Google Web Toolkit SDK", GwtSdk.getFactory());
         if (addGaeSdkDialog.open() == Window.OK) {
-          GWTRuntime newSdk = addGaeSdkDialog.getSdk();
+          GwtSdk newSdk = addGaeSdkDialog.getSdk();
           if (newSdk != null) {
             sdkSet.add(newSdk);
           }
@@ -107,14 +104,11 @@ public class GwtPreferencePage extends PreferencePage implements
 
       @Override
       protected IStatus doDownloadSdk() {
-        MessageDialog dialog = new MessageDialog(
-            GWTPlugin.getActiveWorkbenchShell(), "Google Eclipse Plugin", null,
+        MessageDialog dialog = new MessageDialog(GWTPlugin.getActiveWorkbenchShell(), "Google Eclipse Plugin", null,
             "Would you like to open the Google Web Toolkit download page in your "
-                + "web browser?\n\nFrom there, you can "
-                + "download the latest GWT SDK and extract it to the"
-                + " location of your choice. Add it to Eclipse"
-                + " with the \"Add...\" button.", MessageDialog.QUESTION,
-            new String[] {"Open Browser", IDialogConstants.CANCEL_LABEL}, 0);
+                + "web browser?\n\nFrom there, you can " + "download the latest GWT SDK and extract it to the"
+                + " location of your choice. Add it to Eclipse" + " with the \"Add...\" button.",
+            MessageDialog.QUESTION, new String[] {"Open Browser", IDialogConstants.CANCEL_LABEL}, 0);
 
         if (dialog.open() == Window.OK) {
           if (BrowserUtilities.launchBrowserAndHandleExceptions(GWTPlugin.SDK_DOWNLOAD_URL) == null) {

@@ -21,7 +21,7 @@ import com.google.gdt.eclipse.core.markers.quickfixes.ConfigureProjectSdkMarkerR
 import com.google.gdt.eclipse.core.markers.quickfixes.StopManagingWarOutputDirectoryResolution;
 import com.google.gdt.eclipse.core.markers.quickfixes.SynchronizeSdkWebappClasspathMarkerResolution;
 import com.google.gwt.eclipse.core.properties.ui.GWTProjectPropertyPage;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateWebInfFolderCommand;
 import com.google.gwt.eclipse.core.validators.GWTProjectValidator;
 
@@ -78,7 +78,7 @@ public class GWTValidatorMarkerResolutionGenerator implements IMarkerResolutionG
         IProject project = marker.getResource().getProject();
         IJavaProject javaProject = JavaCore.create(project);
         if (JavaProjectUtilities.isJavaProjectNonNullAndExists(javaProject)) {
-          GWTRuntime sdk = GWTRuntime.findSdkFor(javaProject);
+          GwtSdk sdk = GwtSdk.findSdkFor(javaProject);
           if (sdk != null && sdk.validate().isOK()) {
             markerResolutions.add(new SynchronizeSdkWebappClasspathMarkerResolution(
                 new GWTUpdateWebInfFolderCommand(javaProject, sdk)));

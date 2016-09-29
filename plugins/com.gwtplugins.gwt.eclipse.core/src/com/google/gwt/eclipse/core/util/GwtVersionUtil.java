@@ -16,7 +16,7 @@ package com.google.gwt.eclipse.core.util;
 
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
 import com.google.gwt.eclipse.core.GWTPluginLog;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.jdt.core.IJavaProject;
 
@@ -60,7 +60,7 @@ public class GwtVersionUtil {
    * @return GWT SDK version.
    */
   public static String getProjectGwtVersion(IJavaProject javaProject) {
-    GWTRuntime sdk = GWTRuntime.findSdkFor(javaProject);
+    GwtSdk sdk = GwtSdk.findSdkFor(javaProject);
 
     // Provide a version so npe gaurds don't have to be applied to all the callers.
     String version = "999.999.999";

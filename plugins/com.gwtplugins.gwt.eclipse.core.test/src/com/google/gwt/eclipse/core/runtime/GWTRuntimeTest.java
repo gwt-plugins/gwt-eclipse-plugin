@@ -39,7 +39,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import java.util.Arrays;
 
 /**
- * Tests the {@link GWTRuntime} class.
+ * Tests the {@link GwtSdk} class.
  *
  * These tests assume you have the GWT source code checked out. Some tests could fail otherwise.
  */
@@ -50,7 +50,7 @@ public class GWTRuntimeTest extends TestCase {
   }
 
   /**
-   * Tests that {@link GWTRuntime#findSdkFor(IJavaProject)} returns a valid
+   * Tests that {@link GwtSdk#findSdkFor(IJavaProject)} returns a valid
    * {@link com.google.gdt.eclipse.core.sdk.Sdk} when the default classpath
    * containers for jars are being used on the project classpath.
    *
@@ -62,7 +62,7 @@ public class GWTRuntimeTest extends TestCase {
   }
 
   /**
-   * Tests that {@link GWTRuntime#findSdkFor(IJavaProject)} returns a valid
+   * Tests that {@link GwtSdk#findSdkFor(IJavaProject)} returns a valid
    * {@link com.google.gdt.eclipse.core.sdk.Sdk} when named classpath containers
    * for jars are being used on the project classpath.
    *
@@ -84,7 +84,7 @@ public class GWTRuntimeTest extends TestCase {
     try {
       IJavaModel javaModel = JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
       IJavaProject javaProject = javaModel.getJavaProject("gwt-dev");
-      GWTRuntime sdk = GWTRuntime.findSdkFor(javaProject);
+      GwtSdk sdk = GwtSdk.findSdkFor(javaProject);
       IClasspathEntry[] entries = sdk.getClasspathEntries();
       assertEquals(new IClasspathEntry[] {JavaCore.newSourceEntry(javaModel.getJavaProject(
           "gwt-dev").getPath().append("core/src"))}, entries);
@@ -104,7 +104,7 @@ public class GWTRuntimeTest extends TestCase {
     try {
       IJavaModel javaModel = JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
       IJavaProject javaProject = javaModel.getJavaProject("gwt-user");
-      GWTRuntime sdk = GWTRuntime.findSdkFor(javaProject);
+      GwtSdk sdk = GwtSdk.findSdkFor(javaProject);
       IClasspathEntry gwtUserEntry =
           JavaCore.newSourceEntry(
               javaModel.getJavaProject("gwt-user").getPath().append("core/src"),
@@ -124,7 +124,7 @@ public class GWTRuntimeTest extends TestCase {
   }
 
   /**
-   * Tests that {@link GWTRuntime#findSdkFor(IJavaProject)} returns a valid
+   * Tests that {@link GwtSdk#findSdkFor(IJavaProject)} returns a valid
    * {@link com.google.gdt.eclipse.core.sdk.Sdk} when named classpath containers
    * for jars are being used on the project classpath.
    */
@@ -134,7 +134,7 @@ public class GWTRuntimeTest extends TestCase {
   }
 
   /**
-   * Tests that {@link GWTRuntime#findSdkFor(IJavaProject)} returns a valid
+   * Tests that {@link GwtSdk#findSdkFor(IJavaProject)} returns a valid
    * {@link com.google.gdt.eclipse.core.sdk.Sdk} when named classpath containers
    * for jars are being used on the project classpath.
    *
@@ -149,7 +149,7 @@ public class GWTRuntimeTest extends TestCase {
   }
 
   /**
-   * Tests that {@link GWTRuntime#findSdkFor(IJavaProject)} returns a valid
+   * Tests that {@link GwtSdk#findSdkFor(IJavaProject)} returns a valid
    * {@link com.google.gdt.eclipse.core.sdk.Sdk} when raw jars are being used on
    * the project classpath.
    */
@@ -159,7 +159,7 @@ public class GWTRuntimeTest extends TestCase {
   }
 
   /**
-   * Tests that {@link GWTRuntime#findSdkFor(IJavaProject)} returns a valid
+   * Tests that {@link GwtSdk#findSdkFor(IJavaProject)} returns a valid
    * {@link com.google.gdt.eclipse.core.sdk.Sdk} when raw projects are being
    * used on the project classpath.
    *
@@ -188,8 +188,8 @@ public class GWTRuntimeTest extends TestCase {
   private void checkSdkDetectionUsingClasspathContainers(IPath sdkPath,
       SdkClasspathContainer.Type containerType) throws CoreException {
     String sdkName = getName();
-    GWTRuntime sdk = GWTRuntime.getFactory().newInstance(sdkName, sdkPath);
-    SdkSet<GWTRuntime> registeredSdks = GWTPreferences.getSdks();
+    GwtSdk sdk = GwtSdk.getFactory().newInstance(sdkName, sdkPath);
+    SdkSet<GwtSdk> registeredSdks = GWTPreferences.getSdks();
     registeredSdks.add(sdk);
     GWTPreferences.setSdks(registeredSdks);
 
@@ -201,26 +201,26 @@ public class GWTRuntimeTest extends TestCase {
     try {
       JavaProjectUtilities.addRawClassPathEntry(javaProject,
           JavaCore.newContainerEntry(containerPath));
-      GWTRuntime detectedSdk = GWTRuntime.findSdkFor(javaProject);
+      GwtSdk detectedSdk = GwtSdk.findSdkFor(javaProject);
       assertNotNull(detectedSdk);
       assertEquals(new IClasspathEntry[] {JavaCore.newContainerEntry(containerPath)},
           detectedSdk.getClasspathEntries());
     } finally {
       javaProject.getProject().delete(true, null);
-      GWTPreferences.setSdks(new SdkSet<GWTRuntime>());
+      GWTPreferences.setSdks(new SdkSet<GwtSdk>());
     }
   }
 
   private void checkSdkDetectionUsingRawClasspathEntries(IPath installPath) throws CoreException,
       JavaModelException {
-    GWTRuntime sdk = GWTRuntime.getFactory().newInstance(getName(), installPath);
+    GwtSdk sdk = GwtSdk.getFactory().newInstance(getName(), installPath);
     IJavaProject javaProject = JavaProjectUtilities.createJavaProject(getName());
     try {
       for (IClasspathEntry entry : sdk.getClasspathEntries()) {
         JavaProjectUtilities.addRawClassPathEntry(javaProject, entry);
       }
 
-      GWTRuntime detectedSdk = GWTRuntime.findSdkFor(javaProject);
+      GwtSdk detectedSdk = GwtSdk.findSdkFor(javaProject);
       assertNotNull(detectedSdk);
       assertTrue(detectedSdk.validate().isOK());
     } finally {

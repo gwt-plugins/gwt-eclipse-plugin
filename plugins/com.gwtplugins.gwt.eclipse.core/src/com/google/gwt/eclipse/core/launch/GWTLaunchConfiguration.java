@@ -18,7 +18,7 @@ import com.google.gdt.eclipse.core.StringUtilities;
 import com.google.gdt.eclipse.core.sdk.Sdk.SdkException;
 import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.runtime.GWTProjectsRuntime;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -163,7 +163,7 @@ public class GWTLaunchConfiguration {
       if (GWTProjectsRuntime.isGWTRuntimeProject(project)) {
         // Synthesize a temporary contributor SDK so that we can use it
         // to compute the devjar path
-        GWTRuntime tempContribSDK = GWTProjectsRuntime.syntheziseContributorRuntime();
+        GwtSdk tempContribSDK = GWTProjectsRuntime.syntheziseContributorRuntime();
 
         if (tempContribSDK.validate().isOK()) {
           return tempContribSDK.getDevJar().getAbsolutePath();
@@ -172,7 +172,7 @@ public class GWTLaunchConfiguration {
         }
       }
 
-      GWTRuntime sdk = GWTRuntime.findSdkFor(project);
+      GwtSdk sdk = GwtSdk.findSdkFor(project);
       if (sdk.usesGwtDevProject()) {
         File gwtDevJarFile = sdk.getDevJar();
         return gwtDevJarFile.getAbsolutePath();

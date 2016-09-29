@@ -19,7 +19,7 @@ import com.google.gdt.eclipse.core.ProcessUtilities;
 import com.google.gdt.eclipse.core.sdk.Sdk.SdkException;
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
 import com.google.gwt.eclipse.core.GWTPlugin;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -56,7 +56,7 @@ public class WebAppProjectCreatorRunner {
             produces the default template, other values are only supported after GWT version 2.3.0
    */
   public static void createProject(String qualifiedModuleName, String outDir,
-      GWTRuntime gwtRuntime, IProgressMonitor monitor, String[] extraClassPath,
+      GwtSdk gwtRuntime, IProgressMonitor monitor, String[] extraClassPath,
       String... templates)
       throws CoreException {
     try {
@@ -80,7 +80,7 @@ public class WebAppProjectCreatorRunner {
     }
   }
 
-  private static String computeClasspath(GWTRuntime gwtRuntime, String[] extraClassPath)
+  private static String computeClasspath(GwtSdk gwtRuntime, String[] extraClassPath)
       throws CoreException {
     List<String> cpPaths = new ArrayList<String>();
     for (IClasspathEntry c : gwtRuntime.getClasspathEntries()) {
@@ -107,7 +107,7 @@ public class WebAppProjectCreatorRunner {
   }
 
   private static List<String> computeWebAppCreatorCommandLine(
-      String qualifiedModuleName, String outDir, GWTRuntime gwtRuntime,
+      String qualifiedModuleName, String outDir, GwtSdk gwtRuntime,
       String[] templates, String[] extraClassPath)
       throws CoreException {
     List<String> commandLine = new ArrayList<String>();
@@ -139,7 +139,7 @@ public class WebAppProjectCreatorRunner {
 
   private static List<String> computeWebAppCreatorOptions(
       String qualifiedModuleName, String outDir, String[] templates,
-      GWTRuntime gwtRuntime) throws CoreException {
+      GwtSdk gwtRuntime) throws CoreException {
     List<String> options = new ArrayList<String>();
     options.add("-out");
     options.add(outDir);

@@ -23,7 +23,7 @@ import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.GWTProjectUtilities;
 import com.google.gwt.eclipse.core.launch.GWTLaunchConfiguration;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
@@ -179,7 +179,7 @@ public class GWTCompileRunner {
      *
      * TODO: Consider invoking the appropriate ModuleClasspathProvider.
      */
-    GWTRuntime gwtRuntime = GWTRuntime.findSdkFor(javaProject);
+    GwtSdk gwtRuntime = GwtSdk.findSdkFor(javaProject);
     if (gwtRuntime == null) {
       GWTPluginLog.logWarning("Unable to find GWT runtime for project "
           + javaProject.getElementName()

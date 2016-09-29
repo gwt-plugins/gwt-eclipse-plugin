@@ -19,7 +19,7 @@ import com.google.gdt.eclipse.core.sdk.SdkManager;
 import com.google.gdt.eclipse.core.sdk.SdkSet;
 import com.google.gdt.eclipse.core.sdk.SdkUtils;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -38,12 +38,12 @@ public class GWTSdkRegistrant {
    * @throws CoreException
    */
   public static void registerSdk(URL sdkUrl) throws CoreException {
-    SdkManager<GWTRuntime> sdkManager = GWTPreferences.getSdkManager();
-    SdkSet<GWTRuntime> sdks = sdkManager.getSdks();
+    SdkManager<GwtSdk> sdkManager = GWTPreferences.getSdkManager();
+    SdkSet<GwtSdk> sdks = sdkManager.getSdks();
     String uniqueName = SdkUtils.generateUniqueSdkNameFrom("GWT", sdks);
-    SdkFactory<GWTRuntime> factory = GWTRuntime.getFactory();
+    SdkFactory<GwtSdk> factory = GwtSdk.getFactory();
     String sdkLocation = sdkUrl.getPath();
-    GWTRuntime newSdk = factory.newInstance(uniqueName, new Path(sdkLocation));
+    GwtSdk newSdk = factory.newInstance(uniqueName, new Path(sdkLocation));
     assert (newSdk.validate().isOK());
     sdks.add(newSdk);
     sdkManager.setSdks(sdks);

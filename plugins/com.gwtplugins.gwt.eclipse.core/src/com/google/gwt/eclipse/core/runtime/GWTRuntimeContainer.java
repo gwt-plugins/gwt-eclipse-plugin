@@ -28,7 +28,7 @@ import java.util.List;
  *
  * TODO: Move this and subtypes into the sdk package.
  */
-public class GWTRuntimeContainer extends SdkClasspathContainer<GWTRuntime> {
+public class GWTRuntimeContainer extends SdkClasspathContainer<GwtSdk> {
   public static final String CONTAINER_ID = "com.gwtplugins.gwt.eclipse.core.GWT_CONTAINER";
   public static final Path CONTAINER_PATH = new Path(CONTAINER_ID);
 
@@ -41,7 +41,7 @@ public class GWTRuntimeContainer extends SdkClasspathContainer<GWTRuntime> {
     return CONTAINER_PATH.isPrefixOf(path);
   }
 
-  public GWTRuntimeContainer(IPath path, GWTRuntime runtime,
+  public GWTRuntimeContainer(IPath path, GwtSdk runtime,
       IClasspathEntry[] classpathEntries, String description) {
     super(path, runtime, classpathEntries, description);
   }

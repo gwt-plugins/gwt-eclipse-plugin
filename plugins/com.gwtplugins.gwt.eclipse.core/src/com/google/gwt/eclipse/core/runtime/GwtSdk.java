@@ -62,12 +62,12 @@ import java.util.Set;
  *
  * TODO: Move this and subtypes into the sdk package.
  */
-public abstract class GWTRuntime extends AbstractSdk {
+public abstract class GwtSdk extends AbstractSdk {
 
   /**
    * A factory that returns a project-bound GWT SDK. Extension points can implement this interface
    * to return an externally-computed project-bound GWT SDK in response to calls to
-   * {@link GWTRuntime#findSdkFor(IJavaProject)}.
+   * {@link GwtSdk#findSdkFor(IJavaProject)}.
    */
   public interface IProjectBoundSdkFactory {
     ProjectBoundSdk newInstance(IJavaProject javaProject);
@@ -76,7 +76,7 @@ public abstract class GWTRuntime extends AbstractSdk {
    * Models an {@link com.google.gdt.eclipse.core.sdk.Sdk} that was detected on a project's
    * classpath.
    */
-  public static class ProjectBoundSdk extends GWTRuntime {
+  public static class ProjectBoundSdk extends GwtSdk {
     private static IPath getAbsoluteLocation(IPath workspaceRelativePath, IProject project) {
       IPath relativeSourcePath = workspaceRelativePath.removeFirstSegments(1);
       return project.getFolder(relativeSourcePath).getLocation();
@@ -285,7 +285,7 @@ public abstract class GWTRuntime extends AbstractSdk {
       IPath installPath = null;
       switch (classpathEntry.getEntryKind()) {
         case IClasspathEntry.CPE_CONTAINER:
-          GWTRuntime sdk = GWTPreferences.getSdkManager().findSdkForPath(classpathEntry.getPath());
+          GwtSdk sdk = GWTPreferences.getSdkManager().findSdkForPath(classpathEntry.getPath());
           if (sdk != null) {
             IClasspathEntry[] classpathEntries = sdk.getClasspathEntries();
             if (classpathEntries.length > 0) {
@@ -378,9 +378,9 @@ public abstract class GWTRuntime extends AbstractSdk {
 
   public static final String VALIDATION_API_JAR_PREFIX = "validation-api-";
 
-  private static final SdkFactory<GWTRuntime> factory = new SdkFactory<GWTRuntime>() {
+  private static final SdkFactory<GwtSdk> factory = new SdkFactory<GwtSdk>() {
     @Override
-    public GWTRuntime newInstance(String name, IPath sdkHome) {
+    public GwtSdk newInstance(String name, IPath sdkHome) {
       if (isProjectBasedSdk(sdkHome)) {
         return new GWTProjectsRuntime(name, sdkHome);
       }
@@ -392,17 +392,17 @@ public abstract class GWTRuntime extends AbstractSdk {
   private static final File[] NO_FILES = new File[0];
 
   /**
-   * Finds the {@link GWTRuntime} used by the specified project. Note that the SDK need not have
+   * Finds the {@link GwtSdk} used by the specified project. Note that the SDK need not have
    * been registered.
    */
-  public static GWTRuntime findSdkFor(IJavaProject javaProject) {
-    ExtensionQuery<GWTRuntime.IProjectBoundSdkFactory> extQuery =
-        new ExtensionQuery<GWTRuntime.IProjectBoundSdkFactory>(GWTPlugin.PLUGIN_ID, "gwtProjectBoundSdkFactory",
+  public static GwtSdk findSdkFor(IJavaProject javaProject) {
+    ExtensionQuery<GwtSdk.IProjectBoundSdkFactory> extQuery =
+        new ExtensionQuery<GwtSdk.IProjectBoundSdkFactory>(GWTPlugin.PLUGIN_ID, "gwtProjectBoundSdkFactory",
             "class");
-    List<ExtensionQuery.Data<GWTRuntime.IProjectBoundSdkFactory>> sdkFactories = extQuery.getData();
-    for (ExtensionQuery.Data<GWTRuntime.IProjectBoundSdkFactory> sdkFactory : sdkFactories) {
+    List<ExtensionQuery.Data<GwtSdk.IProjectBoundSdkFactory>> sdkFactories = extQuery.getData();
+    for (ExtensionQuery.Data<GwtSdk.IProjectBoundSdkFactory> sdkFactory : sdkFactories) {
 
-      GWTRuntime externalGWTRuntime = sdkFactory.getExtensionPointData().newInstance(javaProject);
+      GwtSdk externalGWTRuntime = sdkFactory.getExtensionPointData().newInstance(javaProject);
       if (externalGWTRuntime != null && externalGWTRuntime.validate().isOK()) {
         return externalGWTRuntime;
       }
@@ -416,7 +416,7 @@ public abstract class GWTRuntime extends AbstractSdk {
     return null;
   }
 
-  public static SdkFactory<GWTRuntime> getFactory() {
+  public static SdkFactory<GwtSdk> getFactory() {
     return factory;
   }
 
@@ -448,7 +448,7 @@ public abstract class GWTRuntime extends AbstractSdk {
     return location.equals(sdkHome);
   }
 
-  protected GWTRuntime(String name, IPath location) {
+  protected GwtSdk(String name, IPath location) {
     super(name, location);
   }
 
@@ -491,7 +491,7 @@ public abstract class GWTRuntime extends AbstractSdk {
   }
 
   /**
-   * Returns <code>true</code> if the {@link GWTRuntime} references the gwt-dev project.
+   * Returns <code>true</code> if the {@link GwtSdk} references the gwt-dev project.
    */
   public boolean usesGwtDevProject() {
     // Overridden in subclasses.

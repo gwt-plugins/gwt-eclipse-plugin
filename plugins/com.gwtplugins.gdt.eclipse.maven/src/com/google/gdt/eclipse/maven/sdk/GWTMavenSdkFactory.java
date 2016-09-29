@@ -15,8 +15,8 @@
 package com.google.gdt.eclipse.maven.sdk;
 
 import com.google.gdt.eclipse.maven.MavenUtils;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime.IProjectBoundSdkFactory;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime.ProjectBoundSdk;
+import com.google.gwt.eclipse.core.runtime.GwtSdk.IProjectBoundSdkFactory;
+import com.google.gwt.eclipse.core.runtime.GwtSdk.ProjectBoundSdk;
 
 import org.eclipse.jdt.core.IJavaProject;
 
