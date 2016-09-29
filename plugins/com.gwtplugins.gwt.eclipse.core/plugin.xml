@@ -706,6 +706,11 @@
             class="com.google.gwt.eclipse.core.properties.ui.GWTProjectPropertyPage"
             id="com.gwtplugins.gwt.eclipse.core.properties.ui.gwtProjectPropertyPage"
             name="General Settings">
+         <enabledWhen>
+            <adapt
+                  type="org.eclipse.jdt.core.IJavaProject">
+            </adapt>
+         </enabledWhen>
       </page>
    </extension>
    <!--

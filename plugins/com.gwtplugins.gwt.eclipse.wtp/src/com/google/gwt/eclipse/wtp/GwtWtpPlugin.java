@@ -12,16 +12,13 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.wtp;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import com.google.gwt.eclipse.core.launch.GWTLaunchConstants;
+import com.google.gwt.eclipse.core.launch.GwtSuperDevModeLaunchConfiguration;
+import com.google.gwt.eclipse.core.launch.util.GwtSuperDevModeCodeServerLaunchUtil;
+import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
+import com.google.gwt.eclipse.oophm.model.LaunchConfiguration;
+import com.google.gwt.eclipse.oophm.model.WebAppDebugModel;
+import com.google.gwt.eclipse.wtp.utils.GwtFacetUtils;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -50,13 +47,16 @@ import org.eclipse.wst.server.core.ServerUtil;
 import org.eclipse.wst.server.core.model.IURLProvider;
 import org.osgi.framework.BundleContext;
 
-import com.google.gwt.eclipse.core.launch.GWTLaunchConstants;
-import com.google.gwt.eclipse.core.launch.GwtSuperDevModeLaunchConfiguration;
-import com.google.gwt.eclipse.core.launch.util.GwtSuperDevModeCodeServerLaunchUtil;
-import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
-import com.google.gwt.eclipse.oophm.model.LaunchConfiguration;
-import com.google.gwt.eclipse.oophm.model.WebAppDebugModel;
-import com.google.gwt.eclipse.wtp.utils.GwtFacetUtils;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Google GWT WTP plug-in life-cycle.
@@ -524,8 +524,10 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
 
     // First get wtp.deploy from the server attributes
     Map<String, Object> launchConfigAttributes = null;
+    String vmArgsString = null;
     try {
       launchConfigAttributes = serverLaunchConfig.getAttributes();
+      vmArgsString = (String) launchConfigAttributes.get("org.eclipse.jdt.launching.VM_ARGUMENTS");
     } catch (CoreException e) {
       logError(
           "posiblyLaunchGwtSuperDevModeCodeServer > getLauncherDirFromServerLaunchConfigAttributes: can't find launcher directory in ATTR_VM_ARGUMENTS.",
@@ -533,7 +535,6 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     }
 
     // Get the vm arguments in the launch configs vm args
-    String vmArgsString = (String) launchConfigAttributes.get("org.eclipse.jdt.launching.VM_ARGUMENTS");
     if (vmArgsString == null || vmArgsString.isEmpty()) {
       logMessage(
           "posiblyLaunchGwtSuperDevModeCodeServer > getLauncherDirFromServerLaunchConfigAttributes: can't get org.eclipse.jdt.launching.VM_ARGUMENTS from the launch config.");

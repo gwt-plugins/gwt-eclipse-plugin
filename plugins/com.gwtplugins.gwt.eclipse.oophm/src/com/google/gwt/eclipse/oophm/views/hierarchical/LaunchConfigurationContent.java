@@ -269,7 +269,7 @@ public class LaunchConfigurationContent extends Composite {
     viewer.addDoubleClickListener(new IDoubleClickListener() {
       @Override
       public void doubleClick(DoubleClickEvent event) {
-
+        browserMenuPopulator.openDefaultBrowser(getProject(launchConfiguration), getSelectedUrl());
       }
     });
   }
