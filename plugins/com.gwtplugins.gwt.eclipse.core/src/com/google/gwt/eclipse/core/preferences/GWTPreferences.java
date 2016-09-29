@@ -24,7 +24,7 @@ import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.runtime.GWTProjectsRuntime;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateWebInfFolderCommand;
 
@@ -56,7 +56,7 @@ public class GWTPreferences {
    */
   private static final String REMOVE_TERMINATED_LAUNCHES = "removeTerminatedLaunches";
 
-  private static SdkManager<GWTRuntime> sdkManager;
+  private static SdkManager<GwtSdk> sdkManager;
 
   private static final String SOURCE_VIEWER_SERVER_PORT = "sourceViewerServerPort";
 
@@ -67,14 +67,14 @@ public class GWTPreferences {
       "com.google.gwt.core.client.debug.JsoInspector$JsoProperty";
 
   static {
-    sdkManager = new SdkManager<GWTRuntime>(GWTRuntimeContainer.CONTAINER_ID,
-        getEclipsePreferences(), GWTRuntime.getFactory());
+    sdkManager = new SdkManager<GwtSdk>(GWTRuntimeContainer.CONTAINER_ID,
+        getEclipsePreferences(), GwtSdk.getFactory());
 
-    sdkManager.addSdkUpdateListener(new SdkManager.SdkUpdateListener<GWTRuntime>() {
+    sdkManager.addSdkUpdateListener(new SdkManager.SdkUpdateListener<GwtSdk>() {
       @Override
-      public void onSdkUpdate(SdkUpdateEvent<GWTRuntime> sdkUpdateEvent) throws CoreException {
+      public void onSdkUpdate(SdkUpdateEvent<GwtSdk> sdkUpdateEvent) throws CoreException {
 
-        SdkManager<GWTRuntime>.SdkUpdateEventProcessor sdkUpdateEventProcessor =
+        SdkManager<GwtSdk>.SdkUpdateEventProcessor sdkUpdateEventProcessor =
             GWTPreferences.sdkManager.new SdkUpdateEventProcessor(sdkUpdateEvent);
 
         // Update all of the WEB-INF/lib files
@@ -87,7 +87,7 @@ public class GWTPreferences {
           }
 
           try {
-            GWTRuntime sdk = sdkUpdateEventProcessor.getUpdatedSdkForProject(project);
+            GwtSdk sdk = sdkUpdateEventProcessor.getUpdatedSdkForProject(project);
             if (sdk != null && WebAppUtilities.hasManagedWarOut(project.getProject())) {
               new GWTUpdateWebInfFolderCommand(project, sdk).execute();
             }
@@ -119,8 +119,8 @@ public class GWTPreferences {
     return warOutLocation.append(folderName);
   }
 
-  public static GWTRuntime getDefaultRuntime() {
-    SdkSet<GWTRuntime> sdkSet = getSdks();
+  public static GwtSdk getDefaultRuntime() {
+    SdkSet<GwtSdk> sdkSet = getSdks();
     return sdkSet.getDefault();
   }
 
@@ -156,9 +156,9 @@ public class GWTPreferences {
     return getEclipsePreferences().getBoolean(REMOVE_TERMINATED_LAUNCHES, true);
   }
 
-  public static GWTRuntime getRuntime(String name) {
-    SdkSet<GWTRuntime> sdkSet = getSdks();
-    for (GWTRuntime runtime : sdkSet) {
+  public static GwtSdk getRuntime(String name) {
+    SdkSet<GwtSdk> sdkSet = getSdks();
+    for (GwtSdk runtime : sdkSet) {
       if (runtime.getName().equals(name)) {
         return runtime;
       }
@@ -167,11 +167,11 @@ public class GWTPreferences {
     return null;
   }
 
-  public static SdkManager<GWTRuntime> getSdkManager() {
+  public static SdkManager<GwtSdk> getSdkManager() {
     return sdkManager;
   }
 
-  public static SdkSet<GWTRuntime> getSdks() {
+  public static SdkSet<GwtSdk> getSdks() {
     return getSdkManager().getSdks();
   }
 
@@ -221,7 +221,7 @@ public class GWTPreferences {
     }
   }
 
-  public static void setSdks(SdkSet<GWTRuntime> sdkSet) {
+  public static void setSdks(SdkSet<GwtSdk> sdkSet) {
     try {
       getSdkManager().setSdks(sdkSet);
     } catch (CoreException e) {

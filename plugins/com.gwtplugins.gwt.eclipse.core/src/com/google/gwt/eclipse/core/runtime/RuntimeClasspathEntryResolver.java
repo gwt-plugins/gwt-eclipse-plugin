@@ -47,7 +47,7 @@ public class RuntimeClasspathEntryResolver implements IRuntimeClasspathEntryReso
   @Override
   public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry,
       IJavaProject project) throws CoreException {
-    GWTRuntime gwtSdk = findGWTSdk(entry);
+    GwtSdk gwtSdk = findGWTSdk(entry);
     if (gwtSdk == null) {
       return NO_ENTRIES;
     }
@@ -60,7 +60,7 @@ public class RuntimeClasspathEntryResolver implements IRuntimeClasspathEntryReso
   @Override
   public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry,
       ILaunchConfiguration configuration) throws CoreException {
-    GWTRuntime gwtSdk = findGWTSdk(entry);
+    GwtSdk gwtSdk = findGWTSdk(entry);
     if (gwtSdk == null) {
       return NO_ENTRIES;
     }
@@ -92,8 +92,8 @@ public class RuntimeClasspathEntryResolver implements IRuntimeClasspathEntryReso
     return out;
   }
 
-  private GWTRuntime findGWTSdk(IRuntimeClasspathEntry entry) {
-    GWTRuntime gwtSdk = GWTPreferences.getSdkManager().findSdkForPath(entry.getPath());
+  private GwtSdk findGWTSdk(IRuntimeClasspathEntry entry) {
+    GwtSdk gwtSdk = GWTPreferences.getSdkManager().findSdkForPath(entry.getPath());
 
     if (gwtSdk != null) {
       return gwtSdk;

@@ -24,13 +24,13 @@ import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IJavaProject;
 
 /**
- * Resolves a {@link GWTRuntime} path to an Initializes an
+ * Resolves a {@link GwtSdk} path to an Initializes an
  * {@link org.eclipse.jdt.core.IClasspathContainer IClasspathContainer}.
  * 
  * TODO: Move this and subtypes into the sdk package.
  */
 public class GWTRuntimeContainerInitializer extends
-    SdkClasspathContainerInitializer<GWTRuntime> {
+    SdkClasspathContainerInitializer<GwtSdk> {
 
   @Override
   public String getDescription(IPath containerPath, IJavaProject project) {
@@ -38,8 +38,8 @@ public class GWTRuntimeContainerInitializer extends
   }
 
   @Override
-  protected SdkClasspathContainer<GWTRuntime> createClasspathContainer(
-      IPath containerPath, GWTRuntime sdk, String description,
+  protected SdkClasspathContainer<GwtSdk> createClasspathContainer(
+      IPath containerPath, GwtSdk sdk, String description,
       IJavaProject javaProject) {
     return new GWTRuntimeContainer(containerPath, sdk,
         sdk.getClasspathEntries(), description);
@@ -51,13 +51,13 @@ public class GWTRuntimeContainerInitializer extends
   }
 
   @Override
-  protected SdkManager<GWTRuntime> getSdkManager() {
+  protected SdkManager<GwtSdk> getSdkManager() {
     return GWTPreferences.getSdkManager();
   }
 
   @Override
-  protected SdkClasspathContainer<GWTRuntime> updateClasspathContainer(
-      IPath containerPath, GWTRuntime sdk, String description,
+  protected SdkClasspathContainer<GwtSdk> updateClasspathContainer(
+      IPath containerPath, GwtSdk sdk, String description,
       IJavaProject project, IClasspathContainer containerSuggestion) {
 
     // TODO: Persist the changes to the container

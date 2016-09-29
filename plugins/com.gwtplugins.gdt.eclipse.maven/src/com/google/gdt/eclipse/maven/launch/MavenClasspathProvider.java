@@ -19,7 +19,7 @@ import com.google.gdt.eclipse.maven.Activator;
 import com.google.gdt.eclipse.maven.MavenUtils;
 import com.google.gwt.eclipse.core.launch.ModuleClasspathProvider;
 import com.google.gwt.eclipse.core.nature.GWTNature;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -62,7 +62,7 @@ public class MavenClasspathProvider extends ModuleClasspathProvider {
 
   private static void addGwtDevjarIfPossible(IJavaProject proj,
       Set<IRuntimeClasspathEntry> classpath) throws CoreException {
-    GWTRuntime runtime = GWTRuntime.findSdkFor(proj);
+    GwtSdk runtime = GwtSdk.findSdkFor(proj);
     if (runtime == null) {
       Activator
           .getDefault()

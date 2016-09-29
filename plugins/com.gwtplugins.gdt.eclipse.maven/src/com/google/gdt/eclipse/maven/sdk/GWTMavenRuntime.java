@@ -19,7 +19,7 @@ import com.google.gdt.eclipse.core.sdk.AbstractSdk;
 import com.google.gdt.eclipse.maven.Activator;
 import com.google.gdt.eclipse.maven.MavenUtils;
 import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime.ProjectBoundSdk;
+import com.google.gwt.eclipse.core.runtime.GwtSdk.ProjectBoundSdk;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
@@ -90,7 +90,7 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
 
   /**
    * This method's implementation breaks the general contract of
-   * {@link com.google.gwt.eclipse.core.runtime.GWTRuntime#getClasspathEntries()} .
+   * {@link com.google.gwt.eclipse.core.runtime.GwtSdk#getClasspathEntries()} .
    *
    * The general contract states that the entries returned should be the raw entries on the build
    * path that correspond to the SDK. This method returns the resolved entry on the build path that

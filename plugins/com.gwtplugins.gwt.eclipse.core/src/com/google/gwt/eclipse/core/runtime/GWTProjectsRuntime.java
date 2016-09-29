@@ -55,7 +55,7 @@ import java.util.Set;
 /**
  * Represents a GWT runtime that is based on the Eclipse projects containing the GWT trunk.
  */
-public class GWTProjectsRuntime extends GWTRuntime {
+public class GWTProjectsRuntime extends GwtSdk {
 
   public static final String LOCATION = "Workspace";
 
@@ -186,7 +186,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
    * SDK themselves).
    */
   public static GWTProjectsRuntime syntheziseContributorRuntime() {
-    return (GWTProjectsRuntime) GWTRuntime.getFactory().newInstance("temp contributor SDK",
+    return (GWTProjectsRuntime) GwtSdk.getFactory().newInstance("temp contributor SDK",
         ResourcesPlugin.getWorkspace().getRoot().getLocation());
   }
 
@@ -194,7 +194,7 @@ public class GWTProjectsRuntime extends GWTRuntime {
    * @return a status with error severity if the JAR does not exist, otherwise OK severity (in the
    *         case of a JavaModelException, it is logged and OK is returned)
    */
-  static IStatus getGwtDevJarStatus(GWTRuntime sdk) {
+  static IStatus getGwtDevJarStatus(GwtSdk sdk) {
     try {
       if (sdk.getDevJar() == null) {
         return new Status(IStatus.ERROR, GWTPlugin.PLUGIN_ID,

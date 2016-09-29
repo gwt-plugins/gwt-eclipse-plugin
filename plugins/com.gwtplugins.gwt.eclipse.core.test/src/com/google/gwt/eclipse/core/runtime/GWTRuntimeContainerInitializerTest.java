@@ -185,7 +185,7 @@ public class GWTRuntimeContainerInitializerTest extends AbstractGWTRuntimeTest {
 
     initializer = JavaCore.getClasspathContainerInitializer(GWTRuntimeContainer.CONTAINER_ID);
 
-    SdkSet<GWTRuntime> sdkSet = GWTPreferences.getSdks();
+    SdkSet<GwtSdk> sdkSet = GWTPreferences.getSdks();
     GWTJarsRuntime specificRuntime = new GWTJarsRuntime("specific",
         GwtRuntimeTestUtilities.getDefaultRuntime().getInstallationPath());
     sdkSet.add(this.specificRuntime);

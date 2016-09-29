@@ -18,7 +18,7 @@ import com.google.gdt.eclipse.core.jobs.JobsUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkClasspathContainer;
 import com.google.gdt.eclipse.core.sdk.SdkManager;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
 import com.google.gwt.eclipse.core.runtime.tools.NewProjectCreatorTool;
 import com.google.gwt.eclipse.core.util.Util;
@@ -261,7 +261,7 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
     String outDir = workspaceDir + System.getProperty("file.separator") + TEST_PROJECT_NAME;
 
     // Get the default GWT runtime
-    GWTRuntime runtime = GWTPreferences.getDefaultRuntime();
+    GwtSdk runtime = GWTPreferences.getDefaultRuntime();
     if (runtime == null) {
       throw new Exception("No default GWT SDK");
     }
@@ -275,8 +275,8 @@ public abstract class AbstractGWTPluginTestCase extends TestCase {
 
     monitor.beginTask("Generating GWT project", 4);
 
-    SdkManager<GWTRuntime> sdkManager = GWTPreferences.getSdkManager();
-    GWTRuntime runtime1 = sdkManager.findSdkForPath(runtimePath);
+    SdkManager<GwtSdk> sdkManager = GWTPreferences.getSdkManager();
+    GwtSdk runtime1 = sdkManager.findSdkForPath(runtimePath);
 
     /*
      * FIXME: Use WebAppCreator here, or some portion of it (since WebAppCreator lives in the GDT Plugin, we cannot

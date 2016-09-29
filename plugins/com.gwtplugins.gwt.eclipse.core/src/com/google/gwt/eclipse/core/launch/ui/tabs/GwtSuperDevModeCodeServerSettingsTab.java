@@ -37,7 +37,7 @@ import com.google.gwt.eclipse.core.launch.ui.EntryPointModulesSelectionBlock.IMo
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.resources.GWTImages;
 import com.google.gwt.eclipse.core.runtime.GWTProjectsRuntime;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -271,7 +271,7 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
      */
     public void initializeForm(ILaunchConfiguration config) throws CoreException {
       IJavaProject javaProject = getJavaProject();
-      GWTRuntime runtime = javaProject == null ? null : getRuntime(javaProject);
+      GwtSdk runtime = javaProject == null ? null : getRuntime(javaProject);
 
       boolean hasNoServerArg =
           NoServerArgumentProcessor.hasNoServerArg(LaunchConfigurationProcessorUtilities.parseProgramArgs(config));
@@ -590,14 +590,14 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
     return javaProject.getProject();
   }
 
-  private GWTRuntime getRuntime(IJavaProject javaProject) {
-    GWTRuntime runtime = GWTRuntime.findSdkFor(javaProject);
+  private GwtSdk getRuntime(IJavaProject javaProject) {
+    GwtSdk runtime = GwtSdk.findSdkFor(javaProject);
     if (runtime == null) {
 
       if (GWTProjectsRuntime.isGWTRuntimeProject(javaProject)) {
         // Synthesize a contributor runtime if this launch config is
         // based on a GWT Runtime project
-        GWTRuntime synthesizedRuntime = GWTProjectsRuntime.syntheziseContributorRuntime();
+        GwtSdk synthesizedRuntime = GWTProjectsRuntime.syntheziseContributorRuntime();
 
         if (synthesizedRuntime.validate().isOK()) {
           runtime = synthesizedRuntime;

@@ -22,7 +22,7 @@ import com.google.gdt.eclipse.core.sdk.Sdk.SdkException;
 import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.runtime.GWTProjectsRuntime;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -64,7 +64,7 @@ public class DGwtDevJarArgumentProcessor implements ILaunchConfigurationProcesso
       if (GWTProjectsRuntime.isGWTRuntimeProject(project)) {
         // Synthesize a temporary contributor SDK so that we can use it
         // to compute the devjar path
-        GWTRuntime tempContribSDK = GWTProjectsRuntime.syntheziseContributorRuntime();
+        GwtSdk tempContribSDK = GWTProjectsRuntime.syntheziseContributorRuntime();
 
         if (tempContribSDK.validate().isOK()) {
           return tempContribSDK.getDevJar().getAbsolutePath();
@@ -73,7 +73,7 @@ public class DGwtDevJarArgumentProcessor implements ILaunchConfigurationProcesso
         }
       }
 
-      GWTRuntime sdk = GWTRuntime.findSdkFor(project);
+      GwtSdk sdk = GwtSdk.findSdkFor(project);
       if (sdk == null) {
         MessageConsole messageConsole =
             MessageConsoleUtilities.getMessageConsole(project.getProject().getName() + "-GWT", null);

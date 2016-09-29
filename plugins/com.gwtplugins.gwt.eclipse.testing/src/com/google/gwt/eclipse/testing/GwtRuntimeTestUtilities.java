@@ -19,7 +19,7 @@ import com.google.gdt.eclipse.core.projects.ProjectUtilities;
 import com.google.gdt.eclipse.core.sdk.SdkSet;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.runtime.GWTJarsRuntime;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IWorkspace;
@@ -47,12 +47,12 @@ public class GwtRuntimeTestUtilities {
     TestEnvironmentUtil.updateEnvironmentVariable("GWT_HOME", gwtHomePath);
     System.out.println("SETTING: GWT_HOME=" + gwtHomePath);
 
-    SdkSet<GWTRuntime> sdkSet = GWTPreferences.getSdks();
+    SdkSet<GwtSdk> sdkSet = GWTPreferences.getSdks();
     if (sdkSet.getDefault() == null) {
       assert (sdkSet.size() == 0);
 
-      GWTRuntime sdk =
-          GWTRuntime.getFactory().newInstance("Default GWT SDK", new Path(gwtHomePath));
+      GwtSdk sdk =
+          GwtSdk.getFactory().newInstance("Default GWT SDK", new Path(gwtHomePath));
       IStatus status = sdk.validate();
       if (!status.isOK()) {
         throw new CoreException(status);
@@ -82,7 +82,7 @@ public class GwtRuntimeTestUtilities {
   }
 
   public static GWTJarsRuntime getDefaultRuntime() throws Exception {
-    SdkSet<GWTRuntime> sdkSet = GWTPreferences.getSdks();
+    SdkSet<GwtSdk> sdkSet = GWTPreferences.getSdks();
     if (sdkSet.getDefault() == null) {
       throw new Exception("No default runtime has been set! "
           + "Did you forget to call GwtRuntimeTestUtilities.addDefaultRuntime()?");
@@ -114,7 +114,7 @@ public class GwtRuntimeTestUtilities {
   }
 
   public static void removeDefaultRuntime() {
-    SdkSet<GWTRuntime> sdkSet = GWTPreferences.getSdks();
+    SdkSet<GwtSdk> sdkSet = GWTPreferences.getSdks();
     sdkSet.remove(sdkSet.getDefault());
     GWTPreferences.setSdks(sdkSet);
   }

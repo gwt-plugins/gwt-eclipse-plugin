@@ -16,7 +16,7 @@ package com.google.gwt.eclipse.core.launch.processors;
 
 import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
 import com.google.gwt.eclipse.core.GWTPluginLog;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.util.Util;
 
 import org.eclipse.core.runtime.CoreException;
@@ -54,7 +54,7 @@ public class XStartOnFirstThreadArgumentProcessor implements
       return false;
     }
 
-    GWTRuntime sdk = GWTRuntime.findSdkFor(javaProject);
+    GwtSdk sdk = GwtSdk.findSdkFor(javaProject);
     if (sdk == null || !sdk.validate().isOK()) {
       // We assume it does since the typical configuration (latest GWT SDK with
       // remote UI) requires it.

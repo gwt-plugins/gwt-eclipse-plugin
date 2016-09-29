@@ -28,7 +28,7 @@ import com.google.gwt.eclipse.core.launch.ui.EntryPointModulesSelectionBlock.IMo
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
 import com.google.gwt.eclipse.core.resources.GWTImages;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.runtime.GwtCapabilityChecker;
 
 import org.eclipse.core.resources.IMarker;
@@ -296,7 +296,7 @@ public class GWTCompileDialog extends TitleAreaDialog {
   private boolean areMultipleModulesAllowed() {
     IJavaProject javaProject = JavaCore.create(project);
     if (javaProject != null) {
-      GWTRuntime sdk = GWTRuntime.findSdkFor(javaProject);
+      GwtSdk sdk = GwtSdk.findSdkFor(javaProject);
       if (sdk != null) {
         return new GwtCapabilityChecker(sdk).doesCompilerAllowMultipleModules();
       }

@@ -25,7 +25,7 @@ import com.google.gwt.eclipse.core.clientbundle.ClientBundleResourceDependencyIn
 import com.google.gwt.eclipse.core.markers.ClientBundleProblemType;
 import com.google.gwt.eclipse.core.markers.GWTProblemType;
 import com.google.gwt.eclipse.core.resources.GWTImages;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateWebInfFolderCommand;
 import com.google.gwt.eclipse.core.search.JavaRefIndex;
 import com.google.gwt.eclipse.core.uibinder.model.reference.UiBinderReferenceManager;
@@ -89,7 +89,7 @@ public class GWTPlugin extends AbstractGooglePlugin {
   private final WebInfFolderUpdater webInfFolderUpdater = new WebInfFolderUpdater() {
     @Override
     protected Sdk getSdk(IJavaProject javaProject) {
-      return GWTRuntime.findSdkFor(javaProject);
+      return GwtSdk.findSdkFor(javaProject);
     }
 
     @Override

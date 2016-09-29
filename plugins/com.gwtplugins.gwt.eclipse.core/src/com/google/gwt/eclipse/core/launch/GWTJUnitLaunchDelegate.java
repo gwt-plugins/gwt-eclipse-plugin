@@ -19,7 +19,7 @@ import com.google.gdt.eclipse.core.sdk.SdkUtils;
 import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.runtime.GWTProjectsRuntime;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -84,7 +84,7 @@ public class GWTJUnitLaunchDelegate extends JUnitLaunchConfigurationDelegate {
           "No Java project set on launch configuration"));
     }
 
-    GWTRuntime sdk = GWTRuntime.findSdkFor(javaProject);
+    GwtSdk sdk = GwtSdk.findSdkFor(javaProject);
     if (sdk == null || !sdk.validate().isOK()) {
       throw new CoreException(new Status(IStatus.INFO, GWTPlugin.PLUGIN_ID,
           "GWT SDK not found or isn't valid"));

@@ -17,7 +17,7 @@ package com.google.gwt.eclipse.core.util;
 import com.google.gdt.eclipse.core.JavaASTUtils;
 import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.GWTPluginLog;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.validators.rpc.RemoteServiceUtilities;
 
 import org.eclipse.core.resources.IFile;
@@ -250,7 +250,7 @@ public final class Util {
   }
 
   public static String getDevJarName(IPath sdkLocation) {
-    IPath devJarPath = sdkLocation.append(GWTRuntime.GWT_DEV_NO_PLATFORM_JAR);
+    IPath devJarPath = sdkLocation.append(GwtSdk.GWT_DEV_NO_PLATFORM_JAR);
 
     if (devJarPath.toFile().exists()) {
       return devJarPath.lastSegment();
@@ -306,7 +306,7 @@ public final class Util {
     String[] validationJarNames = sdkDir.list(new FilenameFilter() {
       @Override
       public boolean accept(File file, String fileName) {
-        if (fileName.startsWith(GWTRuntime.VALIDATION_API_JAR_PREFIX)
+        if (fileName.startsWith(GwtSdk.VALIDATION_API_JAR_PREFIX)
             && fileName.endsWith(".jar")
             && file.exists()) {
           return true;

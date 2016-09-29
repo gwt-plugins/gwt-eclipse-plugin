@@ -21,7 +21,7 @@ import com.google.gwt.eclipse.core.launch.GWTLaunchConstants;
 import com.google.gwt.eclipse.core.modules.IModule;
 import com.google.gwt.eclipse.core.modules.ModuleUtils;
 import com.google.gwt.eclipse.core.nature.GWTNature;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.util.GwtVersionUtil;
 
 import org.eclipse.core.runtime.CoreException;
@@ -41,9 +41,9 @@ import java.util.List;
  */
 public class SuperDevModeArgumentProcessor implements ILaunchConfigurationProcessor {
 
-  public static final String ERROR_NO_JAR_CODESERVER = "Add " + GWTRuntime.GWT_CODESERVER_JAR
+  public static final String ERROR_NO_JAR_CODESERVER = "Add " + GwtSdk.GWT_CODESERVER_JAR
       + " to the classpath.";
-  public static final String ERROR_NO_JAR_GWTDEV = "Add " + GWTRuntime.GWT_DEV_NO_PLATFORM_JAR
+  public static final String ERROR_NO_JAR_GWTDEV = "Add " + GwtSdk.GWT_DEV_NO_PLATFORM_JAR
       + " to the classpath.";
   public static final String ERROR_NO_LEGACY_LAUNCHER_JAR =
       "Add the super dev mode legacy jar for 2.5.0 to < 2.7 jar, "

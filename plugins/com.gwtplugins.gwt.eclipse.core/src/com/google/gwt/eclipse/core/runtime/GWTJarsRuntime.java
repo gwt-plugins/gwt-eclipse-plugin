@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * Represents a GWT runtime that is based on .jar files in the file system.
  */
-public class GWTJarsRuntime extends GWTRuntime {
+public class GWTJarsRuntime extends GwtSdk {
   private static final File[] NO_FILES = new File[0];
 
   // FIXME: Make private/protected

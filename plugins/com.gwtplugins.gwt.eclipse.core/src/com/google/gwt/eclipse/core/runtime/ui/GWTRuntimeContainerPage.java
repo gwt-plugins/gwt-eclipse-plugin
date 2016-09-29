@@ -19,14 +19,14 @@ import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage;
 import com.google.gwt.eclipse.core.resources.GWTImages;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
 
 /**
  * Wizard for selecting a GWT SDK when editing a GWT Classpath Container.
  */
 public class GWTRuntimeContainerPage extends
-    SdkClasspathContainerPage<GWTRuntime> {
+    SdkClasspathContainerPage<GwtSdk> {
 
   public GWTRuntimeContainerPage() {
     super("GWT SDK", "GWT SDK", GWTPlugin.getDefault().getImageDescriptor(

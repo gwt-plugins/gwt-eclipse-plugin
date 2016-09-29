@@ -39,7 +39,7 @@ public abstract class AbstractGWTRuntimeTest extends AbstractGWTPluginTestCase {
 
   protected IPath defaultRuntimePath;
 
-  protected GWTRuntime specificRuntime;
+  protected GwtSdk specificRuntime;
 
   protected IPath specificRuntimePath;
 
@@ -81,7 +81,7 @@ public abstract class AbstractGWTRuntimeTest extends AbstractGWTPluginTestCase {
       // Make sure we don't have any gwt-user.jar dependencies
       if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
         String jarName = entryPath.lastSegment();
-        if (jarName.equals(GWTRuntime.GWT_USER_JAR)) {
+        if (jarName.equals(GwtSdk.GWT_USER_JAR)) {
           return false;
         }
       }
@@ -101,7 +101,7 @@ public abstract class AbstractGWTRuntimeTest extends AbstractGWTPluginTestCase {
         if (GWTRuntimeContainer.isPathForGWTRuntimeContainer(entry.getPath())) {
           GWTJarsRuntime defaultSdk = GwtRuntimeTestUtilities.getDefaultRuntime();
           IPath gwtUserJar = defaultSdk.getInstallationPath().append(
-              GWTRuntime.GWT_USER_JAR);
+              GwtSdk.GWT_USER_JAR);
           newEntries.add(JavaCore.newLibraryEntry(gwtUserJar, null, null));
 
           IPath gwtDevJar = defaultSdk.getInstallationPath().append(
@@ -127,7 +127,7 @@ public abstract class AbstractGWTRuntimeTest extends AbstractGWTPluginTestCase {
   protected void setUp() throws Exception {
     super.setUp();
 
-    SdkSet<GWTRuntime> sdkSet = GWTPreferences.getSdks();
+    SdkSet<GwtSdk> sdkSet = GWTPreferences.getSdks();
     specificRuntime = new GWTJarsRuntime("specific",
       GwtRuntimeTestUtilities.getDefaultRuntime().getInstallationPath());
     sdkSet.add(specificRuntime);

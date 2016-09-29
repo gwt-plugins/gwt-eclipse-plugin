@@ -31,7 +31,7 @@ import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage;
 import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
 import com.google.gwt.eclipse.core.runtime.GWTProjectsRuntime;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateProjectSdkCommand;
 
@@ -93,7 +93,7 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
 
   private boolean initialUseGWT;
 
-  private ProjectSdkSelectionBlock<GWTRuntime> sdkSelectionBlock;
+  private ProjectSdkSelectionBlock<GwtSdk> sdkSelectionBlock;
 
   private boolean useGWT;
 
@@ -189,15 +189,15 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
     WebAppProjectProperties.maybeSetWebAppPropertiesForDynamicWebProject(project);
 
     if (sdkSelectionBlock.hasSdkChanged() && !GWTProjectsRuntime.isGWTRuntimeProject(javaProject)) {
-      SdkSelection<GWTRuntime> sdkSelection = sdkSelectionBlock.getSdkSelection();
+      SdkSelection<GwtSdk> sdkSelection = sdkSelectionBlock.getSdkSelection();
       boolean isDefault = false;
-      GWTRuntime newSdk = null;
+      GwtSdk newSdk = null;
       if (sdkSelection != null) {
         newSdk = sdkSelection.getSelectedSdk();
         isDefault = sdkSelection.isDefault();
       }
 
-      GWTRuntime oldSdk = sdkSelectionBlock.getInitialSdk();
+      GwtSdk oldSdk = sdkSelectionBlock.getInitialSdk();
 
       UpdateType updateType =
           GWTUpdateProjectSdkCommand.computeUpdateType(oldSdk, newSdk, isDefault);
@@ -248,7 +248,7 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
     Group group = SWTFactory.createGroup(parent, "GWT SDK", 1, 1, GridData.FILL_HORIZONTAL);
 
     sdkSelectionBlock =
-        new ProjectSdkSelectionBlock<GWTRuntime>(group, SWT.NONE, getJavaProject()) {
+        new ProjectSdkSelectionBlock<GwtSdk>(group, SWT.NONE, getJavaProject()) {
           @Override
           protected void doConfigure() {
             if (Window.OK == PreferencesUtil.createPreferenceDialogOn(getShell(),
@@ -258,8 +258,8 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
           }
 
           @Override
-          protected GWTRuntime doFindSdkFor(IJavaProject javaProject) {
-            return GWTRuntime.findSdkFor(javaProject);
+          protected GwtSdk doFindSdkFor(IJavaProject javaProject) {
+            return GwtSdk.findSdkFor(javaProject);
           }
 
           @Override
@@ -268,7 +268,7 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
           }
 
           @Override
-          protected SdkManager<GWTRuntime> doGetSdkManager() {
+          protected SdkManager<GwtSdk> doGetSdkManager() {
             return GWTPreferences.getSdkManager();
           }
         };
@@ -437,7 +437,7 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
   }
 
 
-  public void addGWT(IProject project, GWTRuntime runtime) throws BackingStoreException,
+  public void addGWT(IProject project, GwtSdk runtime) throws BackingStoreException,
       FileNotFoundException, CoreException {
     IJavaProject javaProject = JavaCore.create(project);
 
@@ -448,8 +448,8 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
     // !GWTProjectsRuntime.isGWTRuntimeProject(javaProject)) {
 
     boolean isDefault = false;
-    GWTRuntime newSdk = runtime;
-    GWTRuntime oldSdk = runtime;
+    GwtSdk newSdk = runtime;
+    GwtSdk oldSdk = runtime;
 
     UpdateType updateType = GWTUpdateProjectSdkCommand.computeUpdateType(oldSdk, newSdk, isDefault);
 

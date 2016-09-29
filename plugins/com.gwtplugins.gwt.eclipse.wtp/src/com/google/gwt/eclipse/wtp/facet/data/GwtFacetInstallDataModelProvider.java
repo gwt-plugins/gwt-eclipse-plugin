@@ -13,7 +13,7 @@
 package com.google.gwt.eclipse.wtp.facet.data;
 
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.wst.common.componentcore.datamodel.FacetInstallDataModelProvider;
 
@@ -46,7 +46,7 @@ public class GwtFacetInstallDataModelProvider extends FacetInstallDataModelProvi
   public Object create() {
     Object object = super.create();
 
-    GWTRuntime sdk = GWTPreferences.getDefaultRuntime();
+    GwtSdk sdk = GWTPreferences.getDefaultRuntime();
     if (sdk != null) {
       model.setProperty(GWT_SDK, sdk);
     }

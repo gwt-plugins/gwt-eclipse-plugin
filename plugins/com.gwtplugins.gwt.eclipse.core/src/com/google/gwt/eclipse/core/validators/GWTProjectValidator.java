@@ -19,7 +19,7 @@ import com.google.gdt.eclipse.core.MarkerUtilities;
 import com.google.gdt.eclipse.core.sdk.Sdk;
 import com.google.gdt.eclipse.core.validators.AbstractProjectValidator;
 import com.google.gwt.eclipse.core.runtime.GWTProjectsRuntime;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -69,7 +69,7 @@ public class GWTProjectValidator extends AbstractProjectValidator {
       return null;
     }
 
-    GWTRuntime sdk = GWTRuntime.findSdkFor(javaProject);
+    GwtSdk sdk = GwtSdk.findSdkFor(javaProject);
 
     // If it's not a project that's part of a GWT runtime, it needs a GWT
     // runtime.

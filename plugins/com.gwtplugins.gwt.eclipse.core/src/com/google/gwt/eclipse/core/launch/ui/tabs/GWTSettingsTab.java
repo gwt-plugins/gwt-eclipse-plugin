@@ -38,7 +38,7 @@ import com.google.gwt.eclipse.core.launch.ui.EntryPointModulesSelectionBlock;
 import com.google.gwt.eclipse.core.launch.ui.EntryPointModulesSelectionBlock.IModulesChangeListener;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.resources.GWTImages;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -748,9 +748,9 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
    * Hides or shows Super Dev Mode UI block based on the SDK version.
    */
   private void enableSuperDevModeSelection(ILaunchConfigurationWorkingCopy configuration) {
-    GWTRuntime sdk = null;
+    GwtSdk sdk = null;
     try {
-      sdk = GWTRuntime.findSdkFor(getJavaProject());
+      sdk = GwtSdk.findSdkFor(getJavaProject());
     } catch (CoreException e) {
       selectionBlock.setVisible(false);
     }

@@ -18,7 +18,7 @@ import com.google.gdt.eclipse.core.sdk.Sdk;
 import com.google.gdt.eclipse.core.sdk.UpdateProjectSdkCommand;
 import com.google.gdt.eclipse.core.sdk.UpdateWebInfFolderCommand;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
 
 import org.eclipse.jdt.core.IJavaProject;
@@ -26,15 +26,15 @@ import org.eclipse.jdt.core.IJavaProject;
 /**
  *
  */
-public class GWTUpdateProjectSdkCommand extends UpdateProjectSdkCommand<GWTRuntime> {
+public class GWTUpdateProjectSdkCommand extends UpdateProjectSdkCommand<GwtSdk> {
 
-  public static <T extends Sdk> UpdateType computeUpdateType(GWTRuntime oldSdk, GWTRuntime newSdk,
+  public static <T extends Sdk> UpdateType computeUpdateType(GwtSdk oldSdk, GwtSdk newSdk,
       boolean isDefault) {
     return computeUpdateType(oldSdk, newSdk, isDefault, GWTPreferences.getSdks(),
         GWTRuntimeContainer.CONTAINER_ID);
   }
 
-  public GWTUpdateProjectSdkCommand(IJavaProject javaProject, GWTRuntime oldSdk, GWTRuntime newSdk,
+  public GWTUpdateProjectSdkCommand(IJavaProject javaProject, GwtSdk oldSdk, GwtSdk newSdk,
       UpdateType updateType, UpdateWebInfFolderCommand updateWebInfFolderCommand) {
     super(javaProject, oldSdk, newSdk, updateType, updateWebInfFolderCommand);
   }

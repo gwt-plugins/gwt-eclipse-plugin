@@ -31,7 +31,7 @@ import com.google.gdt.eclipse.core.sdk.UpdateProjectSdkCommand.UpdateType;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.properties.ui.GWTProjectPropertyPage;
 import com.google.gwt.eclipse.core.runtime.GWTJarsRuntime;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateProjectSdkCommand;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateWebInfFolderCommand;
 import com.google.gwt.eclipse.wtp.GwtWtpPlugin;
@@ -135,14 +135,14 @@ public final class GwtFacetInstallSdkDelegate implements IDelegate, IGwtFacetCon
   /**
    * Add a GWT SDK container for standard project only.
    */
-  private void addGwtSdkContainer(IProject project, GWTRuntime newSdk) throws FileNotFoundException, CoreException,
+  private void addGwtSdkContainer(IProject project, GwtSdk newSdk) throws FileNotFoundException, CoreException,
       BackingStoreException {
     IJavaProject javaProject = JavaCore.create(project);
 
     GWTUpdateWebInfFolderCommand updateWebInfCommand = new GWTUpdateWebInfFolderCommand(javaProject, newSdk);
 
     // Maybe there is a SDK registered already
-    GWTRuntime oldSdk = GWTRuntime.findSdkFor(javaProject);
+    GwtSdk oldSdk = GwtSdk.findSdkFor(javaProject);
 
     // Named container, not individual jars
     UpdateType updateType = UpdateType.NAMED_CONTAINER;

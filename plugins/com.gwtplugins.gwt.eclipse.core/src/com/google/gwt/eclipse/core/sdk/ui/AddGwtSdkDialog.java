@@ -17,7 +17,7 @@ package com.google.gwt.eclipse.core.sdk.ui;
 import com.google.gdt.eclipse.core.sdk.SdkFactory;
 import com.google.gdt.eclipse.core.sdk.SdkSet;
 import com.google.gdt.eclipse.core.ui.AddSdkDialog;
-import com.google.gwt.eclipse.core.runtime.GWTRuntime;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -39,16 +39,16 @@ import org.eclipse.swt.widgets.Text;
  * A dialog to add a GWT SDK ("GWT Runtime") to a project. This is special,
  * because with GWT you have the option of running from the GWT source.
  */
-public class AddGwtSdkDialog extends AddSdkDialog<GWTRuntime> {
+public class AddGwtSdkDialog extends AddSdkDialog<GwtSdk> {
   private final boolean contribRuntimeAvailable;
   private Button contribButton;
 
-  public AddGwtSdkDialog(Shell parentShell, SdkSet<GWTRuntime> sdkSet,
-      String pluginId, String shellTitle, SdkFactory<GWTRuntime> sdkFactory) {
+  public AddGwtSdkDialog(Shell parentShell, SdkSet<GwtSdk> sdkSet,
+      String pluginId, String shellTitle, SdkFactory<GwtSdk> sdkFactory) {
     super(parentShell, sdkSet, pluginId, shellTitle, sdkFactory);
 
     IPath workspace = ResourcesPlugin.getWorkspace().getRoot().getLocation();
-    GWTRuntime runtime = GWTRuntime.getFactory().newInstance("", workspace);
+    GwtSdk runtime = GwtSdk.getFactory().newInstance("", workspace);
     IStatus status = runtime.validate();
     contribRuntimeAvailable = status.isOK();
   }
