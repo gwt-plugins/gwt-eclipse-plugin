@@ -24,7 +24,7 @@ import org.osgi.framework.BundleContext;
  */
 public class TestingPlugin extends Plugin {
   // The plug-in ID
-  public static final String PLUGIN_ID = "com.google.gcp.eclipse.testing";
+  public static final String PLUGIN_ID = "com.gwtplugins.gcp.eclipse.testing";
 
   // The shared instance
   private static TestingPlugin instance;

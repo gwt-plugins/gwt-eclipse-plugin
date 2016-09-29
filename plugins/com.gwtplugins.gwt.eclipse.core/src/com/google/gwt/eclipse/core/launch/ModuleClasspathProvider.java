@@ -61,7 +61,7 @@ public class ModuleClasspathProvider extends StandardClasspathProvider {
   }
 
   // This is the id of the moduleClasspathProvider extension point.
-  private static final String EXTENSION_ID = "com.google.gwt.eclipse.core.moduleClasspathProvider";
+  private static final String EXTENSION_ID = "com.gwtplugins.gwt.eclipse.core.moduleClasspathProvider";
 
   // // This is the provider ID of the ModuleClasspathProvider.
   private static final String PROVIDER_ID = GWTPlugin.PLUGIN_ID + ".moduleClasspathProvider";

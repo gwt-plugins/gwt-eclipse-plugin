@@ -57,7 +57,7 @@ import java.util.List;
 // org.eclipse.ui.internal.Workbench, org.eclipse.ui.internal.WorkbenchPage
 public class GdtPlugin extends AbstractGooglePlugin {
 
-  public static final String PLUGIN_ID = GdtPlugin.class.getPackage().getName();
+  public static final String PLUGIN_ID = "com.gwtplugins.gdt.eclipse.suite";
 
   // The following constant is defined in org.eclipse.osgi.framework.internal.core.Constants through
   // Eclipse 4.3(Kepler), and in org.eclipse.osgi.framework.Constants starting in Eclipse 4.4(Luna).

@@ -4,7 +4,7 @@
 
   <!-- Is gwt facet -->
   <extension point="org.eclipse.core.expressions.definitions">
-    <definition id="com.google.gwt.eclipse.wtp.isGWTFacet">
+    <definition id="com.gwtplugins.gwt.eclipse.wtp.isGWTFacet">
 	<and>
 	   <adapt type="org.eclipse.core.resources.IProject">
 	       <test property="org.eclipse.core.resources.projectNature"
@@ -13,7 +13,7 @@
 	   </adapt>
        <adapt type="org.eclipse.core.resources.IProject">
          <test property="org.eclipse.wst.common.project.facet.core.projectFacet"
-               value="com.google.gwt.facet">
+               value="com.gwtplugins.gwt.facet">
          </test>
       </adapt>
 	</and>
@@ -21,20 +21,20 @@
   </extension>  	
 
   <extension point="org.eclipse.wst.common.project.facet.ui.images">
-    <image facet="com.google.gwt.facet" path="icons/gwt_16x16.png"/>
+    <image facet="com.gwtplugins.gwt.facet" path="icons/gwt_16x16.png"/>
   </extension>
 
   <!-- GWT Facet -->
   <extension point="org.eclipse.wst.common.project.facet.core.facets">
     
     <!-- Facet -->   
-    <project-facet id="com.google.gwt.facet">
+    <project-facet id="com.gwtplugins.gwt.facet">
       <label>GWT</label>
       <description>Enables GWT SDK use for the project.</description>
     </project-facet>  
     
     <!-- Version -->
-    <project-facet-version facet="com.google.gwt.facet" version="1.0">
+    <project-facet-version facet="com.gwtplugins.gwt.facet" version="1.0">
       <constraint>
 	 	<and>
 	 	   <!-- Only require the bare minimum -->
@@ -45,8 +45,8 @@
   
   	<!-- Install -->
     <action 
-    	facet="com.google.gwt.facet"
-        id="com.google.gwt.facet.install"
+    	facet="com.gwtplugins.gwt.facet"
+        id="com.gwtplugins.gwt.facet.install"
         type="install">
      	<delegate class="com.google.gwt.eclipse.wtp.facet.GwtFacetInstallSdkDelegate"/>
         
@@ -57,8 +57,8 @@
     
     <!-- Uninstall -->
     <action
-		  facet="com.google.gwt.facet"
-		  id="com.google.gwt.facet.uninstall"
+		  facet="com.gwtplugins.gwt.facet"
+		  id="com.gwtplugins.gwt.facet.uninstall"
 		  type="uninstall">
 		<delegate class="com.google.gwt.eclipse.wtp.facet.GwtFacetUninstallDelegate"/>
 	</action>
@@ -67,7 +67,7 @@
 
   <!-- Wizards -->
   <extension point="org.eclipse.wst.common.project.facet.ui.wizardPages">
-    <wizard-pages action="com.google.gwt.facet.install">
+    <wizard-pages action="com.gwtplugins.gwt.facet.install">
     <page class="com.google.gwt.eclipse.wtp.wizards.GwtFacetWizardPage"/>
     </wizard-pages>
   </extension>
@@ -76,14 +76,14 @@
   <extension point="org.eclipse.wst.server.core.internalStartup">
     <startup
         class="com.google.gwt.eclipse.wtp.clients.GwtRuntimeConfigurator"
-        id="com.google.gwt.eclipse.wtp.runtime.startup">
+        id="com.gwtplugins.gwt.eclipse.wtp.runtime.startup">
     </startup>
   </extension>
   
   <!-- TODO won't work -->
   <extension point="org.eclipse.wst.server.core.launchableAdapters">
       <launchableAdapter
-        id="com.google.gwt.server.http.web"
+        id="com.gwtplugins.gwt.server.http.web"
         class="com.google.gwt.eclipse.wtp.facet.GwtLaunchableAdapterDelegate"
         typeIds="*" priority="1000" />
    </extension>
@@ -93,12 +93,12 @@
 	     point="org.eclipse.ui.propertyPages">
 	  <!-- GWT Facet -->
 	  <page
-	        category="com.google.gdt.eclipse.core.properties.coreProjectPropertyPage" 
+	        category="com.gwtplugins.gdt.eclipse.core.properties.coreProjectPropertyPage" 
 	        class="com.google.gwt.eclipse.wtp.properties.ui.GWTFacetProjectPropertyPage"
-	        id="com.google.gwt.eclipse.wtp.properties.ui.gwtFacetProjectPropertyPage" 
+	        id="com.gwtplugins.gwt.eclipse.wtp.properties.ui.gwtFacetProjectPropertyPage" 
 	        name="Facet Settings">
 	     <enabledWhen>
-	       <reference definitionId="com.google.gwt.eclipse.wtp.isGWTFacet"/> 
+	       <reference definitionId="com.gwtplugins.gwt.eclipse.wtp.isGWTFacet"/> 
 	     </enabledWhen>
 	  </page>	
   </extension>
@@ -107,7 +107,7 @@
   <extension point="org.eclipse.wst.common.project.facet.core.runtimes">
     <supported>
 	  <runtime-component any="true"></runtime-component>
-	  <facet id="com.google.gwt.facet" version="[1.0"></facet>
+	  <facet id="com.gwtplugins.gwt.facet" version="[1.0"></facet>
 	</supported>
   </extension>
 </plugin>

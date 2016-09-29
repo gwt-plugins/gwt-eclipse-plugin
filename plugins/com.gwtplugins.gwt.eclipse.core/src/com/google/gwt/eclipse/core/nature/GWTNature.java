@@ -33,7 +33,7 @@ import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
  */
 public class GWTNature implements IProjectNature {
 
-  public static final String NATURE_ID = "com.google.gwt.eclipse.core.gwtNature";
+  public static final String NATURE_ID = "com.gwtplugins.gwt.eclipse.core.gwtNature";
 
   // TODO: do this in background (WorkspaceJob)?
   public static void addNatureToProject(IProject project) throws CoreException {
@@ -45,9 +45,8 @@ public class GWTNature implements IProjectNature {
    */
   public static boolean isGWTProject(IProject project) {
     try {
-      return project.isAccessible()
-          && (project.hasNature(GWTNature.NATURE_ID) || FacetedProjectFramework.hasProjectFacet(project,
-              "com.google.gwt.facet"));
+      return project.isAccessible() && (project.hasNature(GWTNature.NATURE_ID)
+          || FacetedProjectFramework.hasProjectFacet(project, "com.gwtplugins.gwt.facet"));
     } catch (CoreException e) {
       GWTPluginLog.logError(e);
     }

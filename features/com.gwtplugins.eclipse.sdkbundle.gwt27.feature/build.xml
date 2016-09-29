@@ -1,8 +1,0 @@
-<project name="com.gwtplugins.eclipse.suite.v3.feature" basedir=".">
-  <property name="feature_name" value="com.gwtplugins.eclipse.suite.v3.feature" />
-  <property name="project.tail" value="features/${feature_name}" />
-
-  <property name="feature.version" value="${gdt.version}" />
-
-  <loadfile property="feature.license" srcfile="../../LICENSE" />
-</project>

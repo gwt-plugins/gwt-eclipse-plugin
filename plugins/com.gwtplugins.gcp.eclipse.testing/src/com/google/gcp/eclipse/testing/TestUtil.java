@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Display;
  * Testing utilities for setting up JUnit Plug-in Tests for the GPE.
  */
 public class TestUtil {
-  public static final String PLUGIN_ID = "com.google.gcp.eclipse.testing";
+  public static final String PLUGIN_ID = "com.gwtplugins.gcp.eclipse.testing";
 
   private TestUtil() {} // Non-instantiatable utility class
 

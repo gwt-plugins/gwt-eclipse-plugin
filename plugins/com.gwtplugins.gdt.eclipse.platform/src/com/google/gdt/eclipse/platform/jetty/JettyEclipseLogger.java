@@ -29,7 +29,7 @@ public class JettyEclipseLogger implements Logger {
 
   private static final String LOGGER_NAME = "org.eclipse.jetty";
 
-  private static final String PLUGIN_ID = "com.google.gdt.eclipse.platform.shared";
+  private static final String PLUGIN_ID = "com.gwtplugins.gdt.eclipse.platform.shared";
 
   static {
     platformLog = Platform.getLog(Platform.getBundle(PLUGIN_ID));
@@ -40,34 +40,13 @@ public class JettyEclipseLogger implements Logger {
   private boolean info;
 
   public JettyEclipseLogger() {
-    debug = info = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID
-        + "/jetty/debug"));
+    debug = info = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID + "/jetty/debug"));
 
     if (debug) {
       info = true;
     } else {
-      info = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID
-          + "/jetty/info"));
+      info = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID + "/jetty/info"));
     }
-  }
-
-  @Override
-  public void debug(String msg, Object... args) {
-    if (debug) {
-      log(IStatus.OK, format(msg, args), null);
-    }
-  }
-
-  @Override
-  public void debug(String msg, Throwable th) {
-    if (debug) {
-      log(IStatus.OK, msg, th);
-    }
-  }
-
-  @Override
-  public void debug(Throwable thrown) {
-    debug("", thrown);
   }
 
   private String format(String msg, Object... args) {
@@ -103,8 +82,7 @@ public class JettyEclipseLogger implements Logger {
   }
 
   @Override
-  public void ignore(Throwable ignored) {
-  }
+  public void ignore(Throwable ignored) {}
 
   @Override
   public void info(String msg, Object... args) {
@@ -129,8 +107,7 @@ public class JettyEclipseLogger implements Logger {
   }
 
   private void log(int severity, String message, Throwable exception) {
-    IStatus status = new Status(severity, PLUGIN_ID, "org.mortbay.jetty: "
-        + message, exception);
+    IStatus status = new Status(severity, PLUGIN_ID, "org.mortbay.jetty: " + message, exception);
 
     platformLog.log(status);
   }
@@ -155,6 +132,32 @@ public class JettyEclipseLogger implements Logger {
     warn("", thrown);
   }
 
+
+  // TODO api change don't override
+  // @Override
+  public void debug(String msg, Object... args) {
+    if (debug) {
+      log(IStatus.OK, format(msg, args), null);
+    }
+  }
+
+  // TODO api change don't override
+  // @Override
+  public void debug(String msg, Throwable th) {
+    if (debug) {
+      log(IStatus.OK, msg, th);
+    }
+  }
+
+  // TODO api change don't override
+  // @Override
+  public void debug(Throwable thrown) {
+    debug("", thrown);
+  }
+
+
+  // TODO api change don't override
+  // @Override
   public void debug(String msg, long value) {
     log(IStatus.INFO, format(msg, value), null);
   }

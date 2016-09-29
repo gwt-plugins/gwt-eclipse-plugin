@@ -27,7 +27,7 @@ public final class UiBinderConstants {
 
   public static final String GWT_USER_LIBRARY_WIDGET_CLASS_NAME = "Widget";
 
-  // Disabled due to: 
+  // Disabled due to:
   // http://code.google.com/p/google-plugin-for-eclipse/issues/detail?id=11
   // public static final TypeHierarchyCache TYPE_HIERARCHY_CACHE = new
   // TypeHierarchyCache();

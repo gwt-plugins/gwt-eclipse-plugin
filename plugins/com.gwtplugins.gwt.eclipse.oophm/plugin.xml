@@ -6,14 +6,14 @@
          point="org.eclipse.ui.views">
       <category
             name="GWT"
-            id="com.google.gwt.eclipse.oophm">
+            id="com.gwtplugins.gwt.eclipse.oophm">
       </category>
       <view
             name="Development Mode"
             icon="icons/gwt_oophm_16x16.png"
-            category="com.google.gwt.eclipse.oophm"
+            category="com.gwtplugins.gwt.eclipse.oophm"
             class="com.google.gwt.eclipse.oophm.views.hierarchical.WebAppLaunchView"
-            id="com.google.gwt.eclipse.DevModeView">
+            id="com.gwtplugins.gwt.eclipse.DevModeView">
       </view>
    </extension>
 
@@ -22,7 +22,7 @@
       <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaPerspective">
          <view
-               id="com.google.gwt.eclipse.DevModeView"
+               id="com.gwtplugins.gwt.eclipse.DevModeView"
                minimized="false"
                relative="org.eclipse.ui.console.ConsoleView"
                relationship="stack"
@@ -32,7 +32,7 @@
       <perspectiveExtension
             targetID="org.eclipse.debug.ui.DebugPerspective">
          <view
-               id="com.google.gwt.eclipse.DevModeView"
+               id="com.gwtplugins.gwt.eclipse.DevModeView"
                minimized="false"
                relative="org.eclipse.ui.console.ConsoleView"
                relationship="stack">
@@ -51,10 +51,10 @@
          point="org.eclipse.ui.commands">
       <command
             defaultHandler="com.google.gwt.eclipse.oophm.LogSniffer"
-            id="com.google.gwt.eclipse.oophm.logSniffer"
+            id="com.gwtplugins.gwt.eclipse.oophm.logSniffer"
             name="Dump Log Sniffer Buffer">
          <commandParameter
-               id="com.google.gwt.eclipse.oophm.logSniffer.param1"
+               id="com.gwtplugins.gwt.eclipse.oophm.logSniffer.param1"
                name="Command"
                optional="false">
          </commandParameter>
@@ -63,22 +63,22 @@
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="com.google.gwt.eclipse.oophm.logSniffer"
+            commandId="com.gwtplugins.gwt.eclipse.oophm.logSniffer"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="Shift+Ctrl+M3+Z">
          <parameter
-               id="com.google.gwt.eclipse.oophm.logSniffer.param1"
+               id="com.gwtplugins.gwt.eclipse.oophm.logSniffer.param1"
                value="CMD_DUMP">
          </parameter>
       </key>
       <key
-            commandId="com.google.gwt.eclipse.oophm.logSniffer"
+            commandId="com.gwtplugins.gwt.eclipse.oophm.logSniffer"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="Shift+Ctrl+M3+X">
          <parameter
-               id="com.google.gwt.eclipse.oophm.logSniffer.param1"
+               id="com.gwtplugins.gwt.eclipse.oophm.logSniffer.param1"
                value="CMD_CLEAR">
          </parameter>
       </key>

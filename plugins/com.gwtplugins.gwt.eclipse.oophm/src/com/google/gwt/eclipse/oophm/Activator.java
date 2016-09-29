@@ -36,7 +36,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractGooglePlugin {
 
   // The plug-in ID
-  public static final String PLUGIN_ID = "com.google.gwt.eclipse.oophm";
+  public static final String PLUGIN_ID = "com.gwtplugins.gwt.eclipse.oophm";
 
   private static ILaunchesListener2 listener = null;
 
@@ -45,7 +45,7 @@ public class Activator extends AbstractGooglePlugin {
 
   /**
    * Returns the shared instance
-   * 
+   *
    * @return the shared instance
    */
   public static Activator getDefault() {
@@ -82,7 +82,7 @@ public class Activator extends AbstractGooglePlugin {
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
    * )
@@ -95,13 +95,13 @@ public class Activator extends AbstractGooglePlugin {
 
     WebAppDebugModel.getInstance().addWebAppDebugModelListener(
         WebAppLaunchViewActivator.getInstance());
-    
+
     BrowserUtilities.ensure32BitIe();
   }
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
    * )

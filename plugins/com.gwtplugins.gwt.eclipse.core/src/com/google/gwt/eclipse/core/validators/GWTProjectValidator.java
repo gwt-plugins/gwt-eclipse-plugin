@@ -46,11 +46,11 @@ public class GWTProjectValidator extends AbstractProjectValidator {
 
   private static final String MIN_SDK_VERSION = "2.0.0";
 
-  public static final String BUILDER_ID = "com.google.gwt.eclipse.core.gwtProjectValidator";
+  public static final String BUILDER_ID = "com.gwtplugins.gwt.eclipse.core.gwtProjectValidator";
 
   public static final String GWT_SDK_TYPE_NAME = "GWT";
 
-  public static final String PROBLEM_MARKER_ID = "com.google.gwt.eclipse.core.gwtProjectProblemMarker";
+  public static final String PROBLEM_MARKER_ID = "com.gwtplugins.gwt.eclipse.core.gwtProjectProblemMarker";
 
   @Override
   protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor)

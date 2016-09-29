@@ -44,24 +44,21 @@ import java.util.List;
 /**
  * Processes the "-dgwt.devjar" argument.
  */
-public class DGwtDevJarArgumentProcessor implements
-    ILaunchConfigurationProcessor {
+public class DGwtDevJarArgumentProcessor implements ILaunchConfigurationProcessor {
 
   private static final String ARG_DGWT_DEVJAR = "-Dgwt.devjar=";
 
   /**
-   * Returns the path to the gwt-dev-xxx.jar in the event that the launch
-   * configuration depends on a GWT Contributor Runtime. Otherwise, returns the
-   * empty string.
+   * Returns the path to the gwt-dev-xxx.jar in the event that the launch configuration depends on a
+   * GWT Contributor Runtime. Otherwise, returns the empty string.
    */
   private static String maybeGetDevJarPath(IJavaProject project) {
 
     /*
-     * In order to figure out whether or not to add the -Dgwt.devjar argument to
-     * the list of VM args, we have to figure out the runtime that this launch
-     * configuration depends on. If the project is one of the GWT Runtime
-     * projects, then we'll definitely have to add the -Dgwt.devjar argument to
-     * the launch configuration.
+     * In order to figure out whether or not to add the -Dgwt.devjar argument to the list of VM
+     * args, we have to figure out the runtime that this launch configuration depends on. If the
+     * project is one of the GWT Runtime projects, then we'll definitely have to add the
+     * -Dgwt.devjar argument to the launch configuration.
      */
     try {
       if (GWTProjectsRuntime.isGWTRuntimeProject(project)) {
@@ -79,18 +76,15 @@ public class DGwtDevJarArgumentProcessor implements
       GWTRuntime sdk = GWTRuntime.findSdkFor(project);
       if (sdk == null) {
         MessageConsole messageConsole =
-            MessageConsoleUtilities.getMessageConsole(
-                project.getProject().getName() + "-GWT", null);
+            MessageConsoleUtilities.getMessageConsole(project.getProject().getName() + "-GWT", null);
         messageConsole.activate();
-        ConsolePlugin.getDefault().getConsoleManager().addConsoles(
-            new IConsole[] {messageConsole});
-        final ConsoleColorProvider consoleColorProvider =
-            new ConsoleColorProvider();
+        ConsolePlugin.getDefault().getConsoleManager().addConsoles(new IConsole[] {messageConsole});
+        final ConsoleColorProvider consoleColorProvider = new ConsoleColorProvider();
         final MessageConsoleStream console = messageConsole.newMessageStream();
         Display.getDefault().asyncExec(new Runnable() {
+          @Override
           public void run() {
-            console.setColor(consoleColorProvider.getColor(
-                IDebugUIConstants.ID_STANDARD_ERROR_STREAM));
+            console.setColor(consoleColorProvider.getColor(IDebugUIConstants.ID_STANDARD_ERROR_STREAM));
           }
         });
         console.println("GWT SDK not installed.");
@@ -105,24 +99,21 @@ public class DGwtDevJarArgumentProcessor implements
         return gwtDevJarFile.getAbsolutePath();
       }
     } catch (SdkException sdke) {
-      GWTPluginLog.logError(sdke,
-          "Unable to extract gwt dev jar argument from GWTProjectsRuntime");
+      GWTPluginLog.logError(sdke, "Unable to extract gwt dev jar argument from GWTProjectsRuntime");
     } catch (JavaModelException jme) {
-      GWTPluginLog.logError(jme,
-          "Unable to extract gwt dev jar argument from GWTProjectsRuntime");
+      GWTPluginLog.logError(jme, "Unable to extract gwt dev jar argument from GWTProjectsRuntime");
     }
     return "";
   }
 
-  public void update(ILaunchConfigurationWorkingCopy launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
-      throws CoreException {
+  @Override
+  public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject, List<String> programArgs,
+      List<String> vmArgs) throws CoreException {
 
-    int devJarIndex = StringUtilities.indexOfThatStartsWith(vmArgs,
-        ARG_DGWT_DEVJAR, 0);
+    int devJarIndex = StringUtilities.indexOfThatStartsWith(vmArgs, ARG_DGWT_DEVJAR, 0);
 
-    int insertionIndex = LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(
-        vmArgs, devJarIndex, false);
+    int insertionIndex =
+        LaunchConfigurationProcessorUtilities.removeArgsAndReturnInsertionIndex(vmArgs, devJarIndex, false);
 
     if (GWTNature.isGWTProject(javaProject.getProject())) {
       String devJarPath = maybeGetDevJarPath(javaProject);
@@ -132,9 +123,9 @@ public class DGwtDevJarArgumentProcessor implements
     }
   }
 
-  public String validate(ILaunchConfiguration launchConfig,
-      IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
-      throws CoreException {
+  @Override
+  public String validate(ILaunchConfiguration launchConfig, IJavaProject javaProject, List<String> programArgs,
+      List<String> vmArgs) throws CoreException {
     return null;
   }
 }

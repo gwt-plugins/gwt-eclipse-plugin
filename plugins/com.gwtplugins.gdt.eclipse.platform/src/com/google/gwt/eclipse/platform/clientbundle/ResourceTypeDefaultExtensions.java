@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Utility class for mapping between a client bundle resource type and its
  * default file extensions.
- * 
+ *
  * This version queries the DefaultExtensions annotations declared on the
  * ResourcePrototype subtypes.
  */
@@ -35,7 +35,7 @@ import java.util.List;
 // TODO Migrate this back to GWT since we no longer support 3.3
 public class ResourceTypeDefaultExtensions {
 
-  private static final String DEFAULT_EXTENSIONS_ANNOTATION_NAME = "com.google.gwt.resources.ext.DefaultExtensions";
+  private static final String DEFAULT_EXTENSIONS_ANNOTATION_NAME = "com.gwtplugins.gwt.resources.ext.DefaultExtensions";
 
   /**
    * Find all default extensions for this resource type. If the type itself does

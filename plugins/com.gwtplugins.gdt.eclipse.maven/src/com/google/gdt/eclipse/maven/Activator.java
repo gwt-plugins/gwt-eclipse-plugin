@@ -24,7 +24,7 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractUIPlugin {
   // The plug-in ID
-  public static final String PLUGIN_ID = "com.google.gdt.eclipse.maven";
+  public static final String PLUGIN_ID = "com.gwtplugins.gdt.eclipse.maven";
 
   // The shared instance
   private static Activator plugin;

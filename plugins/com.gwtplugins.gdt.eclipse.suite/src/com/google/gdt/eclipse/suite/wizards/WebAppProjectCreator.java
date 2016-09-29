@@ -390,7 +390,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
   private void includeExtensionPartipants() throws CoreException {
     IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
     IExtensionPoint extensionPoint = extensionRegistry
-        .getExtensionPoint("com.google.gdt.eclipse.suite.webAppCreatorParticipant");
+        .getExtensionPoint("com.gwtplugins.gdt.eclipse.suite.webAppCreatorParticipant");
     if (extensionPoint == null) {
       return;
     }
@@ -407,7 +407,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
 
   @Inject
   public void doSomething(IExtensionRegistry registry) {
-    registry.getConfigurationElementsFor("com.google.gdt.eclipse.suite.webAppCreatorParticipant");
+    registry.getConfigurationElementsFor("com.gwtplugins.gdt.eclipse.suite.webAppCreatorParticipant");
   }
 
   public List<IPath> getContainerPaths() {

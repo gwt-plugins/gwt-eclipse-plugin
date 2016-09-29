@@ -22,7 +22,7 @@ import org.osgi.framework.BundleContext;
  */
 public final class GwtMavenPlugin extends AbstractUIPlugin {
 
-  public static final String PLUGIN_ID = "com.google.gwt.eclipse.wtp.maven";
+  public static final String PLUGIN_ID = "com.gwtplugins.gwt.eclipse.wtp.maven";
   private static GwtMavenPlugin instance;
 
   @Override
