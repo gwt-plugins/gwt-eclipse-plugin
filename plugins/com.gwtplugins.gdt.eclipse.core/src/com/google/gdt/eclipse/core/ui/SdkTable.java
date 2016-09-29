@@ -51,20 +51,21 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 /**
- * Tabular view of a set of {@link Sdk}s which also allows {@link Sdk}s to be
- * added, removed or downloaded.
- * 
- * @param <T> type of Sdk that is managed
+ * Tabular view of a set of {@link Sdk}s which also allows {@link Sdk}s to be added, removed or downloaded.
+ *
+ * @param <T>
+ *          type of Sdk that is managed
  */
 public abstract class SdkTable<T extends Sdk> extends Composite {
   /**
-   * 
+   *
    */
   public interface SdkManagerStateChangeListener {
     /**
-     * 
+     *
      */
     class StateChangeEvent {
       private final SdkTable<? extends Sdk> sdkManager;
@@ -81,35 +82,35 @@ public abstract class SdkTable<T extends Sdk> extends Composite {
     void onSdkManagerStateChanged(StateChangeEvent event);
   }
 
-  class ColumnLabelProvider extends LabelProvider implements
-      ITableLabelProvider {
+  class ColumnLabelProvider extends LabelProvider implements ITableLabelProvider {
+    @Override
     public Image getColumnImage(Object element, int columnIndex) {
       switch (columnIndex) {
-        case 0:
-          IStatus validationStatus = ((Sdk) element).validate();
-          if (!validationStatus.isOK()) {
-            ImageRegistry imageRegistry = CorePlugin.getDefault().getImageRegistry();
-            return imageRegistry.get(CoreImages.INVALID_SDK_ICON);
-          }
+      case 0:
+        IStatus validationStatus = ((Sdk) element).validate();
+        if (!validationStatus.isOK()) {
+          ImageRegistry imageRegistry = CorePlugin.getDefault().getImageRegistry();
+          return imageRegistry.get(CoreImages.INVALID_SDK_ICON);
+        }
 
-          return JavaUI.getSharedImages().getImage(
-              ISharedImages.IMG_OBJS_LIBRARY);
-        default:
-          return null;
+        return JavaUI.getSharedImages().getImage(ISharedImages.IMG_OBJS_LIBRARY);
+      default:
+        return null;
       }
     }
 
+    @Override
     public String getColumnText(Object element, int columnIndex) {
       Sdk sdk = (Sdk) element;
       switch (columnIndex) {
-        case 0:
-          return sdk.getName();
-        case 1:
-          return sdk.getVersion();
-        case 2:
-          return sdk.getInstallationPath().toOSString();
-        default:
-          return "";
+      case 0:
+        return sdk.getName();
+      case 1:
+        return sdk.getVersion();
+      case 2:
+        return sdk.getInstallationPath().toOSString();
+      default:
+        return "";
       }
     }
   }
@@ -125,6 +126,7 @@ public abstract class SdkTable<T extends Sdk> extends Composite {
   public SdkTable(Composite parent, int style, SdkSet<T> startingSdks,
       SdkManagerStateChangeListener stateChangeListener, DialogPage dialogPage) {
     super(parent, style);
+    setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
 
     this.dialogPage = dialogPage;
     this.stateChangeListener = stateChangeListener;
@@ -137,23 +139,20 @@ public abstract class SdkTable<T extends Sdk> extends Composite {
     setLayout(layout);
 
     final Label headerLabel = new Label(this, SWT.WRAP);
-    final GridData headerLabelGridData = new GridData(SWT.FILL, SWT.CENTER,
-        true, false);
+    final GridData headerLabelGridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
     headerLabelGridData.widthHint = 250;
     headerLabel.setLayoutData(headerLabelGridData);
-    headerLabel.setText("Add, remove or download SDKs.\n\nBy default, the checked SDK is added to the build path of newly created projects.");
+    headerLabel.setText(
+        "Add, remove or download SDKs.\n\nBy default, the checked SDK is added to the build path of newly created projects.");
 
     Composite panel = this;
     final Label spacerLabel = new Label(panel, SWT.NONE);
-    final GridData spacerLabelGridData = new GridData(SWT.FILL, SWT.CENTER,
-        true, false);
+    final GridData spacerLabelGridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
     spacerLabelGridData.heightHint = 1;
     spacerLabel.setLayoutData(spacerLabelGridData);
 
     final Composite versionsPanel = new Composite(panel, SWT.NONE);
-    final GridData versionsPanelGridData = new GridData(SWT.FILL, SWT.FILL,
-        true, true);
-    versionsPanel.setLayoutData(versionsPanelGridData);
+    versionsPanel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
     final GridLayout gridLayout = new GridLayout();
     gridLayout.marginWidth = 0;
     gridLayout.marginHeight = 0;
@@ -164,11 +163,11 @@ public abstract class SdkTable<T extends Sdk> extends Composite {
     tableHeaderLabel.setText("SDKs:");
     GridDataFactory.fillDefaults().span(2, 1).applyTo(tableHeaderLabel);
 
-    sdkTableViewer = CheckboxTableViewer.newCheckList(versionsPanel,
-        SWT.FULL_SELECTION | SWT.BORDER);
+    sdkTableViewer = CheckboxTableViewer.newCheckList(versionsPanel, SWT.FULL_SELECTION | SWT.BORDER);
     sdkTableViewer.setContentProvider(new ArrayContentProvider());
     sdkTableViewer.setLabelProvider(new ColumnLabelProvider());
     sdkTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+      @Override
       public void selectionChanged(SelectionChangedEvent event) {
         updateRemoteButtonEnabled();
         SdkTable.this.dialogPage.setMessage(null, IMessageProvider.NONE);
@@ -180,16 +179,15 @@ public abstract class SdkTable<T extends Sdk> extends Composite {
           IStructuredSelection sselection = (IStructuredSelection) selection;
           Object firstElement = sselection.getFirstElement();
           Sdk sdk = (Sdk) firstElement;
-          IStatus validationStatus = sdk != null ? sdk.validate()
-              : Status.OK_STATUS;
+          IStatus validationStatus = sdk != null ? sdk.validate() : Status.OK_STATUS;
           if (!validationStatus.isOK()) {
-            SdkTable.this.dialogPage.setMessage(validationStatus.getMessage(),
-                IMessageProvider.WARNING);
+            SdkTable.this.dialogPage.setMessage(validationStatus.getMessage(), IMessageProvider.WARNING);
           }
         }
       }
     });
     sdkTableViewer.addCheckStateListener(new ICheckStateListener() {
+      @Override
       @SuppressWarnings("unchecked")
       public void checkStateChanged(CheckStateChangedEvent event) {
         // Only one GWT runtime can be the default
@@ -222,17 +220,14 @@ public abstract class SdkTable<T extends Sdk> extends Composite {
     locationTableColumn.setText("Location");
 
     final Composite buttonsPanel = new Composite(versionsPanel, SWT.NONE);
-    final GridData buttonsPanelGridData = new GridData(SWT.LEFT, SWT.TOP,
-        false, false);
-    buttonsPanel.setLayoutData(buttonsPanelGridData);
+    buttonsPanel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
     final GridLayout buttonsPanelGridLayout = new GridLayout();
     buttonsPanelGridLayout.marginHeight = 0;
     buttonsPanelGridLayout.marginWidth = 0;
     buttonsPanel.setLayout(buttonsPanelGridLayout);
 
     final Button addButton = new Button(buttonsPanel, SWT.NONE);
-    final GridData addButtonGridData = new GridData(SWT.FILL, SWT.CENTER,
-        false, false);
+    final GridData addButtonGridData = new GridData(SWT.FILL, SWT.CENTER, false, false);
     addButtonGridData.widthHint = 76;
     addButton.setLayoutData(addButtonGridData);
     addButton.setText("Add...");
@@ -248,8 +243,7 @@ public abstract class SdkTable<T extends Sdk> extends Composite {
     });
 
     removeButton = new Button(buttonsPanel, SWT.NONE);
-    final GridData removeButtonGridData = new GridData(SWT.FILL, SWT.CENTER,
-        false, false);
+    final GridData removeButtonGridData = new GridData(SWT.FILL, SWT.CENTER, false, false);
     removeButtonGridData.widthHint = 76;
     removeButton.setLayoutData(removeButtonGridData);
     removeButton.setText("Remove");
@@ -263,10 +257,8 @@ public abstract class SdkTable<T extends Sdk> extends Composite {
     });
 
     dowloadButton = new Button(buttonsPanel, SWT.NONE);
-    final GridData downloadButtonGridData = new GridData(SWT.FILL, SWT.CENTER,
-        false, false);
     removeButtonGridData.widthHint = 76;
-    dowloadButton.setLayoutData(downloadButtonGridData);
+    dowloadButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
     dowloadButton.setText("Download...");
     dowloadButton.addSelectionListener(new SelectionAdapter() {
       @Override
@@ -280,19 +272,20 @@ public abstract class SdkTable<T extends Sdk> extends Composite {
     });
 
     final Label footerLabel = new Label(panel, SWT.NONE);
-    final GridData footerLabelGridData = new GridData(SWT.FILL, SWT.CENTER,
-        true, false);
-    footerLabel.setLayoutData(footerLabelGridData);
+    footerLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
     sdkTableViewer.setInput(sdks);
     sdkTableViewer.setContentProvider(new IStructuredContentProvider() {
+      @Override
       public void dispose() {
       }
 
+      @Override
       public Object[] getElements(Object inputElement) {
         return sdks.toArray();
       }
 
+      @Override
       public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       }
     });
@@ -342,7 +335,7 @@ public abstract class SdkTable<T extends Sdk> extends Composite {
   private void updateControls() {
     sdkTableViewer.refresh();
     if (sdks.getDefault() != null) {
-      sdkTableViewer.setCheckedElements(new Object[] {sdks.getDefault()});
+      sdkTableViewer.setCheckedElements(new Object[] { sdks.getDefault() });
     } else {
       assert (sdks.isEmpty());
     }

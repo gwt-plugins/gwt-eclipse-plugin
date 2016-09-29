@@ -67,7 +67,6 @@ public class GWTPreferences {
     sdkManager.addSdkUpdateListener(new SdkManager.SdkUpdateListener<GwtSdk>() {
       @Override
       public void onSdkUpdate(SdkUpdateEvent<GwtSdk> sdkUpdateEvent) throws CoreException {
-
         SdkManager<GwtSdk>.SdkUpdateEventProcessor sdkUpdateEventProcessor =
             GWTPreferences.sdkManager.new SdkUpdateEventProcessor(sdkUpdateEvent);
 
