@@ -54,7 +54,7 @@
    </extension>   
     <extension
          id="webAppProblemMarker"
-         name="Google Web App Problem"
+         name="GWT Web App Problem"
          point="org.eclipse.core.resources.markers">
       <persistent
             value="true">
