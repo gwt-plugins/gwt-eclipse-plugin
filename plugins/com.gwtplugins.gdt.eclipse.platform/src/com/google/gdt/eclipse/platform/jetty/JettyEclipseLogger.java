@@ -29,7 +29,7 @@ public class JettyEclipseLogger implements Logger {
 
   private static final String LOGGER_NAME = "org.eclipse.jetty";
 
-  private static final String PLUGIN_ID = "com.google.gdt.eclipse.platform.shared";
+  private static final String PLUGIN_ID = "com.gwtplugins.gdt.eclipse.platform.shared";
 
   static {
     platformLog = Platform.getLog(Platform.getBundle(PLUGIN_ID));
@@ -47,25 +47,6 @@ public class JettyEclipseLogger implements Logger {
     } else {
       info = "true".equalsIgnoreCase(Platform.getDebugOption(PLUGIN_ID + "/jetty/info"));
     }
-  }
-
-  @Override
-  public void debug(String msg, Object... args) {
-    if (debug) {
-      log(IStatus.OK, format(msg, args), null);
-    }
-  }
-
-  @Override
-  public void debug(String msg, Throwable th) {
-    if (debug) {
-      log(IStatus.OK, msg, th);
-    }
-  }
-
-  @Override
-  public void debug(Throwable thrown) {
-    debug("", thrown);
   }
 
   private String format(String msg, Object... args) {
@@ -151,7 +132,32 @@ public class JettyEclipseLogger implements Logger {
     warn("", thrown);
   }
 
-  @Override
+
+  // TODO api change don't override
+  // @Override
+  public void debug(String msg, Object... args) {
+    if (debug) {
+      log(IStatus.OK, format(msg, args), null);
+    }
+  }
+
+  // TODO api change don't override
+  // @Override
+  public void debug(String msg, Throwable th) {
+    if (debug) {
+      log(IStatus.OK, msg, th);
+    }
+  }
+
+  // TODO api change don't override
+  // @Override
+  public void debug(Throwable thrown) {
+    debug("", thrown);
+  }
+
+
+  // TODO api change don't override
+  // @Override
   public void debug(String msg, long value) {
     log(IStatus.INFO, format(msg, value), null);
   }

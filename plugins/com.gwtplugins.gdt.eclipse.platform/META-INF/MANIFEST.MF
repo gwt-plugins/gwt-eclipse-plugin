@@ -48,4 +48,3 @@ Require-Bundle: javax.servlet,
  com.gwtplugins.gdt.eclipse.platform
 Bundle-ClassPath: libs/gwt-dev.jar,
  .
-Import-Package: com.google.gdt.eclipse.platform.jetty
