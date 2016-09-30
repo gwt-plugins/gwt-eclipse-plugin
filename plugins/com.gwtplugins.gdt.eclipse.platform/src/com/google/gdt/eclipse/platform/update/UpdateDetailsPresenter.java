@@ -46,7 +46,7 @@ import java.util.Map;
  */
 /**
  * Opens the P2 install new software wizard with defaults suitable for updating
- * for the Google Plugin for Eclipse.
+ * for the GWT Eclipse Plugin.
  */
 @SuppressWarnings("restriction")
 public class UpdateDetailsPresenter implements IUpdateDetailsPresenter {
@@ -239,7 +239,7 @@ public class UpdateDetailsPresenter implements IUpdateDetailsPresenter {
       MessageDialog.openInformation(
           shell,
           DEFAULT_DIALOG_TITLE,
-          "An update is available for the Google Plugin for Eclipse.  Go to \"Help > Install New Software\" to install it.");
+          "An update is available for the GWT Plugin for Eclipse.  Go to \"Help > Install New Software\" to install it.");
     }
   }
 }

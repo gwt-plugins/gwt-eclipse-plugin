@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ActivationPolicy: lazy
 Bundle-ManifestVersion: 2
-Bundle-Name: Google SWTBot Core Plugin
+Bundle-Name: GWT SWTBot Core Plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: com.gwtplugins.gdt.eclipse.swtbot;singleton:=true
-Bundle-Vendor: Google, Inc.
+Bundle-Vendor: GWT Project
 Bundle-Version: 0.0.0
 Export-Package: com.google.gdt.eclipse.swtbot
 Require-Bundle: org.apache.log4j,

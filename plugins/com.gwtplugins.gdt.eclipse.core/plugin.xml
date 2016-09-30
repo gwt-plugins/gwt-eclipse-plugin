@@ -41,7 +41,7 @@
    </extension>
    <extension
          id="webAppProjectValidator"
-         name="Google WebApp Project Validator"
+         name="GWT WebApp Project Validator"
          point="org.eclipse.core.resources.builders">
       <builder
             callOnEmptyDelta="true"

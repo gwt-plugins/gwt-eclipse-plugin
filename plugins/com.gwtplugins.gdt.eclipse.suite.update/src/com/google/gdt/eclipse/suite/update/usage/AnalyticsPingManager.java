@@ -62,14 +62,14 @@ public class AnalyticsPingManager implements PingManager {
   }
 
   private static final String ANALYTICS_COLLECTION_URL = "http://www.google-analytics.com/collect";
-  private static final String GPE_ANALYTICS_ID = "UA-62291716-1"; // Changed to the GWT Eclipse Plugin
+  private static final String GWT_ANALYTICS_ID = "UA-62291716-1"; // Changed to the GWT Eclipse Plugin
   private static final String APPLICATION_NAME = "GWT Eclipse Plugin";
 
   // Fixed-value query parameters present in every ping, and their fixed values:
   private static final ImmutableMap<String, String> STANDARD_PARAMETERS =
       ImmutableMap.<String, String>builder()
           .put("v", "1") // Google Analytics Measurement Protocol version
-          .put("tid", GPE_ANALYTICS_ID) // tracking ID
+          .put("tid", GWT_ANALYTICS_ID) // tracking ID
           .put("t", "event") // hit type
           .put("an", APPLICATION_NAME)
           .build();

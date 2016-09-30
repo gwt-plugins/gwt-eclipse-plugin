@@ -40,7 +40,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import java.util.List;
 
 /**
- * M2Eclipse project configuration extension that configures a project to get the Google GWT project nature.
+ * M2Eclipse project configuration extension that configures a project to get the GWT project nature.
  * <p>
  * NOTE: Do not access this class from outside of the configurators package. All classes in the configurators package
  * have dependencies on plugins that may or may not be present in the user's installation. As long as these classes are
@@ -51,7 +51,7 @@ public class MavenProjectConfigurator extends AbstracMavenProjectConfigurator {
 
   /**
    * These properties may be pulled from the gwt-maven-plugin configuration of the pom to be used in configuring the
-   * Google Web Application settings for the Eclipse project. If not present, defaults are used.
+   * GWT Web Application settings for the Eclipse project. If not present, defaults are used.
    */
   private static final String ECLIPSE_LAUNCH_SRC_DIR_PROPERTY_KEY = "eclipseLaunchFromWarDir";
   private static final boolean ECLIPSE_LAUNCH_SRC_DIR_DEFAULT = false;

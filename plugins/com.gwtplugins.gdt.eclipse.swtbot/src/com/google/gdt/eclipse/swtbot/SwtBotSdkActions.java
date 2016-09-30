@@ -42,10 +42,10 @@ public final class SwtBotSdkActions {
   private static void removeSdk(final SWTWorkbenchBot bot, String treeItemText) {
     SwtBotWorkbenchActions.openPreferencesDialog(bot);
 
-    SWTBotTreeItem prefGoogleTreeItem =
+    SWTBotTreeItem prefGwtTreeItem =
         SwtBotWorkbenchActions.getUniqueTreeItem(bot, bot.tree(),
-            SwtBotProjectActions.GOOGLE_MENU_LABELS, "Web Toolkit").expand();
-    SwtBotTestingUtilities.selectTreeItem(bot, prefGoogleTreeItem, treeItemText);
+            SwtBotProjectActions.GWT_MENU_LABELS, "Web Toolkit").expand();
+    SwtBotTestingUtilities.selectTreeItem(bot, prefGwtTreeItem, treeItemText);
 
     bot.table().select(0);
     bot.button("Remove").click();
@@ -57,10 +57,10 @@ public final class SwtBotSdkActions {
       String sdkDirEnvVariableName, String sdkDisplayName) {
     SwtBotWorkbenchActions.openPreferencesDialog(bot);
 
-    SWTBotTreeItem prefGoogleTreeItem =
+    SWTBotTreeItem prefGwtTreeItem =
         SwtBotWorkbenchActions.getUniqueTreeItem(bot, bot.tree(),
-            SwtBotProjectActions.GOOGLE_MENU_LABELS, "Web Toolkit").expand();
-    SwtBotTestingUtilities.selectTreeItem(bot, prefGoogleTreeItem, treeItemText);
+            SwtBotProjectActions.GWT_MENU_LABELS, "Web Toolkit").expand();
+    SwtBotTestingUtilities.selectTreeItem(bot, prefGwtTreeItem, treeItemText);
 
     SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, bot.button("Add..."));
 

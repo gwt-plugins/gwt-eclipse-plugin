@@ -68,11 +68,11 @@ public abstract class AbstracMavenProjectConfigurator extends AbstractProjectCon
   @Override
   public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor)
       throws CoreException {
-    Activator.log("AbstractGoogleProjectConfigurator.configure request=" + request);
+    Activator.log("AbstractMavenProjectConfigurator.configure request=" + request);
     // Sometimes M2Eclipse calls this method with request == null. Why?
     if (request != null) {
       MavenProject mavenProject = request.getMavenProject();
-      Activator.log("AbstractGoogleProjectConfigurator.configure mavenProject=" + mavenProject
+      Activator.log("AbstractMavenProjectConfigurator.configure mavenProject=" + mavenProject
           + " getGWtMavenPlugin=" + getGwtMavenPlugin(mavenProject));
 
       if (mavenProject != null && getGwtMavenPlugin(mavenProject) != null) {

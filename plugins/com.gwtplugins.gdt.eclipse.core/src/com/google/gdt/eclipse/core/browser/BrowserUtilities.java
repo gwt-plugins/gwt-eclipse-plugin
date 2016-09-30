@@ -215,7 +215,7 @@ public class BrowserUtilities {
 
     IWebBrowser browser = browserSupport.createBrowser(
         IWorkbenchBrowserSupport.AS_EXTERNAL, null,
-        "Google Plugin for Eclipse", "Google Plugin for Eclipse");
+        "GWT Web Toolkit", "GWT Web Toolkit");
     browser.openURL(url);
     return browser;
   }
@@ -272,7 +272,7 @@ public class BrowserUtilities {
           + targetUrl
           + "\n\n"
           + "You may try and navigate to this URL using your browser of choice, "
-          + "or post a message to Google Web Toolkit users forum on Google Groups for assistance.";
+          + "or post a message to GWT Web Toolkit users forum on Google Groups for assistance.";
     } catch (PartInitException e) {
       // Ignore; use the default error message
     }

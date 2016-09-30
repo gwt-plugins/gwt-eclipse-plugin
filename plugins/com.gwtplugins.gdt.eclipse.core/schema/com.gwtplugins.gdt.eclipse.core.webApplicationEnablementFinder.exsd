@@ -6,7 +6,7 @@
          <meta.schema plugin="com.gwtplugins.gdt.eclipse.core" id="com.gwtplugins.gdt.eclipse.core.webApplicationEnablementFinder" name="webApplicationEnablementFinder"/>
       </appInfo>
       <documentation>
-         This is an internal-only extenstion point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
+         This is an internal-only extenstion point; it is not designed to be used by any code outside of the GWT Plugin.  No regards will be given to backwards compatibility.
       </documentation>
    </annotation>
 

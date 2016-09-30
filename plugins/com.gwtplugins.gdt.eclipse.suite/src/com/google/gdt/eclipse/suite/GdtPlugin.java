@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
  *
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *******************************************************************************/
 package com.google.gdt.eclipse.suite;
 
@@ -125,7 +125,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
   }
 
   private static void rebuildGoogleProjectIfPluginVersionChanged(IProject project) {
-    // We're only worried about Google projects
+    // We're only worried about GWT projects
     if (GWTNature.isGWTProject(project.getProject())) {
       // Find the last plugin version that know the project was built with
       Version lastForcedRebuildAt = GdtPreferences.getVersionForLastForcedRebuild(project);
@@ -144,7 +144,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
   private static void rebuildGoogleProjectsIfPluginVersionChanged() {
     boolean closedProjectsInWorkspace = false;
 
-    // Rebuild all (open) Google projects in the workspace
+    // Rebuild all (open) GWT projects in the workspace
     IWorkspace workspace = ResourcesPlugin.getWorkspace();
     for (IProject project : workspace.getRoot().getProjects()) {
       if (project.isOpen()) {
@@ -155,7 +155,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
     }
 
     // Add listeners for all closed projects, so we can rebuild them, too,
-    // when they're opened (but only if they are Google projects).
+    // when they're opened (but only if they are GWT projects).
     if (closedProjectsInWorkspace) {
       workspace.addResourceChangeListener(new IResourceChangeListener() {
         @Override

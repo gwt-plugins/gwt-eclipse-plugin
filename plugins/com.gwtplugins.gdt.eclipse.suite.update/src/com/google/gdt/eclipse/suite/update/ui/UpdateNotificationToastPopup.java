@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An {@link AbstractNotificationPopup} for the Google Login portion of the status bar.
+ * An {@link AbstractNotificationPopup} for the lower portion of the status bar.
  */
 @SuppressWarnings("restriction")
 public class UpdateNotificationToastPopup extends AbstractNotificationPopup {
@@ -80,8 +80,8 @@ public class UpdateNotificationToastPopup extends AbstractNotificationPopup {
     googleUpdatesAvailablePanel.addMouseListener(mouseListener);
 
     Link updatesAvailableLink = new Link(googleUpdatesAvailablePanel, SWT.NONE);
-    updatesAvailableLink.setText("<a href=\"#\">Google updates available...</a>");
-    updatesAvailableLink.setToolTipText("Updates area available for the Google Eclipse Plugin. Click here for more information.");
+    updatesAvailableLink.setText("<a href=\"#\">GWT updates available...</a>");
+    updatesAvailableLink.setToolTipText("Updates area available for the GWT Plugin. Click here for more information.");
     updatesAvailableLink.addSelectionListener(new SelectionAdapter() {
       @Override
       public void widgetSelected(SelectionEvent e) {
@@ -98,7 +98,7 @@ public class UpdateNotificationToastPopup extends AbstractNotificationPopup {
   @Override
   protected String getPopupShellTitle() {
     // Return a custom title
-    return "Google Eclipse Plugin";
+    return "GWT Plugin";
   }
 
   private void fireNotificationControlSelected() {

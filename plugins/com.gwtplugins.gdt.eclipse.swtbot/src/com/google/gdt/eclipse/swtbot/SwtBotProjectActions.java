@@ -34,9 +34,9 @@ import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widget
 public final class SwtBotProjectActions {
 
   /**
-   * Possible names for the GPE menu label.
+   * Possible names for the GWT menu label.
    */
-  public static final String[] GOOGLE_MENU_LABELS = {"GPE Tools", "Google"};
+  public static final String[] GWT_MENU_LABELS = {"GWT"};
 
   private static final String SOURCE_FOLDER = "src";
 
@@ -200,9 +200,9 @@ public final class SwtBotProjectActions {
     // Select the Web App project wizard
     SWTBotTree projectSelectionTree = bot.tree();
     SWTBotTreeItem projectSelectionGoogleTreeItem =
-        SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, GOOGLE_MENU_LABELS,
+        SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, GWT_MENU_LABELS,
             "Web Application Project").expand();
-    SwtBotTestingUtilities.selectTreeItem(bot, projectSelectionGoogleTreeItem,
+    SwtBotTestingUtilities.selectTreeItem(bot, projectSelectionTreeItem,
         "Web Application Project");
     bot.button("Next >").click();
 
@@ -210,8 +210,7 @@ public final class SwtBotProjectActions {
     bot.textWithLabel("Project name:").setText(projectName);
     bot.textWithLabel("Package: (e.g. com.example.myproject)").setText(packageName);
 
-    SwtBotTestingUtilities.setCheckBox(bot.checkBox("Use Google Web Toolkit"), useGwt);
-    SwtBotTestingUtilities.setCheckBox(bot.checkBox("Use Google App Engine"), useAppEngine);
+    SwtBotTestingUtilities.setCheckBox(bot.checkBox("Use GWT Web Toolkit"), useGwt);
     SwtBotTestingUtilities.setCheckBox(bot.checkBox("Generate project sample code"),
         generateSampleCode);
 
@@ -259,29 +258,6 @@ public final class SwtBotProjectActions {
       }
     }
     return false;
-  }
-
-  /**
-   * Returns the Google context menu label. Throws WidgetNotFoundException if it cannot find it.
-   */
-  public static String getGoogleMenuLabel(SWTWorkbenchBot bot) {
-    // Open the list of new project wizards
-    bot.menu("File").menu("New").menu("Other...").click();
-
-    SWTBotTree projectSelectionTree = bot.tree();
-    SWTBotTreeItem[] itemsArray = projectSelectionTree.getAllItems();
-
-    for (SWTBotTreeItem item : itemsArray) {
-      for (String label : GOOGLE_MENU_LABELS) {
-        if (item.getText().equals(label)) {
-          bot.button("Cancel").click();
-          return label;
-        }
-      }
-    }
-
-    bot.button("Cancel").click();
-    throw new WidgetNotFoundException("Cannot determine the Google menu label");
   }
 
   /*

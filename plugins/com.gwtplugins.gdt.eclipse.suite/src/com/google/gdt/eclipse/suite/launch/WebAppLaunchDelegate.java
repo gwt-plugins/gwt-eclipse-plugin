@@ -228,12 +228,6 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
   private boolean addVmArgs(ILaunchConfiguration configuration) throws CoreException {
     IProject project = getJavaProject(configuration).getProject();
 
-    // TODO remove?
-    // if (!GoogleCloudSqlProperties.getGoogleCloudSqlEnabled(project) ||
-    // GoogleCloudSqlProperties.getLocalDevMySqlEnabled(project)) {
-    // return true;
-    // }
-
     ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
     String vmArgs = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");
 
