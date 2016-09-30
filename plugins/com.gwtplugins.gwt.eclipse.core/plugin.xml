@@ -707,10 +707,11 @@
             id="com.gwtplugins.gwt.eclipse.core.properties.ui.gwtProjectPropertyPage"
             name="General Settings">
          <enabledWhen>
-            <adapt
-                  type="org.eclipse.jdt.core.IJavaProject">
-            </adapt>
-         </enabledWhen>
+		   <adapt type="org.eclipse.core.resources.IProject">
+		      <test property="org.eclipse.core.resources.projectNature"
+		            value="org.eclipse.jdt.core.javanature"/>
+		   </adapt>         
+		 </enabledWhen>
       </page>
    </extension>
    <!--
@@ -733,11 +734,10 @@
                class="com.google.gwt.eclipse.core.actions.ProjectPropertiesAction"
                id="com.gwtplugins.gwt.eclipse.core.popupMenu.project.gwtSettings"
                icon="icons/gwt_16x16.png"
-               label="GWT Settings..."
+               label="Settings"
                menubarPath="com.gwtplugins.gdt.eclipse.suite.popupMenu.project/settingsContent">
          </action>
       </objectContribution>
-      
       <objectContribution
             adaptable="true"
             id="com.gwtplugins.gwt.eclipse.core.popupMenus.project.GWTCompile"
@@ -746,7 +746,7 @@
                class="com.google.gwt.eclipse.core.actions.GWTCompileToolbarAction"
                icon="icons/gwt_16x16.png"
                id="com.gwtplugins.gwt.eclipse.core.actions.GWTCompileProjectAction"
-               label="GWT Compile"
+               label="Compile"
                menubarPath="com.gwtplugins.gdt.eclipse.suite.popupMenu.project/actionsContent">
          </action>
       </objectContribution>
@@ -763,6 +763,7 @@
          </action>
       </objectContribution>      
    </extension>
+
    <extension
          id="com.gwtplugins.gwt.eclipse.core.gwtProjectValidator"
          name="GWT Project Validator"
