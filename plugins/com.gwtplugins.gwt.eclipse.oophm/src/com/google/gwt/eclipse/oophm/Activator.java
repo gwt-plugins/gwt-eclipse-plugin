@@ -58,13 +58,10 @@ public class Activator extends AbstractGooglePlugin {
   }
 
   /**
-   * Returns the image with the specified Java image decorated added in the
-   * lower left quadrant of the image.
+   * Returns the image with the specified Java image decorated added in the lower left quadrant of the image.
    */
-  private static ImageDescriptor decorateImageDescriptor(Image baseImage,
-      ImageDescriptor overlayDescriptor) {
-    return new DecorationOverlayIcon(baseImage, overlayDescriptor,
-        IDecoration.BOTTOM_LEFT);
+  private static ImageDescriptor decorateImageDescriptor(Image baseImage, ImageDescriptor overlayDescriptor) {
+    return new DecorationOverlayIcon(baseImage, overlayDescriptor, IDecoration.BOTTOM_LEFT);
   }
 
   private static void removeLaunchListener() {
@@ -83,9 +80,7 @@ public class Activator extends AbstractGooglePlugin {
   /*
    * (non-Javadoc)
    *
-   * @see
-   * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
-   * )
+   * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext )
    */
   @Override
   public void start(BundleContext context) throws Exception {
@@ -93,8 +88,7 @@ public class Activator extends AbstractGooglePlugin {
     plugin = this;
     addLaunchListener();
 
-    WebAppDebugModel.getInstance().addWebAppDebugModelListener(
-        WebAppLaunchViewActivator.getInstance());
+    WebAppDebugModel.getInstance().addWebAppDebugModelListener(WebAppLaunchViewActivator.getInstance());
 
     BrowserUtilities.ensure32BitIe();
   }
@@ -102,16 +96,13 @@ public class Activator extends AbstractGooglePlugin {
   /*
    * (non-Javadoc)
    *
-   * @see
-   * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
-   * )
+   * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext )
    */
   @Override
   public void stop(BundleContext context) throws Exception {
     removeLaunchListener();
     RemoteUIServer.getInstance().stop();
-    WebAppDebugModel.getInstance().removeWebAppDebugModelListener(
-        WebAppLaunchViewActivator.getInstance());
+    WebAppDebugModel.getInstance().removeWebAppDebugModelListener(WebAppLaunchViewActivator.getInstance());
     plugin = null;
     super.stop(context);
   }
@@ -126,60 +117,38 @@ public class Activator extends AbstractGooglePlugin {
     ImageDescriptor warningOverlayDescriptor = imageDescriptorFromPath("icons/warning_co.gif");
     reg.put(DevModeImages.WARNING_OVERLAY, warningOverlayDescriptor);
 
-    reg.put(DevModeImages.CLEAR_LOG,
-        imageDescriptorFromPath("icons/clear_co.gif"));
-    reg.put(DevModeImages.CLEAR_TERMINATED_LAUNCHES,
-        imageDescriptorFromPath("icons/rem_all_co.gif"));
-    reg.put(DevModeImages.COLLAPSE_ALL,
-        imageDescriptorFromPath("icons/collapseall.gif"));
+    reg.put(DevModeImages.CLEAR_LOG, imageDescriptorFromPath("icons/clear_co.gif"));
+    reg.put(DevModeImages.CLEAR_TERMINATED_LAUNCHES, imageDescriptorFromPath("icons/rem_all_co.gif"));
+    reg.put(DevModeImages.COLLAPSE_ALL, imageDescriptorFromPath("icons/collapseall.gif"));
 
-    reg.put(DevModeImages.GDT_ICON,
-        imageDescriptorFromPath("icons/gdt_16x16.png"));
+    reg.put(DevModeImages.GDT_ICON, imageDescriptorFromPath("icons/gdt_16x16.png"));
 
     Image gdtImage = getImage(DevModeImages.GDT_ICON);
 
-    reg.put(DevModeImages.GDT_ICON_ERROR, decorateImageDescriptor(gdtImage,
-        errorOverlayDescriptor));
+    reg.put(DevModeImages.GDT_ICON_ERROR, decorateImageDescriptor(gdtImage, errorOverlayDescriptor));
 
-    reg.put(DevModeImages.GDT_ICON_WARNING, decorateImageDescriptor(gdtImage,
-        warningOverlayDescriptor));
+    reg.put(DevModeImages.GDT_ICON_WARNING, decorateImageDescriptor(gdtImage, warningOverlayDescriptor));
 
-    reg.put(DevModeImages.GDT_ICON_TERMINATED,
-        imageDescriptorFromPath("icons/gdt_16x16_terminated.png"));
+    reg.put(DevModeImages.GDT_ICON_TERMINATED, imageDescriptorFromPath("icons/gdt_16x16_terminated.png"));
 
-    reg.put(DevModeImages.LOG_ITEM_DEBUG,
-        imageDescriptorFromPath("icons/log-item-debug.png"));
-    reg.put(DevModeImages.LOG_ITEM_ERROR,
-        imageDescriptorFromPath("icons/log-item-error.png"));
-    reg.put(DevModeImages.LOG_ITEM_INFO,
-        imageDescriptorFromPath("icons/log-item-info.png"));
-    reg.put(DevModeImages.LOG_ITEM_SPAM,
-        imageDescriptorFromPath("icons/log-item-spam.png"));
-    reg.put(DevModeImages.LOG_ITEM_TRACE,
-        imageDescriptorFromPath("icons/log-item-trace.png"));
-    reg.put(DevModeImages.LOG_ITEM_WARNING,
-        imageDescriptorFromPath("icons/log-item-warning.png"));
-    reg.put(DevModeImages.RELOAD_WEB_SERVER,
-        imageDescriptorFromPath("icons/refresh.gif"));
-    reg.put(DevModeImages.TERMINATE_LAUNCH,
-        imageDescriptorFromPath("icons/terminatedlaunch_obj.gif"));
-    reg.put(DevModeImages.WEB_BROWSER,
-        imageDescriptorFromPath("icons/internal_browser.gif"));
+    reg.put(DevModeImages.LOG_ITEM_DEBUG, imageDescriptorFromPath("icons/log-item-debug.png"));
+    reg.put(DevModeImages.LOG_ITEM_ERROR, imageDescriptorFromPath("icons/log-item-error.png"));
+    reg.put(DevModeImages.LOG_ITEM_INFO, imageDescriptorFromPath("icons/log-item-info.png"));
+    reg.put(DevModeImages.LOG_ITEM_SPAM, imageDescriptorFromPath("icons/log-item-spam.png"));
+    reg.put(DevModeImages.LOG_ITEM_TRACE, imageDescriptorFromPath("icons/log-item-trace.png"));
+    reg.put(DevModeImages.LOG_ITEM_WARNING, imageDescriptorFromPath("icons/log-item-warning.png"));
+    reg.put(DevModeImages.RELOAD_WEB_SERVER, imageDescriptorFromPath("icons/refresh.gif"));
+    reg.put(DevModeImages.TERMINATE_LAUNCH, imageDescriptorFromPath("icons/terminatedlaunch_obj.gif"));
+    reg.put(DevModeImages.WEB_BROWSER, imageDescriptorFromPath("icons/internal_browser.gif"));
 
     Image webBrowserImage = getImage(DevModeImages.WEB_BROWSER);
 
-    reg.put(DevModeImages.WEB_BROWSER_ERROR, decorateImageDescriptor(
-        webBrowserImage, errorOverlayDescriptor));
+    reg.put(DevModeImages.WEB_BROWSER_ERROR, decorateImageDescriptor(webBrowserImage, errorOverlayDescriptor));
 
-    reg.put(DevModeImages.WEB_BROWSER_WARNING, decorateImageDescriptor(
-        webBrowserImage, warningOverlayDescriptor));
+    reg.put(DevModeImages.WEB_BROWSER_WARNING, decorateImageDescriptor(webBrowserImage, warningOverlayDescriptor));
 
-    reg.put(DevModeImages.WEB_BROWSER_TERMINATED,
-        imageDescriptorFromPath("icons/internal_browser_terminated.gif"));
+    reg.put(DevModeImages.WEB_BROWSER_TERMINATED, imageDescriptorFromPath("icons/internal_browser_terminated.gif"));
 
-    reg.put(DevModeImages.SPEED_TRACER_ICON,
-        imageDescriptorFromPath("icons/speed-tracer_small.png"));
-    reg.put(DevModeImages.SPEED_TRACER_ICON_TERMINATED,
-        imageDescriptorFromPath("icons/speed-tracer_small_terminated.png"));
+    reg.put(DevModeImages.GWT_OOPHM, imageDescriptorFromPath("icons/gwt_oophm_16x16.png"));
   }
 }
