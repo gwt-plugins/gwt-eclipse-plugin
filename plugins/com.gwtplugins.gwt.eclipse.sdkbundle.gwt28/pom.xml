@@ -52,7 +52,7 @@
         <executions>
           <execution>
             <id>rename-file</id>
-            <phase>generate-resources</phase>
+            <phase>install</phase>
             <goals>
               <goal>copy</goal>
             </goals>
