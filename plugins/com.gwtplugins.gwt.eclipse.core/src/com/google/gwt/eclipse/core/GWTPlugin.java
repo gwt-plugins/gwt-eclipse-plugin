@@ -14,7 +14,7 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core;
 
-import com.google.gdt.eclipse.core.AbstractGooglePlugin;
+import com.google.gdt.eclipse.core.AbstractGwtPlugin;
 import com.google.gdt.eclipse.core.PluginProperties;
 import com.google.gdt.eclipse.core.markers.GdtProblemSeverities;
 import com.google.gdt.eclipse.core.sdk.Sdk;
@@ -44,7 +44,7 @@ import org.osgi.framework.Constants;
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class GWTPlugin extends AbstractGooglePlugin {
+public class GWTPlugin extends AbstractGwtPlugin {
 
   // Plug-in ID
   public static final String PLUGIN_ID = "com.gwtplugins.gwt.eclipse.core";

@@ -14,7 +14,7 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite;
 
-import com.google.gdt.eclipse.core.AbstractGooglePlugin;
+import com.google.gdt.eclipse.core.AbstractGwtPlugin;
 import com.google.gdt.eclipse.core.BuilderUtilities;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.Logger;
@@ -55,7 +55,7 @@ import java.util.List;
  */
 @SuppressWarnings("restriction")
 // org.eclipse.ui.internal.Workbench, org.eclipse.ui.internal.WorkbenchPage
-public class GdtPlugin extends AbstractGooglePlugin {
+public class GdtPlugin extends AbstractGwtPlugin {
 
   public static final String PLUGIN_ID = "com.gwtplugins.gdt.eclipse.suite";
 

@@ -14,7 +14,7 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.update;
 
-import com.google.gdt.eclipse.core.AbstractGooglePlugin;
+import com.google.gdt.eclipse.core.AbstractGwtPlugin;
 import com.google.gdt.eclipse.core.Logger;
 import com.google.gdt.eclipse.core.PluginProperties;
 import com.google.gdt.eclipse.core.sdk.Sdk;
@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * Activator class for the plugin.
  */
 @SuppressWarnings("deprecation")
-public class GdtExtPlugin extends AbstractGooglePlugin {
+public class GdtExtPlugin extends AbstractGwtPlugin {
 
   /**
    * Computes max gwt sdk version.

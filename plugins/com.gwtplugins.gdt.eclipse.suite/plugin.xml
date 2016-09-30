@@ -13,7 +13,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="com.google.gdt.eclipse.suite.preferences.ui.GooglePreferencePage"
+            class="com.google.gdt.eclipse.suite.preferences.ui.GwtPreferencePage"
             id="com.gwtplugins.gdt.eclipse.suite.preferences.ui.preferences"
             name="%gwt.label">
       </page>

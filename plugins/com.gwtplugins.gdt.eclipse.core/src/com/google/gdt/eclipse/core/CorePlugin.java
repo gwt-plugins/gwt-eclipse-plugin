@@ -36,7 +36,7 @@ import org.osgi.framework.Version;
 
 /**
  */
-public class CorePlugin extends AbstractGooglePlugin {
+public class CorePlugin extends AbstractGwtPlugin {
   public static final String PLUGIN_ID = "com.gwtplugins.gdt.eclipse.core";
 
   private static final Version MIN_GPE_JAVA_VERSION = new Version(1, 7, 0);
