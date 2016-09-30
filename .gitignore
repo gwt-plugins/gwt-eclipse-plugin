@@ -11,13 +11,11 @@ target/
 /gpe-repo/.settings
 /gpe-repo/.project
 
-#TODO remove files at somepoint
-/plugins/com.google.gcp.eclipse.testing/resources/appengine-java-sdk*
-
 #SDK Bundles
 #TODO changing to variables
 gwt-2.7.0/
+gwt-2.8.0/
+gwt-2.8.0-beta1/
 gwt-2.7.0.zip
-appengine-java-sdk-*/
-appengine-java-sdk-*.zip
+gwt-2.8*.zip
 *.jar

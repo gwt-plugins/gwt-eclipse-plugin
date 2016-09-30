@@ -91,7 +91,7 @@ public final class GdtPreferences {
   private static final String PROJECT_MIGRATOR_VERSION = "projectMigratorVersion_";
 
   /*
-   * SDK bundles are discovered using their ID pattern: "com.gwtplugins.*.eclipse.sdkbundle.gwt27"
+   * SDK bundles are discovered using their ID pattern: "com.gwtplugins.*.eclipse.sdkbundle"
    */
   private static final String SDK_BUNDLE_PREFIX = "com.gwtplugins.";
   private static final String SDK_BUNDLE_SUFFIX = ".eclipse.sdkbundle";
@@ -411,7 +411,7 @@ public final class GdtPreferences {
           sdkPathUrl = FileLocator.resolve(sdkPathUrl);
           if (sdkPathUrl != null) {
             if ("file".equals(sdkPathUrl.getProtocol())) {
-              GWTSdkRegistrant.registerSdk(sdkPathUrl);
+              GWTSdkRegistrant.registerSdk(sdkPathUrl, sdkType);
             }
           }
         }
