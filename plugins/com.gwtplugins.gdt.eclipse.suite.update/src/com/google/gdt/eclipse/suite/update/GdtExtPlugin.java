@@ -60,6 +60,8 @@ public class GdtExtPlugin extends AbstractGooglePlugin {
   public static final PluginVersionIdentifier FEATURE_VERSION;
   public static final String PLUGIN_ID = "com.gwtplugins.gdt.eclipse.suite.update";
 
+  // No need to update, the plugin is static
+  @Deprecated
   public static final String GWT_SDK_BUNDLE_FEATURE_ID = "com.gwtplugins.gwt.eclipse.sdkbundle.gwt27.feature";
 
   private static BundleContext context;

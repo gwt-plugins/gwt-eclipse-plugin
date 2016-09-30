@@ -17,7 +17,6 @@ package com.google.gwt.eclipse.core.sdk;
 import com.google.gdt.eclipse.core.sdk.SdkFactory;
 import com.google.gdt.eclipse.core.sdk.SdkManager;
 import com.google.gdt.eclipse.core.sdk.SdkSet;
-import com.google.gdt.eclipse.core.sdk.SdkUtils;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
@@ -37,10 +36,9 @@ public class GWTSdkRegistrant {
    * @param sdkUrl - File URL pointing to the root of a GWT SDK installation
    * @throws CoreException
    */
-  public static void registerSdk(URL sdkUrl) throws CoreException {
+  public static void registerSdk(URL sdkUrl, String uniqueName) throws CoreException {
     SdkManager<GwtSdk> sdkManager = GWTPreferences.getSdkManager();
     SdkSet<GwtSdk> sdks = sdkManager.getSdks();
-    String uniqueName = SdkUtils.generateUniqueSdkNameFrom("GWT", sdks);
     SdkFactory<GwtSdk> factory = GwtSdk.getFactory();
     String sdkLocation = sdkUrl.getPath();
     GwtSdk newSdk = factory.newInstance(uniqueName, new Path(sdkLocation));

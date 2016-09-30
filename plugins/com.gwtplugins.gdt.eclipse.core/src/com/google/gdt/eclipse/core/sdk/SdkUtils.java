@@ -100,7 +100,7 @@ public class SdkUtils {
     }
 
     versionStr = toOSGICompatibleVersionString(versionStr);
-    
+
     String[] versionComponents = versionStr.split("\\.");
 
     if (versionComponents.length != 3) {
@@ -191,6 +191,7 @@ public class SdkUtils {
    * @return name that is unique to a given {@link SdkSet} based on the name
    *         prefix
    */
+  @Deprecated // No longer needed, b/c the sdkType defines the name
   public static String generateUniqueSdkNameFrom(String namePrefix, SdkSet<? extends Sdk> sdks) {
     String generatedName = namePrefix;
     int i = 0;

@@ -9,6 +9,9 @@
    <feature url="features/com.gwtplugins.eclipse.suite.v3.sdbg.feature_0.0.0.qualifier.jar" id="com.gwtplugins.eclipse.suite.v3.sdbg.feature" version="0.0.0.qualifier">
       <category name="GWT"/>
    </feature>
+   <feature url="features/com.gwtplugins.eclipse.sdkbundle.gwt28.feature_2.8.0.qualifier.jar" id="com.gwtplugins.eclipse.sdkbundle.gwt28.feature" version="2.8.0.qualifier">
+      <category name="GWT_SDK"/>
+   </feature>
    <category-def name="GWT" label="GWT Plugin for Eclipse"/>
    <category-def name="GWT_SDK" label="GWT SDK">
       <description>
