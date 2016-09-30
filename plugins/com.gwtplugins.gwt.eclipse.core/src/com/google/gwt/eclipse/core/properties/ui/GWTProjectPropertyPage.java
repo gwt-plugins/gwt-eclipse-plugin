@@ -85,7 +85,7 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
     boolean shouldEnableGwtSdkSelection(IProject project);
   }
 
-  public static final String ID = GWTPlugin.PLUGIN_ID + ".properties.ui.gwtProjectPropertyPage";
+  public static final String ID = "com.gwtplugins.gwt.eclipse.core.properties.ui.gwtProjectPropertyPage";
 
   private EntryPointModulesSelectionBlock entryPointModulesBlock;
 
