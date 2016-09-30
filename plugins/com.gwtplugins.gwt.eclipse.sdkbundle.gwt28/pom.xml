@@ -28,46 +28,47 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              
+
               <!-- TODO Change to GWT 2.8.0 SDK zip -->
               <url>http://goo.gl/62SeR5</url>
-              
+
               <unpack>true</unpack>
               <overwrite>true</overwrite>
-              <outputFileName>gwt-2.8.0.zip</outputFileName>
+              <outputFileName>${basedir}/gwt-2.8.0.zip</outputFileName>
               <outputDirectory>${basedir}</outputDirectory>
             </configuration>
           </execution>
         </executions>
       </plugin>
-      
+
       <!-- Workaround for not renaming gwt-2.8.0-beta1.zip -->
       <plugin>
-        <groupId>com.coderplus.maven.plugins</groupId>
-        <artifactId>copy-rename-maven-plugin</artifactId>
-        <version>1.0</version>
-        <configuration>
-          <overWrite>true</overWrite>
-        </configuration>
+        <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
-            <id>rename-file</id>
-            <phase>install</phase>
+            <id>copy-resources</id>
+            <phase>generate-resources</phase>
             <goals>
-              <goal>copy</goal>
+              <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <sourceFile>${basedir}/gwt-2.8.0-beta1</sourceFile>
-              <destinationFile>${basedir}/gwt-2.8.0</destinationFile>
+              <outputDirectory>${basedir}/gwt-2.8.0/</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/gwt-2.8.0-beta1/</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
             </configuration>
           </execution>
         </executions>
       </plugin>
     </plugins>
-    
+
     <pluginManagement>
       <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build 
+          itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
