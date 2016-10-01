@@ -30,7 +30,7 @@
             <configuration>
 
               <!-- TODO Change to GWT 2.8.0 SDK zip -->
-              <url>http://goo.gl/62SeR5</url>
+              <url>https://goo.gl/QZILZx</url> <!-- rc3 -->
 
               <unpack>true</unpack>
               <overwrite>true</overwrite>
@@ -55,7 +55,7 @@
               <outputDirectory>${basedir}/gwt-2.8.0/</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${basedir}/gwt-2.8.0-beta1/</directory>
+                  <directory>${basedir}/gwt-2.8.0-rc3/</directory>
                   <filtering>false</filtering>
                 </resource>
               </resources>
