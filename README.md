@@ -54,9 +54,9 @@ Simply use Maven to import all the plugins and modules.
 Sponsors that provide man power and equipment to help get the job done. 
 
 ### Google
-The Google Cloud Tools team has put a significant amount of effort bringing the GWT Eclipse Plugin to market. 
+The Google Cloud Tools team has put a significant amount of effort in helping bring the GWT Eclipse Plugin to market. 
 
-* [Google Cloud Tools Team](https://cloud.google.com/)
+* [Google Cloud Tools](https://cloud.google.com/)
 
 ### Sencha
 Sencha provides man power to help update the plugin and the build server which automates the build. 
