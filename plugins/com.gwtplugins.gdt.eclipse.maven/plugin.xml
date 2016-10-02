@@ -40,35 +40,34 @@
       </launchConfigVmArgProcessor>
    </extension>
    
+   <extension
+         point="com.gwtplugins.gdt.eclipse.suite.webAppCreatorParticipant">
+      <client
+            class="com.google.gdt.eclipse.maven.projects.MavenEnablingWebAppCreatorParicipant"></client>
+   </extension>
+   
+   <!-- lifecycle-mapping-metadata.xml -->
+   <extension
+         point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
+   </extension>
+   
    <!-- Configurator packaging: war -->
    <extension
          point="org.eclipse.m2e.core.projectConfigurators">
       <configurator
             class="com.google.gdt.eclipse.maven.configurators.MavenProjectConfigurator"
             id="com.gwtplugins.gdt.eclipse.maven.mavenProjectConfigurator1"
-            name="Maven Project Configurator" 
-            secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator">
+            name="Maven Project Configurator (first GWT maven plugin)">
       </configurator>
    </extension>
-   
    <!-- Configurator packaging: gwt-app -->
    <extension
          point="org.eclipse.m2e.core.projectConfigurators">
       <configurator
             class="com.google.gdt.eclipse.maven.configurators.MavenProjectConfigurator"
             id="com.gwtplugins.gdt.eclipse.maven.mavenProjectConfigurator2"
-            name="Maven Project Configurator">
+            name="Maven Project Configurator (second GWT maven plugin)">
       </configurator>
-   </extension>
-   
-   <extension
-         point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
-   </extension>
-   
-   <extension
-         point="com.gwtplugins.gdt.eclipse.suite.webAppCreatorParticipant">
-      <client
-            class="com.google.gdt.eclipse.maven.projects.MavenEnablingWebAppCreatorParicipant"></client>
    </extension>
    
 </plugin>

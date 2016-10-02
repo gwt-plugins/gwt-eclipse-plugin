@@ -17,17 +17,28 @@
        </configurator>
     </extension>
     
+    <!-- lifecycle-mapping-metadata.xml -->
+    <extension
+         point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
+    </extension>
+    
     <extension
           point="org.eclipse.m2e.core.projectConfigurators">
        <configurator
              class="com.google.gwt.eclipse.wtp.maven.GwtProjectConfigurator"
-             id="com.gwtplugins.gwt.eclipse.wtp.maven.gwtConfigurator"
-             secondaryTo="org.maven.ide.eclipse.configuration.wtp.configurator"
-             name="GWT Dynamic Web Project Configurator">
+             id="com.gwtplugins.gwt.eclipse.wtp.maven.gwtConfigurator1"
+             runsAfter="com.gwtplugins.gdt.eclipse.maven.mavenProjectConfigurator1"
+             name="GWT Dynamic Web Project Configurator (first GWT maven plugin)">
+       </configurator>
+    </extension>
+    <extension
+          point="org.eclipse.m2e.core.projectConfigurators">
+       <configurator
+             class="com.google.gwt.eclipse.wtp.maven.GwtProjectConfigurator"
+             id="com.gwtplugins.gwt.eclipse.wtp.maven.gwtConfigurator2"
+             runsAfter="com.gwtplugins.gdt.eclipse.maven.mavenProjectConfigurator2"
+             name="GWT Dynamic Web Project Configurator (second GWT maven plugin)">
        </configurator>
     </extension>
 
-   <extension
-         point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
-   </extension>
 </plugin>
