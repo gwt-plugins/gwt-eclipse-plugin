@@ -57,6 +57,7 @@
       <configurator
             class="com.google.gdt.eclipse.maven.configurators.MavenProjectConfigurator"
             id="com.gwtplugins.gdt.eclipse.maven.mavenProjectConfigurator1"
+            runsBefore="org.maven.ide.eclipse.configuration.wtp.configurator"
             name="Maven Project Configurator (first GWT maven plugin)">
       </configurator>
    </extension>
