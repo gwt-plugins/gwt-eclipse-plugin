@@ -484,6 +484,8 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
   }
 
   /**
+   * TODO find a generic method to get the server publish/deploy path. 
+   * 
    * The -launcherDir war/output/path is the war deployment directory
    * 
    * @param server
