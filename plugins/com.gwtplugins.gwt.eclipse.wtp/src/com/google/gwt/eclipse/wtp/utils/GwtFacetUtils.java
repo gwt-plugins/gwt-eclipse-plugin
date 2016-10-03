@@ -16,6 +16,8 @@ public class GwtFacetUtils {
   /**
    * Does any of the projects added to the server runtime have a GWT Facet? 
    * 
+   * TODO this will return the first GWT Facet. A multi GWT faceted project will fail. Add preference to turn one on or off.
+   * 
    * @param server wtp runtime server
    * @return returns true if a GWT facet was found
    */
@@ -56,6 +58,8 @@ public class GwtFacetUtils {
 
   /**
    * Returns the GWT Faceted project if is one in the server modules. 
+   * 
+   * TODO this will return the first GWT Facet. A multi GWT faceted project will fail. Add preference to turn one on or off. 
    * 
    * @param server wtp runtime server
    * @return returns true if a GWT facet was found
