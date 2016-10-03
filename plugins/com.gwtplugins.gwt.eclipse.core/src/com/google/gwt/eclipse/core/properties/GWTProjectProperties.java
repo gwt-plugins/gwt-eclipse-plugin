@@ -138,12 +138,15 @@ public final class GWTProjectProperties {
    * @param project
    * @return true to sync with server
    */
-  public static Boolean getFacetSyncCodeServer(IProject project) {
+  public static boolean getFacetSyncCodeServer(IProject project) {
     IEclipsePreferences prefs = getProjectProperties(project);
     String valueStr = prefs.get(SYNC_CODESERVER_RUNNING, null);
     Boolean b = null;
     if (valueStr != null) {
       b = Boolean.valueOf(valueStr);
+    }
+    if (b == null) {
+      b = false;
     }
     return b;
   }
