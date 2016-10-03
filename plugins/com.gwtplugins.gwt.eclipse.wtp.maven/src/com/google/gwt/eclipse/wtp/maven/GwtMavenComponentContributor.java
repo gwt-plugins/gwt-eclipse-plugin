@@ -26,14 +26,10 @@ public class GwtMavenComponentContributor extends DefaultMavenComponentContribut
 
   @Override
   public void contribute(IMavenComponentBinder binder) {
-    System.out
-        .println("com.google.gwt.eclipse.wtp.maven.GwtMavenComponentContributor.contribute(IMavenComponentBinder)");
+    System.out.println("com.google.gwt.eclipse.wtp.maven.GwtMavenComponentContributor.contribute(IMavenComponentBinder)");
     Map<String, IConfigurationElement> configuratorMap = LifecycleMappingFactory.getProjectConfiguratorExtensions();
 
     super.contribute(binder);
-    // A series of calls like:
-    // binder.bind(RepositoryListener.class, EclipseRepositoryListener.class,
-    // EclipseRepositoryListener.ROLE_HINT);
   }
 
 }

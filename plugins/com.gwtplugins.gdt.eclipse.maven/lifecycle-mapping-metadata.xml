@@ -24,7 +24,7 @@
         <artifactId>gwt-maven-plugin</artifactId>
         <versionRange>[0.0,)</versionRange>
         <goals>
-          <goal>enforce-encoding</goal>
+          <goal>generate-module</goal>
         </goals>
       </pluginExecutionFilter>
       <action>
