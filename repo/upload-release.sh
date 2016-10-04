@@ -5,7 +5,9 @@
 # https://cloud.google.com/storage/docs/gsutil_install
 
 # Note: allow the public to read the bucket
-# gsutil defacl set public-read gs://gwt-plugin-snapshot
+# gsutil defacl ch -u AllUsers:R gs://gwt-eclipse-plugin
+# gsutil defacl set public-read gs://gwt-eclipse-plugin
+# gsutil -m acl ch -g AllUsers:R -r gs://gwt-eclipse-plugin
 
 cd repo/target/repository
 
