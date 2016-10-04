@@ -33,7 +33,7 @@
             delegateDescription="Runs a Web Application"
             delegateName="GWT Web Application Launcher"
             id="com.google.gdt.eclipse.suite.webapp"
-            modes="run, debug"
+            modes="run, debug" 
             name="GWT Web Application"
             sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
             sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
