@@ -30,11 +30,11 @@
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
             delegate="com.google.gdt.eclipse.suite.launch.WebAppLaunchDelegate"
-            delegateDescription="Runs a Web Application"
-            delegateName="GWT Web Application Launcher"
+            delegateDescription="Runs GWT DevMode with Jetty"
+            delegateName="GWT DevMode with Jetty"
             id="com.gwtplugins.gdt.eclipse.suite.webapp"
             modes="run, debug"
-            name="GWT Web Application"
+            name="GWT DevMode"
             sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
             sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
    </extension>
@@ -59,11 +59,11 @@
          <launchMode 
                mode="debug"
                perspective="org.eclipse.debug.ui.DebugPerspective"
-               description="Debug a Web Application with DevMode">
+               description="Debug a GWT Web Application with DevMode and Jetty">
          </launchMode>
          <launchMode
                mode="run"
-               description="Run a Web Application with DevMode">
+               description="Run a GWT Web Application with DevMode and Jetty">
          </launchMode>
       </launchConfigurationTabGroup>
       
@@ -72,14 +72,14 @@
             class="com.google.gdt.eclipse.suite.launch.ui.tab_groups.GwtSuperDevModeCodeServerTabGroup"
             id="com.gwtplugins.gwt.eclipse.core.launch.gwtSdmCodeServerTabGroup"
             type="com.gwtplugins.gwt.eclipse.core.sdmCodeServer"
-            description="Launch GWT Super Dev Mode with the CodeServer">
+            description="Launch GWT Super DevMode with the CodeServer">
          <launchMode
-               description="Debug GWT Super Dev Mode with the CodeServer"
+               description="Debug GWT Super DevMode with the CodeServer"
                mode="debug"
                perspective="org.eclipse.debug.ui.DebugPerspective">
          </launchMode>
          <launchMode
-               description="Run GWT Super Dev Mode with the CodeServer"
+               description="Run GWT Super DevMode with the CodeServer"
                mode="run">
          </launchMode>
       </launchConfigurationTabGroup>
@@ -88,78 +88,15 @@
    <!-- Shortcuts -->
    <extension
          point="org.eclipse.debug.ui.launchShortcuts">
-      <!-- Web Application shortcut -->
-      <!-- <shortcut
-            class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppLaunchShortcut"
-            description="Launch a Web Application"
-            icon="icons/gdt_16x16.png"
-            id="com.gwtplugins.gdt.eclipse.suite.launch.ui.webappLaunchShortcut"
-            label="Web Application"
-            modes="run, debug">
-         <contextualLaunch>
-            <enablement>
-               <with variable="selection">
-                  <count value= "1"/>
-                     <iterate>
-                        <test property="com.gwtplugins.gdt.eclipse.suite.isLaunchTarget"/>
-                     </iterate>
-               </with>
-            </enablement>
-         </contextualLaunch>
 
-         <description
-               description="Run a Web Application"
-               mode="run" />
-         <description
-               description="Debug a Web Application"
-               mode="debug" />
-         <configurationType
-               id="com.gwtplugins.gdt.eclipse.suite.webapp"/>
-      </shortcut> -->
-      
-      <!-- Web Application No Server shortcut -->
-      <!-- <shortcut
-            class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppNoServerLaunchShortcut"
-            description="Launch a Web Application with DevMode using an External Server"
-            icon="icons/gwt_server_16x16.png"
-            id="com.gwtplugins.gdt.eclipse.suite.ui.webappNoServerLaunchShortcut"
-            label="GWT Web Application with DevMode (Super Dev Mode with External Server)"
-            modes="run, debug">            
-         <contextualLaunch>
-            <enablement>
-               <with
-                     variable="selection">
-                  <count
-                        value="1">
-                  </count>
-                  <iterate>
-                     <test
-                           property="com.gwtplugins.gdt.eclipse.suite.isNoServerLaunchTarget">
-                     </test>
-                  </iterate>
-               </with>
-            </enablement>
-         </contextualLaunch>
-         <description
-               description="Run a Web Application (running on an external server)"
-               mode="run">
-         </description>
-         <description
-               description="Debug a Web Application (running on an external server)"
-               mode="debug">
-         </description>
-         <configurationType
-               id="com.gwtplugins.gdt.eclipse.suite.webapp">
-         </configurationType>
-      </shortcut> -->
-      
-      <!-- GWT Super Dev Mode Launch shortcut when using GWT -->
+      <!-- GWT Super DevMode Launch shortcut when using GWT -->
       <shortcut
+            path="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebApp/devModeGroup"
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTSuperDevModeLaunchShortcut"
-            description="Launch a Web Application using GWT super dev mode with DevMode"
+            description="Launch GWT Super DevMode with Jetty"
             icon="icons/gwt_server_16x16.png"
             id="com.gwtplugins.gdt.eclipse.suite.launch.ui.webappLaunchShortcutGwtSuperDevMode"
-            label="GWT Web Application with DevMode (Super Dev Mode)"
+            label="GWT Super DevMode with Jetty"
             modes="run, debug">
          <contextualLaunch>
             <enablement>
@@ -172,22 +109,23 @@
             </enablement>
          </contextualLaunch>
          <description
-               description="Run a Web Application with DevMode (SDM)"
+               description="Run GWT Super DevMode with Jetty"
                mode="run" />
          <description
-               description="Debug a Web Application (GWT SDM)"
+               description="Debug GWT Super DevMode with Jetty"
                mode="debug" />
          <configurationType
                id="com.gwtplugins.gdt.eclipse.suite.webapp"/>
       </shortcut>
 
-      <!-- GWT Classic Dev Mode Launch shortcut when using GWT -->
+      <!-- GWT Classic DevMode Launch shortcut when using GWT -->
       <shortcut
+            path="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebApp/devModeGroup"
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTClassicDevModeLaunchShortcut"
-            description="Launch a Web Application using GWT classic DevMode"
+            description="Launch GWT Classic DevMode with Jetty"
             icon="icons/gwt_server_16x16.png"
             id="com.gwtplugins.gdt.eclipse.suite.launch.ui.webappLaunchShortcutGwtClassicDevMode"
-            label="GWT Web Application with DevMode (Classic Dev Mode)"
+            label="GWT Classic DevMode with Jetty"
             modes="run, debug">
          <contextualLaunch>
             <enablement>
@@ -200,10 +138,10 @@
             </enablement>
          </contextualLaunch>
          <description
-               description="Run a Web Application with DevMode (Classic Dev Mode)"
+               description="Run GWT Classic DevMode with Jetty"
                mode="run" />
          <description
-               description="Debug a Web Application With DevMode (Classic Dev Mode)"
+               description="Debug GWT Classic DevMode with Jetty"
                mode="debug" />
          <configurationType
                id="com.gwtplugins.gdt.eclipse.suite.webapp"/>
