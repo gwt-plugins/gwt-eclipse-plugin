@@ -44,22 +44,22 @@ import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * The Eclipse application org.eclipse.jdt.core.JavaCodeFormatter doesn't format
- * JSNI methods correctly. This application invokes GPE's GWT editor formatter,
- * which handles JSNI methods. This code isn't called by GPE itself.
- * 
+ * JSNI methods correctly. This application invokes the GWT editor formatter,
+ * which handles JSNI methods. This code isn't called by GWT Eclipse Plugin itself.
+ *
  * Note that the JSNI formatter relies on the JavaScript being syntactically
  * correct. If the JavaScript is not syntactically correct, then the JavaScript
  * may not be formatted correctly.
- * 
+ *
  * Note that because the JavaScript formatter (eventually) has a dependency on
  * the workbench, this application opens a workbench UI window, and then
  * programmatically closes it.
- * 
+ *
  * The config files contain the formatter preferences obtained from Eclipse in
  * Window -> Preferences -> (Java|JavaScript) -> Code Style -> Formatter ->
  * Edit... -> Export. They can be left in XML, otherwise the file should be in
  * the form:
- * 
+ *
  * <p>
  * <code>
  * #
@@ -67,7 +67,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * key=value
  * </code>
  * </p>
- * 
+ *
  * <p>
  * Usage: eclipse -application
  * com.google.gwt.eclipse.core.formatter.GWTCodeFormatterApplication
@@ -81,6 +81,7 @@ public class GWTCodeFormatterApplication implements IApplication {
   private Properties javaConfig;
   private Properties jsConfig;
 
+  @Override
   public Object start(IApplicationContext context) throws Exception {
 
     String[] args = (String[]) context.getArguments().get(
@@ -107,6 +108,7 @@ public class GWTCodeFormatterApplication implements IApplication {
     return IApplication.EXIT_OK;
   }
 
+  @Override
   public void stop() {
   }
 
@@ -200,12 +202,12 @@ public class GWTCodeFormatterApplication implements IApplication {
   }
 
   private InputStream transformXmlToProperties(File f) throws IOException, SAXException, ParserConfigurationException {
-    
+
     StringBuilder sb = new StringBuilder((int) f.length());
     sb.append("#\n");
     org.w3c.dom.Document xml = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(f);
     NodeList nodes = xml.getElementsByTagName("setting");
-    
+
     for (int i = 0; i < nodes.getLength(); i++) {
       Node n = nodes.item(i);
       String key = n.getAttributes().getNamedItem("id").getNodeValue();
@@ -215,7 +217,7 @@ public class GWTCodeFormatterApplication implements IApplication {
       sb.append(value);
       sb.append('\n');
     }
-    
+
     // this copies the string builder twice...
     return new ByteArrayInputStream(sb.toString().getBytes());
   }

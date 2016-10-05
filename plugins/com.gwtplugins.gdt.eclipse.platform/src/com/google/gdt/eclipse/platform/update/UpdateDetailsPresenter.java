@@ -74,10 +74,10 @@ public class UpdateDetailsPresenter implements IUpdateDetailsPresenter {
 
     private final Map<String, Boolean> savedSettingValues = new HashMap<String, Boolean>();
 
-    private final String gpeUpdateSiteUrl;
+    private final String updateSiteUrl;
 
     private InstallUpdateHandler(String updateSiteUrl) {
-      this.gpeUpdateSiteUrl = updateSiteUrl;
+      this.updateSiteUrl = updateSiteUrl;
     }
 
     @Override
@@ -97,7 +97,6 @@ public class UpdateDetailsPresenter implements IUpdateDetailsPresenter {
         PlatformUI.getWorkbench().getHelpSystem().setHelp(dialog.getShell(),
             IProvHelpContextIds.INSTALL_WIZARD);
 
-        // Prepare the wizard for GPE
         prepareWizard(wizard);
 
         // Open it
@@ -120,25 +119,24 @@ public class UpdateDetailsPresenter implements IUpdateDetailsPresenter {
     }
 
     /**
-     * Finds the repository for the GPE update site (matching the update site
+     * Finds the repository for the update site (matching the update site
      * value that this plugin was compiled with.)
      */
-    private URI findGpeRepoUri() throws Exception {
-      URI gpeUpdateSiteUri = URI.create(gpeUpdateSiteUrl);
-      Path gpeUpdateSitePath = getPath(gpeUpdateSiteUri);
+    private URI findRepoUri() throws Exception {
+      URI updateSiteUri = URI.create(updateSiteUrl);
+      Path updateSitePath = getPath(updateSiteUri);
 
       URI[] repos = getProvisioningUI().getRepositoryTracker().getKnownRepositories(
           getProvisioningUI().getSession());
       for (URI repo : repos) {
         if (repo != null && repo.getHost() != null
-            && repo.getHost().equalsIgnoreCase(gpeUpdateSiteUri.getHost())
-            && getPath(repo).equals(gpeUpdateSitePath)) {
+            && repo.getHost().equalsIgnoreCase(updateSiteUri.getHost())
+            && getPath(repo).equals(updateSitePath)) {
           return repo;
         }
       }
 
-      throw new Exception("Could not find GPE repository (" + gpeUpdateSiteUrl
-          + ")");
+      throw new Exception("Could not find repository (" + updateSiteUrl + ")");
     }
 
     private RepositorySelectionGroup findRepositorySelectionGroup(
@@ -169,7 +167,7 @@ public class UpdateDetailsPresenter implements IUpdateDetailsPresenter {
 
       RepositorySelectionGroup repoSelector = findRepositorySelectionGroup(page);
       repoSelector.setRepositorySelection(AvailableIUGroup.AVAILABLE_SPECIFIED,
-          findGpeRepoUri());
+          findRepoUri());
 
       setCheckedToAvailableUpdates(page);
     }

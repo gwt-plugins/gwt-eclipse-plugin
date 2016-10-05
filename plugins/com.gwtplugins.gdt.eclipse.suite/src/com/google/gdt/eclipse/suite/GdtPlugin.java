@@ -59,11 +59,6 @@ public class GdtPlugin extends AbstractGwtPlugin {
 
   public static final String PLUGIN_ID = "com.gwtplugins.gdt.eclipse.suite";
 
-  // The following constant is defined in org.eclipse.osgi.framework.internal.core.Constants through
-  // Eclipse 4.3(Kepler), and in org.eclipse.osgi.framework.Constants starting in Eclipse 4.4(Luna).
-  // TODO(nhcohen): Import this constant once all supported platforms define it in the same place.
-  public static final String BUNDLE_VERSION = "Bundle-Version";
-
   private static Logger logger;
   /**
    * Perspectives that we monitor and optionally add our new wizards to.
@@ -101,7 +96,7 @@ public class GdtPlugin extends AbstractGwtPlugin {
    * @return current eclipse version as a string.
    */
   public static String getEclipseVersion() {
-    return ResourcesPlugin.getPlugin().getBundle().getHeaders().get(BUNDLE_VERSION);
+    return ResourcesPlugin.getPlugin().getBundle().getVersion().toString();
   }
 
   public static String getInstallationId() {
@@ -121,10 +116,10 @@ public class GdtPlugin extends AbstractGwtPlugin {
   }
 
   public static Version getVersion() {
-    return new Version(getDefault().getBundle().getHeaders().get(BUNDLE_VERSION));
+    return getDefault().getBundle().getVersion();
   }
 
-  private static void rebuildGoogleProjectIfPluginVersionChanged(IProject project) {
+  private static void rebuildProjectIfPluginVersionChanged(IProject project) {
     // We're only worried about GWT projects
     if (GWTNature.isGWTProject(project.getProject())) {
       // Find the last plugin version that know the project was built with
@@ -141,14 +136,14 @@ public class GdtPlugin extends AbstractGwtPlugin {
     }
   }
 
-  private static void rebuildGoogleProjectsIfPluginVersionChanged() {
+  private static void rebuildProjectsIfPluginVersionChanged() {
     boolean closedProjectsInWorkspace = false;
 
     // Rebuild all (open) GWT projects in the workspace
     IWorkspace workspace = ResourcesPlugin.getWorkspace();
     for (IProject project : workspace.getRoot().getProjects()) {
       if (project.isOpen()) {
-        rebuildGoogleProjectIfPluginVersionChanged(project);
+        rebuildProjectIfPluginVersionChanged(project);
       } else {
         closedProjectsInWorkspace = true;
       }
@@ -171,7 +166,7 @@ public class GdtPlugin extends AbstractGwtPlugin {
               if ((projectDelta.getFlags() & IResourceDelta.OPEN) > 0) {
                 IProject project = (IProject) projectDelta.getResource();
                 if (project.isOpen()) {
-                  rebuildGoogleProjectIfPluginVersionChanged(project);
+                  rebuildProjectIfPluginVersionChanged(project);
                 }
               }
             }
@@ -338,17 +333,17 @@ public class GdtPlugin extends AbstractGwtPlugin {
 
     /*
      * We've already loaded the specific problem type enums in the specific plugin activators that define them
-     * (GWTPlugin.java, AppEngineCorePlugin.java). Now we need to load the problem severities.
+     * (GWTPlugin.java). Now we need to load the problem severities.
      *
-     * There is a small window between the time that this plugin is loaded and a plugin-specific builder (i.e. for GWT,
-     * or App Engine) can be invoked. It may be the case that a user will get a problem marker that has a severity that
+     * There is a small window between the time that this plugin is loaded and a plugin-specific builder (i.e. for GWT)
+     * can be invoked. It may be the case that a user will get a problem marker that has a severity that
      * mismatches what they've defined. This will be fixed up on their next rebuild. If we hear of reports of this being
      * a nuisance, we can work out a clever way to rebuild possibly-affected projects when this plugin loads (or,
      * perhaps have a latch that prevents problem markers from being created until this plugin loads).
      */
     GdtProblemSeverities.getInstance().loadSeverities(GdtPreferences.getEncodedProblemSeverities());
 
-    rebuildGoogleProjectsIfPluginVersionChanged();
+    rebuildProjectsIfPluginVersionChanged();
 
     new ProjectMigrator().migrate();
   }

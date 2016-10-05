@@ -51,7 +51,7 @@ import org.eclipse.wst.common.project.facet.ui.IWizardContext;
 import java.util.List;
 
 /**
- * Base class for GAE facets wizard pages.
+ * Base class for GWT facets wizard pages.
  */
 public class GwtFacetWizardPage extends DataModelWizardPage implements IFacetWizardPage,
     IGwtFacetConstants {

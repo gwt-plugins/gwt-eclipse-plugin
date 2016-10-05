@@ -37,6 +37,7 @@ import java.text.MessageFormat;
 /**
  * A launch configuration tab based off of JDT's main tab that provides GPE-specific validation of
  * the project and main class.
+ * (TODO: still necessary?)
  */
 @SuppressWarnings("restriction")
 public class WebAppMainTab extends JavaMainTab implements UpdateLaunchConfigurationDialogBatcher.Listener {
@@ -187,7 +188,7 @@ public class WebAppMainTab extends JavaMainTab implements UpdateLaunchConfigurat
   }
 
   /**
-   * Returns <code>true</code> if the project exists and it uses GWT or GAE.
+   * Returns <code>true</code> if the project exists and it uses GWT.
    */
   private boolean isValidProject(String projectName, ILaunchConfiguration launchConfig) {
     if (projectName.length() == 0) {
@@ -212,7 +213,7 @@ public class WebAppMainTab extends JavaMainTab implements UpdateLaunchConfigurat
       boolean isGwtProject = GWTNature.isGWTProject(project);
 
       if (!isGwtProject) {
-        setErrorMessage("Project does not use GWT or GAE");
+        setErrorMessage("Project does not use GWT");
         return false;
       }
     } else {

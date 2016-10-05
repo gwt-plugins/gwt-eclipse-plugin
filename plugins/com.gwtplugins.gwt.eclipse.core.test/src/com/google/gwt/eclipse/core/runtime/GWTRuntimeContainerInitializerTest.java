@@ -36,9 +36,6 @@ import java.util.List;
 
 /**
  * Tests the {@link GWTRuntimeContainerInitializer} class.
- * 
- * TODO: This class duplicates code from GaeSdkContainerInitializer, see if we
- * can unify.
  */
 public class GWTRuntimeContainerInitializerTest extends AbstractGWTRuntimeTest {
 
@@ -49,18 +46,22 @@ public class GWTRuntimeContainerInitializerTest extends AbstractGWTRuntimeTest {
       this.container = container;
     }
 
+    @Override
     public IClasspathEntry[] getClasspathEntries() {
       return container.getClasspathEntries();
     }
 
+    @Override
     public String getDescription() {
       return container.getDescription();
     }
 
+    @Override
     public int getKind() {
       return container.getKind();
     }
 
+    @Override
     public IPath getPath() {
       return container.getPath();
     }

@@ -40,13 +40,13 @@ import java.util.Set;
  * Tracks timestamps of changes to projects determined by addition,
  * modification, or removal of resources in non-output folders that do not have
  * names (or ancestors with names) that start with '.'.
- * 
+ *
  * Note: This tracks non-output folders instead of just source folders since GWT
  * generators can depend on resources that aren't considered on Eclipse's
  * classpath (e.g., the developer could have excluded a resource from the
  * Eclipse classpath, but it is still accessible by generators.)
- * 
- * This only tracks changes to GPE projects (see
+ *
+ * This only tracks changes to GWT projects (see
  * {@link ProjectUtilities#isGwtProject(org.eclipse.core.resources.IProject)}.)
  */
 public enum ProjectChangeTimestampTracker implements IResourceChangeListener {
@@ -57,7 +57,7 @@ public enum ProjectChangeTimestampTracker implements IResourceChangeListener {
 
   /**
    * Gets the project's changed timestamp, or 0 if a change hasn't happened yet.
-   * 
+   *
    * @return the timestamp (from {@link System#currentTimeMillis()}) when the
    *         last change was recognized
    * @throws CoreException
@@ -68,7 +68,7 @@ public enum ProjectChangeTimestampTracker implements IResourceChangeListener {
 
   /**
    * Gets the timestamp from a project's properties.
-   * 
+   *
    * @return the timestamp, or 0 if not found (or invalid)
    */
   public static long getTimestampFromKey(IProject project, QualifiedName key)
@@ -145,7 +145,7 @@ public enum ProjectChangeTimestampTracker implements IResourceChangeListener {
   private static void visitDelta(IResourceDelta delta,
       Set<IProject> projectsMarkedAsChanged) throws CoreException {
 
-    // Skip over non-GPE projects
+    // Skip over non-GWT projects
     IResource resource = delta.getResource();
     IProject project = resource.getProject();
     if (project != null && !ProjectUtilities.isGwtProject(project)) {
@@ -170,6 +170,7 @@ public enum ProjectChangeTimestampTracker implements IResourceChangeListener {
     }
   }
 
+  @Override
   public void resourceChanged(IResourceChangeEvent event) {
     IResourceDelta delta = event.getDelta();
     if (delta == null) {

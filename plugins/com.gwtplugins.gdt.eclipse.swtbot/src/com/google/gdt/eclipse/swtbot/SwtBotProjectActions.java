@@ -190,7 +190,7 @@ public final class SwtBotProjectActions {
   }
 
   public static void createWebAppProject(final SWTWorkbenchBot bot, String projectName,
-      String packageName, boolean useGwt, boolean useAppEngine, boolean generateSampleCode) {
+      String packageName, boolean useGwt, boolean generateSampleCode) {
     // Open Java Perspective
     bot.perspectiveById("org.eclipse.jdt.ui.JavaPerspective").activate();
 

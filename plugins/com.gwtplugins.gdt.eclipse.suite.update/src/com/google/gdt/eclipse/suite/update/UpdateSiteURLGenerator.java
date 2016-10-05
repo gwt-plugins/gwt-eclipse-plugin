@@ -83,7 +83,7 @@ public class UpdateSiteURLGenerator {
    *          is hashed and added to the url.
    * @param apiName the name of the api added if this is an api add action. May
    *          be null
-   * @param apiPlatform a platform name such as "AppEngine", "Android", or "Unknown" if this is an
+   * @param apiPlatform a platform name such as "Unknown" if this is an
    *          api add action. May be null
    * @param extra if not null, then is appended at the end of the URL
    */

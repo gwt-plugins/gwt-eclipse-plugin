@@ -174,7 +174,7 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
 
   /**
    * Returns <code>true</code> if there are any problems with a severity level greater than or equal to error. Note that
-   * by default {@link JavaLaunchDelegate} only considers java problems to be launch problems. However, we want GPE
+   * by default {@link JavaLaunchDelegate} only considers java problems to be launch problems. However, we want GWT
    * errors to also be considered launch problems.
    */
   @Override

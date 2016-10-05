@@ -185,7 +185,7 @@ public final class ProjectUtilities {
    * TODO: Figure out a way to achieve this without hardcoding the plugin IDs
    */
   /**
-   * @return true if the project has any GPE natures on it
+   * @return true if the project has any GWT facets or natures on it
    */
   public static boolean isGwtProject(IProject project) throws CoreException {
     String natureId = "com.gwtplugins.gwt.eclipse.core.gwtNature"; // GWTNature.NATURE_ID

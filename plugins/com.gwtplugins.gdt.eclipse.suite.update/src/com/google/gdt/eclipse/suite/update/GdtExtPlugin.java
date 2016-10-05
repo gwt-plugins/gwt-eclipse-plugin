@@ -174,7 +174,6 @@ public class GdtExtPlugin extends AbstractGwtPlugin {
 
     FeatureUpdateCheckersMap updateCheckersMap = new FeatureUpdateCheckersMap(UpdateSiteToken.class);
 
-    updateCheckersMap.put(UpdateSiteToken.GPE_CORE, checker);
     updateCheckersMap.put(UpdateSiteToken.GWT_SDK, gwtSdkChecker);
 
     UpdateSiteURLGenerator generator = new UpdateSiteURLGenerator();

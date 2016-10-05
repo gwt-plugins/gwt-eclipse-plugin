@@ -62,8 +62,7 @@ public class GWTJarsRuntime extends GwtSdk {
 
   @Override
   public IClasspathEntry[] getClasspathEntries() {
-    // Note that the GWT SDK puts the javadoc in "doc/javadoc", whereas GAE uses
-    // "docs/javadoc".
+    // Note that the GWT SDK puts the javadoc in "doc/javadoc"
     IPath gwtJavadocLocation = getInstallationPath().append(new Path("doc/javadoc"));
     IClasspathAttribute[] extraAttributes = new IClasspathAttribute[0];
 

@@ -36,9 +36,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Streamlined "Add a browser" dialog with behavior suited for GPE use. For
+ * Streamlined "Add a browser" dialog with behavior suited for GWT use. For
  * example, this takes care of all the nastiness surrounding Mac browser
  * launches.
+ *
+ * TODO: Is this really necessary?  Roll into Eclipse browser support
  */
 @SuppressWarnings("restriction")
 public class AddBrowserDialog extends AbstractTitleAreaDialog {
@@ -57,6 +59,7 @@ public class AddBrowserDialog extends AbstractTitleAreaDialog {
 
   private BrowserLocationSelectionBlock browserLocationBlock = new BrowserLocationSelectionBlock(
       new BrowserLocationSelectionBlock.Listener() {
+        @Override
         public void browserLocationChanged(String location, IStatus status) {
           validate();
         }
@@ -114,6 +117,7 @@ public class AddBrowserDialog extends AbstractTitleAreaDialog {
     new Label(composite, SWT.NONE);
     nameText.setText(defaultBrowserName);
     nameText.addModifyListener(new ModifyListener() {
+      @Override
       public void modifyText(ModifyEvent e) {
         validate();
       }

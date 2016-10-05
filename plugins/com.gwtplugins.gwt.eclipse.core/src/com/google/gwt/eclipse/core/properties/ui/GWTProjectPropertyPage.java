@@ -184,7 +184,7 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
      * set by this method call).
      *
      * The gory details as to why have to do with the order of application of the properties for
-     * each page (App Engine, Web App, then GWT), and the fact that this method will not make any
+     * each page (Web App, then GWT), and the fact that this method will not make any
      * changes to Web App properties if the project is already a Web App.
      */
     WebAppProjectProperties.maybeSetWebAppPropertiesForDynamicWebProject(project);
@@ -401,7 +401,7 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
 
   private IStatus validateSdk() {
     if (!useGWT) {
-      // Ignore any SDK problems since App Engine is not enabled
+      // Ignore any SDK problems since GWT is not enabled
       return StatusUtilities.OK_STATUS;
     }
 

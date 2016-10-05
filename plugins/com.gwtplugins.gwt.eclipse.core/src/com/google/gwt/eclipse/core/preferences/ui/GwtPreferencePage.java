@@ -88,10 +88,10 @@ public class GwtPreferencePage extends PreferencePage implements IWorkbenchPrefe
     return new SdkTable<GwtSdk>(parent, SWT.NONE, sdkSet, null, this) {
       @Override
       protected IStatus doAddSdk() {
-        AddSdkDialog<GwtSdk> addGaeSdkDialog = new AddGwtSdkDialog(getShell(), sdkSet, GWTPlugin.PLUGIN_ID,
+        AddSdkDialog<GwtSdk> addGwtSdkDialog = new AddGwtSdkDialog(getShell(), sdkSet, GWTPlugin.PLUGIN_ID,
             "Add GWT Web Toolkit SDK", GwtSdk.getFactory());
-        if (addGaeSdkDialog.open() == Window.OK) {
-          GwtSdk newSdk = addGaeSdkDialog.getSdk();
+        if (addGwtSdkDialog.open() == Window.OK) {
+          GwtSdk newSdk = addGwtSdkDialog.getSdk();
           if (newSdk != null) {
             sdkSet.add(newSdk);
           }

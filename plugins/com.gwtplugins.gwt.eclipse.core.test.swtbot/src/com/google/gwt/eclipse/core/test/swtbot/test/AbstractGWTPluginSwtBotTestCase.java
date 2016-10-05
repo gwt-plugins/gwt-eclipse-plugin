@@ -80,7 +80,7 @@ public class AbstractGWTPluginSwtBotTestCase extends TestCase {
     SwtBotSdkActions.setupGwtSdk(bot);
 
     // And given a project is created
-    SwtBotProjectActions.createWebAppProject(bot, projectName, PACKAGE_NAME, true, false, true);
+    SwtBotProjectActions.createWebAppProject(bot, projectName, PACKAGE_NAME, true, true);
 
     // And wait for the project to finish setting up
     SwtBotWorkbenchActions.waitForIdle(getSwtWorkbenchBot());

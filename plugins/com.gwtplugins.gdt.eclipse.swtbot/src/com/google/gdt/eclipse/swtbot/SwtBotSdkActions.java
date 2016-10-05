@@ -23,16 +23,8 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
  */
 public final class SwtBotSdkActions {
 
-  public static void removeAppEngineSdk(final SWTWorkbenchBot bot) {
-    removeSdk(bot, "App Engine");
-  }
-
   public static void removeGwtSdk(SWTWorkbenchBot bot) {
     removeSdk(bot, "Web Toolkit");
-  }
-
-  public static void setupAppEngineSdk(final SWTWorkbenchBot bot) {
-    setupSdk(bot, "App Engine", "GAE_HOME", "appengine-sdk");
   }
 
   public static void setupGwtSdk(final SWTWorkbenchBot bot) {

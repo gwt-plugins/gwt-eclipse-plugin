@@ -42,9 +42,9 @@ import java.io.File;
 /**
  * FIXME: This file is only used by AbstractGWTPluginTestCase. We really need to re-work our testing
  * infrastructure, and get rid of this class.
- * 
+ *
  * TODO: Once we get rid of this class, we can remove the UpdateWebInfFolderCommand argument from
- * the AppEngineUpdateProjectSdkCommand and GWTUpdateProjectSdkCommand constructors. Also, the
+ * the GWTUpdateProjectSdkCommand constructor. Also, the
  * XUpdateWebInfFolderCommand classes should be turned into jobs themselves.
  */
 public class NewProjectCreatorTool {

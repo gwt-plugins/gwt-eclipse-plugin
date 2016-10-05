@@ -575,7 +575,7 @@ public class ResourceUtils {
 
   /**
    * Given a resource delta, indicate whether or the delta contains a type of
-   * resource change that GPE generally cares about.
+   * resource change that GWT generally cares about.
    */
   public static boolean isRelevantResourceChange(IResourceDelta delta) {
 
