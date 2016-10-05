@@ -43,7 +43,6 @@
 
     <!-- Features located in ./repo/category.xml -->
     <module>features/com.gwtplugins.eclipse.suite.v3.feature</module>
-    <!-- <module>features/com.gwtplugins.eclipse.suite.v3.sdbg.feature</module> -->
     <module>features/com.gwtplugins.eclipse.sdkbundle.gwt27.feature</module>
     <module>features/com.gwtplugins.eclipse.sdkbundle.gwt28.feature</module>
 

@@ -6,16 +6,18 @@
    <feature id="com.gwtplugins.eclipse.sdkbundle.gwt27.feature" version="2.7.0.qualifier">
       <category name="GWT_SDK"/>
    </feature>
-   <feature id="com.github.sdbg.feature" version="0.0.0">
-      <category name="GWT"/>
-   </feature>
    <feature id="com.gwtplugins.eclipse.sdkbundle.gwt28.feature" version="2.8.0.qualifier">
       <category name="GWT_SDK"/>
    </feature>
    <category-def name="GWT" label="GWT Eclipse Plugin"/>
+   <feature  id="com.github.sdbg.feature">
+      <category name="GWT"/>
+   </feature>
+   <category-def name="GWT" label="GWT Plugin for Eclipse"/>
    <category-def name="GWT_SDK" label="GWT SDK">
       <description>
          GWT SDKs
       </description>
    </category-def>
+   <repository-reference location="http://sdbg.github.io/p2" enabled="true" />
 </site>

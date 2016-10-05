@@ -48,3 +48,17 @@ Simply use Maven to import all the plugins and modules.
 
 * Use Eclipse Maven Import and import with recursion. 
 * Select all the projects and import. 
+
+
+## Thanks Sponsors
+Sponsors that provide man power and equipment to help get the job done. 
+
+### Google
+The Google Cloud Tools team has put a significant amount of effort in helping bring the GWT Eclipse Plugin to market. 
+
+* [Google Cloud Tools](https://cloud.google.com/)
+
+### Sencha
+Sencha provides man power to help update the plugin and the build server which automates the build. 
+
+* [Sencha.com](http://sencha.com) 
