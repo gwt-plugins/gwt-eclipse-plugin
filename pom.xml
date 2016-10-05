@@ -19,6 +19,7 @@
     <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/latest/</swtbot-repo.url>
+    <sdbg-repo.url>http://sdbg.github.io/p2/</sdbg-repo.url>
 
     <!-- Release url determined by upload in upload-release.sh -->
     <comparator.repo>http://storage.googleapis.com/gwt-eclipse-plugin/v3/release</comparator.repo>
@@ -42,7 +43,7 @@
 
     <!-- Features located in ./repo/category.xml -->
     <module>features/com.gwtplugins.eclipse.suite.v3.feature</module>
-    <module>features/com.gwtplugins.eclipse.suite.v3.sdbg.feature</module>
+    <!-- <module>features/com.gwtplugins.eclipse.suite.v3.sdbg.feature</module> -->
     <module>features/com.gwtplugins.eclipse.sdkbundle.gwt27.feature</module>
     <module>features/com.gwtplugins.eclipse.sdkbundle.gwt28.feature</module>
 
@@ -94,6 +95,11 @@
     <repository>
       <id>swtbot</id>
       <url>${swtbot-repo.url}</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
+      <id>sdbg</id>
+      <url>${sdbg-repo.url}</url>
       <layout>p2</layout>
     </repository>
   </repositories>
