@@ -14,6 +14,8 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.swtbot;
 
+import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
+
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.Widget;
@@ -25,8 +27,6 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
-
-import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
 
 /**
  * SWTBot utility methods that perform general workbench actions.
@@ -42,7 +42,7 @@ public final class SwtBotProjectActions {
 
   /**
    * Creates a java class with the specified name.
-   * 
+   *
    * @param bot The SWTWorkbenchBot.
    * @param projectName The name of the project the class should be created in.
    * @param packageName The name of the package the class should be created in.
@@ -72,7 +72,7 @@ public final class SwtBotProjectActions {
 
   /**
    * Creates a java project with the specified project name.
-   * 
+   *
    * @param bot the SWTWorkbenchBot
    * @param projectName the name of the java project to create
    */
@@ -199,7 +199,7 @@ public final class SwtBotProjectActions {
 
     // Select the Web App project wizard
     SWTBotTree projectSelectionTree = bot.tree();
-    SWTBotTreeItem projectSelectionGoogleTreeItem =
+    SWTBotTreeItem projectSelectionTreeItem =
         SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, GWT_MENU_LABELS,
             "Web Application Project").expand();
     SwtBotTestingUtilities.selectTreeItem(bot, projectSelectionTreeItem,
@@ -220,6 +220,7 @@ public final class SwtBotProjectActions {
   public static void deleteProject(final SWTWorkbenchBot bot, final String projectName) {
 
     SwtBotTestingUtilities.performAndWaitForWindowChange(bot, new Runnable() {
+      @Override
       public void run() {
         selectProject(bot, projectName).contextMenu("Delete").click();
         // Wait for confirmation window to come up
@@ -236,7 +237,7 @@ public final class SwtBotProjectActions {
    * Returns true if the specified project can be found in the 'Package Explorer' or 'Project View',
    * otherwise returns false. Throws a WidgetNotFoundException exception if the 'Package Explorer'
    * or 'Project Explorer' view cannot be found.
-   * 
+   *
    * @param bot The SWTWorkbenchBot.
    * @param projectName The name of the project to be found.
    * @return
@@ -313,13 +314,14 @@ public final class SwtBotProjectActions {
 
   /**
    * Opens the Properties dialog for a given project.
-   * 
+   *
    * This method assumes that either the Package Explorer or Project Explorer view is visible.
    */
   public static void openProjectProperties(final SWTWorkbenchBot bot, String projectName) {
     selectProject(bot, projectName);
 
     SwtBotTestingUtilities.performAndWaitForWindowChange(bot, new Runnable() {
+      @Override
       public void run() {
         // Open the Project Properties menu via the File menu
         SWTBotMenu fileMenu = bot.menu("File");
@@ -330,7 +332,7 @@ public final class SwtBotProjectActions {
 
   /**
    * Refresh project tree.
-   * 
+   *
    * @param bot The SWTWorkbenchBot.
    * @param projectName The project name.
    */
@@ -342,7 +344,7 @@ public final class SwtBotProjectActions {
   /**
    * Returns the specified project. Throws a WidgetNotFoundException if the 'Package Explorer' or
    * 'Project Explorer' view cannot be found or if the specified project cannot be found.
-   * 
+   *
    * @param bot The SWTWorkbenchBot.
    * @param projectName The name of the project to select.
    * @return
@@ -375,7 +377,7 @@ public final class SwtBotProjectActions {
   /**
    * Select a file/folder by providing a parent tree, and a list folders that lead to the
    * file/folder.
-   * 
+   *
    * @param item Root tree item.
    * @param folderPath List of folder names that lead to file.
    * @return Returns a SWTBotTreeItem of the last name in texts.
