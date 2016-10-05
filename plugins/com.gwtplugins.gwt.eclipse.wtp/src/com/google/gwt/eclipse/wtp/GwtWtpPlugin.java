@@ -12,15 +12,15 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.wtp;
 
-import com.google.gwt.eclipse.core.launch.GWTLaunchConstants;
-import com.google.gwt.eclipse.core.launch.GwtSuperDevModeLaunchConfiguration;
-import com.google.gwt.eclipse.core.launch.util.GwtSuperDevModeCodeServerLaunchUtil;
-import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
-import com.google.gwt.eclipse.oophm.model.LaunchConfiguration;
-import com.google.gwt.eclipse.oophm.model.WebAppDebugModel;
-import com.google.gwt.eclipse.wtp.utils.GwtFacetUtils;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -41,26 +41,29 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.server.core.IModule;
-import org.eclipse.wst.server.core.IModule2;
 import org.eclipse.wst.server.core.IServer;
+import org.eclipse.wst.server.core.IServerListener;
+import org.eclipse.wst.server.core.ServerEvent;
 import org.eclipse.wst.server.core.ServerPort;
 import org.eclipse.wst.server.core.ServerUtil;
 import org.eclipse.wst.server.core.model.IURLProvider;
 import org.osgi.framework.BundleContext;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import com.google.gwt.eclipse.core.launch.GWTLaunchConstants;
+import com.google.gwt.eclipse.core.launch.GwtSuperDevModeLaunchConfiguration;
+import com.google.gwt.eclipse.core.launch.util.GwtSuperDevModeCodeServerLaunchUtil;
+import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
+import com.google.gwt.eclipse.oophm.model.LaunchConfiguration;
+import com.google.gwt.eclipse.oophm.model.WebAppDebugModel;
+import com.google.gwt.eclipse.wtp.utils.GwtFacetUtils;
 
 /**
  * Google GWT WTP plug-in life-cycle.
+ * 
+ * TODO extract process listening TODO after sdm compile, publish bits. Either override CodeServer or proxy the web
+ * server requests to CodeServer.
+ * 
+ * Note: For now, this will sync the code server with web server runtime, but won't figure out the launcher directory.
  */
 public final class GwtWtpPlugin extends AbstractUIPlugin {
 
@@ -107,6 +110,10 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
    * Observe the console to notify SDM has launched
    */
   private IStreamMonitor streamMonitor;
+  
+  private IServerListener serverListener;
+  private DebugEvent debugEvent;
+  private boolean startedCodeServer;
 
   public GwtWtpPlugin() {
     INSTANCE = this;
@@ -171,13 +178,32 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       processSdmCodeServerTerminate(event);
     }
 
+    // pass along the event to server started. 
+    if (server != null && server.getServerState() == IServer.STATE_STARTING) {
+      debugEvent = event;
+      startedCodeServer = false; // safety reset
+    }
+    
     // WTP Server Start/Stop
-    if (server != null && server.getServerState() == IServer.STATE_STARTED) {
-      // Server Start: Delineate event for Server Launching and then possibly launch SDM
-      posiblyLaunchGwtSuperDevModeCodeServer(event);
-    } else if (server != null && server.getServerState() == IServer.STATE_STOPPING) {
+    if (server != null && serverListener == null) { // listen for server started. It throws two events...
+      serverListener = new IServerListener() {
+        @Override
+        public void serverChanged(ServerEvent event) {
+          if (event.getState() == IServer.STATE_STARTED && !startedCodeServer) {
+            startedCodeServer = true;
+            posiblyLaunchGwtSuperDevModeCodeServer(debugEvent); // TODO rewrite so it can use the ServerEvent?
+          }
+        }
+      };
+      server.addServerListener(serverListener);
+    }
+
+    if (server != null && server.getServerState() == IServer.STATE_STOPPING
+        && event.getKind() == DebugEvent.TERMINATE) {
       // Server Stop: Delineate event for Server Launching and then possibly terminate SDM
       possiblyTerminateLaunchConfiguration(event);
+      serverListener = null;
+      startedCodeServer = false;
     }
   }
 
@@ -322,14 +348,16 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       return;
     }
 
-    IProject project = getProject(server);
-    if (project == null) {
-      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Couldn't find project.");
+    IFacetedProject gwtFacetedProject = GwtFacetUtils.getGwtFacetedProject(server);
+
+    // If one of the server modules has a gwt facet
+    if (gwtFacetedProject == null) {
+      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Does not have a GWT Facet.");
       return;
     }
 
     // Sync Option - If the sync is off, ignore stopping the server
-    if (!GWTProjectProperties.getFacetSyncCodeServer(project)) {
+    if (!GWTProjectProperties.getFacetSyncCodeServer(gwtFacetedProject.getProject())) {
       logMessage("posiblyLaunchGwtSuperDevModeCodeServer: GWT Facet project properties, the code server sync is off.");
       return;
     }
@@ -429,12 +457,6 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       return;
     }
 
-    IProject serverProject = getProject(server);
-    if (serverProject == null) {
-      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: Couldn't find project.");
-      return;
-    }
-
     IFacetedProject gwtFacetedProject = GwtFacetUtils.getGwtFacetedProject(server);
 
     // If one of the server modules has a gwt facet
@@ -452,13 +474,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     /**
      * Get the war output path for the `-launcherDir` in SDM launcher
      */
-    String launcherDir = getLauncherDirectory(server, launchConfig);
-    // Why wasn't a launcher directory found?
-    if (launcherDir == null || launcherDir.isEmpty()) {
-      logError("posiblyLaunchGwtSuperDevModeCodeServer: No -launcherDir arg is available, Exiting. launcherDir="
-          + launcherDir);
-      return; // Exit early
-    }
+    String launcherDir = getLauncherDirectory(server, launchConfig, gwtFacetedProject);
 
     // LauncherId used to reference and terminate the the process
     String launcherId = setLauncherIdToWtpRunTimeLaunchConfig(launchConfig);
@@ -484,13 +500,18 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
   }
 
   /**
+   * TODO find a generic method to get the server publish/deploy path. TODO or put bits into a directory and use
+   * PublishHelper
+   * 
    * The -launcherDir war/output/path is the war deployment directory
    * 
    * @param server
    * @param launchConfig
+   * @param gwtFacetedProject
    * @return the launcher directory or war output path
    */
-  private String getLauncherDirectory(IServer server, ILaunchConfiguration launchConfig) {
+  private String getLauncherDirectory(IServer server, ILaunchConfiguration launchConfig,
+      IFacetedProject gwtFacetedProject) {
     String launcherDir = null;
 
     // Get the the war output path from classic launch configuration working directory
@@ -502,119 +523,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
           "posiblyLaunchGwtSuperDevModeCodeServer: Couldn't get working directory from launchConfig IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY.");
     }
 
-    // Get the war output path from Server VM properties for working directory
-    if (launcherDir == null || launcherDir.isEmpty()) {
-      launcherDir = getLauncherDirFromServerLaunchConfigAttributes(server, launchConfig);
-    }
-
     return launcherDir;
-  }
-
-  /**
-   * Try to get the war output path from server launch config.
-   * 
-   * @param server
-   *          is the server launcher
-   * @param serverLaunchConfig
-   *          server launcher config
-   * @return string path to the output war
-   */
-  private String getLauncherDirFromServerLaunchConfigAttributes(IServer server,
-      ILaunchConfiguration serverLaunchConfig) {
-    if (server == null || serverLaunchConfig == null) {
-      return null;
-    }
-
-    // First get wtp.deploy from the server attributes
-    Map<String, Object> launchConfigAttributes = null;
-    String vmArgsString = null;
-    try {
-      launchConfigAttributes = serverLaunchConfig.getAttributes();
-      vmArgsString = (String) launchConfigAttributes.get("org.eclipse.jdt.launching.VM_ARGUMENTS");
-    } catch (CoreException e) {
-      logError(
-          "posiblyLaunchGwtSuperDevModeCodeServer > getLauncherDirFromServerLaunchConfigAttributes: can't find launcher directory in ATTR_VM_ARGUMENTS.",
-          e);
-    }
-
-    // Get the vm arguments in the launch configs vm args
-    if (vmArgsString == null || vmArgsString.isEmpty()) {
-      logMessage(
-          "posiblyLaunchGwtSuperDevModeCodeServer > getLauncherDirFromServerLaunchConfigAttributes: can't get org.eclipse.jdt.launching.VM_ARGUMENTS from the launch config.");
-      return null;
-    }
-
-    // Create an array from the vm args string
-    String[] vmArgsArray = DebugPlugin.parseArguments(vmArgsString);
-    if (vmArgsArray == null || vmArgsString.isEmpty()) {
-      logMessage(
-          "posiblyLaunchGwtSuperDevModeCodeServer > getLauncherDirFromServerLaunchConfigAttributes: can't parse vm args into an array.");
-      return null;
-    }
-
-    String wtpDeployArg = null;
-    for (int i = 0; i < vmArgsArray.length; i++) {
-      String arg = vmArgsArray[i];
-      if (arg != null && arg.startsWith("-Dwtp.deploy")) {
-        wtpDeployArg = arg.replaceFirst("-Dwtp.deploy=", "");
-        wtpDeployArg = wtpDeployArg.replace("\"", "").trim();
-        break;
-      }
-    }
-
-    if (wtpDeployArg == null || wtpDeployArg.isEmpty()) {
-      logMessage(
-          "posiblyLaunchGwtSuperDevModeCodeServer > getLauncherDirFromServerLaunchConfigAttributes: can't get \"-Dwtp.deploy=\" (w/no spaces) arg from vm args list.");
-      return null;
-    }
-
-    // Next get the server project deploy name or deploy context relative path
-    String launcherDir = null;
-    String deployName = null;
-    IModule[] modules = server.getModules();
-    if (modules != null && modules.length > 0) {
-      if (modules.length > 0) {
-        logMessage(
-            "posiblyLaunchGwtSuperDevModeCodeServer > getLauncherDirFromServerLaunchConfigAttributes: launcherDir will use the first module for the deploy path.");
-      }
-      IModule2 module = (IModule2) modules[0];
-      deployName = module.getProperty(IModule2.PROP_DEPLOY_NAME);
-      if (deployName == null) {
-        logMessage(
-            "posiblyLaunchGwtSuperDevModeCodeServer > getLauncherDirFromServerLaunchConfigAttributes: Couldn't get the deploy path for the module.");
-      } else {
-        launcherDir = wtpDeployArg + File.separator + deployName;
-      }
-    } else {
-      logMessage(
-          "posiblyLaunchGwtSuperDevModeCodeServer > getLauncherDirFromServerLaunchConfigAttributes: the modules are empty, add a wtp module.");
-    }
-
-    if (launcherDir == null) {
-      logMessage(
-          "posiblyLaunchGwtSuperDevModeCodeServer > getLauncherDirFromServerLaunchConfigAttributes: couldn't construct the launcherDir Path from server launch config.");
-      logMessage(
-          "posiblyLaunchGwtSuperDevModeCodeServer > getLauncherDirFromServerLaunchConfigAttributes: wtpDeployArg="
-              + wtpDeployArg);
-      logMessage(
-          "posiblyLaunchGwtSuperDevModeCodeServer > getLauncherDirFromServerLaunchConfigAttributes: wtpDeployArg="
-              + deployName);
-    }
-
-    logMessage(
-        "posiblyLaunchGwtSuperDevModeCodeServer > getLauncherDirFromServerLaunchConfigAttributes: Success, found the launcherDir="
-            + launcherDir);
-
-    return launcherDir;
-  }
-
-  private IProject getProject(IServer server) {
-    IModule[] modules = server.getModules();
-    if (modules == null || modules.length == 0) {
-      return null;
-    }
-
-    return modules[0].getProject();
   }
 
   @Override
