@@ -1,18 +1,57 @@
 package com.google.gwt.eclipse.wtp.utils;
 
+import java.util.Set;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
+import org.eclipse.wst.common.project.facet.core.IFacetedProjectWorkingCopy;
+import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.IServer;
 
+import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gwt.eclipse.wtp.GwtWtpPlugin;
 import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
 
 public class GwtFacetUtils {
+  
+  /**
+   * Returns if this project has a GWT facet.
+   *
+   * @param project
+   * @return if the project has a GWT facet.
+   */
+  public static boolean hasGwtFacet(IProject project) {
+    boolean hasFacet = false;
+    try {
+      hasFacet = FacetedProjectFramework.hasProjectFacet(project, "com.gwtplugins.gwt.facet");
+    } catch (CoreException e) {
+      CorePluginLog.logInfo("hasGetFacet: Error, can't figure GWT facet.", e);
+    }
+
+    return hasFacet;
+  }
+  
+  /**
+   * Returns if this project has a Old GWT facet. 
+   *
+   * @param project
+   * @return if the project has a GWT facet.
+   */
+  public static boolean hasOldGwtFacet(IProject project) {
+    boolean hasFacet = false;
+    try {
+      hasFacet = FacetedProjectFramework.hasProjectFacet(project, "com.google.gwt.facet");
+    } catch (CoreException e) {
+      CorePluginLog.logInfo("hasGetFacet: Error, can't figure GWT facet.", e);
+    }
+
+    return hasFacet;
+  }
 
   /**
    * Does any of the projects added to the server runtime have a GWT Facet? 
@@ -114,6 +153,48 @@ public class GwtFacetUtils {
     }
     
     return modules;
+  }
+  
+  public static void removePreviousGwtFacet() {
+    try {
+      Set<IFacetedProject> facetedProject = ProjectFacetsManager.getFacetedProjects();
+      removeOldGwtFacet(facetedProject);
+    } catch (CoreException e) {
+      GwtWtpPlugin.logError("Couldn't find any faceted projects", e);
+    }
+  }
+
+  private static void removeOldGwtFacet(Set<IFacetedProject> facetedProjects) {
+    if (facetedProjects == null) {
+      return;
+    }
+    
+    for (IFacetedProject facetedProject : facetedProjects) {
+      removeOldGwtFacet(facetedProject);
+    }
+  }
+
+  private static void removeOldGwtFacet(IFacetedProject facetedProject) {
+    if (!hasOldGwtFacet(facetedProject.getProject())) {
+      return;
+    }
+    
+    IProjectFacet oldProjectFacet = ProjectFacetsManager.getProjectFacet(IGwtFacetConstants.REMOVED_GWT_FACET_ID);
+    if (oldProjectFacet == null) {
+      return;
+    }
+
+    IFacetedProjectWorkingCopy facetedProjectWorkingCopy = facetedProject.createWorkingCopy();
+    facetedProjectWorkingCopy.removeProjectFacet(oldProjectFacet);
+    try {
+      facetedProjectWorkingCopy.commitChanges(new NullProgressMonitor());
+    } catch (CoreException e) {
+      GwtWtpPlugin.logError("Couldn't get rid of the old project facet", e);
+    }
+  }
+
+  public static void removeFacetForProject(IProject project) {
+    
   }
   
 }

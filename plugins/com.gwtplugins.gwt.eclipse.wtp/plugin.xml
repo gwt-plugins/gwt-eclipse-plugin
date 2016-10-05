@@ -26,6 +26,12 @@
 
   <!-- GWT Facet -->
   <extension point="org.eclipse.wst.common.project.facet.core.facets">
+  
+    <!-- Facet -->   
+    <project-facet id="com.google.gwt.facet">
+      <label>GWT (Deprecated)</label>
+      <description>Old GWT Facet</description>
+    </project-facet>  
     
     <!-- Facet -->   
     <project-facet id="com.gwtplugins.gwt.facet">
@@ -39,6 +45,9 @@
 	 	<and>
 	 	   <!-- Only require the bare minimum -->
 	       <requires facet="jst.java" version="[5.0"></requires>
+	       <!-- Conflict with previous gwt facet -->
+	       <conflicts facet="com.google.gwt.facet">
+	       </conflicts>
 	 	</and>
       </constraint>
     </project-facet-version>

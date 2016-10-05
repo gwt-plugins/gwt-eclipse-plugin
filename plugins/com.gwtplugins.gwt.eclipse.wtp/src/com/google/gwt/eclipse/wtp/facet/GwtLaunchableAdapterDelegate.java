@@ -23,11 +23,7 @@ import java.net.URL;
 
 public final class GwtLaunchableAdapterDelegate extends LaunchableAdapterDelegate {
 
-  /**
-   *
-   */
   public GwtLaunchableAdapterDelegate() {
-   System.out.println("test");
   }
 
   @Override
