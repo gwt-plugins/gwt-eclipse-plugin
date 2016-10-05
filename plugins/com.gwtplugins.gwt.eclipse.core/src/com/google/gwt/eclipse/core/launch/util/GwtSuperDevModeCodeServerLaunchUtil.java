@@ -133,12 +133,14 @@ public class GwtSuperDevModeCodeServerLaunchUtil {
       String launcherId) throws CoreException {
     ILaunchConfigurationWorkingCopy launchConfigWc = config.getWorkingCopy();
 
-    if (launcherDir != null) {
-      // Update the launcherDir argument
-      GWTLaunchConfigurationWorkingCopy.setCodeServerLauncherDir(launchConfigWc, launcherDir);
-      LaunchConfigurationProcessorUtilities.updateViaProcessor(
-          new SuperDevModeCodeServerLauncherDirArgumentProcessor(), launchConfigWc);
+    if (launcherDir != null && launcherDir.trim().isEmpty()) {
+      launcherDir = null;
     }
+
+    // Update the launcherDir argument
+    GWTLaunchConfigurationWorkingCopy.setCodeServerLauncherDir(launchConfigWc, launcherDir);
+    LaunchConfigurationProcessorUtilities.updateViaProcessor(
+        new SuperDevModeCodeServerLauncherDirArgumentProcessor(), launchConfigWc);
 
     // Update the launcherId
     if (launcherId != null) {

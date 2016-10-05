@@ -23,10 +23,7 @@ public class GwtFacetUtils {
    * @return returns true if a GWT facet was found
    */
   public static boolean hasGwtFacet(IServer server) {
-    IModule[] modules = server.getChildModules(server.getModules(), new NullProgressMonitor());
-    if (modules == null || modules.length == 0) {
-      return false;
-    }
+    IModule[] modules = getModules(server);
 
     for (IModule module : modules) {
       IProject project = module.getProject();
@@ -67,17 +64,7 @@ public class GwtFacetUtils {
    */
   public static IFacetedProject getGwtFacetedProject(IServer server) {
     // Multi-module project
-    IModule[] modules = server.getChildModules(server.getModules(), new NullProgressMonitor());
-    if (modules == null || modules.length == 0) { // does it have multi-modules?
-      // So it doesn't have multi-modules, lets use the root as the module.
-      modules = server.getModules();
-    }
-    
-    // Just in case
-    if (modules == null || modules.length == 0) {
-      GwtWtpPlugin.logMessage("Could not find GWT Faceted project from the Server runtime. Add a GWT Facet to the server modules.");
-      return null;
-    }
+    IModule[] modules = getModules(server);
 
     for (IModule module : modules) {
       IProject project = module.getProject();
@@ -106,6 +93,27 @@ public class GwtFacetUtils {
     }
 
     return null;
+  }
+  
+  /**
+   * Get the modules added in the server.
+   * @return 
+   */
+  public static IModule[] getModules(IServer server) {
+ // Multi-module project
+    IModule[] modules = server.getChildModules(server.getModules(), new NullProgressMonitor());
+    if (modules == null || modules.length == 0) { // does it have multi-modules?
+      // So it doesn't have multi-modules, lets use the root as the module.
+      modules = server.getModules();
+    }
+    
+    // Just in case
+    if (modules == null || modules.length == 0) {
+      GwtWtpPlugin.logMessage("Could not find GWT Faceted project from the Server runtime. Add a GWT Facet to the server modules.");
+      return null;
+    }
+    
+    return modules;
   }
   
 }
