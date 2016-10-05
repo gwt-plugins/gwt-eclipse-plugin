@@ -21,9 +21,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.compiler.CompilationParticipant;
 
 /**
- * A compilation participant that is used to trigger an update check of the GDT Plugin's feature
- * whenever a Java build is triggered on a project, and the project has either the GWT or GAE
- * natures (or both).
+ * A compilation participant that is used to trigger an update check of the GWT Plugin's feature
+ * whenever a Java build is triggered on a GWT project.
  */
 public class UpdateTriggerCompilationParticipant extends CompilationParticipant {
 

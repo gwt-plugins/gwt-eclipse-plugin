@@ -22,7 +22,6 @@ import com.google.gdt.eclipse.suite.update.GdtExtPlugin;
 import com.google.gdt.eclipse.suite.update.GdtExtPlugin.GwtMaxSdkVersionComputer;
 import com.google.gdt.eclipse.suite.update.UpdateSiteURLGenerator;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.update.internal.configurator.VersionedIdentifier;
@@ -32,7 +31,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
@@ -48,16 +46,6 @@ import javax.annotation.Nullable;
 public class AnalyticsPingManager implements PingManager {
 
   public enum Action {
-    ADD_MANAGED_API,
-    DEPLOY_GAE,
-    DEPLOY_GAE_BACKEND,
-    GENERATE_ENDPOINT_CLASS,
-    GENERATE_GAE_ANDROID_PROJECT,
-    GENERATE_GAE_BACKEND,
-    IMPORT_APPS_SCRIPT_PROJECT,
-    IMPORT_GAE_DEMO_APP,
-    IMPORT_HOSTED_PROJECT,
-    UPDATE_DATANUCLEUS_VERSION,
     USE_FACET
   }
 
@@ -84,19 +72,7 @@ public class AnalyticsPingManager implements PingManager {
 
   @Override
   public void sendProjectImportPing() {
-    sendPing(GdtExtPlugin.PLUGIN_ID, Action.IMPORT_HOSTED_PROJECT, null, null);
-  }
-
-  @Nullable
-  private String projectDetailsString(IProject project) {
-    URL updateSiteUrl;
-    try {
-      updateSiteUrl = urlGenerator.generateGaeBackendDeployURL(project);
-    } catch (MalformedURLException e) {
-      GdtExtPlugin.getLogger().logError(e, "Error constructing update site URL");
-      return null;
-    }
-    return updateSiteUrl.getQuery();
+    //sendPing(GdtExtPlugin.PLUGIN_ID, Action.IMPORT_HOSTED_PROJECT, null, null);
   }
 
   private static void sendPing(
@@ -115,10 +91,10 @@ public class AnalyticsPingManager implements PingManager {
     }
     setCustomDimension(parametersMap, CustomDimensionName.ANONYMIZED_CLIENT_ID, anonymizedClientId);
     @SuppressWarnings("deprecation") // PluginVersionIdentifier.toString()
-    String gpeVersion =
+    String gwtVersion =
         new VersionedIdentifier(
             GdtExtPlugin.FEATURE_ID, GdtExtPlugin.FEATURE_VERSION.toString()).toString();
-    setCustomDimension(parametersMap, CustomDimensionName.GPE_VERSION, gpeVersion);
+    setCustomDimension(parametersMap, CustomDimensionName.GWT_VERSION, gwtVersion);
     setCustomDimension(
         parametersMap, CustomDimensionName.ECLIPSE_VERSION, GdtPlugin.getEclipseVersion());
     setCustomDimension(
@@ -217,14 +193,11 @@ public class AnalyticsPingManager implements PingManager {
   // The constructor argument specifies the index of the custom dimension.
   private enum CustomDimensionName {
     ECLIPSE_PRODUCT_ID(1),
-    HASHED_GAE_APP_ID(2),
+    //HASHED_GAE_APP_ID(2),
     ECLIPSE_VERSION(3),
-    GPE_VERSION(4),
-    IS_SIGNED_IN(5),
+    GWT_VERSION(4),
+    //IS_SIGNED_IN(5),
     SDK_VERSIONS(6),
-    CLOUD_SQL_USAGE(7),
-    API_NAME(8),
-    IS_CLOUD_ENDPOINTS_PROJECT(9),
     ANONYMIZED_CLIENT_ID(10);
 
     private int index;
