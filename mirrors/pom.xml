@@ -27,10 +27,13 @@
             <configuration>
               <source>
                 <repository>
-                  <url>http://storage.googleapis.com/sdbg/release</url>
+                  <id>sdbg</id>
+                  <url>http://sdbg.github.io/p2</url>
+                  <layout>p2</layout>
                 </repository>
               </source>
               <append>true</append>
+              <latestVersionOnly>true</latestVersionOnly>
               <destination>${basedir}/../repo/target/repository</destination>
             </configuration>
           </execution>
