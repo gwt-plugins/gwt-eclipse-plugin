@@ -19,6 +19,14 @@ package com.google.gwt.eclipse.wtp.facet.data;
  */
 public interface IGwtFacetConstants {
 
+  /**
+   * This facet does not exist anymore, it's been replaced with GWT_FACET_ID.
+   */
+  static final String REMOVED_GWT_FACET_ID = "com.google.gwt.facet";
+  
+  /**
+   * GWT FACET
+   */
   static final String GWT_FACET_ID = "com.gwtplugins.gwt.facet";
 
   static final String GWT_SDK = GWT_FACET_ID + ".property.sdk";

@@ -32,8 +32,8 @@
       <label>GWT</label>
       <description>Enables GWT SDK use for the project.</description>
     </project-facet>  
-    
-    <!-- Version -->
+
+    <!-- Facet Version com.gwtplugins.gwt.facet -->
     <project-facet-version facet="com.gwtplugins.gwt.facet" version="1.0">
       <constraint>
 	 	<and>
@@ -49,13 +49,12 @@
         id="com.gwtplugins.gwt.facet.install"
         type="install">
      	<delegate class="com.google.gwt.eclipse.wtp.facet.GwtFacetInstallSdkDelegate"/>
-        
         <config-factory 
         	class="com.google.gwt.eclipse.wtp.facet.data.GwtFacetInstallDataModelProvider">
         </config-factory>
     </action>
-    
-    <!-- Uninstall -->
+
+	<!-- Uninstall com.gwtplugins.gwt.facet -->
     <action
 		  facet="com.gwtplugins.gwt.facet"
 		  id="com.gwtplugins.gwt.facet.uninstall"
@@ -85,7 +84,8 @@
       <launchableAdapter
         id="com.gwtplugins.gwt.server.http.web"
         class="com.google.gwt.eclipse.wtp.facet.GwtLaunchableAdapterDelegate"
-        typeIds="*" priority="1000" />
+        typeIds="*" 
+        priority="1000" />
    </extension>
    
   <!-- GWT Facet Properties -->
