@@ -249,9 +249,9 @@
       
       <!-- CodeServer Launcher--> 
       <launchConfigurationType
-            name="GWT Dev Mode External Server"
-            delegateName="GWT Dev Mode External Server"
-            delegateDescription="Runs GWT development mode with external server or device"
+            name="GWT Development Mode (CodeServer)"
+            delegateName="GWT Development Mode (CodeServer)"
+            delegateDescription="Runs GWT development mode with any server or device"
             delegate="com.google.gwt.eclipse.core.launch.GwtSuperDevModeCodeServerDelegate"
             id="com.gwtplugins.gwt.eclipse.core.sdmCodeServer"
             modes="run, debug"
@@ -360,13 +360,14 @@
          </configurationType>
       </shortcut>
       
+      <!-- CodeServer Shortcut -->
       <shortcut 
       		path="com.gwtplugins.gwt.eclipse.core.launch.ui.gwtSdmCodeServerLaunchShortcut/codeServerGroup"
             class="com.google.gwt.eclipse.core.launch.ui.GwtSuperDevModeCodeServerLaunchShortcut"
-            description="Run GWT Super Dev Mode with External Server/Device"
+            description="Run GWT development mode with any server or device"
             icon="icons/gwt_codeserver_16x16.png"
             id="com.gwtplugins.gwt.eclipse.core.launch.ui.gwtSdmCodeServerLaunchShortcut"
-            label="GWT Super Dev Mode with External Server/Device"
+            label="GWT Development Mode"
             modes="run, debug">
          <contextualLaunch>
             <enablement>
@@ -379,10 +380,10 @@
             </enablement>
          </contextualLaunch>
          <description
-               description="Run GWT Super Dev Mode with External Server/Device"
+               description="Runs GWT development mode with any server or device"
                mode="run" />
          <description
-               description="Debug GWT Super Dev Mode with External Server/Device"
+               description="Debugs GWT development mode with any server or device"
                mode="debug" />
          <configurationType
                id="com.gwtplugins.gwt.eclipse.core.sdmCodeServer"/>
