@@ -1,0 +1,20 @@
+requires.0.namespace = org.eclipse.equinox.p2.iu
+requires.0.name = com.google.gdt.eclipse.suite.e44.feature.feature.group
+requires.0.min = 0
+requires.0.max = 0
+
+requires.1.namespace = org.eclipse.equinox.p2.iu
+requires.1.name = com.google.appengine.eclipse.sdkbundle.feature.feature.group
+requires.1.min = 0
+requires.1.max = 0
+
+requires.2.namespace = org.eclipse.equinox.p2.iu
+requires.2.name = com.google.gwt.eclipse.sdkbundle.feature.feature.group
+requires.2.min = 0
+requires.2.max = 0
+
+requires.3.namespace = org.eclipse.equinox.p2.iu
+requires.3.name = com.google.appengine.eclipse.wtp.maven.feature.feature.group
+requires.3.min = 0
+requires.3.max = 0
+
