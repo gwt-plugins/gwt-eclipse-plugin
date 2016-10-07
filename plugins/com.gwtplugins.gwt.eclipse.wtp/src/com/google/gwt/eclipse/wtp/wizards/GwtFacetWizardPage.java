@@ -54,7 +54,7 @@ import java.util.List;
 public class GwtFacetWizardPage extends DataModelWizardPage implements IFacetWizardPage,
     IGwtFacetConstants {
 
-  private static final String WIZARD_NAME = IGwtFacetConstants.GWT_FACET_ID + ".install.page";
+  private static final String WIZARD_NAME = IGwtFacetConstants.GWT_PLUGINS_FACET_ID + ".install.page";
 
   private IFacetedProjectListener runtimeChangedListener;
 

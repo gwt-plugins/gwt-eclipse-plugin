@@ -12,7 +12,7 @@ import org.eclipse.wst.common.project.facet.core.FacetedProjectFramework;
 public class GwtFacetTestingUtilities {
 
   public static boolean hasGwtFacet(IProject project) throws CoreException {
-    return FacetedProjectFramework.hasProjectFacet(project, IGwtFacetConstants.GWT_FACET_ID);
+    return FacetedProjectFramework.hasProjectFacet(project, IGwtFacetConstants.GWT_PLUGINS_FACET_ID);
   }
 
 }

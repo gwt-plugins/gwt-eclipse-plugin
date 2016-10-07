@@ -11,9 +11,6 @@ public final class GwtRuntimeConfigurator implements IStartup {
   @Override
   public void startup() {
     GwtWtpPlugin.logMessage("GWT Facet startup");
-    
-    // remove old gwt facet
-    GwtFacetUtils.removePreviousGwtFacet();
   }
 
 }

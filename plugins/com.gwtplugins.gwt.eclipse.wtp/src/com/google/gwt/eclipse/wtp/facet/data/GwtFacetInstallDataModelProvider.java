@@ -28,7 +28,7 @@ public class GwtFacetInstallDataModelProvider extends FacetInstallDataModelProvi
   @Override
   public Object getDefaultProperty(String propertyName) {
     if (propertyName.equals(FACET_ID)) {
-      return GWT_FACET_ID;
+      return GWT_PLUGINS_FACET_ID;
     }
     return super.getDefaultProperty(propertyName);
   }
