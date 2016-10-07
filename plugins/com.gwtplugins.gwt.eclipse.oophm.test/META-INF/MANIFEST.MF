@@ -3,6 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: GWT Out-Of-Process Hosted Mode Plugin Test Fragment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.oophm.test
-Bundle-Version: 0.0.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Fragment-Host: com.gwtplugins.gwt.eclipse.oophm
 Require-Bundle: org.junit

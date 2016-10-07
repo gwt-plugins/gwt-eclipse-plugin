@@ -11,7 +11,7 @@ Bundle-Name: %pluginName
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: com.gwtplugins.gdt.eclipse.core;singleton:=true
 Bundle-Vendor: %providerName
-Bundle-Version: 0.0.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Export-Package: com.google.common.annotations,
  com.google.common.base,
  com.google.common.base.internal,

@@ -7,7 +7,7 @@ Bundle-Name: %pluginName
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: com.gwtplugins.gcp.eclipse.testing;singleton:=true
 Bundle-Vendor: %providerName
-Bundle-Version: 0.0.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Export-Package: com.google.gcp.eclipse.testing
 Require-Bundle: 
  com.gwtplugins.gdt.eclipse.core,
