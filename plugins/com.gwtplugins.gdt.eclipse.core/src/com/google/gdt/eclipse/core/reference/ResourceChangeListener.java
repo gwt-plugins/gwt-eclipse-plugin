@@ -60,9 +60,8 @@ class ResourceChangeListener implements IResourceChangeListener {
           IResource resource = delta.getResource();
 
           try {
-            // Only track references within GPE projects
+            // Only track references within GWTprojects
             boolean isRoot = resource.getType() == IResource.ROOT;
-            // FIXME: USe GWTNature.isGWTProject()?
             if (!isRoot
                 && !ProjectUtilities.isGwtProject(resource.getProject())) {
               return false;

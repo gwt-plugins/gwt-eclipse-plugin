@@ -153,6 +153,7 @@ public class WebAppUtilities {
       return fileSystemPath[0];
     } else {
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
           Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
           DirectoryDialog dialog = new DirectoryDialog(shell);
@@ -196,7 +197,7 @@ public class WebAppUtilities {
   /**
    * Get the WEB-INF folder resource, depending of project type.
    *
-   * @return the folder of web contents location ('war/WEB-INF' for GaeProject,
+   * @return the folder of web contents location ('war/WEB-INF' or
    *         'WebContents/WEB-INF' for dynamic web project).
    * @throws CoreException
    */

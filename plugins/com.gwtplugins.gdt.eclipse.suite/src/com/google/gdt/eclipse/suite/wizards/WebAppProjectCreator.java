@@ -32,8 +32,8 @@ import com.google.gdt.eclipse.suite.launch.WebAppLaunchUtil;
 import com.google.gdt.eclipse.suite.preferences.GdtPreferences;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
-import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.runtime.tools.WebAppProjectCreatorRunner;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateWebInfFolderCommand;
 import com.google.gwt.eclipse.core.util.GwtVersionUtil;
@@ -672,9 +672,9 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
 
   private Sdk getSdk(String containerId, SdkManager<? extends Sdk> sdkManager) {
     Sdk sdk = null;
-    IPath gaeContainerPath = findContainerPath(containerId);
-    if (gaeContainerPath != null) {
-      sdk = sdkManager.findSdkForPath(gaeContainerPath);
+    IPath containerPath = findContainerPath(containerId);
+    if (containerPath != null) {
+      sdk = sdkManager.findSdkForPath(containerPath);
     }
 
     return sdk;

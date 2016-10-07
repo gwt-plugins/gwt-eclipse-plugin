@@ -11,7 +11,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="com.gwtplugins.gdt.eclipse.suite.preferences.ui.googlePreferences"
+            category="com.gwtplugins.gdt.eclipse.suite.preferences.ui.preferences"
             class="com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage"
             id="com.gwtplugins.gwt.eclipse.core.preferences.ui.GwtPreferencePage"
             name="GWT Settings">
@@ -719,7 +719,7 @@
       </page>
    </extension>
    <!--
-   		Participate in the Google deployment process
+   		Participate in the GWT deployment process
    -->
    <extension
          point="com.gwtplugins.gdt.eclipse.core.deploymentParticipant">

@@ -51,7 +51,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.wb.swt.SWTResourceManager;
 
 /**
  * Tabular view of a set of {@link Sdk}s which also allows {@link Sdk}s to be added, removed or downloaded.
@@ -126,7 +125,7 @@ public abstract class SdkTable<T extends Sdk> extends Composite {
   public SdkTable(Composite parent, int style, SdkSet<T> startingSdks,
       SdkManagerStateChangeListener stateChangeListener, DialogPage dialogPage) {
     super(parent, style);
-    setBackground(SWTResourceManager.getColor(SWT.COLOR_TRANSPARENT));
+    setBackground(getDisplay().getSystemColor(SWT.COLOR_TRANSPARENT));
 
     this.dialogPage = dialogPage;
     this.stateChangeListener = stateChangeListener;

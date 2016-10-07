@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: GWT Eclipse Plugin SWTBot Test Fragment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.wtp.maven.test
-Bundle-Vendor: Google, Inc.
+Bundle-Vendor: GWT Project
 Bundle-Version: 0.0.0.qualifier
 Fragment-Host: com.gwtplugins.gwt.eclipse.core
 Require-Bundle: org.junit,

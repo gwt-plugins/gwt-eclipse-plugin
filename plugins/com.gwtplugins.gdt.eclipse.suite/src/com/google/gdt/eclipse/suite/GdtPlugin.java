@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
  *
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *******************************************************************************/
 package com.google.gdt.eclipse.suite;
 
-import com.google.gdt.eclipse.core.AbstractGooglePlugin;
+import com.google.gdt.eclipse.core.AbstractGwtPlugin;
 import com.google.gdt.eclipse.core.BuilderUtilities;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.Logger;
@@ -55,14 +55,9 @@ import java.util.List;
  */
 @SuppressWarnings("restriction")
 // org.eclipse.ui.internal.Workbench, org.eclipse.ui.internal.WorkbenchPage
-public class GdtPlugin extends AbstractGooglePlugin {
+public class GdtPlugin extends AbstractGwtPlugin {
 
   public static final String PLUGIN_ID = "com.gwtplugins.gdt.eclipse.suite";
-
-  // The following constant is defined in org.eclipse.osgi.framework.internal.core.Constants through
-  // Eclipse 4.3(Kepler), and in org.eclipse.osgi.framework.Constants starting in Eclipse 4.4(Luna).
-  // TODO(nhcohen): Import this constant once all supported platforms define it in the same place.
-  public static final String BUNDLE_VERSION = "Bundle-Version";
 
   private static Logger logger;
   /**
@@ -101,7 +96,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
    * @return current eclipse version as a string.
    */
   public static String getEclipseVersion() {
-    return ResourcesPlugin.getPlugin().getBundle().getHeaders().get(BUNDLE_VERSION);
+    return ResourcesPlugin.getPlugin().getBundle().getVersion().toString();
   }
 
   public static String getInstallationId() {
@@ -121,11 +116,11 @@ public class GdtPlugin extends AbstractGooglePlugin {
   }
 
   public static Version getVersion() {
-    return new Version(getDefault().getBundle().getHeaders().get(BUNDLE_VERSION));
+    return getDefault().getBundle().getVersion();
   }
 
-  private static void rebuildGoogleProjectIfPluginVersionChanged(IProject project) {
-    // We're only worried about Google projects
+  private static void rebuildProjectIfPluginVersionChanged(IProject project) {
+    // We're only worried about GWT projects
     if (GWTNature.isGWTProject(project.getProject())) {
       // Find the last plugin version that know the project was built with
       Version lastForcedRebuildAt = GdtPreferences.getVersionForLastForcedRebuild(project);
@@ -141,21 +136,21 @@ public class GdtPlugin extends AbstractGooglePlugin {
     }
   }
 
-  private static void rebuildGoogleProjectsIfPluginVersionChanged() {
+  private static void rebuildProjectsIfPluginVersionChanged() {
     boolean closedProjectsInWorkspace = false;
 
-    // Rebuild all (open) Google projects in the workspace
+    // Rebuild all (open) GWT projects in the workspace
     IWorkspace workspace = ResourcesPlugin.getWorkspace();
     for (IProject project : workspace.getRoot().getProjects()) {
       if (project.isOpen()) {
-        rebuildGoogleProjectIfPluginVersionChanged(project);
+        rebuildProjectIfPluginVersionChanged(project);
       } else {
         closedProjectsInWorkspace = true;
       }
     }
 
     // Add listeners for all closed projects, so we can rebuild them, too,
-    // when they're opened (but only if they are Google projects).
+    // when they're opened (but only if they are GWT projects).
     if (closedProjectsInWorkspace) {
       workspace.addResourceChangeListener(new IResourceChangeListener() {
         @Override
@@ -171,7 +166,7 @@ public class GdtPlugin extends AbstractGooglePlugin {
               if ((projectDelta.getFlags() & IResourceDelta.OPEN) > 0) {
                 IProject project = (IProject) projectDelta.getResource();
                 if (project.isOpen()) {
-                  rebuildGoogleProjectIfPluginVersionChanged(project);
+                  rebuildProjectIfPluginVersionChanged(project);
                 }
               }
             }
@@ -338,17 +333,17 @@ public class GdtPlugin extends AbstractGooglePlugin {
 
     /*
      * We've already loaded the specific problem type enums in the specific plugin activators that define them
-     * (GWTPlugin.java, AppEngineCorePlugin.java). Now we need to load the problem severities.
+     * (GWTPlugin.java). Now we need to load the problem severities.
      *
-     * There is a small window between the time that this plugin is loaded and a plugin-specific builder (i.e. for GWT,
-     * or App Engine) can be invoked. It may be the case that a user will get a problem marker that has a severity that
+     * There is a small window between the time that this plugin is loaded and a plugin-specific builder (i.e. for GWT)
+     * can be invoked. It may be the case that a user will get a problem marker that has a severity that
      * mismatches what they've defined. This will be fixed up on their next rebuild. If we hear of reports of this being
      * a nuisance, we can work out a clever way to rebuild possibly-affected projects when this plugin loads (or,
      * perhaps have a latch that prevents problem markers from being created until this plugin loads).
      */
     GdtProblemSeverities.getInstance().loadSeverities(GdtPreferences.getEncodedProblemSeverities());
 
-    rebuildGoogleProjectsIfPluginVersionChanged();
+    rebuildProjectsIfPluginVersionChanged();
 
     new ProjectMigrator().migrate();
   }

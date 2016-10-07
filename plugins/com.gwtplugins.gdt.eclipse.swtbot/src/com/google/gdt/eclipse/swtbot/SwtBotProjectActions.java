@@ -14,6 +14,8 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.swtbot;
 
+import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
+
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.Widget;
@@ -26,23 +28,21 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 
-import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
-
 /**
  * SWTBot utility methods that perform general workbench actions.
  */
 public final class SwtBotProjectActions {
 
   /**
-   * Possible names for the GPE menu label.
+   * Possible names for the GWT menu label.
    */
-  public static final String[] GOOGLE_MENU_LABELS = {"GPE Tools", "Google"};
+  public static final String[] GWT_MENU_LABELS = {"GWT"};
 
   private static final String SOURCE_FOLDER = "src";
 
   /**
    * Creates a java class with the specified name.
-   * 
+   *
    * @param bot The SWTWorkbenchBot.
    * @param projectName The name of the project the class should be created in.
    * @param packageName The name of the package the class should be created in.
@@ -72,7 +72,7 @@ public final class SwtBotProjectActions {
 
   /**
    * Creates a java project with the specified project name.
-   * 
+   *
    * @param bot the SWTWorkbenchBot
    * @param projectName the name of the java project to create
    */
@@ -190,7 +190,7 @@ public final class SwtBotProjectActions {
   }
 
   public static void createWebAppProject(final SWTWorkbenchBot bot, String projectName,
-      String packageName, boolean useGwt, boolean useAppEngine, boolean generateSampleCode) {
+      String packageName, boolean useGwt, boolean generateSampleCode) {
     // Open Java Perspective
     bot.perspectiveById("org.eclipse.jdt.ui.JavaPerspective").activate();
 
@@ -199,10 +199,10 @@ public final class SwtBotProjectActions {
 
     // Select the Web App project wizard
     SWTBotTree projectSelectionTree = bot.tree();
-    SWTBotTreeItem projectSelectionGoogleTreeItem =
-        SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, GOOGLE_MENU_LABELS,
+    SWTBotTreeItem projectSelectionTreeItem =
+        SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, GWT_MENU_LABELS,
             "Web Application Project").expand();
-    SwtBotTestingUtilities.selectTreeItem(bot, projectSelectionGoogleTreeItem,
+    SwtBotTestingUtilities.selectTreeItem(bot, projectSelectionTreeItem,
         "Web Application Project");
     bot.button("Next >").click();
 
@@ -210,8 +210,7 @@ public final class SwtBotProjectActions {
     bot.textWithLabel("Project name:").setText(projectName);
     bot.textWithLabel("Package: (e.g. com.example.myproject)").setText(packageName);
 
-    SwtBotTestingUtilities.setCheckBox(bot.checkBox("Use Google Web Toolkit"), useGwt);
-    SwtBotTestingUtilities.setCheckBox(bot.checkBox("Use Google App Engine"), useAppEngine);
+    SwtBotTestingUtilities.setCheckBox(bot.checkBox("Use GWT Web Toolkit"), useGwt);
     SwtBotTestingUtilities.setCheckBox(bot.checkBox("Generate project sample code"),
         generateSampleCode);
 
@@ -221,6 +220,7 @@ public final class SwtBotProjectActions {
   public static void deleteProject(final SWTWorkbenchBot bot, final String projectName) {
 
     SwtBotTestingUtilities.performAndWaitForWindowChange(bot, new Runnable() {
+      @Override
       public void run() {
         selectProject(bot, projectName).contextMenu("Delete").click();
         // Wait for confirmation window to come up
@@ -237,7 +237,7 @@ public final class SwtBotProjectActions {
    * Returns true if the specified project can be found in the 'Package Explorer' or 'Project View',
    * otherwise returns false. Throws a WidgetNotFoundException exception if the 'Package Explorer'
    * or 'Project Explorer' view cannot be found.
-   * 
+   *
    * @param bot The SWTWorkbenchBot.
    * @param projectName The name of the project to be found.
    * @return
@@ -259,29 +259,6 @@ public final class SwtBotProjectActions {
       }
     }
     return false;
-  }
-
-  /**
-   * Returns the Google context menu label. Throws WidgetNotFoundException if it cannot find it.
-   */
-  public static String getGoogleMenuLabel(SWTWorkbenchBot bot) {
-    // Open the list of new project wizards
-    bot.menu("File").menu("New").menu("Other...").click();
-
-    SWTBotTree projectSelectionTree = bot.tree();
-    SWTBotTreeItem[] itemsArray = projectSelectionTree.getAllItems();
-
-    for (SWTBotTreeItem item : itemsArray) {
-      for (String label : GOOGLE_MENU_LABELS) {
-        if (item.getText().equals(label)) {
-          bot.button("Cancel").click();
-          return label;
-        }
-      }
-    }
-
-    bot.button("Cancel").click();
-    throw new WidgetNotFoundException("Cannot determine the Google menu label");
   }
 
   /*
@@ -337,13 +314,14 @@ public final class SwtBotProjectActions {
 
   /**
    * Opens the Properties dialog for a given project.
-   * 
+   *
    * This method assumes that either the Package Explorer or Project Explorer view is visible.
    */
   public static void openProjectProperties(final SWTWorkbenchBot bot, String projectName) {
     selectProject(bot, projectName);
 
     SwtBotTestingUtilities.performAndWaitForWindowChange(bot, new Runnable() {
+      @Override
       public void run() {
         // Open the Project Properties menu via the File menu
         SWTBotMenu fileMenu = bot.menu("File");
@@ -354,7 +332,7 @@ public final class SwtBotProjectActions {
 
   /**
    * Refresh project tree.
-   * 
+   *
    * @param bot The SWTWorkbenchBot.
    * @param projectName The project name.
    */
@@ -366,7 +344,7 @@ public final class SwtBotProjectActions {
   /**
    * Returns the specified project. Throws a WidgetNotFoundException if the 'Package Explorer' or
    * 'Project Explorer' view cannot be found or if the specified project cannot be found.
-   * 
+   *
    * @param bot The SWTWorkbenchBot.
    * @param projectName The name of the project to select.
    * @return
@@ -399,7 +377,7 @@ public final class SwtBotProjectActions {
   /**
    * Select a file/folder by providing a parent tree, and a list folders that lead to the
    * file/folder.
-   * 
+   *
    * @param item Root tree item.
    * @param folderPath List of folder names that lead to file.
    * @return Returns a SWTBotTreeItem of the last name in texts.

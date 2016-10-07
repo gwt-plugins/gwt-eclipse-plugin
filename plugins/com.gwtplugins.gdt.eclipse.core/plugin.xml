@@ -9,7 +9,7 @@
    <extension-point id="com.gwtplugins.gdt.eclipse.core.debugLauncher" name="Debug Launcher" schema="schema/com.gwtplugins.gdt.eclipse.core.debugLauncher.exsd"/>
    
    <extension point="org.eclipse.core.expressions.definitions">
-        <definition id="com.gwtplugins.gdt.eclipse.core.isGpeSelected">
+        <definition id="com.gwtplugins.gdt.eclipse.core.isGwtCandidate">
             <and>
                <adapt type="org.eclipse.core.resources.IProject">
                    <test property="org.eclipse.core.resources.projectNature"
@@ -26,7 +26,7 @@
             id="com.gwtplugins.gdt.eclipse.core.properties.coreProjectPropertyPage"
             name="GWT">
          <enabledWhen>
-            <reference definitionId="com.gwtplugins.gdt.eclipse.core.isGpeSelected"/>
+            <reference definitionId="com.gwtplugins.gdt.eclipse.core.isGwtCandidate"/>
          </enabledWhen>
       </page>
       <page
@@ -35,13 +35,13 @@
             id="com.gwtplugins.gdt.eclipse.core.properties.ui.webappProjectPropertyPage"
             name="Web Application">
          <enabledWhen>
-            <reference definitionId="com.gwtplugins.gdt.eclipse.core.isGpeSelected"/>
+            <reference definitionId="com.gwtplugins.gdt.eclipse.core.isGwtCandidate"/>
          </enabledWhen>
       </page>
    </extension>
    <extension
          id="webAppProjectValidator"
-         name="Google WebApp Project Validator"
+         name="GWT WebApp Project Validator"
          point="org.eclipse.core.resources.builders">
       <builder
             callOnEmptyDelta="true"

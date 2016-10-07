@@ -1,16 +1,16 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
  *
- * All rights reserved. This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License v1.0 which
- * accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *******************************************************************************/
 package com.google.gdt.eclipse.core.update.internal.core;
 
@@ -20,8 +20,6 @@ import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.QualifiedName;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -31,52 +29,10 @@ import java.util.Map.Entry;
 
 /**
  * Builds the query string to include with a feature update check request.
- *
- * TODO remove GAE...
  */
 public class UpdateQueryBuilder {
 
-  public static final String API_ADD_ACTION = "api_add";
-
-  public static final String GAE_BACKEND_DEPLOY_ACTION = "gae_backend_deploy";
-
-  public static final String GAE_DEPLOY_ACTION = "gae_deploy";
-
-  public static final String GPH_PROJECT_IMPORT = "gph_import";
-
   private static final String ACTION_PARAM = "&action=";
-
-  public static final String ENDPOINTS_GEN_APP_ENGINE_BACKEND = "endpoints_genbackend";
-
-  public static final String ENDPOINTS_GEN_APP_ENGINE_CONNECTED_ANDROID =
-      "endpoints_genconnectedandroid";
-
-  public static final String ENDPOINTS_GEN_ENDPOINT_CLASS = "endpoints_genclass";
-
-  public static final String APPS_SCRIPT_IMPORT = "apps_script_import";
-
-  /**
-   * Stores count of RPC layers
-   */
-  public static synchronized void incrementRPCLayerCount(IProject project, Boolean initialize) {
-    try {
-      String rpcLayerCountString = project.getPersistentProperty(new QualifiedName(
-          CorePlugin.PLUGIN_ID, "gaeConnectedAndroidProject"));
-      int rpcLayerCountInt = 0;
-      if (!initialize) {
-        if (rpcLayerCountString == null) {
-          return;
-        } else {
-          rpcLayerCountInt = Integer.parseInt(rpcLayerCountString) + 1;
-        }
-      }
-      rpcLayerCountString = Integer.toString(rpcLayerCountInt);
-      project.setPersistentProperty(new QualifiedName(CorePlugin.PLUGIN_ID,
-          "gaeConnectedAndroidProject"), rpcLayerCountString);
-    } catch (CoreException e) {
-      CorePluginLog.logError(e);
-    }
-  }
 
   /**
    * The argument to add to the &action= param. May be null.
@@ -104,27 +60,11 @@ public class UpdateQueryBuilder {
   private String featureVersion;
 
   /**
-   * The hash of the GAE app's ID, if applicable.
-   */
-  private String gaeAppIdHash;
-
-  /**
    * The installation id.
    */
   private String installationId;
 
   private Map<String, String> maxSdkVersions;
-
-  /**
-   * Stores count of RPC layers
-   */
-  private String rpcLayerCount;
-  /**
-   * Stores info about Google cloud sql usage.
-   */
-  private boolean isGoogleCloudSqlUsed;
-
-  private boolean isGoogleCloudSqlUsedWithMysql;
 
   /**
    * The product information for eclipse, to distinguish between different
@@ -142,24 +82,7 @@ public class UpdateQueryBuilder {
    */
   private String extensionContribs;
 
-  /**
-   * Stores info about whether the project has Web API.
-   */
-  private boolean isCloudEndpointProject;
-
   public UpdateQueryBuilder() {
-    isGoogleCloudSqlUsed = false;
-    isGoogleCloudSqlUsedWithMysql = false;
-    isCloudEndpointProject = false;
-  }
-
-  /**
-   * Sets flag indicating whether the project is Cloud Endpoint project.
-   */
-  public void retrieveCloudEndpointEnabled(IProject project) {
-    if (ProjectInformationUtils.isCloudEndpointProject(project)) {
-      isCloudEndpointProject = true;
-    }
   }
 
   public void retrieveExtensionContributions(IProject project) {
@@ -197,18 +120,6 @@ public class UpdateQueryBuilder {
   }
 
   /**
-   * Retrieves count of RPC layers.
-   */
-  public synchronized void retrieveRPCLayerCount(IProject project) {
-    try {
-      rpcLayerCount = project.getPersistentProperty(new QualifiedName(CorePlugin.PLUGIN_ID,
-          "gaeConnectedAndroidProject"));
-    } catch (CoreException e) {
-      CorePluginLog.logError(e);
-    }
-  }
-
-  /**
    * Sets if this query is a gae deploy ping.
    */
   public void setAction(String action) {
@@ -240,14 +151,6 @@ public class UpdateQueryBuilder {
    */
   public void setFeatureVersion(String featureVersion) {
     this.featureVersion = featureVersion;
-  }
-
-  /**
-   * Calculates and stores the hash of the app id of the project if the given
-   * project is a GAE project.
-   */
-  public void setGaeAppIdHash(String hash) {
-    this.gaeAppIdHash = hash;
   }
 
   /**
@@ -306,11 +209,6 @@ public class UpdateQueryBuilder {
       sb.append(action);
     }
 
-    if (gaeAppIdHash != null) {
-      sb.append("&appIdHash=");
-      sb.append(gaeAppIdHash);
-    }
-
     if (apiName != null) {
       sb.append("&apiName=");
       sb.append(apiName);
@@ -318,27 +216,9 @@ public class UpdateQueryBuilder {
       sb.append(apiPlatform);
     }
 
-    if (rpcLayerCount != null) {
-      sb.append("&rpcLayerCount=");
-      sb.append(rpcLayerCount);
-    }
-
-    if (action != null) {
-      sb.append("&isGoogleCloudSqlUsed=");
-      sb.append(isGoogleCloudSqlUsed);
-      if (isGoogleCloudSqlUsed) {
-        sb.append("&isGoogleCloudSqlUsedWithMysql=");
-        sb.append(isGoogleCloudSqlUsedWithMysql);
-      }
-    }
-
     if (facetsEnabled != null) {
       sb.append("&facets=");
       sb.append(facetsEnabled);
-    }
-
-    if (isCloudEndpointProject) {
-      sb.append("&isCloudEndpointProject=true");
     }
 
     if (extensionContribs != null) {

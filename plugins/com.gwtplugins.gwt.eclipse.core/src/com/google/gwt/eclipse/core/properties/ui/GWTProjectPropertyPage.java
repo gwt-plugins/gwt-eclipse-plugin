@@ -1,14 +1,16 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
  *
- * All rights reserved. This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *******************************************************************************/
 package com.google.gwt.eclipse.core.properties.ui;
 
@@ -109,7 +111,7 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
     panel.setLayout(new GridLayout());
 
     useGWTCheckbox = new Button(panel, SWT.CHECK);
-    useGWTCheckbox.setText("Use Google Web Toolkit");
+    useGWTCheckbox.setText("Use GWT Web Toolkit");
 
     createSdkComponent(panel);
     createEntryPointModuleComponent(panel);
@@ -182,7 +184,7 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
      * set by this method call).
      *
      * The gory details as to why have to do with the order of application of the properties for
-     * each page (App Engine, Web App, then GWT), and the fact that this method will not make any
+     * each page (Web App, then GWT), and the fact that this method will not make any
      * changes to Web App properties if the project is already a Web App.
      */
     WebAppProjectProperties.maybeSetWebAppPropertiesForDynamicWebProject(project);
@@ -399,7 +401,7 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
 
   private IStatus validateSdk() {
     if (!useGWT) {
-      // Ignore any SDK problems since App Engine is not enabled
+      // Ignore any SDK problems since GWT is not enabled
       return StatusUtilities.OK_STATUS;
     }
 

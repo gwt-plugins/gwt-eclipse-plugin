@@ -31,9 +31,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * Other Google Eclipse Plugins inherit from this.
+ * Other GWT Eclipse Plugins inherit from this.
  */
-public abstract class AbstractGooglePlugin extends AbstractUIPlugin {
+public abstract class AbstractGwtPlugin extends AbstractUIPlugin {
 
   // TODO: to see if we can/should first check if the jar already exists
   protected static void extractJar(
@@ -71,7 +71,7 @@ public abstract class AbstractGooglePlugin extends AbstractUIPlugin {
       is.close();
     }
   }
-  
+
   private boolean imageRegistryCreated = false;
 
   public Image getImage(String imageId) {

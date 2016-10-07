@@ -111,9 +111,9 @@ public class SwtBotTestingUtilities {
 
     // Select the Java project
     SWTBotTree projectSelectionTree = bot.tree();
-    SWTBotTreeItem projectSelectionGoogleTreeItem =
+    SWTBotTreeItem projectSelectionTreeItem =
         SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, "Java", "Java Project");
-    SwtBotTestingUtilities.selectTreeItem(bot, projectSelectionGoogleTreeItem, "Java Project");
+    SwtBotTestingUtilities.selectTreeItem(bot, projectSelectionTreeItem, "Java Project");
 
     bot.button("Next >").click();
 

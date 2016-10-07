@@ -141,7 +141,7 @@ public class GWTLaunchConfiguration {
 
   private static String getStringAttribute(ILaunchConfiguration launchConfiguration,
       GWTLaunchAttributes launchAttribute) throws CoreException {
-    // TODO: Unify this method which is duped in GaeLaunchConfiguration,
+    // TODO: Unify this method which is duped in
     // WebAppLaunchConfiguration and GWTLaunchConfiguration
     return launchConfiguration.getAttribute(launchAttribute.getQualifiedName(),
         (String) launchAttribute.getDefaultValue());

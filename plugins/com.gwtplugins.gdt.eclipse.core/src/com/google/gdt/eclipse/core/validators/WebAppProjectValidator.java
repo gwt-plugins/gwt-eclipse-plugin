@@ -49,10 +49,8 @@ public class WebAppProjectValidator extends IncrementalProjectBuilder {
   public static final String PROBLEM_MARKER_ID = CorePlugin.PLUGIN_ID
       + ".webAppProblemMarker";
 
-  public static void removeBuilderIfNoGwtOrAppEngineNature(IProject project)
+  public static void removeBuilderIfNoGwtNature(IProject project)
       throws CoreException {
-    // Unfortunately, we can't access GWTNature or GaeNature from here, so we
-    // have to hard-code the nature IDs (which are unlikely to change anyway).
     if (!ProjectUtilities.isGwtProject(project)) {
       BuilderUtilities.removeBuilderFromProject(project, BUILDER_ID);
     }

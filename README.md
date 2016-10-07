@@ -1,7 +1,7 @@
 #GWT Eclipse Plugin
 The GWT Plugin for Eclipse repository for version 3. 
-This plugin does not contain the cloud tools as they have been split into 
-[Google Plugin for Eclipse](https://github.com/GoogleCloudPlatform/google-plugin-for-eclipse).  
+This plugin does not contain the cloud tools as they have been split into
+[Google Cloud Platform plugin for Eclipse](https://github.com/GoogleCloudPlatform/google-cloud-eclipse).
 
 # RoadMap
 
