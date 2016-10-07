@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension-point id="com.gwtplugins.gdt.eclipse.core.deploymentParticipant" name="Deployment Participant" schema="schema/com.gwtplugins.gdt.eclipse.core.deployParticipant.exsd"/>
    <extension-point id="com.gwtplugins.gdt.eclipse.core.webApplicationEnablementFinder" name="webApplicationEnablementFinder" schema="schema/com.gwtplugins.gdt.eclipse.core.webApplicationEnablementFinder.exsd"/>
    <extension-point id="com.gwtplugins.gdt.eclipse.core.warOutputDirectoryLocator" name="WAR Folder Output Directory Locator" schema="schema/com.gwtplugins.gdt.eclipse.core.warOutputDirectoryLocator.exsd"/>
    <extension-point id="com.gwtplugins.gdt.eclipse.core.managedWarOptionEnablementFinder" name="managedWarOptionEnablementFinder" schema="schema/com.gwtplugins.gdt.eclipse.core.managedWarOptionEnablementFinder.exsd"/>
