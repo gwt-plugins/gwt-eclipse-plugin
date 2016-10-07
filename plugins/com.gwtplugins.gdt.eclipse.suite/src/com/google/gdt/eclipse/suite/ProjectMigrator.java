@@ -51,7 +51,7 @@ public class ProjectMigrator {
     }
 
     // Add listeners for all closed projects, so we can rebuild them, too,
-    // when they're opened (but only if they are Google projects).
+    // when they're opened (but only if they are GWT projects).
     if (closedProjectsInWorkspace) {
       workspace.addResourceChangeListener(new IResourceChangeListener() {
         @Override

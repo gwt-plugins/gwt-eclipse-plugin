@@ -6,12 +6,12 @@
   <parent>
     <groupId>com.gwtplugins.eclipse</groupId>
     <artifactId>trunk</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <relativePath>../../</relativePath>
   </parent>
 
   <artifactId>com.gwtplugins.gdt.eclipse.suite.test.swtbot</artifactId>
-  <version>0.0.0-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
 
   <build>
@@ -28,10 +28,6 @@
           <useUIThread>false</useUIThread>
           <product>org.eclipse.sdk.ide</product>
           <application>org.eclipse.ui.ide.workbench</application>
-          <!-- Temporarily disable this test until the suite.ext plug-in is merged, making GoogleLogin work. -->
-          <excludes>
-            <exclude>**/SelectAppIdDialogTest.java</exclude>
-          </excludes>
         </configuration>
       </plugin>
     </plugins>

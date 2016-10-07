@@ -92,7 +92,7 @@ public class GWTNature implements IProjectNature {
   @Override
   public void deconfigure() throws CoreException {
     BuilderUtilities.removeBuilderFromProject(project, GWTProjectValidator.BUILDER_ID);
-    WebAppProjectValidator.removeBuilderIfNoGwtOrAppEngineNature(project);
+    WebAppProjectValidator.removeBuilderIfNoGwtNature(project);
   }
 
   @Override

@@ -5,7 +5,7 @@
 
   <groupId>com.gwtplugins.eclipse</groupId>
   <artifactId>trunk</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>3.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <properties>
@@ -19,6 +19,7 @@
     <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
     <swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/latest/</swtbot-repo.url>
+    <sdbg-repo.url>http://sdbg.github.io/p2/</sdbg-repo.url>
 
     <!-- Release url determined by upload in upload-release.sh -->
     <comparator.repo>http://storage.googleapis.com/gwt-eclipse-plugin/v3/release</comparator.repo>
@@ -31,7 +32,7 @@
 
     <!-- Don't kill the test early -->
     <surefire.timeout>120000</surefire.timeout>
-    
+
     <!-- Skip the deployment here, submodules can override this property -->
     <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
@@ -97,7 +98,7 @@
     </repository>
     <repository>
       <id>sdbg</id>
-      <url>http://sdbg.github.io/p2</url>
+      <url>${sdbg-repo.url}</url>
       <layout>p2</layout>
     </repository>
   </repositories>
@@ -206,10 +207,19 @@
           </environments>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-versions-plugin</artifactId>
+      </plugin>
     </plugins>
 
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-versions-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>target-platform-configuration</artifactId>

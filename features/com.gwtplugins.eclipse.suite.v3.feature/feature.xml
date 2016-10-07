@@ -2,7 +2,7 @@
 <feature
       id="com.gwtplugins.eclipse.suite.v3.feature"
       label="%featureName"
-      version="0.0.0.qualifier"
+      version="3.0.0.qualifier"
       provider-name="%providerName"
       plugin="com.gwtplugins.gdt.eclipse.suite">
 
@@ -83,23 +83,16 @@
       <import plugin="org.eclipse.equinox.p2.engine"/>
       <import plugin="org.eclipse.jst.common.project.facet.core"/>
       <import plugin="org.eclipse.emf.ecore.xmi"/>
-      <import plugin="org.eclipse.jpt.common.core"/>
-      <import plugin="org.eclipse.jpt.common.utility"/>
-      <import plugin="org.eclipse.jpt.jpa.core"/>
-      <import plugin="org.eclipse.jpt.jpa.db"/>
       <import plugin="org.eclipse.wst.common.emf"/>
       <import plugin="org.eclipse.text"/>
       <import plugin="org.eclipse.emf.codegen"/>
       <import plugin="org.eclipse.emf.edit.ui"/>
       <import plugin="org.eclipse.jem.util"/>
-      <import plugin="org.eclipse.jpt.common.ui"/>
-      <import plugin="org.eclipse.jpt.jpa.ui"/>
       <import plugin="org.eclipse.jst.common.frameworks"/>
       <import plugin="org.eclipse.jst.common.project.facet.ui"/>
       <import plugin="org.eclipse.jst.j2ee"/>
       <import plugin="org.eclipse.jst.j2ee.web"/>
       <import plugin="org.eclipse.jst.jee"/>
-      <import plugin="org.eclipse.persistence.jpa.jpql"/>
       <import plugin="org.eclipse.wst.common.frameworks.ui"/>
       <import plugin="org.eclipse.wst.server.ui"/>
       <import plugin="org.eclipse.wst.common.project.facet.ui"/>
@@ -114,70 +107,70 @@
          id="com.gwtplugins.gdt.eclipse.apiclientlib"
          download-size="0"
          install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.gwtplugins.gdt.eclipse.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.gwtplugins.gdt.eclipse.maven"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.gwtplugins.gdt.eclipse.platform"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.gwtplugins.gdt.eclipse.suite"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
-         unpack="false"/>
-
-   <plugin
-         id="com.gwtplugins.gdt.eclipse.suite.update"
-         download-size="0"
-         install-size="0"
-         version="0.0.0.qualifier"
+         version="3.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gwt.eclipse.core"
          download-size="0"
          install-size="0"
-         version="0.0.0.qualifier"
+         version="3.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.gwtplugins.gdt.eclipse.maven"
+         download-size="0"
+         install-size="0"
+         version="3.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.gwtplugins.gdt.eclipse.platform"
+         download-size="0"
+         install-size="0"
+         version="3.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.gwtplugins.gdt.eclipse.suite"
+         download-size="0"
+         install-size="0"
+         version="3.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.gwtplugins.gdt.eclipse.suite.update"
+         download-size="0"
+         install-size="0"
+         version="3.0.0.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="com.gwtplugins.gwt.eclipse.core"
+         download-size="0"
+         install-size="0"
+         version="3.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gwt.eclipse.oophm"
          download-size="0"
          install-size="0"
-         version="0.0.0.qualifier"
+         version="3.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gwt.eclipse.wtp"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gwt.eclipse.wtp.maven"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="3.0.0.qualifier"
          unpack="false"/>
 
 </feature>

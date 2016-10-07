@@ -6,7 +6,7 @@
          <meta.schema plugin="com.gwtplugins.gdt.eclipse.suite" id="com.gwtplugins.gdt.eclipse.suite.launchConfigVmArgProcessor" name="Launch Configuration VM Argument Processor"/>
       </appInfo>
       <documentation>
-         This is an internal-only extension point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
+         This is an internal-only extension point; it is not designed to be used by any code outside of the GWT Plugin.  No regards will be given to backwards compatibility.
       </documentation>
    </annotation>
 
@@ -69,7 +69,7 @@
          <meta.section type="apiinfo"/>
       </appInfo>
       <documentation>
-         This is an internal-only extension point; it is not designed to be used by any code outside of the Google Plugin.  No regards will be given to backwards compatibility.
+         This is an internal-only extension point; it is not designed to be used by any code outside of the GWT Plugin.  No regards will be given to backwards compatibility.
       </documentation>
    </annotation>
 

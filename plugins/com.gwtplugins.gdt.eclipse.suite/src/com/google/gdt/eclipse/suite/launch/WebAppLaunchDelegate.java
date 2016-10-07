@@ -174,7 +174,7 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
 
   /**
    * Returns <code>true</code> if there are any problems with a severity level greater than or equal to error. Note that
-   * by default {@link JavaLaunchDelegate} only considers java problems to be launch problems. However, we want GPE
+   * by default {@link JavaLaunchDelegate} only considers java problems to be launch problems. However, we want GWT
    * errors to also be considered launch problems.
    */
   @Override
@@ -227,12 +227,6 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
    */
   private boolean addVmArgs(ILaunchConfiguration configuration) throws CoreException {
     IProject project = getJavaProject(configuration).getProject();
-
-    // TODO remove?
-    // if (!GoogleCloudSqlProperties.getGoogleCloudSqlEnabled(project) ||
-    // GoogleCloudSqlProperties.getLocalDevMySqlEnabled(project)) {
-    // return true;
-    // }
 
     ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
     String vmArgs = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");

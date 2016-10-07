@@ -3,7 +3,6 @@
 <plugin>
    <extension-point id="com.gwtplugins.gdt.eclipse.suite.launchConfigVmArgProcessor" name="Launch Configuration VM Argument Processor" schema="schema/com.gwtplugins.gdt.eclipse.suite.launchConfigVmArgProcessor.exsd"/>
    <extension-point id="com.gwtplugins.gdt.eclipse.suite.xMxArgumentProcessorMem" name="XmxArgumentProcessor Memory" schema="schema/com.gwtplugins.gdt.eclipse.suite.xMxArgumentProcessorMem.exsd"/>
-   <extension-point id="com.gwtplugins.gdt.eclipse.suite.gaeSettingsTab" name="GaeSettingsTab" schema="schema/com.gwtplugins.gdt.eclipse.suite.gaeSettingsTab.exsd"/>
    <extension-point id="com.gwtplugins.gdt.eclipse.suite.mainTypeFinder" name="MainTypeFinder" schema="schema/com.gwtplugins.gdt.eclipse.suite.mainTypeFinder.exsd"/>
    <extension-point id="com.gwtplugins.gdt.eclipse.suite.warArgFinder" name="WarArgFinder" schema="schema/com.gwtplugins.gdt.eclipse.suite.warArgFinder.exsd"/>
    <extension-point id="com.gwtplugins.gdt.eclipse.suite.launchConfigurationType" name="LaunchConfigurationType" schema="schema/com.gwtplugins.gdt.eclipse.suite.launchConfigurationType.exsd"/>
@@ -13,12 +12,12 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="com.google.gdt.eclipse.suite.preferences.ui.GooglePreferencePage"
-            id="com.gwtplugins.gdt.eclipse.suite.preferences.ui.googlePreferences"
+            class="com.google.gdt.eclipse.suite.preferences.ui.GwtPreferencePage"
+            id="com.gwtplugins.gdt.eclipse.suite.preferences.ui.preferences"
             name="%gwt.label">
       </page>
       <page
-            category="com.gwtplugins.gdt.eclipse.suite.preferences.ui.googlePreferences"
+            category="com.gwtplugins.gdt.eclipse.suite.preferences.ui.preferences"
             class="com.google.gdt.eclipse.suite.preferences.ui.ErrorsWarningsPage"
             id="com.gwtplugins.gdt.eclipse.suite.preferences.ui.errorsWarnings"
             name="Errors/Warnings">
@@ -207,7 +206,7 @@
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="true"
-            id="com.gwtplugins.gdt.eclipse.suite.projectGoogleSettings"
+            id="com.gwtplugins.gdt.eclipse.suite.projectSettings"
             objectClass="org.eclipse.core.resources.IProject">
          <menu
                id="com.gwtplugins.gdt.eclipse.suite.popupMenu.project"
@@ -275,7 +274,7 @@
             <command
                   commandId="com.gwtplugins.gdt.eclipse.suite.GDTPulldown"
                   icon="icons/gdt_16x16.png"
-                  label="Google Services and Development Tools"
+                  label="GWT Services and Development Tools"
                   style="pulldown">
             </command>
          </toolbar>

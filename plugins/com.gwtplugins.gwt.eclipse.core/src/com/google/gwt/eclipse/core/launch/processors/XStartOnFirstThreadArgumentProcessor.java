@@ -98,7 +98,7 @@ public class XStartOnFirstThreadArgumentProcessor implements
     Bundle bundle = Platform.getBundle("org.eclipse.platform");
     if (bundle != null) {
       Version bundleVersion = bundle.getVersion();
-      if (bundleVersion.getMajor() == 4 && bundleVersion.getMinor() == 3) {
+      if (bundleVersion.getMajor() == 4 && bundleVersion.getMinor() >= 3) {
         updateEclipse43(launchConfig, javaProject, programArgs, vmArgs);
       } else {
         updateNonEclipse43(launchConfig, javaProject, programArgs, vmArgs);
@@ -122,8 +122,6 @@ public class XStartOnFirstThreadArgumentProcessor implements
       /*
        * If we're on a mac, we might need the -XstartOnFirstThread attribute set to true in order to work
        * around a UI threading issue with the Mac platform.
-       *
-       * We need to do this whether we're running GWT by itself, GWT + GAE, or GAE by itself.
        */
       if (!startOnFirstThread) {
         launchConfig.setAttribute(ATTR_XSTART_ON_FIRST_THREAD, true);
@@ -145,9 +143,6 @@ public class XStartOnFirstThreadArgumentProcessor implements
       /*
        * If we're on a mac, we might need the -XstartOnFirstThread argument in order
        * to work around a UI threading issue with the Mac platform.
-       *
-       * We need to do this whether we're running GWT by itself, GWT + GAE, or
-       * GAE by itself.
        */
       if (argIndex == -1) {
         vmArgs.add(0, ARG_XSTART_ON_FIRST_THREAD);

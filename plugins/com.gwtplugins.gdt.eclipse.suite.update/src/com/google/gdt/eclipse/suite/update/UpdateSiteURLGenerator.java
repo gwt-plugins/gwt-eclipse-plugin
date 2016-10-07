@@ -58,80 +58,6 @@ public class UpdateSiteURLGenerator {
     }
   }
 
-  public URL generateApiAddURL(String apiName, String apiPlatform)
-      throws MalformedURLException {
-    return computeCompositeUpdateSiteURL(GdtExtPlugin.FEATURE_UPDATE_SITE_URL,
-        UpdateQueryBuilder.API_ADD_ACTION, null, apiName, apiPlatform, null);
-  }
-
-  /**
-   * for gae deploys, passed project is converted to a GAE project and its app
-   * ID is hashed and sent with the ping.
-   */
-  public URL generateGaeBackendDeployURL(IProject project)
-      throws MalformedURLException {
-    return computeCompositeUpdateSiteURL(GdtExtPlugin.FEATURE_UPDATE_SITE_URL,
-        UpdateQueryBuilder.GAE_BACKEND_DEPLOY_ACTION, project, null, null, null);
-  }
-
-  public URL generateGaeDatanucleusLibChanged(String version) throws MalformedURLException{
-    return computeCompositeUpdateSiteURL(GdtExtPlugin.FEATURE_UPDATE_SITE_URL,
-        null, null, null, null, "&gaeDNVer=" + version);
-  }
-
-  /**
-   * for gae deploys, passed project is converted to a GAE project and its app
-   * ID is hashed and sent with the ping.
-   */
-  public URL generateGaeDeployURL(IProject project)
-      throws MalformedURLException {
-    return computeCompositeUpdateSiteURL(GdtExtPlugin.FEATURE_UPDATE_SITE_URL,
-        UpdateQueryBuilder.GAE_DEPLOY_ACTION, project, null, null, null);
-  }
-
-  /**
-   * sends an update ping when an App Engine demo has been imported.
-   */
-  public URL generateGaeSampleAppsURL() throws MalformedURLException {
-    return computeCompositeUpdateSiteURL(GdtExtPlugin.FEATURE_UPDATE_SITE_URL, null, null, null,
-        null, "&gaeSAImported=true");
-  }
-
-  public URL generateGPHImportURL() throws MalformedURLException {
-    return computeCompositeUpdateSiteURL(GdtExtPlugin.FEATURE_UPDATE_SITE_URL,
-        UpdateQueryBuilder.GPH_PROJECT_IMPORT, null, null, null, null);
-  }
-
-  public URL generateEndpointsAppEngineBackendURL(IProject project) throws MalformedURLException {
-    return computeCompositeUpdateSiteURL(GdtExtPlugin.FEATURE_UPDATE_SITE_URL,
-        UpdateQueryBuilder.ENDPOINTS_GEN_APP_ENGINE_BACKEND, project, null, null, null);
-  }
-
-  public URL generateEndpointsAppEngineConnectedAndroidURL(IProject project) throws MalformedURLException {
-    return computeCompositeUpdateSiteURL(GdtExtPlugin.FEATURE_UPDATE_SITE_URL,
-        UpdateQueryBuilder.ENDPOINTS_GEN_APP_ENGINE_CONNECTED_ANDROID, project, null, null, null);
-  }
-
-  public URL generateEndpointsClassURL(IProject project) throws MalformedURLException {
-    return computeCompositeUpdateSiteURL(GdtExtPlugin.FEATURE_UPDATE_SITE_URL,
-        UpdateQueryBuilder.ENDPOINTS_GEN_ENDPOINT_CLASS, project, null, null, null);
-  }
-
-  /**
-   * Obtains the URL for a ping specifying that a user with a given email address has imported an
-   * Apps Script project with a given Drive file ID.
-   *
-   * @param driveFileId the given Drive file ID
-   * @return the URL
-   */
-  public URL generateAppsScriptImportURL(String driveFileId) throws MalformedURLException {
-    return computeCompositeUpdateSiteURL(
-        GdtExtPlugin.FEATURE_UPDATE_SITE_URL,
-        UpdateQueryBuilder.APPS_SCRIPT_IMPORT,
-        null, null, null,
-        "&fileId=" + driveFileId);
-  }
-
   /**
    * For normal update pings.
    */
@@ -157,7 +83,7 @@ public class UpdateSiteURLGenerator {
    *          is hashed and added to the url.
    * @param apiName the name of the api added if this is an api add action. May
    *          be null
-   * @param apiPlatform a platform name such as "AppEngine", "Android", or "Unknown" if this is an
+   * @param apiPlatform a platform name such as "Unknown" if this is an
    *          api add action. May be null
    * @param extra if not null, then is appended at the end of the URL
    */
@@ -216,10 +142,7 @@ public class UpdateSiteURLGenerator {
     }
 
     if (project != null) {
-      updateQueryBuilder.retrieveRPCLayerCount(project);
       updateQueryBuilder.retrieveFacetsEnabled(project);
-      // Check if the project is Swarm project.
-      updateQueryBuilder.retrieveCloudEndpointEnabled(project);
     }
 
     updateQueryBuilder.retrieveExtensionContributions(project);

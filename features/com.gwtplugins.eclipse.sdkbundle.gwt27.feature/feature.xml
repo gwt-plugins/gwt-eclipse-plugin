@@ -18,7 +18,7 @@
    </license>
 
    <url>
-      <update label="GWT Plugin for Eclipse Update Site" url="http://storage.googleapis.com/gwt-eclipse-plugin/v3/release"/>
+      <update label="GWT Eclipse Plugin Update Site" url="http://storage.googleapis.com/gwt-eclipse-plugin/v3/release"/>
    </url>
 
    <plugin

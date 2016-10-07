@@ -39,13 +39,14 @@ import java.util.List;
  * <p>
  * The WST framework has a notion of "embedded CSS" which is constrained to CSS
  * within HTML (it contains hard-coded checks such as the parent element must be
- * "<style>"). To prevent confusion, the GPE embedded CSS is termed
+ * "<style>"). To prevent confusion, the GWT Eclipse Plugin embedded CSS is termed
  * "inlined CSS".
  */
 @SuppressWarnings("restriction")
 public class InlinedCssContentAssistProcessor implements
     IContentAssistProcessor {
 
+  @Override
   public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer,
       int offsetInDoc) {
 
@@ -94,6 +95,7 @@ public class InlinedCssContentAssistProcessor implements
   /*
    * Derived from CSSContentAssistProcessor's implementation.
    */
+  @Override
   public IContextInformation[] computeContextInformation(ITextViewer viewer,
       int offset) {
     return null;
@@ -102,6 +104,7 @@ public class InlinedCssContentAssistProcessor implements
   /*
    * Derived from CSSContentAssistProcessor's implementation.
    */
+  @Override
   public char[] getCompletionProposalAutoActivationCharacters() {
     return null;
   }
@@ -109,6 +112,7 @@ public class InlinedCssContentAssistProcessor implements
   /*
    * Derived from CSSContentAssistProcessor's implementation.
    */
+  @Override
   public char[] getContextInformationAutoActivationCharacters() {
     return null;
   }
@@ -116,6 +120,7 @@ public class InlinedCssContentAssistProcessor implements
   /*
    * Derived from CSSContentAssistProcessor's implementation.
    */
+  @Override
   public IContextInformationValidator getContextInformationValidator() {
     return null;
   }
@@ -123,6 +128,7 @@ public class InlinedCssContentAssistProcessor implements
   /*
    * Derived from CSSContentAssistProcessor's implementation.
    */
+  @Override
   public String getErrorMessage() {
     return null;
   }

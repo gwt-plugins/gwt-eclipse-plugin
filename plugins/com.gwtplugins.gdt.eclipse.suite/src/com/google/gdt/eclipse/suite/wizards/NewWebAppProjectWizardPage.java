@@ -1,13 +1,15 @@
 /*******************************************************************************
  * Copyright 2011 Google Inc. All Rights Reserved.
  *
- *  All rights reserved. This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- *  Unless required by applicable law or agreed to in writing, software distributed under the
- * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing permissions and
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.wizards;
@@ -183,7 +185,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
     createLocationGroup(containerOfComponents);
 
-    createGoogleSdkGroup(containerOfComponents);
+    createSdkGroup(containerOfComponents);
 
     createOtherOptionsGroup(containerOfComponents);
 
@@ -272,16 +274,16 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     }
   }
 
-  private void createGoogleSdkGroup(Composite container) {
+  private void createSdkGroup(Composite container) {
     int widthIndent = PixelConverterFactory.createPixelConverter(this.getControl()).convertWidthInCharsToPixels(2);
 
-    Group googleSdkGroup = new Group(container, SWT.NONE);
-    googleSdkGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-    final GridLayout googleSdkGroupLayout = new GridLayout();
-    googleSdkGroupLayout.verticalSpacing = 0;
-    googleSdkGroupLayout.numColumns = 1;
-    googleSdkGroup.setLayout(googleSdkGroupLayout);
-    googleSdkGroup.setText("SDKs");
+    Group sdkGroup = new Group(container, SWT.NONE);
+    sdkGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    final GridLayout sdkGroupLayout = new GridLayout();
+    sdkGroupLayout.verticalSpacing = 0;
+    sdkGroupLayout.numColumns = 1;
+    sdkGroup.setLayout(sdkGroupLayout);
+    sdkGroup.setText("SDKs");
 
     SelectionListener useSdkCheckboxSelectionListener = new SelectionListener() {
       @Override
@@ -295,20 +297,20 @@ public class NewWebAppProjectWizardPage extends WizardPage {
       }
     };
 
-    createGwtSdkGroup(googleSdkGroup, useSdkCheckboxSelectionListener, widthIndent);
+    createGwtSdkGroup(sdkGroup, useSdkCheckboxSelectionListener, widthIndent);
 
     // Add a horizontal spacer
-    new Label(googleSdkGroup, SWT.HORIZONTAL);
+    new Label(sdkGroup, SWT.HORIZONTAL);
   }
 
-  private void createGwtSdkGroup(Group googleSdkGroup, SelectionListener useSdkCheckboxSelectionListener,
+  private void createGwtSdkGroup(Group sdkGroup, SelectionListener useSdkCheckboxSelectionListener,
       int widthIndent) {
-    useGwtCheckbox = new Button(googleSdkGroup, SWT.CHECK);
+    useGwtCheckbox = new Button(sdkGroup, SWT.CHECK);
     useGwtCheckbox.addSelectionListener(useSdkCheckboxSelectionListener);
-    useGwtCheckbox.setText("Use Google Web Toolkit");
+    useGwtCheckbox.setText("Use GWT Web Toolkit");
     useGwtCheckbox.setSelection(true);
 
-    gwtSelectionBlock = new GwtWorkspaceSdkSelectionBlock(googleSdkGroup, SWT.NONE);
+    gwtSelectionBlock = new GwtWorkspaceSdkSelectionBlock(sdkGroup, SWT.NONE);
 
     gwtSelectionBlock.addSdkSelectionListener(new SdkSelectionBlock.SdkSelectionListener() {
       @Override

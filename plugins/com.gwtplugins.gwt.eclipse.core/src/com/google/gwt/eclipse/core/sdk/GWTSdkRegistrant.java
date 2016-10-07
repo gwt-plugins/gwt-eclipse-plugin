@@ -31,7 +31,7 @@ import java.net.URL;
 public class GWTSdkRegistrant {
 
   /**
-   * Registers a GWT SDK for use by GPE.
+   * Registers a GWT SDK for use by the GWT Eclipse Plugin.
    *
    * @param sdkUrl - File URL pointing to the root of a GWT SDK installation
    * @throws CoreException

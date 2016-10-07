@@ -23,7 +23,7 @@ import org.eclipse.ui.IWorkbenchPropertyPage;
 import org.eclipse.ui.dialogs.PropertyPage;
 
 /**
- * Configuration page for your project. Main "Google" configuration situation.
+ * Configuration page for your project. Main "GWT" configuration situation.
  * TODO: We need to put something here.
  */
 public class CoreProjectPropertyPage extends PropertyPage implements

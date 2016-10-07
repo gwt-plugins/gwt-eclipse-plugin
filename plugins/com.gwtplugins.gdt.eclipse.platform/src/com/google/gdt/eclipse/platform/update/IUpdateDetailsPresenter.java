@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Shell;
  * Presents details of the update after the user selects the notification.
  */
 public interface IUpdateDetailsPresenter {
-  public static final String DEFAULT_DIALOG_TITLE = "Google Plugin for Eclipse Update";
+  public static final String DEFAULT_DIALOG_TITLE = "GWT Eclipse Plugin Update";
 
   void presentUpdateDetails(Shell shell, String updateSiteUrl, ILog log,
       String pluginId);

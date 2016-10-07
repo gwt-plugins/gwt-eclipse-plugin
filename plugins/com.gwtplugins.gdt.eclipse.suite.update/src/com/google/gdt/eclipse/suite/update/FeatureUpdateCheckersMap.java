@@ -33,13 +33,11 @@ public class FeatureUpdateCheckersMap
 
   /**
    * The token is a unique substring in the update site URL which will decide if
-   * the update site is for GPE or GAE SDK.
+   * the update site is for the GWT SDK.
    */
   public enum UpdateSiteToken {
     // TODO(deepanshu): Add a build time flag that will choose tokens based on the build being from
     // trunk or release branch.
-    GAE_SDK("appengine"),
-    GPE_CORE("eclipse/plugin"),
     GWT_SDK("gwt");
 
     private final String token;

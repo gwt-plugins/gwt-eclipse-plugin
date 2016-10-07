@@ -548,7 +548,7 @@ public class LogContent<T extends IModelNode> extends Composite {
     if (console != null) {
       new DevModeStackTraceHyperlink(url, console).linkActivated();
     } else {
-      MessageDialog.openInformation(getShell(), "Google Eclipse Plugin",
+      MessageDialog.openInformation(getShell(), "GWT Eclipse Plugin",
           "Could not find Java source context.");
     }
   }

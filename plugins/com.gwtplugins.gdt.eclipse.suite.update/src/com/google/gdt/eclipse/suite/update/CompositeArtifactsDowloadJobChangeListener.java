@@ -52,7 +52,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 /**
- * Downloads site.xml for GPE, GAE SDK and GWT SDK when the download for compositeArtifacts.xml is
+ * Downloads site.xml for GWT SDK when the download for compositeArtifacts.xml is
  * complete.
  */
 public class CompositeArtifactsDowloadJobChangeListener extends JobChangeAdapter {
@@ -61,8 +61,6 @@ public class CompositeArtifactsDowloadJobChangeListener extends JobChangeAdapter
 
   private final FeatureUpdateManager featureUpdateManager;
   private NotificationControlSelectedHandler featureUpdateNotificationSelectionHandler;
-  private URL gaeSdkSiteUrl;
-  private URL gpeSiteUrl;
   private URL gwtSdkSiteUrl;
   private CountDownLatch siteXmlDownloadJobsCountDownLatch;
   private final File tempFile;
@@ -78,7 +76,7 @@ public class CompositeArtifactsDowloadJobChangeListener extends JobChangeAdapter
 
   /**
    * Called on completion of the download of compositeArtifacts.xml. This parses the file and finds
-   * the location of the site.xml for GPE and GAE SDK. A sample compositeArtifacts.xml is:
+   * the location of the site.xml for GWT SDK. A sample compositeArtifacts.xml is:
    *
    * <pre>
    * {@code
@@ -88,8 +86,6 @@ public class CompositeArtifactsDowloadJobChangeListener extends JobChangeAdapter
    * ...
    * </properties>
    * <children size="1">
-   *  <child location="...{GPE_CORE token}..."/>
-   *  <child location="...{GAE_SDK token}..."/>
    *  <child location="...{GWT_SDK token}..."/>
    * </children>
    * </repository>
@@ -114,12 +110,6 @@ public class CompositeArtifactsDowloadJobChangeListener extends JobChangeAdapter
             if (qualifiedName.equals(CHILD_ELEMENT_NODE)) {
               try {
                 if (attributes.getValue(LOCATION_ATTRIBUTE).contains(
-                    UpdateSiteToken.GPE_CORE.getToken())) {
-                  gpeSiteUrl = getSiteXmlUrl(attributes.getValue(LOCATION_ATTRIBUTE));
-                } else if (attributes.getValue(LOCATION_ATTRIBUTE).contains(
-                    UpdateSiteToken.GAE_SDK.getToken())) {
-                  gaeSdkSiteUrl = getSiteXmlUrl(attributes.getValue(LOCATION_ATTRIBUTE));
-                } else if (attributes.getValue(LOCATION_ATTRIBUTE).contains(
                     UpdateSiteToken.GWT_SDK.getToken())) {
                   gwtSdkSiteUrl = getSiteXmlUrl(attributes.getValue(LOCATION_ATTRIBUTE));
                 }
@@ -137,16 +127,11 @@ public class CompositeArtifactsDowloadJobChangeListener extends JobChangeAdapter
           }
         });
 
-        // After parsing is done, create the download jobs to download the two site.xml from GPE and
-        // GAE SDK update sites.
+        // After parsing is done, create the download jobs to download the two site.xml from GWT SDK update sites.
         updateList = new ArrayList<UpdateInfo>();
-        DownloadJob gpeDownloadJob = createDownloadJob("download GPE site.xml", gpeSiteUrl,
-            UpdateSiteToken.GPE_CORE);
-        DownloadJob gaeDownloadJob = createDownloadJob("download GAE SDK site.xml", gaeSdkSiteUrl,
-            UpdateSiteToken.GAE_SDK);
         DownloadJob gwtDownloadJob = createDownloadJob(
             "download GWT SDK site.xml", gwtSdkSiteUrl, UpdateSiteToken.GWT_SDK);
-        addDownloadJobs(gpeDownloadJob, gaeDownloadJob, gwtDownloadJob);
+        addDownloadJobs(gwtDownloadJob);
         siteXmlDownloadJobsCountDownLatch.await(SITE_XML_DOWNLOAD_TIMEOUT, TimeUnit.SECONDS);
         if (!updateList.isEmpty()) {
           notifyOfAvailableUpdates(updateList);

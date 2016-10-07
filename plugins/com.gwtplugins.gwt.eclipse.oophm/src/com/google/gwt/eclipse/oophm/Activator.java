@@ -14,7 +14,7 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.oophm;
 
-import com.google.gdt.eclipse.core.AbstractGooglePlugin;
+import com.google.gdt.eclipse.core.AbstractGwtPlugin;
 import com.google.gdt.eclipse.core.browser.BrowserUtilities;
 import com.google.gwt.eclipse.oophm.launch.RemoteUIServer;
 import com.google.gwt.eclipse.oophm.launch.TerminatedLaunchListener;
@@ -33,7 +33,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractGooglePlugin {
+public class Activator extends AbstractGwtPlugin {
 
   // The plug-in ID
   public static final String PLUGIN_ID = "com.gwtplugins.gwt.eclipse.oophm";

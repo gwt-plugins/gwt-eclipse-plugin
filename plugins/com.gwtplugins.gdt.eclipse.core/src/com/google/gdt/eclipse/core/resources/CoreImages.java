@@ -17,7 +17,7 @@ package com.google.gdt.eclipse.core.resources;
 import com.google.gdt.eclipse.core.CorePlugin;
 
 /**
- * Contains the key names for Google Core plug-in image registry.
+ * Contains the key names for GWT Development Tools Core plug-in image registry.
  */
 public final class CoreImages {
 

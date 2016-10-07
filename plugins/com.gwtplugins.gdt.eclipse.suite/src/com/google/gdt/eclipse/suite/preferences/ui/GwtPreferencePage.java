@@ -31,7 +31,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 /**
  * 
  */
-public class GooglePreferencePage extends PreferencePage implements
+public class GwtPreferencePage extends PreferencePage implements
     IWorkbenchPreferencePage {
   private Button updateNotificationCheckbox;
   private boolean updateNotificationsEnabledInitalValue;
@@ -47,13 +47,13 @@ public class GooglePreferencePage extends PreferencePage implements
   /**
    * 
    */
-  public GooglePreferencePage() {
+  public GwtPreferencePage() {
   }
 
   /**
    * @param title
    */
-  public GooglePreferencePage(String title) {
+  public GwtPreferencePage(String title) {
     super(title);
   }
 
@@ -61,7 +61,7 @@ public class GooglePreferencePage extends PreferencePage implements
    * @param title
    * @param image
    */
-  public GooglePreferencePage(String title, ImageDescriptor image) {
+  public GwtPreferencePage(String title, ImageDescriptor image) {
     super(title, image);
   }
 

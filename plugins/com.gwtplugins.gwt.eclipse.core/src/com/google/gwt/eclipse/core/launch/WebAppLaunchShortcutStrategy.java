@@ -34,11 +34,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Infers the proper startup URL for WAR-based GWT and GAE projects. These
+ * Infers the proper startup URL for WAR-based GWT projects. These
  * require a URL relative to the root of the WAR directory.
  */
 public class WebAppLaunchShortcutStrategy implements ILaunchShortcutStrategy {
 
+  @Override
   public String generateUrl(IResource selection, boolean isExternal)
       throws CoreException {
     IProject project = selection.getProject();
@@ -80,6 +81,7 @@ public class WebAppLaunchShortcutStrategy implements ILaunchShortcutStrategy {
     }
   }
 
+  @Override
   public String getUrlFromUser(IResource resource, boolean isExternal) {
     IJavaProject javaProject = JavaCore.create(resource.getProject());
     return WebAppHostPageSelectionDialog.show(javaProject, isExternal);

@@ -101,8 +101,8 @@ public class ErrorsWarningsPage extends PropertyAndPreferencePage {
 
     if (!GdtProblemSeverities.getInstance().equals(problemSeveritiesWorkingCopy)) {
       MessageDialog dialog = new MessageDialog(getShell(), "Errors/Warnings Settings Changed", null,
-          "The Google Error/Warning settings have changed.  A full rebuild "
-              + "of all GWT/App Engine projects is required for changes to " + "take effect.  Do the full build now?",
+          "The GWT Error/Warning settings have changed.  A full rebuild "
+              + "of all GWT projects is required for changes to " + "take effect.  Do the full build now?",
           MessageDialog.QUESTION,
           new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, IDialogConstants.CANCEL_LABEL }, 2); // Cancel
                                                                                                                      // is
