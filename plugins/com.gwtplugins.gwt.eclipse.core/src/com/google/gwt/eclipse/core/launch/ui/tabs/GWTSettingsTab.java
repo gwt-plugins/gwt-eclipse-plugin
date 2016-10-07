@@ -102,7 +102,7 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
    */
   protected class DevelopmentModeBlock {
 
-    private static final String GROUP_TITLE_DEVMODE = "Classic Development Mode";
+    private static final String GROUP_TITLE_DEVMODE = "Legacy Development Mode";
     private static final String GROUP_TITLE_SUPERDEVMODE = "Super Development Mode";
 
     private final Button buttonDevModeAutoPort;
@@ -234,7 +234,7 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
 
       buttonDevMode = new Button(groupSelection, SWT.RADIO);
       buttonDevMode.setSelection(true);
-      buttonDevMode.setText("Classic Development Mode");
+      buttonDevMode.setText("Legacy Development Mode");
 
       buttonSuperDevMode.addSelectionListener(new SelectionAdapter() {
         @Override
@@ -261,7 +261,7 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
       link.addSelectionListener(new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent e) {
-          String surl = "http://www.gwtproject.org/usingeclipse.html";
+          String surl = "http://gwt-plugins.github.io/documentation/gwt-eclipse-plugin/GettingStarted.html";
           gotoUrl(surl);
         }
       });
