@@ -33,8 +33,8 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import java.util.Set;
 
 /**
- * Provides a method for determining whether an GWT facet (for either war or ear
- * packaging) should be added to a given project, and if so, adding it.
+ * Provides a method for determining whether an GWT facet (for either war or ear packaging) should be added to a given
+ * project, and if so, adding it.
  */
 @SuppressWarnings("restriction")
 public class GwtMavenFacetManager {
@@ -50,9 +50,23 @@ public class GwtMavenFacetManager {
    *          a progress monitor for the operation
    */
   public void addGwtFacet(Model pom, IFacetedProject facetedProject, IProgressMonitor monitor) {
-    try {
-      IProjectFacet gwtProjectFacet = ProjectFacetsManager.getProjectFacet(IGwtFacetConstants.GWT_FACET_ID);
+    IProjectFacet gwtProjectFacet = null;
+    try { // Look for something odd going on here. If it does exit with out an error. Like finding some com.google.gwt.facet.
+      gwtProjectFacet = ProjectFacetsManager.getProjectFacet(IGwtFacetConstants.GWT_PLUGINS_FACET_ID);
+    } catch (Exception e) {
+      GwtMavenPlugin
+          .logInfo("GwtMavenFacetManager.addGwtFacet(): 1. Couldn't find facet: IGwtFacetConstants.GWT_PLUGINS_FACET_ID="
+              + IGwtFacetConstants.GWT_PLUGINS_FACET_ID);
+      e.printStackTrace();
+    }
+    if (gwtProjectFacet == null) {
+      GwtMavenPlugin
+      .logInfo("GwtMavenFacetManager.addGwtFacet(): 2. Couldn't find facet: IGwtFacetConstants.GWT_PLUGINS_FACET_ID="
+          + IGwtFacetConstants.GWT_PLUGINS_FACET_ID);
+      return;
+    }
 
+    try {
       // If the facet is already installed, skip it.
       if (!facetedProject.hasProjectFacet(gwtProjectFacet)) {
         addFacetToProject(gwtProjectFacet, facetedProject, monitor);
@@ -69,13 +83,12 @@ public class GwtMavenFacetManager {
   /**
    * Add GWT facet to project.
    * 
-   * Note: Default facet version is 1.0 (facet version does not reflect sdk
-   * version)
+   * Note: Default facet version is 1.0 (facet version does not reflect sdk version)
    * 
    * @throws EarlyExit
    */
-  private void addFacetToProject(IProjectFacet facetOfInterest, IFacetedProject facetedProject, IProgressMonitor monitor)
-      throws EarlyExit {
+  private void addFacetToProject(IProjectFacet facetOfInterest, IFacetedProject facetedProject,
+      IProgressMonitor monitor) throws EarlyExit {
     IFacetedProjectWorkingCopy workingCopy = facetedProject.createWorkingCopy();
     workingCopy.addProjectFacet(facetOfInterest.getDefaultVersion());
 
@@ -93,7 +106,7 @@ public class GwtMavenFacetManager {
       GwtMavenPlugin.logError(message, e);
       throw new EarlyExit();
     }
-    
+
     // Support the legacy GWT operations, actions...
     // TODO in the future depend on GWT facet entirely
     try {
@@ -104,11 +117,9 @@ public class GwtMavenFacetManager {
   }
 
   /**
-   * Sets a property that will be read by GwtFacetInstallDelegate to decide
-   * whether or not to create a WTP classpath container with GAE SDK
-   * dependencies. A property value of true indicates that we should not create
-   * the WTP classpath container, because we will be using the Maven classpath
-   * container.
+   * Sets a property that will be read by GwtFacetInstallDelegate to decide whether or not to create a WTP classpath
+   * container with GAE SDK dependencies. A property value of true indicates that we should not create the WTP classpath
+   * container, because we will be using the Maven classpath container.
    *
    * @param facet
    * @param workingCopy
@@ -116,8 +127,8 @@ public class GwtMavenFacetManager {
   private void markToUseMavenDependencies(IProjectFacet facet, IFacetedProjectWorkingCopy workingCopy) {
     Object config = workingCopy.getProjectFacetAction(facet).getConfig();
     IDataModel model = (IDataModel) config;
-    model.addNestedModel(GwtWtpPlugin.USE_MAVEN_DEPS_PROPERTY_NAME + ".model", new DataModelImpl(
-        new AbstractDataModelProvider() {
+    model.addNestedModel(GwtWtpPlugin.USE_MAVEN_DEPS_PROPERTY_NAME + ".model",
+        new DataModelImpl(new AbstractDataModelProvider() {
           @Override
           public Set<?> getPropertyNames() {
             return ImmutableSet.of(GwtWtpPlugin.USE_MAVEN_DEPS_PROPERTY_NAME);

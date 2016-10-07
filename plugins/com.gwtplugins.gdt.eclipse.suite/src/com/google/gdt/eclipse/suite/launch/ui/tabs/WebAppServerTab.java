@@ -253,7 +253,7 @@ public class WebAppServerTab extends JavaLaunchTab implements WebAppArgumentsTab
   }
 
   protected void createServerComponent(Composite parent) {
-    Group group = SWTFactory.createGroup(parent, "Embedded Server:", 3, 1, GridData.FILL_HORIZONTAL);
+    Group group = SWTFactory.createGroup(parent, "Embedded Jetty Server:", 3, 1, GridData.FILL_HORIZONTAL);
 
     if (showRunServerButton) {
       runServerButton = SWTFactory.createCheckButton(group, "Run built-in server", null, true, 3);
