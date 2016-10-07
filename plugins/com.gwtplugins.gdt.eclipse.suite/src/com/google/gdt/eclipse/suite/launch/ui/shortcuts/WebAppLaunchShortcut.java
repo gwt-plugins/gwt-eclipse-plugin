@@ -118,9 +118,9 @@ public class WebAppLaunchShortcut implements ILaunchShortcut {
       boolean isGwtSuperDevModeEnabled) throws CoreException, OperationCanceledException {
     String initialName = calculateLaunchConfigName(startupUrl, isExternal, resource);
     ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-    String launchConfigName = manager.generateUniqueLaunchConfigurationNameFrom(initialName);
-
+    String launchConfigName = manager.generateLaunchConfigurationName(initialName);
     IProject project = resource.getProject();
+
     ILaunchConfigurationWorkingCopy wc = WebAppLaunchUtil.createLaunchConfigWorkingCopy(launchConfigName, project,
         startupUrl, isExternal, isGwtSuperDevModeEnabled);
 
