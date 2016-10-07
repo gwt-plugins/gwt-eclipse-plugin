@@ -31,7 +31,11 @@ public final class GwtLaunchableAdapterDelegate extends LaunchableAdapterDelegat
   @Override
   public Object getLaunchable(IServer server, IModuleArtifact moduleArtifact) throws CoreException {
 
-    URL url = ((IURLProvider) server.loadAdapter(IURLProvider.class, null)).getModuleRootURL(moduleArtifact.getModule());
+    IURLProvider urlProvider = (IURLProvider) server.loadAdapter(IURLProvider.class, null);
+    if (urlProvider == null) {
+      return null;
+    }
+    URL url = urlProvider.getModuleRootURL(moduleArtifact.getModule());
     return new HttpLaunchable(url);
   }
 }

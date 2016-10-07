@@ -718,15 +718,6 @@
 		 </enabledWhen>
       </page>
    </extension>
-   <!--
-   		Participate in the GWT deployment process
-   -->
-   <extension
-         point="com.gwtplugins.gdt.eclipse.core.deploymentParticipant">
-      <deploymentParticipant
-            class="com.google.gwt.eclipse.core.GWTDeploymentParticipant">
-      </deploymentParticipant>
-   </extension>
 
    <extension
          point="org.eclipse.ui.popupMenus">
