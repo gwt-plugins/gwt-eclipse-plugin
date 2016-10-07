@@ -31,7 +31,7 @@
 
     <!-- Don't kill the test early -->
     <surefire.timeout>120000</surefire.timeout>
-    
+
     <!-- Skip the deployment here, submodules can override this property -->
     <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
@@ -206,10 +206,19 @@
           </environments>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-versions-plugin</artifactId>
+      </plugin>
     </plugins>
 
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-versions-plugin</artifactId>
+          <version>${tycho.version}</version>
+        </plugin>
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>target-platform-configuration</artifactId>
