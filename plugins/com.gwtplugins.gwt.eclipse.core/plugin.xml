@@ -235,24 +235,26 @@
    <!-- Launch Types -->
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
+      <!-- GWT Junit Launcher -->
       <launchConfigurationType
+            name="GWT JUnit Test"
+            delegateName="GWT JUnit Test"
             delegate="com.google.gwt.eclipse.core.launch.GWTJUnitLaunchDelegate"
             delegateDescription="Runs a GWT JUnit test"
-            delegateName="GWT JUnit Test"
             id="com.gwtplugins.gwt.eclipse.core.launch.gwtJUnit"
             modes="run, debug"
-            name="GWT JUnit Test"
             sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
             sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer">
       </launchConfigurationType>
       
+      <!-- CodeServer Launcher--> 
       <launchConfigurationType
+            name="GWT Development Mode (CodeServer)"
+            delegateName="GWT Development Mode (CodeServer)"
+            delegateDescription="Runs GWT development mode with any server or device"
             delegate="com.google.gwt.eclipse.core.launch.GwtSuperDevModeCodeServerDelegate"
-            delegateDescription="Runs the GWT Super DevMode with the CodeServer"
-            delegateName="GWT Super DevMode with the CodeServer"
             id="com.gwtplugins.gwt.eclipse.core.sdmCodeServer"
             modes="run, debug"
-            name="GWT CodeServer (SDM)"
             sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
             sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
    </extension>
@@ -358,13 +360,14 @@
          </configurationType>
       </shortcut>
       
+      <!-- CodeServer Shortcut -->
       <shortcut 
       		path="com.gwtplugins.gwt.eclipse.core.launch.ui.gwtSdmCodeServerLaunchShortcut/codeServerGroup"
             class="com.google.gwt.eclipse.core.launch.ui.GwtSuperDevModeCodeServerLaunchShortcut"
-            description="Run the GWT Super DevMode with CodeServer."
+            description="Run GWT development mode with any server or device"
             icon="icons/gwt_codeserver_16x16.png"
             id="com.gwtplugins.gwt.eclipse.core.launch.ui.gwtSdmCodeServerLaunchShortcut"
-            label="GWT Super DevMode with the CodeServer"
+            label="GWT Development Mode"
             modes="run, debug">
          <contextualLaunch>
             <enablement>
@@ -377,10 +380,10 @@
             </enablement>
          </contextualLaunch>
          <description
-               description="Run GWT Super DevMode with the CodeServer"
+               description="Runs GWT development mode with any server or device"
                mode="run" />
          <description
-               description="Debug GWT Super DevMode with the CodeServer"
+               description="Debugs GWT development mode with any server or device"
                mode="debug" />
          <configurationType
                id="com.gwtplugins.gwt.eclipse.core.sdmCodeServer"/>

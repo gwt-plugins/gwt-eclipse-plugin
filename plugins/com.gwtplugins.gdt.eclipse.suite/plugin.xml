@@ -25,16 +25,16 @@
       </page>
    </extension>
    
-   <!-- Web Application Launcher-->
+   <!-- DevMode Launcher-->
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
+            name="GWT Development Mode (DevMode)"
+            delegateName="GWT Development Mode"
+            delegateDescription="Launches the GWT devevelopment mode"
             delegate="com.google.gdt.eclipse.suite.launch.WebAppLaunchDelegate"
-            delegateDescription="Runs GWT DevMode with Jetty"
-            delegateName="GWT DevMode with Jetty"
             id="com.gwtplugins.gdt.eclipse.suite.webapp"
             modes="run, debug"
-            name="GWT DevMode"
             sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
             sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
    </extension>
@@ -59,11 +59,11 @@
          <launchMode 
                mode="debug"
                perspective="org.eclipse.debug.ui.DebugPerspective"
-               description="Debug a GWT Web Application with DevMode and Jetty">
+               description="Debug a GWT application with development mode and embedded Jetty server">
          </launchMode>
          <launchMode
                mode="run"
-               description="Run a GWT Web Application with DevMode and Jetty">
+               description="Run a GWT application with development mode and embedded Jetty server">
          </launchMode>
       </launchConfigurationTabGroup>
       
@@ -72,14 +72,14 @@
             class="com.google.gdt.eclipse.suite.launch.ui.tab_groups.GwtSuperDevModeCodeServerTabGroup"
             id="com.gwtplugins.gwt.eclipse.core.launch.gwtSdmCodeServerTabGroup"
             type="com.gwtplugins.gwt.eclipse.core.sdmCodeServer"
-            description="Launch GWT Super DevMode with the CodeServer">
+            description="Debug a GWT application with any server or device using the CodeServer">
          <launchMode
-               description="Debug GWT Super DevMode with the CodeServer"
+               description="Debug a GWT application with any server or device using the CodeServer"
                mode="debug"
                perspective="org.eclipse.debug.ui.DebugPerspective">
          </launchMode>
          <launchMode
-               description="Run GWT Super DevMode with the CodeServer"
+               description="Run a GWT application with any server or device using the CodeServer"
                mode="run">
          </launchMode>
       </launchConfigurationTabGroup>
@@ -91,12 +91,12 @@
 
       <!-- GWT Super DevMode Launch shortcut when using GWT -->
       <shortcut
+            label="GWT Legacy Developement Mode with Jetty"
+            description="Launch GWT legacy development mode with embedded Jetty server (Classic)"
             path="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebApp/devModeGroup"
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTSuperDevModeLaunchShortcut"
-            description="Launch GWT Super DevMode with Jetty"
             icon="icons/gwt_server_16x16.png"
             id="com.gwtplugins.gdt.eclipse.suite.launch.ui.webappLaunchShortcutGwtSuperDevMode"
-            label="GWT Super DevMode with Jetty"
             modes="run, debug">
          <contextualLaunch>
             <enablement>
@@ -109,23 +109,23 @@
             </enablement>
          </contextualLaunch>
          <description
-               description="Run GWT Super DevMode with Jetty"
+               description="Runs GWT development mode with embedded Jetty server"
                mode="run" />
          <description
-               description="Debug GWT Super DevMode with Jetty"
+               description="Debugs GWT development with embedded Jetty server"
                mode="debug" />
          <configurationType
                id="com.gwtplugins.gdt.eclipse.suite.webapp"/>
       </shortcut>
 
-      <!-- GWT Classic DevMode Launch shortcut when using GWT -->
+      <!-- GWT Dev Mode Launch shortcut when using GWT -->
       <shortcut
+            label="GWT Development Mode with Jetty"
+            description="Launch GWT development mode with Jetty"
             path="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebApp/devModeGroup"
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTClassicDevModeLaunchShortcut"
-            description="Launch GWT Classic DevMode with Jetty"
             icon="icons/gwt_server_16x16.png"
             id="com.gwtplugins.gdt.eclipse.suite.launch.ui.webappLaunchShortcutGwtClassicDevMode"
-            label="GWT Classic DevMode with Jetty"
             modes="run, debug">
          <contextualLaunch>
             <enablement>
@@ -138,10 +138,10 @@
             </enablement>
          </contextualLaunch>
          <description
-               description="Run GWT Classic DevMode with Jetty"
+               description="Runs GWT devopment mode with Jetty"
                mode="run" />
          <description
-               description="Debug GWT Classic DevMode with Jetty"
+               description="Debugs GWT devopment mode with Jetty"
                mode="debug" />
          <configurationType
                id="com.gwtplugins.gdt.eclipse.suite.webapp"/>

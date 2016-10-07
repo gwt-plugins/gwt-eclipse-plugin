@@ -79,7 +79,7 @@ public class GwtFacetUtils {
         boolean hasFacet;
         try {
           hasFacet = FacetedProjectFramework.hasProjectFacet(facetedProject.getProject(),
-              IGwtFacetConstants.GWT_FACET_ID);
+              IGwtFacetConstants.GWT_PLUGINS_FACET_ID);
         } catch (CoreException e) {
           e.printStackTrace();
           continue;
@@ -120,7 +120,7 @@ public class GwtFacetUtils {
         boolean hasFacet;
         try {
           hasFacet  = FacetedProjectFramework.hasProjectFacet(facetedProject.getProject(),
-              IGwtFacetConstants.GWT_FACET_ID);
+              IGwtFacetConstants.GWT_PLUGINS_FACET_ID);
         } catch (CoreException e) {
           e.printStackTrace();
           continue;
@@ -153,48 +153,6 @@ public class GwtFacetUtils {
     }
     
     return modules;
-  }
-  
-  public static void removePreviousGwtFacet() {
-    try {
-      Set<IFacetedProject> facetedProject = ProjectFacetsManager.getFacetedProjects();
-      removeOldGwtFacet(facetedProject);
-    } catch (CoreException e) {
-      GwtWtpPlugin.logError("Couldn't find any faceted projects", e);
-    }
-  }
-
-  private static void removeOldGwtFacet(Set<IFacetedProject> facetedProjects) {
-    if (facetedProjects == null) {
-      return;
-    }
-    
-    for (IFacetedProject facetedProject : facetedProjects) {
-      removeOldGwtFacet(facetedProject);
-    }
-  }
-
-  private static void removeOldGwtFacet(IFacetedProject facetedProject) {
-    if (!hasOldGwtFacet(facetedProject.getProject())) {
-      return;
-    }
-    
-    IProjectFacet oldProjectFacet = ProjectFacetsManager.getProjectFacet(IGwtFacetConstants.REMOVED_GWT_FACET_ID);
-    if (oldProjectFacet == null) {
-      return;
-    }
-
-    IFacetedProjectWorkingCopy facetedProjectWorkingCopy = facetedProject.createWorkingCopy();
-    facetedProjectWorkingCopy.removeProjectFacet(oldProjectFacet);
-    try {
-      facetedProjectWorkingCopy.commitChanges(new NullProgressMonitor());
-    } catch (CoreException e) {
-      GwtWtpPlugin.logError("Couldn't get rid of the old project facet", e);
-    }
-  }
-
-  public static void removeFacetForProject(IProject project) {
-    
   }
   
 }
