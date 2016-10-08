@@ -59,10 +59,7 @@ public class GdtExtPlugin extends AbstractGwtPlugin {
   public static final String FEATURE_UPDATE_SITE_URL;
   public static final PluginVersionIdentifier FEATURE_VERSION;
   public static final String PLUGIN_ID = "com.gwtplugins.gdt.eclipse.suite.update";
-
-  // No need to update, the plugin is static
-  @Deprecated
-  public static final String GWT_SDK_BUNDLE_FEATURE_ID = "com.gwtplugins.gwt.eclipse.sdkbundle.gwt27.feature";
+  public static final String GWT_SDK_BUNDLE_FEATURE_ID = "com.gwtplugins.gwt.eclipse.sdkbundle.gwt28.feature";
 
   private static BundleContext context;
   private static FeatureUpdateManager featureUpdateManager;
@@ -124,7 +121,6 @@ public class GdtExtPlugin extends AbstractGwtPlugin {
 
   @Override
   public void stop(BundleContext bundleContext) throws Exception {
-
     if (featureUpdateManager != null) {
       featureUpdateManager.cancelPendingUpdates();
       featureUpdateManager = null;
@@ -160,15 +156,6 @@ public class GdtExtPlugin extends AbstractGwtPlugin {
             new PluginVersionIdentifier(maxGwtSdkVersion),
             GdtPreferences.getVersionForLastAcknowledgedUpdateNotification(GWT_SDK_BUNDLE_FEATURE_ID),
             siteXMLRootElem, false);
-      }
-    });
-
-    FeatureUpdateChecker checker = new FeatureUpdateChecker(new UpdateComputer() {
-      @Override
-      public UpdateInfo checkSiteXMLForUpdates(Element siteXMLRootElem) {
-        return doCheckSiteXMLForUpdates(FEATURE_ID, FEATURE_VERSION,
-            GdtPreferences.getVersionForLastAcknowledgedUpdateNotification(FEATURE_ID),
-            siteXMLRootElem, true);
       }
     });
 

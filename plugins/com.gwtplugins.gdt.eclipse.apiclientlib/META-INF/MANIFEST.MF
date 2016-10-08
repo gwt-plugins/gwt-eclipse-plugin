@@ -55,5 +55,6 @@ Export-Package: com.google.api.client.auth.oauth2,
  com.google.api.client.json.jackson,
  com.google.api.client.util,
  com.google.api.client.util.escape,
- javax.annotation.concurrent
+ javax.annotation.concurrent,
+ org.mortbay.util.ajax
 Require-Bundle: org.eclipse.core.runtime

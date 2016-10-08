@@ -20,6 +20,6 @@ package com.google.gdt.eclipse.suite.update.usage;
  */
 public interface PingManager {
 
-  void sendProjectImportPing();
+  void sendCompilationPing();
 
 }

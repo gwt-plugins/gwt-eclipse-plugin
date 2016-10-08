@@ -120,7 +120,7 @@ public class WebAppLaunchShortcut implements ILaunchShortcut {
     ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
     String launchConfigName = manager.generateLaunchConfigurationName(initialName);
     IProject project = resource.getProject();
-
+    
     ILaunchConfigurationWorkingCopy wc = WebAppLaunchUtil.createLaunchConfigWorkingCopy(launchConfigName, project,
         startupUrl, isExternal, isGwtSuperDevModeEnabled);
 

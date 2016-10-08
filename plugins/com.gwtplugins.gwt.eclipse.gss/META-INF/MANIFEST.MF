@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Eclipse
+Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.gss;singleton:=true
+Bundle-Version: 3.0.0.qualifier
+Bundle-Activator: com.gwtplugins.gwt.eclipse.gss.Activator
+Bundle-Vendor: GWT Eclipse Plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.wst.sse.ui,
+ org.eclipse.wst.css.ui,
+ org.eclipse.jface.text,
+ org.eclipse.text,
+ org.eclipse.wst.css.core,
+ org.eclipse.wst.sse.core,
+ com.gwtplugins.gwt.eclipse.core,
+ org.eclipse.debug.core
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy

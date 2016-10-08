@@ -21,6 +21,6 @@ import java.util.Map;
  */
 public class JSON {
   public static String toString(Map<?, ?> map) {
-		return org.eclipse.jetty.util.ajax.JSON.toString(map);
+    return org.mortbay.util.ajax.JSON.toString(map);
   }
 }

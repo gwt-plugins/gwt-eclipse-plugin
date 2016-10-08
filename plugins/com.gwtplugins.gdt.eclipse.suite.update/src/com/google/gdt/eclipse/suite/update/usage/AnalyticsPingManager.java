@@ -46,11 +46,11 @@ import javax.annotation.Nullable;
 public class AnalyticsPingManager implements PingManager {
 
   public enum Action {
-    USE_FACET
+    GWT_COMPILATION
   }
 
   private static final String ANALYTICS_COLLECTION_URL = "http://www.google-analytics.com/collect";
-  private static final String GWT_ANALYTICS_ID = "UA-62291716-1"; // Changed to the GWT Eclipse Plugin
+  private static final String GWT_ANALYTICS_ID = "UA-62291716-1";
   private static final String APPLICATION_NAME = "GWT Eclipse Plugin";
 
   // Fixed-value query parameters present in every ping, and their fixed values:
@@ -71,8 +71,8 @@ public class AnalyticsPingManager implements PingManager {
   }
 
   @Override
-  public void sendProjectImportPing() {
-    //sendPing(GdtExtPlugin.PLUGIN_ID, Action.IMPORT_HOSTED_PROJECT, null, null);
+  public void sendCompilationPing() {
+    sendPing(GdtExtPlugin.PLUGIN_ID, Action.GWT_COMPILATION, null, null);
   }
 
   private static void sendPing(
@@ -193,10 +193,8 @@ public class AnalyticsPingManager implements PingManager {
   // The constructor argument specifies the index of the custom dimension.
   private enum CustomDimensionName {
     ECLIPSE_PRODUCT_ID(1),
-    //HASHED_GAE_APP_ID(2),
     ECLIPSE_VERSION(3),
     GWT_VERSION(4),
-    //IS_SIGNED_IN(5),
     SDK_VERSIONS(6),
     ANONYMIZED_CLIENT_ID(10);
 
