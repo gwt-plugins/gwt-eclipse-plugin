@@ -34,6 +34,7 @@ public class UpdateTriggerCompilationParticipant extends CompilationParticipant 
 
     if (GWTNature.isGWTProject(project.getProject())) {
       GdtExtPlugin.getFeatureUpdateManager().checkForUpdates();
+      GdtExtPlugin.getAnalyticsPingManager().sendCompilationPing();
       return true;
     } else {
       return false;

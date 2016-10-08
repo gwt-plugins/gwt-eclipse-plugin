@@ -21,6 +21,7 @@ import java.util.Map;
  */
 public class JSON {
   public static String toString(Map<?, ?> map) {
-		return org.eclipse.jetty.util.ajax.JSON.toString(map);
+    // This resides in GWT 2.7 but not GWT 2.8. TODO where did it go?
+    return org.eclipse.jetty.util.ajax.JSON.toString(map);
   }
 }
