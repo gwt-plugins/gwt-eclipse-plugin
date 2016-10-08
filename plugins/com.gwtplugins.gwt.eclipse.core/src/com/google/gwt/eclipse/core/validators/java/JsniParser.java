@@ -320,6 +320,13 @@ public final class JsniParser {
 
       // Rethrow a new exception with our fixed up source location
       throw new JavaScriptParseException(errorMessage, offset);
+    } catch (NullPointerException e) {
+      // This is b/c a deeper function is throwing an NPE
+      // TODO workaround for exception being thrown.
+      // TODO what should really happen here?
+      // TODO appears that single line jsni statements are thrown as npe
+      //System.out.println("JSNI=" + jsni);
+      return null;
     }
   }
 
@@ -371,7 +378,7 @@ public final class JsniParser {
 
   @SuppressWarnings("serial")
   private static JsBlock parseFunctionBlock(String js, final int startLine)
-      throws JsParserException, IOException {
+      throws JsParserException, IOException, NullPointerException {
 
     JsProgram jsPgm = new JsProgram();
     StringReader r = new StringReader(js);
