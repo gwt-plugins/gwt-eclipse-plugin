@@ -103,7 +103,7 @@ public abstract class SdkTable<T extends Sdk> extends Composite {
       Sdk sdk = (Sdk) element;
       switch (columnIndex) {
       case 0:
-        return sdk.getName() + " " + sdk.getVersion();
+        return sdk.getName();
       case 1:
         return sdk.getVersion();
       case 2:
