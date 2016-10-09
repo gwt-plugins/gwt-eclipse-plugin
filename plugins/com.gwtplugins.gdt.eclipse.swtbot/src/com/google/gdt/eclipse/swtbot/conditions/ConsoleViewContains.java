@@ -7,12 +7,11 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.ICondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotStyledText;
-import org.eclipse.ui.internal.console.ConsoleView;
 
-public class ConsoleContains implements ICondition {
+public class ConsoleViewContains implements ICondition {
 
   public static ICondition consoleContains(String string) {
-    return new ConsoleContains(string);
+    return new ConsoleViewContains(string);
   }
 
   public static void waitForConsoleOutput(SWTWorkbenchBot bot, String string, long timeout) {
@@ -27,7 +26,7 @@ public class ConsoleContains implements ICondition {
   private String searchString;
   private String msg;
 
-  protected ConsoleContains(String string) {
+  protected ConsoleViewContains(String string) {
     this.searchString = string;
   }
 
@@ -36,18 +35,14 @@ public class ConsoleContains implements ICondition {
     msg = "Could not open Console view";
     SwtBotUtils.print("\tConsole msg: " + msg);
 
-    SWTBotView console = bot.viewByTitle(ConsoleView.class.getName());
-    msg = "Could not find textWidget in Console view. name=" + ConsoleView.class.getName();
-    SwtBotUtils.print("\tConsole msg: " + msg);
+    SWTBotView consoleView = bot.viewById("org.eclipse.ui.console.ConsoleView");
+    msg = "Could not find textWidget in Console view";
 
-    SWTBotStyledText textWidget = console.bot().styledText();
+    SWTBotStyledText textWidget = consoleView.bot().styledText();
     msg = "Could not get the text from the Console view";
-    SwtBotUtils.print("\tConsole msg: " + msg);
 
     String text = textWidget.getText();
     msg = "Looking for: '" + searchString + "' but found \n\t------\n\t" + text + "\n\t-----";
-
-    SwtBotUtils.print("\tConsole msg: " + msg);
 
     return text.contains(searchString);
   }
