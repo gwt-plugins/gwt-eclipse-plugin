@@ -89,7 +89,7 @@ public class GwtPreferencePage extends PreferencePage implements IWorkbenchPrefe
       @Override
       protected IStatus doAddSdk() {
         AddSdkDialog<GwtSdk> addGwtSdkDialog = new AddGwtSdkDialog(getShell(), sdkSet, GWTPlugin.PLUGIN_ID,
-            "Add GWT Web Toolkit SDK", GwtSdk.getFactory());
+            "Add GWT SDK", GwtSdk.getFactory());
         if (addGwtSdkDialog.open() == Window.OK) {
           GwtSdk newSdk = addGwtSdkDialog.getSdk();
           if (newSdk != null) {
@@ -105,7 +105,7 @@ public class GwtPreferencePage extends PreferencePage implements IWorkbenchPrefe
       @Override
       protected IStatus doDownloadSdk() {
         MessageDialog dialog = new MessageDialog(GWTPlugin.getActiveWorkbenchShell(), "GWT Eclipse Plugin", null,
-            "Would you like to open the GWT Web Toolkit download page in your "
+            "Would you like to open the GWT download page in your "
                 + "web browser?\n\nFrom there, you can " + "download the latest GWT SDK and extract it to the"
                 + " location of your choice. Add it to Eclipse" + " with the \"Add...\" button.",
             MessageDialog.QUESTION, new String[] {"Open Browser", IDialogConstants.CANCEL_LABEL}, 0);

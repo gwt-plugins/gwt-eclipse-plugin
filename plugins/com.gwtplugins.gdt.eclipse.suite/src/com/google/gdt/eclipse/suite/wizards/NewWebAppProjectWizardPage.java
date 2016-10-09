@@ -21,8 +21,8 @@ import com.google.gdt.eclipse.core.ui.SdkSelectionBlock.SdkSelection;
 import com.google.gdt.eclipse.platform.ui.PixelConverterFactory;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage;
-import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.runtime.GWTRuntimeContainer;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -307,7 +307,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
       int widthIndent) {
     useGwtCheckbox = new Button(sdkGroup, SWT.CHECK);
     useGwtCheckbox.addSelectionListener(useSdkCheckboxSelectionListener);
-    useGwtCheckbox.setText("Use GWT Web Toolkit");
+    useGwtCheckbox.setText("Use GWT");
     useGwtCheckbox.setSelection(true);
 
     gwtSelectionBlock = new GwtWorkspaceSdkSelectionBlock(sdkGroup, SWT.NONE);

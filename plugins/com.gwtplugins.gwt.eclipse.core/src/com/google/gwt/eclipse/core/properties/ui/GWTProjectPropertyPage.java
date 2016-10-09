@@ -111,7 +111,7 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
     panel.setLayout(new GridLayout());
 
     useGWTCheckbox = new Button(panel, SWT.CHECK);
-    useGWTCheckbox.setText("Use GWT Web Toolkit");
+    useGWTCheckbox.setText("Use GWT");
 
     createSdkComponent(panel);
     createEntryPointModuleComponent(panel);

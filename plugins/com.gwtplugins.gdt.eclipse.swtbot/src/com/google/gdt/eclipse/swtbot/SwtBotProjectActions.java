@@ -52,7 +52,7 @@ public final class SwtBotProjectActions {
       String packageName, final String className) {
     SWTBotTreeItem project = SwtBotProjectActions.selectProject(bot, projectName);
     selectProjectItem(project, SOURCE_FOLDER, packageName).select();
-    SwtBotTestingUtilities.performAndWaitForWindowChange(bot, new Runnable() {
+    SwtBotUtils.performAndWaitForWindowChange(bot, new Runnable() {
       @Override
       public void run() {
         MenuItem menuItem = ContextMenuHelper.contextMenu(getProjectRootTree(bot), "New", "Class");
@@ -60,12 +60,12 @@ public final class SwtBotProjectActions {
       }
     });
 
-    SwtBotTestingUtilities.performAndWaitForWindowChange(bot, new Runnable() {
+    SwtBotUtils.performAndWaitForWindowChange(bot, new Runnable() {
       @Override
       public void run() {
         bot.activeShell();
         bot.textWithLabel("Name:").setText(className);
-        SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, bot.button("Finish"));
+        SwtBotUtils.clickButtonAndWaitForWindowChange(bot, bot.button("Finish"));
       }
     });
   }
@@ -87,14 +87,14 @@ public final class SwtBotProjectActions {
     SWTBotTree projectSelectionTree = bot.tree();
     SWTBotTreeItem projectSelectionGoogleTreeItem =
         SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, "Java", "Java Project");
-    SwtBotTestingUtilities.selectTreeItem(bot, projectSelectionGoogleTreeItem, "Java Project");
+    SwtBotUtils.selectTreeItem(bot, projectSelectionGoogleTreeItem, "Java Project");
 
     bot.button("Next >").click();
 
     // Configure the project and then create it
     bot.textWithLabel("Project name:").setText(projectName);
 
-    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, bot.button("Finish"));
+    SwtBotUtils.clickButtonAndWaitForWindowChange(bot, bot.button("Finish"));
   }
 
   /**
@@ -110,7 +110,7 @@ public final class SwtBotProjectActions {
     bot.button("Next >").click();
 
     // open archetype dialog
-    SwtBotTestingUtilities.performAndWaitForWindowChange(bot, new Runnable() {
+    SwtBotUtils.performAndWaitForWindowChange(bot, new Runnable() {
       @Override
       public void run() {
         bot.button("Add Archetype...").click();
@@ -126,7 +126,7 @@ public final class SwtBotProjectActions {
     bot.comboBox(3).setText(archetypeUrl);
 
     // close archetype dialog
-    SwtBotTestingUtilities.performAndWaitForWindowChange(bot, new Runnable() {
+    SwtBotUtils.performAndWaitForWindowChange(bot, new Runnable() {
       @Override
       public void run() {
         // After OK, it will take a minute to download
@@ -170,10 +170,9 @@ public final class SwtBotProjectActions {
 
     // Select the Web App project wizard
     SWTBotTree projectSelectionTree = bot.tree();
-    SWTBotTreeItem projectSelectionGoogleTreeItem =
-        SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, "Google Web Toolkit",
-            "UiBinder").expand();
-    SwtBotTestingUtilities.selectTreeItem(bot, projectSelectionGoogleTreeItem, "UiBinder");
+    SWTBotTreeItem projectSelectionGoogleTreeItem = SwtBotWorkbenchActions
+        .getUniqueTreeItem(bot, projectSelectionTree, "GWT Classes", "UiBinder").expand();
+    SwtBotUtils.selectTreeItem(bot, projectSelectionGoogleTreeItem, "UiBinder");
     bot.button("Next >").click();
 
     // Configure the UiBinder and then create it
@@ -182,11 +181,11 @@ public final class SwtBotProjectActions {
     bot.textWithLabel("Package:").setText(packageName);
     bot.textWithLabel("Name:").setText(name);
 
-    SwtBotTestingUtilities.setCheckBox(bot.checkBox("Generate sample content"),
+    SwtBotUtils.setCheckBox(bot.checkBox("Generate sample content"),
         generateSampleContent);
-    SwtBotTestingUtilities.setCheckBox(bot.checkBox("Generate comments"), generateComments);
+    SwtBotUtils.setCheckBox(bot.checkBox("Generate comments"), generateComments);
 
-    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, bot.button("Finish"));
+    SwtBotUtils.clickButtonAndWaitForWindowChange(bot, bot.button("Finish"));
   }
 
   public static void createWebAppProject(final SWTWorkbenchBot bot, String projectName,
@@ -199,27 +198,26 @@ public final class SwtBotProjectActions {
 
     // Select the Web App project wizard
     SWTBotTree projectSelectionTree = bot.tree();
-    SWTBotTreeItem projectSelectionTreeItem =
-        SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, GWT_MENU_LABELS,
-            "Web Application Project").expand();
-    SwtBotTestingUtilities.selectTreeItem(bot, projectSelectionTreeItem,
-        "Web Application Project");
+    // GWT Application
+    SWTBotTreeItem projectSelectionTreeItem = SwtBotWorkbenchActions.getUniqueTreeItem(bot,
+        projectSelectionTree, "GWT Application", "GWT Web Application Project").expand();
+    SwtBotUtils.selectTreeItem(bot, projectSelectionTreeItem,
+        "GWT Web Application Project");
     bot.button("Next >").click();
 
     // Configure the project and then create it
     bot.textWithLabel("Project name:").setText(projectName);
     bot.textWithLabel("Package: (e.g. com.example.myproject)").setText(packageName);
 
-    SwtBotTestingUtilities.setCheckBox(bot.checkBox("Use GWT Web Toolkit"), useGwt);
-    SwtBotTestingUtilities.setCheckBox(bot.checkBox("Generate project sample code"),
+    SwtBotUtils.setCheckBox(bot.checkBox("Use GWT"), useGwt);
+    SwtBotUtils.setCheckBox(bot.checkBox("Generate project sample code"),
         generateSampleCode);
 
-    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, bot.button("Finish"));
+    SwtBotUtils.clickButtonAndWaitForWindowChange(bot, bot.button("Finish"));
   }
 
   public static void deleteProject(final SWTWorkbenchBot bot, final String projectName) {
-
-    SwtBotTestingUtilities.performAndWaitForWindowChange(bot, new Runnable() {
+    SwtBotUtils.performAndWaitForWindowChange(bot, new Runnable() {
       @Override
       public void run() {
         selectProject(bot, projectName).contextMenu("Delete").click();
@@ -230,7 +228,7 @@ public final class SwtBotProjectActions {
     // Select the "Delete project contents on disk (cannot be undone)"
     bot.checkBox(0).click();
 
-    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, bot.button("OK"));
+    SwtBotUtils.clickButtonAndWaitForWindowChange(bot, bot.button("OK"));
   }
 
   /**
@@ -269,7 +267,8 @@ public final class SwtBotProjectActions {
   public static SWTBotView getPackageExplorer(final SWTWorkbenchBot bot) {
     SWTBotView explorer = null;
     for (SWTBotView view : bot.views()) {
-      if (view.getTitle().equals("Package Explorer") || view.getTitle().equals("Project Explorer")) {
+      if (view.getTitle().equals("Package Explorer")
+          || view.getTitle().equals("Project Explorer")) {
         explorer = view;
         break;
       }
@@ -320,7 +319,7 @@ public final class SwtBotProjectActions {
   public static void openProjectProperties(final SWTWorkbenchBot bot, String projectName) {
     selectProject(bot, projectName);
 
-    SwtBotTestingUtilities.performAndWaitForWindowChange(bot, new Runnable() {
+    SwtBotUtils.performAndWaitForWindowChange(bot, new Runnable() {
       @Override
       public void run() {
         // Open the Project Properties menu via the File menu
@@ -357,7 +356,8 @@ public final class SwtBotProjectActions {
      */
     SWTBotView explorer = getPackageExplorer(bot);
     for (SWTBotView view : bot.views()) {
-      if (view.getTitle().equals("Package Explorer") || view.getTitle().equals("Project Explorer")) {
+      if (view.getTitle().equals("Package Explorer")
+          || view.getTitle().equals("Project Explorer")) {
         explorer = view;
         break;
       }

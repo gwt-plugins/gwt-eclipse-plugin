@@ -51,8 +51,7 @@ import java.util.List;
 public class BrowserUtilities {
 
   /**
-   * The General > Web Browser preference page ID (this constant does not exist
-   * in the browser plugin java code).
+   * The General > Web Browser preference page ID (this constant does not exist in the browser plugin java code).
    */
   private static final String BROWSER_PREFERENCE_PAGE_ID = "org.eclipse.ui.browser.preferencePage";
 
@@ -60,11 +59,9 @@ public class BrowserUtilities {
   private static final String IE32_NAME = "Internet Explorer 32-bit";
 
   /**
-   * Computes the full command-line that can be passed directly to
-   * {@link ProcessBuilder}.
+   * Computes the full command-line that can be passed directly to {@link ProcessBuilder}.
    */
-  public static List<String> computeCommandLine(IBrowserDescriptor browser,
-      String url) {
+  public static List<String> computeCommandLine(IBrowserDescriptor browser, String url) {
     String params = browser.getParameters();
     if (params == null) {
       params = "";
@@ -88,19 +85,19 @@ public class BrowserUtilities {
 
   public static boolean containsChromeRelatedString(String string) {
     String lowerCaseString = string != null ? string.toLowerCase() : "";
-    return lowerCaseString.contains("chrome")
-        || lowerCaseString.contains("chromium");
+    return lowerCaseString.contains("chrome") || lowerCaseString.contains("chromium");
   }
 
   /**
    * Creates and saves a browser model object.
-   * 
-   * @param browserName the name of the browser
-   * @param browserLocation the location, unescaped
+   *
+   * @param browserName
+   *          the name of the browser
+   * @param browserLocation
+   *          the location, unescaped
    * @return the new object
    */
-  public static IBrowserDescriptor createBrowserDescriptor(String browserName,
-      String browserLocation) {
+  public static IBrowserDescriptor createBrowserDescriptor(String browserName, String browserLocation) {
     assert browserName != null;
     assert browserLocation != null;
 
@@ -120,9 +117,8 @@ public class BrowserUtilities {
   }
 
   /**
-   * If iexplore.exe exists in "Program Files (x86)", then we must be on 64 bit
-   * windows with 32-bit IE installed, and we have to use that one because there
-   * is no 64 bit devmode plugin for IE. This adds an entry for 32bit IE to the
+   * If iexplore.exe exists in "Program Files (x86)", then we must be on 64 bit windows with 32-bit IE installed, and we
+   * have to use that one because there is no 64 bit devmode plugin for IE. This adds an entry for 32bit IE to the
    * browser registry if it exists.
    */
   public static void ensure32BitIe() {
@@ -152,8 +148,7 @@ public class BrowserUtilities {
   @SuppressWarnings("unchecked")
   public static IBrowserDescriptor findChromeBrowser() {
     BrowserManager browserManager = BrowserManager.getInstance();
-    List<IBrowserDescriptor> browsers = new ArrayList<IBrowserDescriptor>(
-        browserManager.getWebBrowsers());
+    List<IBrowserDescriptor> browsers = new ArrayList<IBrowserDescriptor>(browserManager.getWebBrowsers());
 
     // Give the default web browser the highest priority
     IBrowserDescriptor currentWebBrowser = browserManager.getCurrentWebBrowser();
@@ -163,8 +158,7 @@ public class BrowserUtilities {
     }
 
     for (IBrowserDescriptor browser : browsers) {
-      if (containsChromeRelatedString(browser.getName())
-          || containsChromeRelatedString(browser.getLocation())) {
+      if (containsChromeRelatedString(browser.getName()) || containsChromeRelatedString(browser.getLocation())) {
         return browser;
       }
     }
@@ -202,8 +196,7 @@ public class BrowserUtilities {
     return browserNames;
   }
 
-  public static IWebBrowser launchBrowser(String targetUrl)
-      throws MalformedURLException, PartInitException {
+  public static IWebBrowser launchBrowser(String targetUrl) throws MalformedURLException, PartInitException {
     Workbench workbench = Workbench.getInstance();
     if (workbench == null) {
       throw new PartInitException("No workbench is available");
@@ -213,25 +206,20 @@ public class BrowserUtilities {
 
     URL url = new URL(targetUrl);
 
-    IWebBrowser browser = browserSupport.createBrowser(
-        IWorkbenchBrowserSupport.AS_EXTERNAL, null,
-        "GWT Web Toolkit", "GWT Web Toolkit");
+    IWebBrowser browser = browserSupport.createBrowser(IWorkbenchBrowserSupport.AS_EXTERNAL, null, "GWT", "GWT");
     browser.openURL(url);
     return browser;
   }
 
   /**
-   * Launches the browser with the given name. This method does not use the
-   * Eclipse browser methods to launch the browser since they do not properly
-   * pass quoted strings as a single argument.
+   * Launches the browser with the given name. This method does not use the Eclipse browser methods to launch the
+   * browser since they do not properly pass quoted strings as a single argument.
    */
-  public static void launchBrowser(String browserName, String url)
-      throws CoreException, IOException {
+  public static void launchBrowser(String browserName, String url) throws CoreException, IOException {
     IBrowserDescriptor browser = findBrowser(browserName);
     if (browser == null) {
-      throw new CoreException(StatusUtilities.newErrorStatus(
-          "Could not find browser \"" + browserName + "\".",
-          CorePlugin.PLUGIN_ID));
+      throw new CoreException(
+          StatusUtilities.newErrorStatus("Could not find browser \"" + browserName + "\".", CorePlugin.PLUGIN_ID));
     }
 
     // SystemBrowserDescriptors have no info in them...
@@ -243,14 +231,12 @@ public class BrowserUtilities {
       }
 
       if (!launched) {
-        String msg = "Could not launch the default "
-            + "browser, please configure a browser in "
+        String msg = "Could not launch the default " + "browser, please configure a browser in "
             + "Preferences -> General -> Web Browsers";
         MessageBox mb = new MessageBox(Display.getCurrent().getActiveShell());
         mb.setMessage(msg);
         mb.open();
-        throw new CoreException(StatusUtilities.newErrorStatus(msg,
-            CorePlugin.PLUGIN_ID));
+        throw new CoreException(StatusUtilities.newErrorStatus(msg, CorePlugin.PLUGIN_ID));
       }
     } else {
       List<String> command = computeCommandLine(browser, url);
@@ -259,20 +245,16 @@ public class BrowserUtilities {
   }
 
   public static IWebBrowser launchBrowserAndHandleExceptions(String targetUrl) {
-    String errorMsg = "Could not launch the default "
-        + "browser. Please configure a browser in "
-        + "Preferences -> General -> Web Browsers, or browse to:\n\n"
-        + targetUrl + "\n\n" + "using your browser of choice.";
+    String errorMsg = "Could not launch the default " + "browser. Please configure a browser in "
+        + "Preferences -> General -> Web Browsers, or browse to:\n\n" + targetUrl + "\n\n"
+        + "using your browser of choice.";
     try {
       return launchBrowser(targetUrl);
     } catch (MalformedURLException e) {
       CorePluginLog.logError(e);
-      errorMsg = "There was a problem launching the browser and navigating to:"
-          + "\n\n"
-          + targetUrl
-          + "\n\n"
+      errorMsg = "There was a problem launching the browser and navigating to:" + "\n\n" + targetUrl + "\n\n"
           + "You may try and navigate to this URL using your browser of choice, "
-          + "or post a message to GWT Web Toolkit users forum on Google Groups for assistance.";
+          + "or post a message to GWT users forum on Google Groups for assistance.";
     } catch (PartInitException e) {
       // Ignore; use the default error message
     }
@@ -286,8 +268,9 @@ public class BrowserUtilities {
 
   /**
    * Launches the desktop's default browser.
-   * 
-   * @param targetUrl The string to be parsed into a URI for the browser.
+   *
+   * @param targetUrl
+   *          The string to be parsed into a URI for the browser.
    * @return true, if browser was launched and false otherwise.
    */
   public static boolean launchDesktopDefaultBrowserAndHandleExceptions(String targetUrl) {
@@ -304,9 +287,8 @@ public class BrowserUtilities {
   }
 
   /**
-   * Locates a Chrome installation in one of the default installation
-   * directories.
-   * 
+   * Locates a Chrome installation in one of the default installation directories.
+   *
    * @return an absolute path, or null
    */
   public static String locateChrome() {
@@ -316,12 +298,11 @@ public class BrowserUtilities {
 
     if (Platform.OS_WIN32.equals(os)) {
       /*
-       * Both "home" and "userprofile" will likely point to the same directory,
-       * but include both just in case they don't.
+       * Both "home" and "userprofile" will likely point to the same directory, but include both just in case they
+       * don't.
        */
-      String[] envVariables = new String[] {
-          "home", "userprofile", "home", "userprofile", "ProgramFiles(X86)",
-          "ProgramFiles"};
+      String[] envVariables = new String[] { "home", "userprofile", "home", "userprofile", "ProgramFiles(X86)",
+          "ProgramFiles" };
       String[] appendedPaths = new String[] {
           "\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe", // XP
           "\\Local Settings\\Application Data\\Google\\Chrome\\Application\\chrome.exe", // XP
@@ -341,14 +322,13 @@ public class BrowserUtilities {
 
     } else if (Platform.OS_MACOSX.equals(os)) {
       /*
-       * Only check for ChromeWithSpeedTracer.app (and not Google Chrome.app)
-       * since we require that for proper argument passing to Chrome.
+       * Only check for ChromeWithSpeedTracer.app (and not Google Chrome.app) since we require that for proper argument
+       * passing to Chrome.
        */
       locationsToCheck.add(new File("/Applications/ChromeWithSpeedTracer.app"));
       String homeDir = System.getenv("HOME");
       if (homeDir != null) {
-        locationsToCheck.add(new File(homeDir
-            + "/Applications/ChromeWithSpeedTracer.app"));
+        locationsToCheck.add(new File(homeDir + "/Applications/ChromeWithSpeedTracer.app"));
       }
 
     } else {
@@ -364,8 +344,7 @@ public class BrowserUtilities {
     }
 
     for (File location : locationsToCheck) {
-      if (location.exists()
-          && (Platform.OS_MACOSX.equals(os) || location.isFile())) {
+      if (location.exists() && (Platform.OS_MACOSX.equals(os) || location.isFile())) {
         return location.getAbsolutePath();
       }
     }
@@ -374,7 +353,6 @@ public class BrowserUtilities {
   }
 
   public static int openBrowserPreferences(Shell shell) {
-    return PreferencesUtil.createPreferenceDialogOn(shell,
-        BROWSER_PREFERENCE_PAGE_ID, null, null).open();
+    return PreferencesUtil.createPreferenceDialogOn(shell, BROWSER_PREFERENCE_PAGE_ID, null, null).open();
   }
 }

@@ -90,7 +90,7 @@
 
       <!-- GWT Super DevMode Launch shortcut when using GWT -->
       <shortcut
-            label="GWT Developement Mode with Jetty"
+            label="GWT Development Mode with Jetty"
             description="Launch GWT legacy development mode with embedded Jetty server (Super Development Mode)"
             path="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebApp/devModeGroup"
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTSuperDevModeLaunchShortcut"
