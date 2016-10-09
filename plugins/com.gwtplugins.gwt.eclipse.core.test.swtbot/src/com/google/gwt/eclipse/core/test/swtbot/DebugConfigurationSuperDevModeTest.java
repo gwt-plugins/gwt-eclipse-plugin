@@ -92,7 +92,7 @@ public class DebugConfigurationSuperDevModeTest extends AbstractGWTPluginSwtBotT
     super.tearDown();
   }
 
-  private void closeSaveChangesDialogIfNeedBe() {
+  protected void closeSaveChangesDialogIfNeedBe() {
     SwtBotUtils.performAndWaitForWindowChange(getSwtWorkbenchBot(), new Runnable() {
       @Override
       public void run() {
@@ -108,7 +108,7 @@ public class DebugConfigurationSuperDevModeTest extends AbstractGWTPluginSwtBotT
     });
   }
 
-  private SWTBotText whenIGetTheProgramArgsTextBox() {
+  protected SWTBotText whenIGetTheProgramArgsTextBox() {
     SWTWorkbenchBot bot = getSwtWorkbenchBot();
 
     // When I open debug configuration
@@ -130,7 +130,7 @@ public class DebugConfigurationSuperDevModeTest extends AbstractGWTPluginSwtBotT
    *
    * Note: terminate this manually!
    */
-  private void whenIClickandRunDebugConfiguration() {
+  protected void whenIClickandRunDebugConfiguration() {
     final SWTWorkbenchBot bot = getSwtWorkbenchBot();
 
     // show it has focus
@@ -199,16 +199,22 @@ public class DebugConfigurationSuperDevModeTest extends AbstractGWTPluginSwtBotT
    * Right click on project and goto Debug As > 4 Run GWT Super Dev Mode Then Stop the debugging
    * process
    */
-  private void whenIRightClickandRunDebugConfigurationAndStopDebuggingIt() {
+  protected void whenIRightClickandRunDebugConfigurationAndStopDebuggingIt() {
     final SWTWorkbenchBot bot = getSwtWorkbenchBot();
 
     whenIClickandRunDebugConfiguration();
 
     // And then stop it
+    SwtBotUtils.print("Opening Debug Perspective and Terminate Process");
     SwtBotMenuActions.openDebugPerspectiveAndTerminateProcess(bot);
 
+    bot.sleep(1000);
+
     // And back to the java perspective
+    SwtBotUtils.print("Opening Java Perspective");
     SwtBotMenuActions.openJavaPerpsective(bot);
+    SwtBotUtils.print("Opened Java Perspective");
+
     bot.sleep(500);
   }
 

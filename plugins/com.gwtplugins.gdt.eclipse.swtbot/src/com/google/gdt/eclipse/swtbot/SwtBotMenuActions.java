@@ -82,14 +82,19 @@ public final class SwtBotMenuActions {
    * Open debug perspective and terminate the process and wait for it be terminated.
    */
   public static void openDebugPerspectiveAndTerminateProcess(SWTWorkbenchBot bot) {
+    SwtBotUtils.print("Terminating Process");
     openPerspective(bot, "Debug");
 
+    SwtBotUtils.print("Navigating to Process tree");
     // Right click and terminate thread
     @SuppressWarnings("rawtypes")
     Matcher matcher = WidgetMatcherFactory.withPartName("Debug");
+
     @SuppressWarnings("unchecked")
     SWTBotView debug = bot.view(matcher);
+
     final SWTBotTree tree = debug.bot().tree();
+
     SWTBotTreeItem[] items = tree.getAllItems();
     if (items.length > 0) {
       SWTBotTreeItem first = items[0];
@@ -109,6 +114,8 @@ public final class SwtBotMenuActions {
         }
       });
     }
+
+    SwtBotUtils.print("Terminated Process");
   }
 
   public static void openNewMavenProject(SWTWorkbenchBot bot) {

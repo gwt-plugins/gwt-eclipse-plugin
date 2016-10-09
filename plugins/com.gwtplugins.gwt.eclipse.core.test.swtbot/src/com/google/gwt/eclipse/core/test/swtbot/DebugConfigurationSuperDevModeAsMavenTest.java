@@ -24,15 +24,48 @@ public class DebugConfigurationSuperDevModeAsMavenTest extends DebugConfiguratio
 
   @Override
   public void testShortcutUsingDefaults() {
-    super.testShortcutUsingDefaults();
+    givenMavenGwtProjectIsCreated1(PROJECT_NAME);
+
+    // When I right click and Debug GWT Super Dev Mode
+    whenIRightClickandRunDebugConfigurationAndStopDebuggingIt();
+
+    // When I get the arguments for super dev mode config
+    String persistedArgs = whenIGetTheProgramArgsTextBox().getText();
+
+    // And close the debug configuration dialog
+    getSwtWorkbenchBot().button("Close").click();
+    // And closing may cause a save change dialog
+    closeSaveChangesDialogIfNeedBe();
+
+    // Then the args should be
+    assertTrue(persistedArgs.contains("com.example.project.Project"));
   }
+
+  // public void testShortcutUsingDefaults2() {
+  // givenMavenGwtProjectIsCreated1(PROJECT_NAME);
+  //
+  // // When I right click and Debug GWT Super Dev Mode
+  // whenIRightClickandRunDebugConfigurationAndStopDebuggingIt();
+  //
+  // // When I get the arguments for super dev mode config
+  // String persistedArgs = whenIGetTheProgramArgsTextBox().getText();
+  //
+  // // And close the debug configuration dialog
+  // getSwtWorkbenchBot().button("Close").click();
+  // // And closing may cause a save change dialog
+  // closeSaveChangesDialogIfNeedBe();
+  //
+  // // Then the args should be
+  // assertTrue(persistedArgs.contains("com.example.project.Project"));
+  // }
+
 
   /**
    * Instead create a Maven project, not a standard package project
    */
   @Override
   protected void givenProjectIsCreated() {
-    givenMavenGwtProjectIsCreated(PROJECT_NAME);
+
   }
 
 }

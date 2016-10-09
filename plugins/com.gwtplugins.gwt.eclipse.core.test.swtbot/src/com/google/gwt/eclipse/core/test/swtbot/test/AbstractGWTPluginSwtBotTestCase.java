@@ -45,7 +45,36 @@ public class AbstractGWTPluginSwtBotTestCase extends TestCase {
    *
    * @param projectName - Java project name
    */
-  protected void givenMavenGwtProjectIsCreated(String projectName) {
+  protected void givenMavenGwtProjectIsCreated1(String projectName) {
+    closeDialogsIfNeedBe();
+
+    // Given a gwt sdk is setup
+    //SwtBotSdkActions.setupGwtSdk(bot);
+
+    // And create a maven project using an archetype
+    String groupId = PACKAGE_NAME;
+    String artifactId = projectName;
+    String packageName = PACKAGE_NAME;
+    // https://github.com/branflake2267/Archetypes/tree/master/archetypes/gwt-basic
+    String archetypeGroupId = "com.github.branflake2267.archetypes";
+    String archetypeArtifactId = "gwt-test-gwt27-archetype";
+    String archetypeVersion = "1.0-SNAPSHOT";
+    String archetypeUrl = "https://oss.sonatype.org/content/repositories/snapshots";
+
+    SwtBotProjectActions.createMavenProjectFromArchetype(bot, groupId, artifactId, packageName,
+        archetypeGroupId, archetypeArtifactId, archetypeVersion, archetypeUrl);
+
+    // And wait for the project to finish setting up
+    SwtBotWorkbenchActions.waitForIdle(getSwtWorkbenchBot());
+  }
+
+
+  /**
+   * Create a GWT project from Maven Archetype.
+   *
+   * @param projectName - Java project name
+   */
+  protected void givenMavenGwtProjectIsCreated2(String projectName) {
     closeDialogsIfNeedBe();
 
     // Given a gwt sdk is setup
@@ -84,6 +113,8 @@ public class AbstractGWTPluginSwtBotTestCase extends TestCase {
 
     // And wait for the project to finish setting up
     SwtBotWorkbenchActions.waitForIdle(getSwtWorkbenchBot());
+
+    bot.sleep(1000);
   }
 
   /**

@@ -68,7 +68,7 @@ public class GwtMavenFacetManager {
 
     try {
       // If the facet is already installed, skip it.
-      if (!facetedProject.hasProjectFacet(gwtProjectFacet)) {
+      if (facetedProject != null && !facetedProject.hasProjectFacet(gwtProjectFacet)) {
         addFacetToProject(gwtProjectFacet, facetedProject, monitor);
       } else {
         GwtMavenPlugin

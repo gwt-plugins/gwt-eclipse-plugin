@@ -14,19 +14,19 @@
  *******************************************************************************/
 package com.gwtplugins.gwt.eclipse.gss.clientbundle;
 
-import com.google.gdt.eclipse.core.ContentDescriberUtilities;
-import com.google.gwt.eclipse.core.nature.GWTNature;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.QualifiedName;
-import org.eclipse.core.runtime.content.IContentDescription;
-import org.eclipse.core.runtime.content.IContentType;
-import org.eclipse.core.runtime.content.ITextContentDescriber;
-import org.eclipse.wst.css.core.internal.contenttype.ContentDescriberForCSS;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.content.ITextContentDescriber;
+import org.eclipse.wst.css.core.internal.contenttype.ContentDescriberForCSS;
+
+import com.google.gdt.eclipse.core.ContentDescriberUtilities;
+import com.google.gwt.eclipse.core.nature.GWTNature;
 
 /**
  * Describes <code>.css</code> files that can contain CssResource-specific extensions, such as @if.
@@ -66,10 +66,20 @@ public class GssResourceContentDescriber implements ITextContentDescriber {
   }
 
   private int describe(IFile file) {
-    boolean isGwtNature = GWTNature.isGWTProject(file.getProject());
+    if (file == null) {
+      return INDETERMINATE;
+    }
+
+    IProject project = file.getProject();
+    if (project == null) {
+      return INDETERMINATE;
+    }
+
+    boolean isGwtNature = GWTNature.isGWTProject(project);
 
     int value = file != null && isGwtNature ? VALID : INDETERMINATE;
 
     return value;
   }
+
 }

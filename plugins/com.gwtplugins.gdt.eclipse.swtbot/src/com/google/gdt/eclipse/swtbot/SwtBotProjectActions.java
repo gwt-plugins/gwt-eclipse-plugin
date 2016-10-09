@@ -109,6 +109,9 @@ public final class SwtBotProjectActions {
     // move to next step, archetype selection
     bot.button("Next >").click();
 
+    // include snapshot archetypes checkbox
+    bot.checkBox(1).click();
+
     // open archetype dialog
     SwtBotUtils.performAndWaitForWindowChange(bot, new Runnable() {
       @Override
@@ -134,11 +137,8 @@ public final class SwtBotProjectActions {
       }
     });
 
-    // enable snapshots in table view
-    bot.checkBox("Include snapshot archetypes").click();
-
     // filter so only one row shows up
-    bot.text().setText("gwt-basic-archetype");
+    bot.text().setText(archetypeArtifactId);
 
     // select first row
     SWTBotTable table = bot.table();
