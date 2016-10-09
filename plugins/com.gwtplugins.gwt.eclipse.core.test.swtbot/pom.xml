@@ -26,9 +26,9 @@
           <product>org.eclipse.sdk.ide</product>
           <application>org.eclipse.ui.ide.workbench</application>
           <excludes>
-            <exclude>**/AbstractGWTPluginSwtBotTestCase.java</exclude>
+            <!-- <exclude>**/AbstractGWTPluginSwtBotTestCase.java</exclude> -->
           </excludes>
-          <skipTests>true</skipTests>
+          <skipTests>false</skipTests>
         </configuration>
       </plugin>
     </plugins>
