@@ -140,26 +140,6 @@
               <arch>x86_64</arch>
             </environment>
             <environment>
-              <os>linux</os>
-              <ws>gtk</ws>
-              <arch>ppc</arch>
-            </environment>
-            <environment>
-              <os>linux</os>
-              <ws>gtk</ws>
-              <arch>ppc64</arch>
-            </environment>
-            <environment>
-              <os>linux</os>
-              <ws>gtk</ws>
-              <arch>s390</arch>
-            </environment>
-            <environment>
-              <os>linux</os>
-              <ws>gtk</ws>
-              <arch>s390x</arch>
-            </environment>
-            <environment>
               <os>win32</os>
               <ws>win32</ws>
               <arch>x86</arch>
@@ -172,41 +152,12 @@
             <environment>
               <os>macosx</os>
               <ws>cocoa</ws>
-              <arch>x86</arch>
-            </environment>
-            <environment>
-              <os>macosx</os>
-              <ws>cocoa</ws>
               <arch>x86_64</arch>
-            </environment>
-            <environment>
-              <os>solaris</os>
-              <ws>gtk</ws>
-              <arch>sparc</arch>
-            </environment>
-            <environment>
-              <os>solaris</os>
-              <ws>gtk</ws>
-              <arch>x86</arch>
-            </environment>
-            <environment>
-              <os>hpux</os>
-              <ws>gtk</ws>
-              <arch>ia64</arch>
-            </environment>
-            <environment>
-              <os>aix</os>
-              <ws>gtk</ws>
-              <arch>ppc</arch>
-            </environment>
-            <environment>
-              <os>aix</os>
-              <ws>gtk</ws>
-              <arch>ppc64</arch>
             </environment>
           </environments>
         </configuration>
       </plugin>
+      
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-versions-plugin</artifactId>
@@ -243,6 +194,8 @@
             <!-- https://wiki.eclipse.org/Tycho/FAQ#How_to_use_SWTBot_or_some_UI_tool_for_testing.3F -->
             <useUIHarness>true</useUIHarness> <!-- https://wiki.eclipse.org/SWTBot/Automate_test_execution -->
             <useUIThread>false</useUIThread>
+            <product>org.eclipse.sdk.ide</product>
+            <application>org.eclipse.ui.ide.workbench</application>
             <argLine>-Dorg.eclipse.swtbot.search.timeout=120000 -Xms128M -Xmx2G ${os-jvm-flags}</argLine>
           </configuration>
         </plugin>
@@ -271,34 +224,6 @@
           </configuration>
         </plugin>
 
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build 
-          itself. -->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>versions-maven-plugin</artifactId>
-                    <versionRange>[2.1,)</versionRange>
-                    <goals>
-                      <goal>display-plugin-updates</goal>
-                      <goal>display-dependency-updates</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore></ignore>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
@@ -307,25 +232,6 @@
       </plugins>
     </pluginManagement>
   </build>
-
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>versions-maven-plugin</artifactId>
-        <version>2.1</version>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>dependency-updates-report</report>
-              <report>plugin-updates-report</report>
-              <report>property-updates-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-    </plugins>
-  </reporting>
 
   <profiles>
     <profile>

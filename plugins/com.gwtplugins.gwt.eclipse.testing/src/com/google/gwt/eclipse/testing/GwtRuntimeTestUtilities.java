@@ -42,6 +42,7 @@ public class GwtRuntimeTestUtilities {
    * variable if it is set, otherwise extracts a GWT SDK from this testing bundle and sets
    * {@code GWT_HOME} to the location where it is extracted.
    */
+  @Deprecated // Use the included sdks
   public static void addDefaultRuntime() throws Exception {
     String gwtHomePath = getGwtTestSdkPath();
     TestEnvironmentUtil.updateEnvironmentVariable("GWT_HOME", gwtHomePath);

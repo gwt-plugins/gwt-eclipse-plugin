@@ -19,6 +19,7 @@ import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widget
 import com.google.gdt.eclipse.swtbot.SwtBotMenuActions;
 import com.google.gdt.eclipse.swtbot.SwtBotProjectActions;
 import com.google.gdt.eclipse.swtbot.SwtBotUtils;
+import com.google.gdt.eclipse.swtbot.conditions.ConsoleContains;
 import com.google.gwt.eclipse.core.test.swtbot.test.AbstractGWTPluginSwtBotTestCase;
 
 import org.eclipse.swt.widgets.Tree;
@@ -159,8 +160,10 @@ public class DebugConfigurationSuperDevModeTest extends AbstractGWTPluginSwtBotT
       }
     }
 
-    // sleep while the launch dialog shows up and goes away
-    bot.sleep(4000);
+    // Wait for a successful launch
+    SwtBotUtils.print("Waiting for the code server to be ready.");
+    ConsoleContains.waitForConsoleOutput(bot, "The code server is ready", 30000);
+    SwtBotUtils.print("It was a successful launch.");
   }
 
   /**

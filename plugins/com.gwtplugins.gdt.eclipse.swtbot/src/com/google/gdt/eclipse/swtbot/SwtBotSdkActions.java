@@ -56,8 +56,9 @@ public final class SwtBotSdkActions {
 
     SwtBotUtils.clickButtonAndWaitForWindowChange(bot, bot.button("Add..."));
 
-    bot.textWithLabel("Installation directory:").setText(System.getenv(sdkDirEnvVariableName));
-    bot.textWithLabel("Display name:").setText(sdkDisplayName);
+    // Remove, use the included sdks
+    //bot.textWithLabel("Installation directory:").setText(System.getenv(sdkDirEnvVariableName));
+    //bot.textWithLabel("Display name:").setText(sdkDisplayName);
 
     SWTBotButton okButton = bot.button("OK");
     if (okButton.isEnabled()) {

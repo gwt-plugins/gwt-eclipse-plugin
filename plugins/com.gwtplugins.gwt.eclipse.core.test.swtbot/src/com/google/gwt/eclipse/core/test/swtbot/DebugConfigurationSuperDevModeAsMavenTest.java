@@ -42,7 +42,7 @@ public class DebugConfigurationSuperDevModeAsMavenTest extends DebugConfiguratio
   }
 
   // public void testShortcutUsingDefaults2() {
-  // givenMavenGwtProjectIsCreated1(PROJECT_NAME);
+  // givenMavenGwtProjectIsCreated2(PROJECT_NAME);
   //
   // // When I right click and Debug GWT Super Dev Mode
   // whenIRightClickandRunDebugConfigurationAndStopDebuggingIt();
@@ -60,12 +60,9 @@ public class DebugConfigurationSuperDevModeAsMavenTest extends DebugConfiguratio
   // }
 
 
-  /**
-   * Instead create a Maven project, not a standard package project
-   */
   @Override
   protected void givenProjectIsCreated() {
-
+    // skip this b/c each test will have it's own maven module
   }
 
 }

@@ -11,7 +11,6 @@
   </parent>
 
   <artifactId>com.gwtplugins.gwt.eclipse.core.test.swtbot</artifactId>
-  <version>3.0.0-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
 
   <build>
@@ -21,12 +20,8 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-surefire-plugin</artifactId>
         <configuration>
-          <useUIHarness>true</useUIHarness>
-          <useUIThread>false</useUIThread>
-          <product>org.eclipse.sdk.ide</product>
-          <application>org.eclipse.ui.ide.workbench</application>
           <excludes>
-            <!-- <exclude>**/AbstractGWTPluginSwtBotTestCase.java</exclude> -->
+            <exclude>**/AbstractGWTPluginSwtBotTestCase.java</exclude>
           </excludes>
           <skipTests>false</skipTests>
         </configuration>
