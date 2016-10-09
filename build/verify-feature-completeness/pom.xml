@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.gwtplugins.eclipse</groupId>
+    <artifactId>build</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+  </parent>
+  
+  <artifactId>verify-feature-completeness</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Installation Testing for GWT Eclipse Plugin</name>
+  <description>
+    Attempt to install the main features with an Eclipse installation
+    to ensure that our feature definitions are complete.
+  </description>
+
+  <properties>
+    <!-- TODO Add SDBG -->
+    <installIUs>org.eclipse.platform.feature.group,com.gwtplugins.eclipse.suite.v3.feature.feature.group,com.gwtplugins.eclipse.sdkbundle.gwt27.feature.feature.group,com.gwtplugins.eclipse.sdkbundle.gwt28.feature.feature.group</installIUs>
+    <build.rootUri>${project.baseUri}/../..</build.rootUri>
+    <eclipse.repoUrl>${build.rootUri}/eclipse/ide-target-platform/target/repository</eclipse.repoUrl>
+    <gwt.repoUrl>${build.rootUri}/repo/target/repository</gwt.repoUrl>
+  </properties>
+
+  <dependencies>
+    <!-- Target repo -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>ide-target-platform.repo</artifactId>
+      <version>${project.version}</version>
+      <type>eclipse-repository</type>
+    </dependency>
+    <!-- Build repo -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>repo</artifactId>
+      <version>${project.version}</version>
+      <type>eclipse-repository</type>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- force a clean to remove any existing installation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.5</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho.extras</groupId>
+        <artifactId>tycho-eclipserun-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <argLine>-Declipse.p2.mirrors=false</argLine>
+          <appArgLine>
+            -consoleLog -nosplash
+            -application org.eclipse.equinox.p2.director
+            -destination ${project.build.directory}/p2-installation
+            -repository ${eclipse.repoUrl},${gwt.repoUrl} 
+            -installIUs ${installIUs}
+          </appArgLine>
+          <repositories>
+            <repository>
+              <id>eclipse</id>
+              <layout>p2</layout>
+              <url>${eclipse.repoUrl}</url>
+            </repository>
+          </repositories>
+          <dependencies>
+            <dependency>
+              <artifactId>org.eclipse.equinox.p2.transport.ecf</artifactId>
+              <type>eclipse-plugin</type>
+            </dependency>
+            <dependency>
+              <artifactId>org.eclipse.equinox.p2.repository</artifactId>
+              <type>eclipse-plugin</type>
+            </dependency>
+            <dependency>
+              <artifactId>org.eclipse.equinox.p2.touchpoint.natives</artifactId>
+              <type>eclipse-plugin</type>
+            </dependency>
+            <dependency>
+              <artifactId>org.eclipse.equinox.p2.touchpoint.eclipse</artifactId>
+              <type>eclipse-plugin</type>
+            </dependency>
+            <dependency>
+              <artifactId>org.eclipse.equinox.p2.artifact.repository</artifactId>
+              <type>eclipse-plugin</type>
+            </dependency>
+            <dependency>
+              <artifactId>org.eclipse.equinox.p2.director.app</artifactId>
+              <type>eclipse-plugin</type>
+            </dependency>
+            <dependency>
+              <artifactId>org.eclipse.equinox.simpleconfigurator</artifactId>
+              <type>eclipse-plugin</type>
+            </dependency>
+            <dependency>
+              <artifactId>org.eclipse.osgi.compatibility.state</artifactId>
+              <type>eclipse-plugin</type>
+            </dependency>
+            <dependency>
+              <artifactId>org.eclipse.equinox.ds</artifactId>
+              <type>eclipse-plugin</type>
+            </dependency>
+            <dependency>
+              <artifactId>org.eclipse.core.net</artifactId>
+              <type>eclipse-plugin</type>
+            </dependency>
+          </dependencies>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>eclipse-run</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  </project>

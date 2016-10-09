@@ -12,8 +12,6 @@
     <tycho.version>0.26.0</tycho.version>
     <tycho-extras.version>0.26.0</tycho-extras.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-    <!-- These constants are currently set up to build against Eclipse Mars. -->
     <eclipse.target>mars</eclipse.target>
 
     <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
@@ -27,7 +25,7 @@
     <!-- OS-specific JVM flags, empty for the default case but redefined below -->
     <os-jvm-flags />
 
-    <!-- Used In: GwtRuntimeTestUtilities.java -->
+    <!-- Used In: GwtRuntimeTestUtilities.java TODO remove? -->
     <gwt.version>2.7.0</gwt.version>
 
     <!-- SwtBot Timeout -->
@@ -38,7 +36,7 @@
   </properties>
 
   <modules>
-    <!-- GWT_HOME SDKs downloaded here -->
+    <!-- GWT_HOME SDKs downloaded here. TODO remove GWT_HOME-->
     <module>resources</module>
 
     <!-- Features located in ./repo/category.xml -->
@@ -102,7 +100,7 @@
       <layout>p2</layout>
     </repository>
   </repositories>
-
+  
   <build>
     <plugins>
       <plugin>
@@ -157,7 +155,7 @@
           </environments>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-versions-plugin</artifactId>
@@ -196,22 +194,23 @@
             <useUIThread>false</useUIThread>
             <product>org.eclipse.sdk.ide</product>
             <application>org.eclipse.ui.ide.workbench</application>
-            <argLine>-Dorg.eclipse.swtbot.search.timeout=${org.eclipse.swtbot.search.timeout} -Xms40m -Xmx1G -XX:MaxPermSize=512m -Djava.awt.headless=true ${os-jvm-flags}</argLine>
+            <argLine>-Dorg.eclipse.swtbot.search.timeout=${org.eclipse.swtbot.search.timeout} -Xms40m -Xmx1G
+              -XX:MaxPermSize=512m -Djava.awt.headless=true ${os-jvm-flags}</argLine>
           </configuration>
         </plugin>
-        
+
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-p2-director-plugin</artifactId>
           <version>${tycho.version}</version>
         </plugin>
-        
+
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-p2-repository-plugin</artifactId>
           <version>${tycho.version}</version>
         </plugin>
-        
+
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-p2-plugin</artifactId>
@@ -247,6 +246,100 @@
       <properties>
         <os-jvm-flags>-XstartOnFirstThread</os-jvm-flags>
       </properties>
+    </profile>
+
+    <profile>
+      <id>build-eclipse-mars</id>
+      <activation>
+        <!-- Default target if no eclipse.target specified. -->
+        <property>
+          <name>!eclipse.target</name>
+          <!-- when no longer the default: <name>eclipse.target</name> <value>mars</value> -->
+        </property>
+      </activation>
+      <properties>
+        <!-- <jettyMinVersion>9.1</jettyMinVersion> -->
+        <!-- <jettyMaxVersion>9.3</jettyMaxVersion> -->
+      </properties>
+      <!-- build against a known target platform -->
+      <modules>
+        <module>eclipse/mars</module>
+      </modules>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>target-platform-configuration</artifactId>
+            <configuration>
+              <target>
+                <artifact>
+                  <groupId>com.gwtplugins.eclipse</groupId>
+                  <artifactId>gwt-eclipse-mars</artifactId>
+                  <version>4.5.0-SNAPSHOT</version>
+                </artifact>
+              </target>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>build-eclipse-neon</id>
+      <activation>
+        <property>
+          <name>eclipse.target</name>
+          <value>neon</value>
+        </property>
+      </activation>
+      <properties>
+        <!-- <jettyMinVersion>9.3</jettyMinVersion> -->
+        <!-- <jettyMaxVersion>9.4</jettyMaxVersion> -->
+      </properties>
+      <!-- build against a known target platform -->
+      <modules>
+        <module>eclipse/neon</module>
+      </modules>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>target-platform-configuration</artifactId>
+            <configuration>
+              <target>
+                <artifact>
+                  <groupId>com.gwtplugins.eclipse</groupId>
+                  <artifactId>gwt-eclipse-neon</artifactId>
+                  <version>4.6.0-SNAPSHOT</version>
+                </artifact>
+              </target>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <!-- create a copy of the build target platform, suitable for setting as an Eclipse Target Platform -->
+      <id>ide-target-platform</id>
+      <modules>
+        <module>eclipse/ide-target-platform</module>
+      </modules>
+    </profile>
+
+
+    <profile>
+      <id>teamcity</id>
+      <properties>
+        <!-- We configure Travis to use jdk7 -->
+        <tycho.toolchains>SYSTEM</tycho.toolchains>
+        <!-- Ensure we don't resolve previous versions of our artifacts -->
+        <tycho.localArtifacts>ignore</tycho.localArtifacts>
+      </properties>
+      <modules>
+        <module>eclipse/ide-target-platform</module>
+        <module>build/verify-feature-completeness</module>
+      </modules>
     </profile>
   </profiles>
 </project>

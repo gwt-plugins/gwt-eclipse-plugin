@@ -1,0 +1,48 @@
+/* 
+ * Target Platform Definition created using Mikael Barbero's TPD editor 
+ * <https://github.com/mbarbero/fr.obeo.releng.targetplatform/>
+ * which you need to install into Eclipse.
+ * 
+ * If you make changes to this file, either:
+ * 
+ *    * Open the context menu somewhere in this file in 
+ *      Eclipse and choose 'Create Target Definition File'
+ *      to update the corresponding .target file.
+ *    * Open the context menu somewhere in this file in 
+ *      Eclipse and choose choose 'Set as Target Platform'
+ *      to update your IDE's target platform (regenerates the .target too)
+ */
+target "GWT Eclipse Plugin Mars" with source requirements
+
+location "http://download.eclipse.org/cbi/updates/license" {
+    org.eclipse.license.feature.group    
+}
+
+location "http://download.eclipse.org/releases/mars/" {
+	org.eclipse.sdk.feature.group
+	org.eclipse.jdt.feature.group
+	org.eclipse.m2e.feature.feature.group
+	org.eclipse.m2e.wtp.feature.feature.group
+	org.eclipse.mylyn.commons.feature.group
+	org.eclipse.jpt.jpa.feature.feature.group
+	org.eclipse.datatools.sdk.feature.feature.group
+	org.eclipse.swtbot.eclipse.feature.group
+	
+	org.eclipse.jetty.http
+	org.eclipse.jetty.servlet
+	org.eclipse.jetty.server
+	org.eclipse.jetty.util
+}
+
+location "http://download.eclipse.org/webtools/repository/mars/" {
+    org.eclipse.jst.web_sdk.feature.feature.group
+    org.eclipse.jst.server_sdk.feature.feature.group
+    org.eclipse.jst.common.fproj.enablement.jdt.sdk.feature.group
+    org.eclipse.wst.common.fproj.sdk.feature.group
+    org.eclipse.wst.web_sdk.feature.feature.group
+    org.eclipse.wst.server_adapters.sdk.feature.feature.group
+}
+
+location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/" {
+	org.hamcrest
+}
