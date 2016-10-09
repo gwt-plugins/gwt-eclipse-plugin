@@ -16,7 +16,7 @@ package com.google.gwt.eclipse.core.test.swtbot.test;
 
 import com.google.gdt.eclipse.swtbot.SwtBotProjectActions;
 import com.google.gdt.eclipse.swtbot.SwtBotSdkActions;
-import com.google.gdt.eclipse.swtbot.SwtBotTestingUtilities;
+import com.google.gdt.eclipse.swtbot.SwtBotUtils;
 import com.google.gdt.eclipse.swtbot.SwtBotWorkbenchActions;
 import com.google.gwt.eclipse.testing.GwtRuntimeTestUtilities;
 
@@ -49,7 +49,7 @@ public class AbstractGWTPluginSwtBotTestCase extends TestCase {
     closeDialogsIfNeedBe();
 
     // Given a gwt sdk is setup
-    SwtBotSdkActions.setupGwtSdk(bot);
+    //SwtBotSdkActions.setupGwtSdk(bot);
 
     // And create a maven project using an archetype
     String groupId = PACKAGE_NAME;
@@ -58,7 +58,7 @@ public class AbstractGWTPluginSwtBotTestCase extends TestCase {
     // https://github.com/branflake2267/Archetypes/tree/master/archetypes/gwt-basic
     String archetypeGroupId = "com.github.branflake2267.archetypes";
     String archetypeArtifactId = "gwt-basic-archetype";
-    String archetypeVersion = "1.6-SNAPSHOT";
+    String archetypeVersion = "2.0-SNAPSHOT";
     String archetypeUrl = "https://oss.sonatype.org/content/repositories/snapshots";
 
     SwtBotProjectActions.createMavenProjectFromArchetype(bot, groupId, artifactId, packageName,
@@ -117,12 +117,12 @@ public class AbstractGWTPluginSwtBotTestCase extends TestCase {
   @Override
   protected void setUp() throws Exception {
     GwtRuntimeTestUtilities.addDefaultRuntime();
-    SwtBotTestingUtilities.setUp(bot);
+    SwtBotUtils.setUp(bot);
   }
 
   @Override
   protected void tearDown() throws Exception {
-    SwtBotTestingUtilities.tearDown();
+    SwtBotUtils.tearDown();
   }
 
   /**

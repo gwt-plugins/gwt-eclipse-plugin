@@ -64,7 +64,7 @@ public final class SwtBotWorkbenchActions {
       if (itemName.equals(item.getText())) {
         try {
           item.expand();
-          SwtBotTestingUtilities.waitUntilTreeHasText(bot, item);
+          SwtBotUtils.waitUntilTreeHasText(bot, item);
           if (item.getNode(subchildName) != null) {
             return item;
           }
@@ -74,8 +74,8 @@ public final class SwtBotWorkbenchActions {
       }
     }
 
-    throw new IllegalStateException("The " + itemName
-        + " node with a child of " + subchildName + " must exist in the tree.");
+    throw new IllegalStateException("The '" + itemName
+        + "' node with a child of '" + subchildName + "' must exist in the tree.");
   }
 
   /**
@@ -110,8 +110,8 @@ public final class SwtBotWorkbenchActions {
       }
     }
 
-    throw new IllegalStateException("One of the " + itemNames + " nodes with a child of "
-        + subchildName + " must exist in the tree.");
+    throw new IllegalStateException("One of the '" + itemNames + "' nodes with a child of '"
+        + subchildName + "' must exist in the tree.");
   }
 
   /**
@@ -121,10 +121,10 @@ public final class SwtBotWorkbenchActions {
    * away.
    */
   public static void openPreferencesDialog(final SWTWorkbenchBot bot) {
-    SwtBotTestingUtilities.performAndWaitForWindowChange(bot, new Runnable() {
+    SwtBotUtils.performAndWaitForWindowChange(bot, new Runnable() {
       @Override
       public void run() {
-        if (SwtBotTestingUtilities.isMac()) {
+        if (SwtBotUtils.isMac()) {
           // TODO: Mac has "Preferences..." under the "Eclipse" menu item.
           // However,
           // the "Eclipse" menu item is a system menu item (like the Apple menu
@@ -206,25 +206,25 @@ public final class SwtBotWorkbenchActions {
     ev.type = SWT.MouseDown;
     ev.button = 1;
     display.post(ev);
-    bot.sleep(SwtBotTestingUtilities.EVENT_DOWN_UP_DELAY_MS);
+    bot.sleep(SwtBotUtils.EVENT_DOWN_UP_DELAY_MS);
     ev.type = SWT.MouseUp;
     display.post(ev);
 
     bot.sleep(OPEN_PREFERENCES_DIALOG_DELAY_MS);
 
     // Right to the "Eclipse" menu item
-    SwtBotTestingUtilities.sendKeyDownAndUp(bot, SWT.ARROW_RIGHT, '\0');
+    SwtBotUtils.sendKeyDownAndUp(bot, SWT.ARROW_RIGHT, '\0');
     bot.sleep(OPEN_PREFERENCES_DIALOG_DELAY_MS);
 
     // Down two to the "Preferences..." menu item
-    SwtBotTestingUtilities.sendKeyDownAndUp(bot, SWT.ARROW_DOWN, '\0');
+    SwtBotUtils.sendKeyDownAndUp(bot, SWT.ARROW_DOWN, '\0');
     bot.sleep(OPEN_PREFERENCES_DIALOG_DELAY_MS);
 
-    SwtBotTestingUtilities.sendKeyDownAndUp(bot, SWT.ARROW_DOWN, '\0');
+    SwtBotUtils.sendKeyDownAndUp(bot, SWT.ARROW_DOWN, '\0');
     bot.sleep(OPEN_PREFERENCES_DIALOG_DELAY_MS);
 
     // Press enter
-    SwtBotTestingUtilities.sendKeyDownAndUp(bot, 0, '\r');
+    SwtBotUtils.sendKeyDownAndUp(bot, 0, '\r');
     bot.sleep(OPEN_PREFERENCES_DIALOG_DELAY_MS);
   }
 

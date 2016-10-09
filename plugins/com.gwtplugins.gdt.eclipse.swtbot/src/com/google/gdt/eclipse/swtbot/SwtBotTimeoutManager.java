@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
  * deal with the API differences between SWTBot 2.0.0.204 and SWTBot 2.0.0.358.
  * Once we upgrade our Eclipse 3.3/3.4 test environment ot use 2.0.0.358, we can
  * get rid of this class.
- * 
+ *
  * Note that this is a "static" class, so it is not thread-safe. The pattern of
  * usage is to call {@link #setTimeout(long)} to set the general SWTBot timeout,
  * and then call {@link #resetTimeout()} to reset the SWTBot timeout back to
@@ -30,7 +30,7 @@ import java.lang.reflect.Field;
  */
 public class SwtBotTimeoutManager {
 
-  private static final int TYPICAL_TIMEOUT = 30000;
+  private static final int TYPICAL_TIMEOUT = 5000;
 
   private static final String KEY_SWTBOT_TIMEOUT = "org.eclipse.swtbot.search.timeout";
 
@@ -70,7 +70,7 @@ public class SwtBotTimeoutManager {
 
   /**
    * Set the SWTBot timeout value.
-   * 
+   *
    * @param timeout the timeout value, in milliseconds
    */
   public static void setTimeout(long timeout) {

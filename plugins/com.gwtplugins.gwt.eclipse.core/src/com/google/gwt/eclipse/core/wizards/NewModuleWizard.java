@@ -45,9 +45,8 @@ import java.util.List;
 @SuppressWarnings("restriction")
 public class NewModuleWizard extends AbstractNewFileWizard {
 
-  private static final String NO_VERSION_FOUND_DTD = "<!-- Could not determine the version of your GWT SDK; using the module DTD from GWT 1.6.4. You may want to change this. -->\n"
-      + "<!DOCTYPE module PUBLIC \"-//Google Inc.//DTD Google Web Toolkit//EN\" \"http://google-web-toolkit.googlecode.com/svn/trunk/distro-source/core/src/gwt-module.dtd\">";
-
+  private static final String NO_VERSION_FOUND_DTD =
+      "<!DOCTYPE module PUBLIC \"-//Google Inc.//DTD GWT//EN\" \"http://gwtproject.org/doctype/2.8.0/gwt-module.dtd\">";
   private NewModuleWizardPage newModuleWizardPage;
 
   @Override
@@ -63,23 +62,18 @@ public class NewModuleWizard extends AbstractNewFileWizard {
     setHelpAvailable(false);
     setWindowTitle("New GWT Module");
 
-    setDefaultPageImageDescriptor(GWTPlugin.getDefault().getImageDescriptor(
-        GWTImages.NEW_MODULE_LARGE));
+    setDefaultPageImageDescriptor(GWTPlugin.getDefault().getImageDescriptor(GWTImages.NEW_MODULE_LARGE));
   }
 
   @Override
   public boolean performFinish() {
-
     IPackageFragmentRoot root = newModuleWizardPage.getPackageFragmentRoot();
     String packName = newModuleWizardPage.getModulePackageName();
 
     try {
-
-      IPackageFragment createdPackageFragment = root.createPackageFragment(packName, false,
-          new NullProgressMonitor());
+      IPackageFragment createdPackageFragment = root.createPackageFragment(packName, false, new NullProgressMonitor());
 
       if (newModuleWizardPage.shouldCreateClientPackage()) {
-
         String clientPackName = null;
 
         if (packName == null || packName.length() == 0) {
@@ -104,12 +98,10 @@ public class NewModuleWizard extends AbstractNewFileWizard {
           "An error occurred while attempting to create a new GWT Module",
           NLS.bind(IDEWorkbenchMessages.WizardNewFileCreationPage_internalErrorMessage, e));
 
-      GWTPluginLog.logError(
-          e,
+      GWTPluginLog.logError(e,
           "Unable to create new GWT Module with source folder: {0}, name: {1}, package: {2}, createClientPackage: {4}, createPublicPath: {5}",
           newModuleWizardPage.getPackageFragmentRootText(), newModuleWizardPage.getModuleName(),
-          newModuleWizardPage.shouldCreateClientPackage(),
-          newModuleWizardPage.shouldCreatePublicPath());
+          newModuleWizardPage.shouldCreateClientPackage(), newModuleWizardPage.shouldCreatePublicPath());
 
       return false;
     }
@@ -147,9 +139,9 @@ public class NewModuleWizard extends AbstractNewFileWizard {
       String versionNum = runtime.getVersion();
 
       if (!versionNum.endsWith(".999") && !versionNum.startsWith("0.0")) {
-        gwtModuleDtd = "<!DOCTYPE module PUBLIC \"-//Google Inc.//DTD Google Web Toolkit "
-            + versionNum + "//EN\" \"http://google-web-toolkit.googlecode.com/svn/tags/"
-            + versionNum + "/distro-source/core/src/gwt-module.dtd\">";
+        gwtModuleDtd = "<!DOCTYPE module PUBLIC \"-//Google Inc.//DTD Google Web Toolkit " + versionNum
+            + "//EN\" \"http://google-web-toolkit.googlecode.com/svn/tags/" + versionNum
+            + "/distro-source/core/src/gwt-module.dtd\">";
       }
     }
 

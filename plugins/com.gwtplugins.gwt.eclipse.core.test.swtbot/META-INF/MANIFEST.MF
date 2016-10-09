@@ -9,4 +9,5 @@ Fragment-Host: com.gwtplugins.gwt.eclipse.core
 Require-Bundle: com.gwtplugins.gdt.eclipse.swtbot,
  com.gwtplugins.gwt.eclipse.testing,
  org.eclipse.swtbot.eclipse.finder,
- org.junit
+ org.junit,
+ org.eclipse.swt

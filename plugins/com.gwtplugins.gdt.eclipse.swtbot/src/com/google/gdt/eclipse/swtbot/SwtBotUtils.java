@@ -36,7 +36,7 @@ import org.eclipse.swtbot.swt.finder.widgets.TimeoutException;
 /**
  * Provides helper methods to aid in SWTBot testing.
  */
-public class SwtBotTestingUtilities {
+public class SwtBotUtils {
 
   // TODO: Extract tree-specific functionality into a new class
   private static class TreeCollapsedCondition extends DefaultCondition {
@@ -46,10 +46,12 @@ public class SwtBotTestingUtilities {
       this.tree = tree;
     }
 
+    @Override
     public String getFailureMessage() {
       return "Could not collapse the tree of " + tree.getText();
     }
 
+    @Override
     public boolean test() throws Exception {
       return !isTreeExpanded(tree);
     }
@@ -62,10 +64,12 @@ public class SwtBotTestingUtilities {
       this.tree = tree;
     }
 
+    @Override
     public String getFailureMessage() {
       return "Could not expand the tree of " + tree.getText();
     }
 
+    @Override
     public boolean test() throws Exception {
       return isTreeExpanded(tree);
     }
@@ -78,6 +82,7 @@ public class SwtBotTestingUtilities {
 
   public static void clickButtonAndWaitForWindowChange(SWTBot bot, final SWTBotButton button) {
     performAndWaitForWindowChange(bot, new Runnable() {
+      @Override
       public void run() {
         button.click();
       }
@@ -98,7 +103,7 @@ public class SwtBotTestingUtilities {
   /**
    * Create a java project with the specified project name. This function opens up the Java
    * Perspective.
-   * 
+   *
    * @param bot The current SWTWorkbenchBot object
    * @param projectName Name of java project to be created
    */
@@ -113,25 +118,26 @@ public class SwtBotTestingUtilities {
     SWTBotTree projectSelectionTree = bot.tree();
     SWTBotTreeItem projectSelectionTreeItem =
         SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, "Java", "Java Project");
-    SwtBotTestingUtilities.selectTreeItem(bot, projectSelectionTreeItem, "Java Project");
+    SwtBotUtils.selectTreeItem(bot, projectSelectionTreeItem, "Java Project");
 
     bot.button("Next >").click();
 
     // Configure the project and then create it
     bot.textWithLabel("Project name:").setText(projectName);
 
-    SwtBotTestingUtilities.clickButtonAndWaitForWindowChange(bot, bot.button("Finish"));
+    SwtBotUtils.clickButtonAndWaitForWindowChange(bot, bot.button("Finish"));
   }
 
   /**
    * Gets the item matching the given name from a tree item.
-   * 
+   *
    * @param widget the tree item to search
    * @param nodeText the text on the node.
    * @return the child tree item with the specified text.
    */
   public static TreeItem getTreeItem(final TreeItem widget, final String nodeText) {
     return UIThreadRunnable.syncExec(new WidgetResult<TreeItem>() {
+      @Override
       public TreeItem run() {
         TreeItem[] items = widget.getItems();
         for (TreeItem item : items) {
@@ -169,7 +175,7 @@ public class SwtBotTestingUtilities {
 
   /**
    * Injects a key or character via down and up events.
-   * 
+   *
    * @param keyCode the keycode of the key (only this or character have to be provided.)
    * @param character the character to press (only this or keyCode have to be provided.)
    */
@@ -221,10 +227,12 @@ public class SwtBotTestingUtilities {
    */
   public static void waitUntilShellIsNotActive(SWTBot bot, final SWTBotShell shell) {
     bot.waitUntil(new DefaultCondition() {
+      @Override
       public String getFailureMessage() {
         return "Shell " + shell.getText() + " did not close"; //$NON-NLS-1$
       }
 
+      @Override
       public boolean test() throws Exception {
         return !shell.isActive();
       }
@@ -234,10 +242,10 @@ public class SwtBotTestingUtilities {
   /**
    * Blocks the caller until all of the direct children of the tree have text. The assumption is
    * that the tree does not have any "empty" children.
-   * 
+   *
    * TODO: Refactor some of this logic; it follows the same general pattern as
    * {@link #waitUntilTreeItemHasItem(SWTBot, SWTBotTreeItem, String)}.
-   * 
+   *
    * @param tree the tree to search
    * @throws TimeoutException if all of the direct children of the tree do not have text within the
    *         timeout period
@@ -268,6 +276,7 @@ public class SwtBotTestingUtilities {
 
   private static boolean doesTreeItemHaveText(final TreeItem widget) {
     return UIThreadRunnable.syncExec(new Result<Boolean>() {
+      @Override
       public Boolean run() {
         TreeItem[] items = widget.getItems();
         for (TreeItem item : items) {
@@ -285,6 +294,7 @@ public class SwtBotTestingUtilities {
    */
   private static boolean isTreeExpanded(final TreeItem tree) {
     return UIThreadRunnable.syncExec(new Result<Boolean>() {
+      @Override
       public Boolean run() {
         return tree.getExpanded();
       }
@@ -293,6 +303,7 @@ public class SwtBotTestingUtilities {
 
   private static void printTree(final TreeItem tree) {
     UIThreadRunnable.syncExec(new VoidResult() {
+      @Override
       public void run() {
         System.err.println(String.format("%s has %d items:", tree.getText(), tree.getItemCount()));
         for (TreeItem item : tree.getItems()) {
@@ -306,10 +317,12 @@ public class SwtBotTestingUtilities {
       final String nodeText) {
     try {
       bot.waitUntil(new DefaultCondition() {
+        @Override
         public String getFailureMessage() {
           return "Could not find node with text " + nodeText;
         }
 
+        @Override
         public boolean test() throws Exception {
           return getTreeItem(tree, nodeText) != null;
         }
@@ -324,10 +337,12 @@ public class SwtBotTestingUtilities {
   private static boolean waitUntilTreeHasTextImpl(SWTBot bot, final TreeItem tree) {
     try {
       bot.waitUntil(new DefaultCondition() {
+        @Override
         public String getFailureMessage() {
           return "Not all of the nodes in the tree have text.";
         }
 
+        @Override
         public boolean test() throws Exception {
           return doesTreeItemHaveText(tree);
         }
@@ -341,7 +356,7 @@ public class SwtBotTestingUtilities {
 
   /**
    * Blocks the caller until the tree item has the given item text.
-   * 
+   *
    * @param tree the tree item to search
    * @param nodeText the item text to look for
    * @throws org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException if the item could not
@@ -372,4 +387,7 @@ public class SwtBotTestingUtilities {
     }
   }
 
+  public static void print(String message) {
+    System.out.println(message);
+  }
 }
