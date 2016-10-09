@@ -38,6 +38,7 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
  */
 public class DebugConfigurationSuperDevModeTest extends AbstractGWTPluginSwtBotTestCase {
 
+  // TODO change to Messages.get()
   protected static final String MENU_GWT_LEGACY = "GWT Legacy Development Mode with Jetty";
   protected static final String MENU_GWT_SUPERDEVMODE = "GWT Development Mode with Jetty";
   protected static final String PROJECT_NAME = "Project";
@@ -64,14 +65,14 @@ public class DebugConfigurationSuperDevModeTest extends AbstractGWTPluginSwtBotT
   }
 
   /**
-   * can use for maven swtbot tests override
+   * can use for Maven swtbot tests override
    */
   protected void givenProjectIsCreated() {
     givenProjectIsCreated(PROJECT_NAME);
   }
 
   /**
-   * Can use to for maven swtbot tests override
+   * Can use to for Maven swtbot tests override
    */
   protected String maybeConvertSrcToMaven(String src) {
     return src;
@@ -127,9 +128,7 @@ public class DebugConfigurationSuperDevModeTest extends AbstractGWTPluginSwtBotT
   }
 
   /**
-   * Goto Debug As > 4 Run GWT Super Dev Mode
-   *
-   * Note: terminate this manually!
+   * Goto Debug As > "# MENU_GWT_SUPERDEVMODE"
    */
   protected void whenIClickandRunDebugConfiguration() {
     final SWTWorkbenchBot bot = getSwtWorkbenchBot();

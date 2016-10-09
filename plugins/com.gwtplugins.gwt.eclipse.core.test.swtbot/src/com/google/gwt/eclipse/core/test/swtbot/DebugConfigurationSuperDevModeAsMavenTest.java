@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.test.swtbot;
 
-
 /**
  * Test GWT super dev mode debug configurations using a Maven project.
  *
@@ -41,6 +40,9 @@ public class DebugConfigurationSuperDevModeAsMavenTest extends DebugConfiguratio
     assertTrue(persistedArgs.contains("com.example.project.Project"));
   }
 
+  // TODO fix archetype first
+  // TODO then the module name will be a different assertion
+  // TODO fix building the module on import
   // public void testShortcutUsingDefaults2() {
   // givenMavenGwtProjectIsCreated2(PROJECT_NAME);
   //

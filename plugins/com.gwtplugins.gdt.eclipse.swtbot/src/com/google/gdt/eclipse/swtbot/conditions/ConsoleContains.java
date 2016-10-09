@@ -1,10 +1,13 @@
 package com.google.gdt.eclipse.swtbot.conditions;
 
+import com.google.gdt.eclipse.swtbot.SwtBotUtils;
+
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.ICondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotStyledText;
+import org.eclipse.ui.internal.console.ConsoleView;
 
 public class ConsoleContains implements ICondition {
 
@@ -24,19 +27,28 @@ public class ConsoleContains implements ICondition {
   private String searchString;
   private String msg;
 
-  public ConsoleContains(String string) {
+  protected ConsoleContains(String string) {
     this.searchString = string;
   }
 
   @Override
   public boolean test() throws Exception {
     msg = "Could not open Console view";
-    SWTBotView console = bot.viewByTitle("Console");
-    msg = "Could not find textWidget in Console view";
+    SwtBotUtils.print("\tConsole msg: " + msg);
+
+    SWTBotView console = bot.viewByTitle(ConsoleView.class.getName());
+    msg = "Could not find textWidget in Console view. name=" + ConsoleView.class.getName();
+    SwtBotUtils.print("\tConsole msg: " + msg);
+
     SWTBotStyledText textWidget = console.bot().styledText();
     msg = "Could not get the text from the Console view";
+    SwtBotUtils.print("\tConsole msg: " + msg);
+
     String text = textWidget.getText();
-    msg = "Looking for: '" + searchString + "' but found \n------\n" + text + "\n-----";
+    msg = "Looking for: '" + searchString + "' but found \n\t------\n\t" + text + "\n\t-----";
+
+    SwtBotUtils.print("\tConsole msg: " + msg);
+
     return text.contains(searchString);
   }
 
