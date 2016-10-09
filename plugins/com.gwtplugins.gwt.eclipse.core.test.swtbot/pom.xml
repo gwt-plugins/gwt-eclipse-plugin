@@ -30,7 +30,7 @@
             </dependency>
           </dependencies>
           <excludes>
-            <exclude>**/AbstractGWTPluginSwtBotTestCase.java</exclude>
+            <!-- <exclude>**/XXX.java</exclude> -->
           </excludes>
           <skipTests>false</skipTests>
         </configuration>

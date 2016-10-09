@@ -28,9 +28,10 @@ import java.lang.reflect.Field;
  * it's original value. You should never call {@link #setTimeout(long)} more
  * than once without a call to {@link #resetTimeout()} in between.
  */
+@Deprecated
 public class SwtBotTimeoutManager {
 
-  private static final int TYPICAL_TIMEOUT = 30000;
+  private static final int TYPICAL_TIMEOUT = 10000;
 
   private static final String KEY_SWTBOT_TIMEOUT = "org.eclipse.swtbot.search.timeout";
 
@@ -46,7 +47,6 @@ public class SwtBotTimeoutManager {
    * {@link #setTimeout(long)} was called.
    */
   public static void resetTimeout() {
-
     // Code for 2.0.0.204
     if (oldTimeoutSysProp != null) {
       System.setProperty(KEY_SWTBOT_TIMEOUT, oldTimeoutSysProp);
