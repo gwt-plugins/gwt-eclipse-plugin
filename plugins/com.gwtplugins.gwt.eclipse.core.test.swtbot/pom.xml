@@ -12,7 +12,7 @@
 
   <artifactId>com.gwtplugins.gwt.eclipse.core.test.swtbot</artifactId>
   <packaging>eclipse-test-plugin</packaging>
-
+  
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -20,10 +20,59 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-surefire-plugin</artifactId>
         <configuration>
+          <useUIHarness>true</useUIHarness>
+          <useUIThread>false</useUIThread>
+          <product>org.eclipse.sdk.ide</product>
+          <dependencies>
+            <dependency>
+              <type>p2-installable-unit</type>
+              <artifactId>org.eclipse.sdk.feature.group</artifactId>
+            </dependency>
+          </dependencies>
           <excludes>
             <exclude>**/AbstractGWTPluginSwtBotTestCase.java</exclude>
           </excludes>
           <skipTests>false</skipTests>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <configuration>
+          <dependency-resolution>
+            <extraRequirements>
+              <requirement>
+                <type>eclipse-feature</type>
+                <id>com.gwtplugins.eclipse.suite.v3.feature</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+              <requirement>
+                <type>eclipse-feature</type>
+                <id>org.eclipse.m2e.feature</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+              <requirement>
+                <type>eclipse-feature</type>
+                <id>org.eclipse.jst.web_sdk.feature</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+              <requirement>
+                <type>eclipse-feature</type>
+                <id>org.eclipse.jst.common.fproj.enablement.jdt.sdk</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+              <requirement>
+                <type>eclipse-feature</type>
+                <id>org.eclipse.wst.common.fproj.sdk</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+              <requirement>
+                <type>eclipse-feature</type>
+                <id>org.eclipse.wst.server_adapters.sdk.feature</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+            </extraRequirements>
+          </dependency-resolution>
         </configuration>
       </plugin>
     </plugins>
