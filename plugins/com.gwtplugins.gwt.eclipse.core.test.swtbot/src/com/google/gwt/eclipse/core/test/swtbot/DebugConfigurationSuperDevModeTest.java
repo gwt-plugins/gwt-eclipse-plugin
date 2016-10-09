@@ -14,20 +14,13 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.test.swtbot;
 
-import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
-
 import com.google.gdt.eclipse.swtbot.SwtBotMenuActions;
 import com.google.gdt.eclipse.swtbot.SwtBotProjectActions;
 import com.google.gdt.eclipse.swtbot.SwtBotUtils;
 import com.google.gdt.eclipse.swtbot.conditions.ConsoleViewContains;
 import com.google.gwt.eclipse.core.test.swtbot.test.AbstractGWTPluginSwtBotTestCase;
 
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
-import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotText;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 
 /**
@@ -45,10 +38,24 @@ public class DebugConfigurationSuperDevModeTest extends AbstractGWTPluginSwtBotT
 
   private String number;
 
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    thenTearDownProject(PROJECT_NAME);
+
+    super.tearDown();
+  }
+
   /**
-   * Test the default, running with super dev mode
+   * Create launcher with clicking on the GWT Development Mode with Jetty
    */
-  public void testShortcutUsingDefaults() {
+  public void testCreatingLauncherWithJetty1() {
+    givenProjectIsCreated(PROJECT_NAME);
+
     // When I right click and Debug GWT Super Dev Mode
     whenIRightClickandRunDebugConfigurationAndStopDebuggingIt();
 
@@ -56,7 +63,7 @@ public class DebugConfigurationSuperDevModeTest extends AbstractGWTPluginSwtBotT
     String persistedArgs = whenIGetTheProgramArgsTextBox().getText();
 
     // And close the debug configuration dialog
-    getSwtWorkbenchBot().button("Close").click();
+    bot.button("Close").click();
     // And closing may cause a save change dialog
     closeSaveChangesDialogIfNeedBe();
 
@@ -64,44 +71,14 @@ public class DebugConfigurationSuperDevModeTest extends AbstractGWTPluginSwtBotT
     assertTrue(persistedArgs.contains("com.example.project.Project"));
   }
 
-  /**
-   * can use for Maven swtbot tests override
-   */
-  protected void givenProjectIsCreated() {
-    givenProjectIsCreated(PROJECT_NAME);
-  }
-
-  /**
-   * Can use to for Maven swtbot tests override
-   */
-  protected String maybeConvertSrcToMaven(String src) {
-    return src;
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
-    givenProjectIsCreated();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    thenTearDownProject(PROJECT_NAME);
-
-    getSwtWorkbenchBot().resetWorkbench();
-
-    super.tearDown();
-  }
-
   protected void closeSaveChangesDialogIfNeedBe() {
-    SwtBotUtils.performAndWaitForWindowChange(getSwtWorkbenchBot(), new Runnable() {
+    SwtBotUtils.performAndWaitForWindowChange(bot, new Runnable() {
       @Override
       public void run() {
         try {
-          boolean visible = getSwtWorkbenchBot().shell("Save Changes").isVisible();
+          boolean visible = bot.shell("Save Changes").isVisible();
           if (visible) {
-            getSwtWorkbenchBot().button("Yes").click();
+            bot.button("Yes").click();
           }
         } catch (Exception e) {
           return;
@@ -111,8 +88,6 @@ public class DebugConfigurationSuperDevModeTest extends AbstractGWTPluginSwtBotT
   }
 
   protected SWTBotText whenIGetTheProgramArgsTextBox() {
-    SWTWorkbenchBot bot = getSwtWorkbenchBot();
-
     // When I open debug configuration
     SwtBotMenuActions.openDebugConfiguration(bot);
 
@@ -131,8 +106,6 @@ public class DebugConfigurationSuperDevModeTest extends AbstractGWTPluginSwtBotT
    * Goto Debug As > "# MENU_GWT_SUPERDEVMODE"
    */
   protected void whenIClickandRunDebugConfiguration() {
-    final SWTWorkbenchBot bot = getSwtWorkbenchBot();
-
     // show it has focus
     SWTBotTreeItem project = SwtBotProjectActions.selectProject(bot, PROJECT_NAME);
     project.setFocus();
@@ -166,44 +139,10 @@ public class DebugConfigurationSuperDevModeTest extends AbstractGWTPluginSwtBotT
   }
 
   /**
-   * Returns the project root tree in Package Explorer.
-   */
-  public static SWTBotTree getProjectRootTree(SWTWorkbenchBot bot) {
-    SWTBotView explorer = getPackageExplorer(bot);
-
-    if (explorer == null) {
-      throw new WidgetNotFoundException("Cannot find Package Explorer or Project Explorer");
-    }
-
-    Tree tree = bot.widget(widgetOfType(Tree.class), explorer.getWidget());
-    return new SWTBotTree(tree);
-  }
-
-
-  /*
-   * Choose either the Package Explorer View or the Project Explorer view. Eclipse 3.3 and 3.4 start
-   * with the Java Perspective, which has the Package Explorer View open by default, whereas Eclipse
-   * 3.5 starts with the Resource Perspective, which has the Project Explorer View open.
-   */
-  public static SWTBotView getPackageExplorer(final SWTWorkbenchBot bot) {
-    SWTBotView explorer = null;
-    for (SWTBotView view : bot.views()) {
-      if (view.getTitle().equals("Package Explorer")
-          || view.getTitle().equals("Project Explorer")) {
-        explorer = view;
-        break;
-      }
-    }
-    return explorer;
-  }
-
-  /**
    * Right click on project and goto Debug As > 4 Run GWT Super Dev Mode Then Stop the debugging
    * process
    */
   protected void whenIRightClickandRunDebugConfigurationAndStopDebuggingIt() {
-    final SWTWorkbenchBot bot = getSwtWorkbenchBot();
-
     whenIClickandRunDebugConfiguration();
 
     // And then stop it

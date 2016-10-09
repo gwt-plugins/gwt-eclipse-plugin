@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
 import org.eclipse.swtbot.swt.finder.results.Result;
 import org.eclipse.swtbot.swt.finder.results.VoidResult;
@@ -207,17 +206,17 @@ public class SwtBotUtils {
     // for it to show up in the package explorer.
     SwtBotTimeoutManager.setTimeout();
 
-    try {
-      bot.viewByTitle("Welcome").close();
-    } catch (WidgetNotFoundException e) {
-      // Ignore if Welcome view already closed
-    }
+    SwtBotWorkbenchActions.closeDialogs(bot);
+
+    SwtBotWorkbenchActions.closeWelcomePage(bot);
   }
 
   /**
    * Performs the necessary tear down work for most SWTBot tests.
    */
-  public static void tearDown() {
+  public static void tearDown(SWTWorkbenchBot bot) {
+    bot.resetWorkbench();
+
     // Set the SWTBot timeout back to the default value
     SwtBotTimeoutManager.resetTimeout();
   }

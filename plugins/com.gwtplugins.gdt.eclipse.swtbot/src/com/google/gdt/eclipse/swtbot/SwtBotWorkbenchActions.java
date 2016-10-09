@@ -25,6 +25,7 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.waits.ICondition;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
+import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.hamcrest.Matcher;
@@ -228,6 +229,41 @@ public final class SwtBotWorkbenchActions {
     bot.sleep(OPEN_PREFERENCES_DIALOG_DELAY_MS);
   }
 
+  /**
+   * Close dialogs that may show up.
+   */
+  public static void closeDialogs(SWTWorkbenchBot bot) {
+    // Close dialogs that take focus from main shell
+    if (bot.shells().length > 1) {
+      System.out.println("Has windows/shells: shells quanity=" + bot.shells().length);
+      SWTBotShell[] shells = bot.shells();
+      for (int i = 0; i < shells.length; i++) {
+        // ADT port warning dialog
+        if (shells[i].getText().equals("ddms")) {
+          shells[i].close();
+        }
+
+        if (shells[i].getText().equals("Subclipse Usage")) {
+          shells[i].close();
+        }
+
+        if (shells[i].getText().equals("Preferences")) {
+          shells[i].close();
+        }
+      }
+    }
+  }
+
+  public static void closeWelcomePage(SWTWorkbenchBot bot) {
+    try {
+      bot.viewByTitle("Welcome").close();
+    } catch (WidgetNotFoundException e) {
+      // Ignore if Welcome view already closed
+    }
+  }
+
+
   private SwtBotWorkbenchActions() {
   }
+
 }

@@ -30,7 +30,7 @@ import java.lang.reflect.Field;
  */
 public class SwtBotTimeoutManager {
 
-  private static final int TYPICAL_TIMEOUT = 5000;
+  private static final int TYPICAL_TIMEOUT = 30000;
 
   private static final String KEY_SWTBOT_TIMEOUT = "org.eclipse.swtbot.search.timeout";
 

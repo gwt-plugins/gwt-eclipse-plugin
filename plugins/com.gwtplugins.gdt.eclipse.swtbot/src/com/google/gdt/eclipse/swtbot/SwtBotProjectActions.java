@@ -214,9 +214,17 @@ public final class SwtBotProjectActions {
         generateSampleCode);
 
     SwtBotUtils.clickButtonAndWaitForWindowChange(bot, bot.button("Finish"));
+
+    SwtBotWorkbenchActions.waitForIdle(bot);
   }
 
   public static void deleteProject(final SWTWorkbenchBot bot, final String projectName) {
+    SwtBotUtils.print("Deleting project " + projectName);
+
+    selectProject(bot, projectName).contextMenu("Refresh").click();
+
+    SwtBotWorkbenchActions.waitForIdle(bot);
+
     SwtBotUtils.performAndWaitForWindowChange(bot, new Runnable() {
       @Override
       public void run() {
@@ -229,6 +237,10 @@ public final class SwtBotProjectActions {
     bot.checkBox(0).click();
 
     SwtBotUtils.clickButtonAndWaitForWindowChange(bot, bot.button("OK"));
+
+    SwtBotWorkbenchActions.waitForIdle(bot);
+
+    SwtBotUtils.print("Deleted project " + projectName);
   }
 
   /**
@@ -238,7 +250,7 @@ public final class SwtBotProjectActions {
    *
    * @param bot The SWTWorkbenchBot.
    * @param projectName The name of the project to be found.
-   * @return
+   * @return if the project exists
    */
   public static boolean doesProjectExist(final SWTWorkbenchBot bot, String projectName) {
     SWTBotView explorer = getPackageExplorer(bot);
@@ -346,7 +358,7 @@ public final class SwtBotProjectActions {
    *
    * @param bot The SWTWorkbenchBot.
    * @param projectName The name of the project to select.
-   * @return
+   * @return the tree
    */
   public static SWTBotTreeItem selectProject(final SWTWorkbenchBot bot, String projectName) {
     /*

@@ -18,8 +18,6 @@ import com.google.gdt.eclipse.swtbot.SwtBotMenuActions;
 import com.google.gdt.eclipse.swtbot.SwtBotProjectActions;
 import com.google.gwt.eclipse.core.test.swtbot.test.AbstractGWTPluginSwtBotTestCase;
 
-import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
-
 /**
  * Test the deploy process.
  */
@@ -27,8 +25,20 @@ public class UIBinderWizardTest extends AbstractGWTPluginSwtBotTestCase {
 
   protected static final String PROJECT_NAME = "WebApp";
 
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    thenTearDownProject(PROJECT_NAME);
+
+    super.tearDown();
+  }
+
   public void testUIBinderWizard() {
-    SWTWorkbenchBot bot = getSwtWorkbenchBot();
+    givenProjectIsCreated(PROJECT_NAME);
 
     // When a ui binder is created
     SwtBotProjectActions.createUiBinder(bot, PROJECT_NAME, "com.example.webapp", "TestWithContent",
@@ -51,20 +61,6 @@ public class UIBinderWizardTest extends AbstractGWTPluginSwtBotTestCase {
     assertFalse(text2.contains("implements HasText"));
     assertTrue(text2.contains("public TestWithoutContent()"));
     assertFalse(text2.contains("public TestWithoutContent(String firstName)"));
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
-    givenProjectIsCreated(PROJECT_NAME);
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    thenTearDownProject(PROJECT_NAME);
-
-    super.tearDown();
   }
 
 }
