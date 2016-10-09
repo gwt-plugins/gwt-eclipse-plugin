@@ -30,8 +30,8 @@
     <!-- Used In: GwtRuntimeTestUtilities.java -->
     <gwt.version>2.7.0</gwt.version>
 
-    <!-- Don't kill the test early -->
-    <surefire.timeout>120000</surefire.timeout>
+    <!-- SwtBot Timeout -->
+    <org.eclipse.swtbot.search.timeout>10000</org.eclipse.swtbot.search.timeout>
 
     <!-- Skip the deployment here, submodules can override this property -->
     <maven.deploy.skip>true</maven.deploy.skip>
@@ -196,19 +196,22 @@
             <useUIThread>false</useUIThread>
             <product>org.eclipse.sdk.ide</product>
             <application>org.eclipse.ui.ide.workbench</application>
-            <argLine>-Dorg.eclipse.swtbot.search.timeout=120000 -Xms128M -Xmx2G ${os-jvm-flags}</argLine>
+            <argLine>-Dorg.eclipse.swtbot.search.timeout=${org.eclipse.swtbot.search.timeout} -Xms40m -Xmx1G -XX:MaxPermSize=512m -Djava.awt.headless=true ${os-jvm-flags}</argLine>
           </configuration>
         </plugin>
+        
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-p2-director-plugin</artifactId>
           <version>${tycho.version}</version>
         </plugin>
+        
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-p2-repository-plugin</artifactId>
           <version>${tycho.version}</version>
         </plugin>
+        
         <plugin>
           <groupId>org.eclipse.tycho</groupId>
           <artifactId>tycho-p2-plugin</artifactId>
