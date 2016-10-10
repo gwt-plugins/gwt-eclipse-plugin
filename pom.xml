@@ -36,7 +36,7 @@
   </properties>
 
   <modules>
-    <!-- GWT_HOME SDKs downloaded here. TODO remove GWT_HOME-->
+    <!-- GWT_HOME SDKs downloaded here. TODO remove GWT_HOME -->
     <module>resources</module>
 
     <!-- Features located in ./repo/category.xml -->
@@ -100,7 +100,7 @@
       <layout>p2</layout>
     </repository>
   </repositories>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -326,7 +326,6 @@
         <module>eclipse/ide-target-platform</module>
       </modules>
     </profile>
-
 
     <profile>
       <id>teamcity</id>
