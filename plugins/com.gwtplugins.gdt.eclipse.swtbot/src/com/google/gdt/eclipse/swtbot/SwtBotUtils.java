@@ -116,7 +116,7 @@ public class SwtBotUtils {
     // Select the Java project
     SWTBotTree projectSelectionTree = bot.tree();
     SWTBotTreeItem projectSelectionTreeItem =
-        SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, "Java", "Java Project");
+        SwtBotTreeActions.getUniqueTreeItem(bot, projectSelectionTree, "Java", "Java Project");
     SwtBotUtils.selectTreeItem(bot, projectSelectionTreeItem, "Java Project");
 
     bot.button("Next >").click();
@@ -205,6 +205,8 @@ public class SwtBotUtils {
     // for reliability). This is required when we create a new project and wait
     // for it to show up in the package explorer.
     //SwtBotTimeoutManager.setTimeout(); // TODO ? remove
+
+    bot.resetWorkbench();
 
     SwtBotWorkbenchActions.closeDialogs(bot);
 

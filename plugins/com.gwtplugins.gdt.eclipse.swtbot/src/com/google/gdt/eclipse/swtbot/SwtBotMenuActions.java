@@ -54,6 +54,8 @@ public final class SwtBotMenuActions {
         bot.menu("Run").menu("Debug Configurations...").click();
       }
     });
+
+    bot.activeShell().setFocus();
   }
 
   public static void openDebugPerspective(SWTWorkbenchBot bot) {

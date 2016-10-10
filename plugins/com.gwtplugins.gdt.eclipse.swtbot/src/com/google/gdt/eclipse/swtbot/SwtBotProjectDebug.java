@@ -40,8 +40,6 @@ public class SwtBotProjectDebug {
     // When I open debug configuration
     SwtBotMenuActions.openDebugConfiguration(bot);
 
-    bot.activeShell().setFocus();
-
     // Focus on the Arguments Tab
     bot.cTabItem("Arguments").activate().setFocus();
 

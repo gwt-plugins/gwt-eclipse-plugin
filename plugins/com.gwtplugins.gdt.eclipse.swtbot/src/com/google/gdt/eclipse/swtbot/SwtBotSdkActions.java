@@ -35,7 +35,7 @@ public final class SwtBotSdkActions {
     SwtBotWorkbenchActions.openPreferencesDialog(bot);
 
     SWTBotTreeItem prefGwtTreeItem =
-        SwtBotWorkbenchActions.getUniqueTreeItem(bot, bot.tree(),
+        SwtBotTreeActions.getUniqueTreeItem(bot, bot.tree(),
             SwtBotProjectActions.GWT_MENU_LABELS, "GWT Settings").expand();
     SwtBotUtils.selectTreeItem(bot, prefGwtTreeItem, treeItemText);
 
@@ -50,7 +50,7 @@ public final class SwtBotSdkActions {
     SwtBotWorkbenchActions.openPreferencesDialog(bot);
 
     SWTBotTreeItem prefGwtTreeItem =
-        SwtBotWorkbenchActions.getUniqueTreeItem(bot, bot.tree(),
+        SwtBotTreeActions.getUniqueTreeItem(bot, bot.tree(),
             SwtBotProjectActions.GWT_MENU_LABELS, "GWT Settings").expand();
     SwtBotUtils.selectTreeItem(bot, prefGwtTreeItem, treeItemText);
 

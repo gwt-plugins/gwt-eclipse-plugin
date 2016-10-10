@@ -16,4 +16,6 @@ Require-Bundle: org.apache.log4j,
  org.eclipse.swtbot.swt.finder,
  org.eclipse.ui,
  org.eclipse.ui.console,
- com.gwtplugins.gwt.eclipse.testing
+ com.gwtplugins.gwt.eclipse.testing,
+ org.eclipse.debug.core,
+ com.gwtplugins.gdt.eclipse.core
