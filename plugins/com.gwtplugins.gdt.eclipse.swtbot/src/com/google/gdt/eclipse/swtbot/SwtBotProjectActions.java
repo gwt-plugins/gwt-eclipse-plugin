@@ -86,7 +86,7 @@ public final class SwtBotProjectActions {
     // Select the Java project
     SWTBotTree projectSelectionTree = bot.tree();
     SWTBotTreeItem projectSelectionGoogleTreeItem =
-        SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, "Java", "Java Project");
+        SwtBotTreeActions.getUniqueTreeItem(bot, projectSelectionTree, "Java", "Java Project");
     SwtBotUtils.selectTreeItem(bot, projectSelectionGoogleTreeItem, "Java Project");
 
     bot.button("Next >").click();
@@ -108,6 +108,9 @@ public final class SwtBotProjectActions {
 
     // move to next step, archetype selection
     bot.button("Next >").click();
+
+    // include snapshot archetypes checkbox
+    bot.checkBox(1).click();
 
     // open archetype dialog
     SwtBotUtils.performAndWaitForWindowChange(bot, new Runnable() {
@@ -134,11 +137,8 @@ public final class SwtBotProjectActions {
       }
     });
 
-    // enable snapshots in table view
-    bot.checkBox("Include snapshot archetypes").click();
-
     // filter so only one row shows up
-    bot.text().setText("gwt-basic-archetype");
+    bot.text().setText(archetypeArtifactId);
 
     // select first row
     SWTBotTable table = bot.table();
@@ -170,7 +170,7 @@ public final class SwtBotProjectActions {
 
     // Select the Web App project wizard
     SWTBotTree projectSelectionTree = bot.tree();
-    SWTBotTreeItem projectSelectionGoogleTreeItem = SwtBotWorkbenchActions
+    SWTBotTreeItem projectSelectionGoogleTreeItem = SwtBotTreeActions
         .getUniqueTreeItem(bot, projectSelectionTree, "GWT Classes", "UiBinder").expand();
     SwtBotUtils.selectTreeItem(bot, projectSelectionGoogleTreeItem, "UiBinder");
     bot.button("Next >").click();
@@ -199,7 +199,7 @@ public final class SwtBotProjectActions {
     // Select the Web App project wizard
     SWTBotTree projectSelectionTree = bot.tree();
     // GWT Application
-    SWTBotTreeItem projectSelectionTreeItem = SwtBotWorkbenchActions.getUniqueTreeItem(bot,
+    SWTBotTreeItem projectSelectionTreeItem = SwtBotTreeActions.getUniqueTreeItem(bot,
         projectSelectionTree, "GWT Application", "GWT Web Application Project").expand();
     SwtBotUtils.selectTreeItem(bot, projectSelectionTreeItem,
         "GWT Web Application Project");
@@ -214,9 +214,20 @@ public final class SwtBotProjectActions {
         generateSampleCode);
 
     SwtBotUtils.clickButtonAndWaitForWindowChange(bot, bot.button("Finish"));
+
+    SwtBotWorkbenchActions.waitForIdle(bot);
   }
 
   public static void deleteProject(final SWTWorkbenchBot bot, final String projectName) {
+    SwtBotUtils.print("Deleting project " + projectName);
+
+    selectProject(bot, projectName).contextMenu("Refresh").click();
+
+    // delete the launch configs created
+    deleteLaunchConfigs(bot);
+
+    SwtBotWorkbenchActions.waitForIdle(bot);
+
     SwtBotUtils.performAndWaitForWindowChange(bot, new Runnable() {
       @Override
       public void run() {
@@ -229,6 +240,41 @@ public final class SwtBotProjectActions {
     bot.checkBox(0).click();
 
     SwtBotUtils.clickButtonAndWaitForWindowChange(bot, bot.button("OK"));
+
+    SwtBotWorkbenchActions.waitForIdle(bot);
+
+    SwtBotUtils.print("Deleted project " + projectName);
+  }
+
+  public static void deleteLaunchConfigs(final SWTWorkbenchBot bot) {
+    SwtBotUtils.print("\tDeleting launch configs");
+
+    SwtBotMenuActions.openDebugConfiguration(bot);
+
+    // TODO change to Messages.get
+    SWTBotTreeItem subTree = bot.tree(0).getTreeItem("GWT Development Mode (DevMode)");
+    subTree.expand();
+
+    SWTBotTreeItem[] items = subTree.getItems();
+    if (items != null && items.length > 0) {
+      for (int i=0; i < items.length; i++) {
+        SwtBotUtils.print("\t\tDeleting launcher i=" + i);
+        items[i].contextMenu("Delete").click();
+
+        SwtBotUtils.performAndWaitForWindowChange(bot, new Runnable() {
+          @Override
+          public void run() {
+            bot.button("Yes").click();
+          }
+        });
+
+        bot.sleep(500);
+      }
+    }
+
+    bot.button("Close").click();
+
+    SwtBotUtils.print("\tDeleted launch configs");
   }
 
   /**
@@ -238,7 +284,7 @@ public final class SwtBotProjectActions {
    *
    * @param bot The SWTWorkbenchBot.
    * @param projectName The name of the project to be found.
-   * @return
+   * @return if the project exists
    */
   public static boolean doesProjectExist(final SWTWorkbenchBot bot, String projectName) {
     SWTBotView explorer = getPackageExplorer(bot);
@@ -346,7 +392,7 @@ public final class SwtBotProjectActions {
    *
    * @param bot The SWTWorkbenchBot.
    * @param projectName The name of the project to select.
-   * @return
+   * @return the tree
    */
   public static SWTBotTreeItem selectProject(final SWTWorkbenchBot bot, String projectName) {
     /*

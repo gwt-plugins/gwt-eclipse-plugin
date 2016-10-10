@@ -1,4 +1,4 @@
-package com.google.gdt.eclipse.swtbot;
+package com.google.gdt.eclipse.swtbot.conditions;
 
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.ICondition;

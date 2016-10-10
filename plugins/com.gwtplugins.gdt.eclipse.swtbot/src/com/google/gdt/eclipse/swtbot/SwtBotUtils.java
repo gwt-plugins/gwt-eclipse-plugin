@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.eclipse.swtbot.swt.finder.exceptions.WidgetNotFoundException;
 import org.eclipse.swtbot.swt.finder.finders.UIThreadRunnable;
 import org.eclipse.swtbot.swt.finder.results.Result;
 import org.eclipse.swtbot.swt.finder.results.VoidResult;
@@ -117,7 +116,7 @@ public class SwtBotUtils {
     // Select the Java project
     SWTBotTree projectSelectionTree = bot.tree();
     SWTBotTreeItem projectSelectionTreeItem =
-        SwtBotWorkbenchActions.getUniqueTreeItem(bot, projectSelectionTree, "Java", "Java Project");
+        SwtBotTreeActions.getUniqueTreeItem(bot, projectSelectionTree, "Java", "Java Project");
     SwtBotUtils.selectTreeItem(bot, projectSelectionTreeItem, "Java Project");
 
     bot.button("Next >").click();
@@ -205,21 +204,21 @@ public class SwtBotUtils {
     // Increase the timeout (note: this is not a delay, so it's okay to increase
     // for reliability). This is required when we create a new project and wait
     // for it to show up in the package explorer.
-    SwtBotTimeoutManager.setTimeout();
+    //SwtBotTimeoutManager.setTimeout(); // TODO ? remove
 
-    try {
-      bot.viewByTitle("Welcome").close();
-    } catch (WidgetNotFoundException e) {
-      // Ignore if Welcome view already closed
-    }
+    bot.resetWorkbench();
+
+    SwtBotWorkbenchActions.closeDialogs(bot);
+
+    SwtBotWorkbenchActions.closeWelcomePage(bot);
   }
 
   /**
    * Performs the necessary tear down work for most SWTBot tests.
    */
-  public static void tearDown() {
+  public static void tearDown(SWTWorkbenchBot bot) {
     // Set the SWTBot timeout back to the default value
-    SwtBotTimeoutManager.resetTimeout();
+    //SwtBotTimeoutManager.resetTimeout(); // TODO remove
   }
 
   /**

@@ -1,6 +1,5 @@
 package com.google.gdt.eclipse.swtbot.conditions;
 
-import com.google.gdt.eclipse.swtbot.AbstractedWaitCondition;
 import com.google.gdt.eclipse.swtbot.SwtBotUtils;
 
 import org.eclipse.swt.widgets.MenuItem;
@@ -14,12 +13,16 @@ import java.util.List;
 
 public class ActiveShellMenu extends AbstractedWaitCondition {
 
+  public static List<MenuItem> waitForShellMenuList(SWTBot bot, String name, boolean recursive) {
+    return new ActiveShellMenu(bot, name, recursive).getMenus();
+  }
+
   protected SWTBot bot;
   private String name;
   private boolean recursive;
   private List<MenuItem> found;
 
-  public ActiveShellMenu(SWTBot bot, String name, boolean recursive) {
+  protected ActiveShellMenu(SWTBot bot, String name, boolean recursive) {
     super(bot);
     this.name = name;
     this.recursive = recursive;

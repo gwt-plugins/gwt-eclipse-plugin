@@ -14,25 +14,75 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.test.swtbot;
 
+import com.google.gdt.eclipse.swtbot.SwtBotProjectActions;
+import com.google.gdt.eclipse.swtbot.SwtBotProjectCreation;
+import com.google.gdt.eclipse.swtbot.SwtBotProjectDebug;
+import com.google.gdt.eclipse.swtbot.SwtBotUtils;
+
+import junit.framework.TestCase;
+
+import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 
 /**
- * Test GWT super dev mode debug configurations using a Maven project.
- *
- * Overrides are for easy running for local testing.
+ * Create GWT Maven project and launch with SDM with Jetty debug session
  */
-public class DebugConfigurationSuperDevModeAsMavenTest extends DebugConfigurationSuperDevModeTest {
+public class DebugConfigurationSuperDevModeAsMavenTest extends TestCase {
+
+  private final SWTWorkbenchBot bot = new SWTWorkbenchBot();
+  private static final String PROJECT_NAME = "Project";
+  private static final String PACKAGE_NAME = "com.example.project";
 
   @Override
-  public void testShortcutUsingDefaults() {
-    super.testShortcutUsingDefaults();
+  protected void setUp() throws Exception {
+    SwtBotUtils.setUp(bot);
   }
 
-  /**
-   * Instead create a Maven project, not a standard package project
-   */
   @Override
-  protected void givenProjectIsCreated() {
-    givenMavenGwtProjectIsCreated(PROJECT_NAME);
+  protected void tearDown() throws Exception {
+    SwtBotProjectActions.deleteProject(bot, PROJECT_NAME);
+    SwtBotUtils.tearDown(bot);
+  }
+
+  public void testCreatingLauncherWithJetty1() {
+    // Create project with GWT Maven Plugin 1
+    SwtBotProjectCreation.createMavenGwtProjectIsCreated1(bot, PROJECT_NAME, PACKAGE_NAME);
+
+    // When I right click and Debug GWT Super Dev Mode
+    SwtBotProjectDebug.createDebugGWTWithJetty(bot, PROJECT_NAME);
+
+    // When I get the arguments for super dev mode config
+    String persistedArgs = SwtBotProjectDebug.getTheProgramArgsTextBox(bot).getText();
+
+    // And close the debug configuration dialog
+    bot.button("Close").click();
+    // And closing may cause a save change dialog
+    SwtBotProjectDebug.closeSaveChangesDialogIfNeedBe(bot);
+
+    // Then the args should be
+    assertTrue(persistedArgs.contains("com.example.project.Project"));
+  }
+
+  // TODO fix archetype first
+  // TODO then the module name will be a different assertion
+  // TODO fix building the module on import
+  public void TODO_ShortcutUsingDefaults2() {
+    // Create project with GWT Maven Plugin 2
+    SwtBotProjectCreation.createMavenGwtProjectIsCreated2(bot, PROJECT_NAME, PACKAGE_NAME);
+
+    // When I right click and Debug GWT Super Dev Mode
+    SwtBotProjectDebug.createDebugGWTWithJetty(bot, PROJECT_NAME);
+
+    // When I get the arguments for super dev mode config
+    String persistedArgs = SwtBotProjectDebug.getTheProgramArgsTextBox(bot).getText();
+
+    // And close the debug configuration dialog
+    bot.button("Close").click();
+    // And closing may cause a save change dialog
+    SwtBotProjectDebug.closeSaveChangesDialogIfNeedBe(bot);
+
+    // Then the args should be
+    // TODO change for maven 2 plugin
+    assertTrue(persistedArgs.contains("com.example.project.App"));
   }
 
 }

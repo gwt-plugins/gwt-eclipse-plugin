@@ -46,6 +46,7 @@ public class TestEnvironmentUtil {
   /**
    * Updates the given environment variable in a testing environment.
    */
+  @Deprecated // Use the included sdks
   public static void updateEnvironmentVariable(String environmentVariable, String value) {
     Class<?>[] classes = Collections.class.getDeclaredClasses();
     Map<String, String> env = System.getenv();

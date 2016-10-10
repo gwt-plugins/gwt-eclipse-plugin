@@ -15,9 +15,8 @@
 package com.google.gdt.eclipse.swtbot;
 
 import com.google.gdt.eclipse.swtbot.conditions.ActiveShellMenu;
+import com.google.gdt.eclipse.swtbot.conditions.ActiveWidgetCondition;
 
-import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Widget;
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.matchers.WidgetMatcherFactory;
 import org.eclipse.swtbot.eclipse.finder.waits.Conditions;
@@ -26,15 +25,11 @@ import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotPerspective;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.eclipse.swtbot.swt.finder.waits.DefaultCondition;
-import org.eclipse.swtbot.swt.finder.waits.ICondition;
-import org.eclipse.swtbot.swt.finder.widgets.AbstractSWTBot;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotMenu;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotShell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTree;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTreeItem;
 import org.hamcrest.Matcher;
-
-import java.util.List;
 
 /**
  * SWTBot utility methods that perform general file actions.
@@ -59,6 +54,8 @@ public final class SwtBotMenuActions {
         bot.menu("Run").menu("Debug Configurations...").click();
       }
     });
+
+    bot.activeShell().setFocus();
   }
 
   public static void openDebugPerspective(SWTWorkbenchBot bot) {
@@ -82,14 +79,19 @@ public final class SwtBotMenuActions {
    * Open debug perspective and terminate the process and wait for it be terminated.
    */
   public static void openDebugPerspectiveAndTerminateProcess(SWTWorkbenchBot bot) {
+    SwtBotUtils.print("Terminating Process");
     openPerspective(bot, "Debug");
 
+    SwtBotUtils.print("Navigating to Process tree");
     // Right click and terminate thread
     @SuppressWarnings("rawtypes")
     Matcher matcher = WidgetMatcherFactory.withPartName("Debug");
+
     @SuppressWarnings("unchecked")
     SWTBotView debug = bot.view(matcher);
+
     final SWTBotTree tree = debug.bot().tree();
+
     SWTBotTreeItem[] items = tree.getAllItems();
     if (items.length > 0) {
       SWTBotTreeItem first = items[0];
@@ -109,6 +111,8 @@ public final class SwtBotMenuActions {
         }
       });
     }
+
+    SwtBotUtils.print("Terminated Process");
   }
 
   public static void openNewMavenProject(SWTWorkbenchBot bot) {
@@ -173,7 +177,7 @@ public final class SwtBotMenuActions {
 
       shell = bot.shell("Open Perspective");
 
-      bot.waitUntil(widgetMakeActive(shell));
+      bot.waitUntil(ActiveWidgetCondition.widgetMakeActive(shell));
       shell.bot().table().select(perspectiveLabel);
 
       shell.bot().button("OK").click();
@@ -189,29 +193,7 @@ public final class SwtBotMenuActions {
   }
 
   public static SWTBotMenu menu(SWTWorkbenchBot bot, String name) {
-    return new SWTBotMenu(waitForShellMenuList(bot, name, true).get(0));
-  }
-
-  public static List<MenuItem> waitForShellMenuList(SWTBot bot, String name, boolean recursive) {
-    return new ActiveShellMenu(bot, name, recursive).getMenus();
-  }
-
-  public static ICondition widgetMakeActive(final AbstractSWTBot<? extends Widget> widget) {
-    return new ICondition() {
-      @Override
-      public boolean test() throws Exception {
-        widget.setFocus();
-        return widget.isActive();
-      }
-
-      @Override
-      public void init(SWTBot bot) {}
-
-      @Override
-      public String getFailureMessage() {
-        return "Widget not active: " + widget;
-      }
-    };
+    return new SWTBotMenu(ActiveShellMenu.waitForShellMenuList(bot, name, true).get(0));
   }
 
   private SwtBotMenuActions() {

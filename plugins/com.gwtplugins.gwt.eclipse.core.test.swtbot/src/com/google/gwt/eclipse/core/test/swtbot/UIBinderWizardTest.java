@@ -16,23 +16,38 @@ package com.google.gwt.eclipse.core.test.swtbot;
 
 import com.google.gdt.eclipse.swtbot.SwtBotMenuActions;
 import com.google.gdt.eclipse.swtbot.SwtBotProjectActions;
-import com.google.gwt.eclipse.core.test.swtbot.test.AbstractGWTPluginSwtBotTestCase;
+import com.google.gdt.eclipse.swtbot.SwtBotProjectCreation;
+import com.google.gdt.eclipse.swtbot.SwtBotUtils;
+
+import junit.framework.TestCase;
 
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 
-/**
- * Test the deploy process.
- */
-public class UIBinderWizardTest extends AbstractGWTPluginSwtBotTestCase {
+public class UIBinderWizardTest extends TestCase {
 
-  protected static final String PROJECT_NAME = "WebApp";
+  private final SWTWorkbenchBot bot = new SWTWorkbenchBot();
+  private static final String PROJECT_NAME = "Project";
+  private static final String PACKAGE_NAME = "com.example.project";
 
-  public void testUIBinderWizard() {
-    SWTWorkbenchBot bot = getSwtWorkbenchBot();
+  @Override
+  protected void setUp() throws Exception {
+    SwtBotUtils.setUp(bot);
+    SwtBotProjectCreation.createJavaStandardProject(bot, PROJECT_NAME, PACKAGE_NAME);
+  }
 
+  @Override
+  protected void tearDown() throws Exception {
+    SwtBotProjectActions.deleteProject(bot, PROJECT_NAME);
+    SwtBotUtils.tearDown(bot);
+  }
+
+  /**
+   * Test creating a UiBinder class
+   */
+  public void testUIBinderWizard() throws Exception {
     // When a ui binder is created
-    SwtBotProjectActions.createUiBinder(bot, PROJECT_NAME, "com.example.webapp", "TestWithContent",
-        true, true);
+    SwtBotProjectActions.createUiBinder(bot, PROJECT_NAME, PACKAGE_NAME, "TestWithContent", true,
+        true);
 
     // Then the editor will return these parts
     String text = SwtBotMenuActions.getEditorText(bot, "TestWithContent.java");
@@ -42,7 +57,7 @@ public class UIBinderWizardTest extends AbstractGWTPluginSwtBotTestCase {
 
     // And when, create uibinder without the sample content
     // and check that the above is not there
-    SwtBotProjectActions.createUiBinder(bot, PROJECT_NAME, "com.example.webapp",
+    SwtBotProjectActions.createUiBinder(bot, PROJECT_NAME, PACKAGE_NAME,
         "TestWithoutContent", false, true);
 
     // And then verify the creating another uibinder with out content
@@ -51,20 +66,6 @@ public class UIBinderWizardTest extends AbstractGWTPluginSwtBotTestCase {
     assertFalse(text2.contains("implements HasText"));
     assertTrue(text2.contains("public TestWithoutContent()"));
     assertFalse(text2.contains("public TestWithoutContent(String firstName)"));
-  }
-
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
-    givenProjectIsCreated(PROJECT_NAME);
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    thenTearDownProject(PROJECT_NAME);
-
-    super.tearDown();
   }
 
 }
