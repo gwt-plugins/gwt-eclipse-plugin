@@ -23,6 +23,8 @@ The Eclipse repositories for this plugin.
 ### MarketPlace
 Install from the Eclipse marketplace.
 
+<a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=3107469" class="drag" title="Drag to your running Eclipse workspace to install GWT Eclipse Plugin"><img class="img-responsive" src="https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png" alt="Drag to your running Eclipse workspace to install GWT Eclipse Plugin" /></a>
+
 * [https://marketplace.eclipse.org/content/gwt-eclipse-plugin](https://marketplace.eclipse.org/content/gwt-eclipse-plugin)
 
 ### Production
