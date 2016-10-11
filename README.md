@@ -1,35 +1,40 @@
 #GWT Eclipse Plugin
-The GWT Plugin for Eclipse repository for version 3. 
-This plugin does not contain the cloud tools as they have been split into
-[Google Cloud Platform plugin for Eclipse](https://github.com/GoogleCloudPlatform/google-cloud-eclipse).
+This repository houses the source for the GWT Eclipse Plugin. 
+
+* This plugin does not include the [Google Cloud Tools Eclipse](https://github.com/GoogleCloudPlatform/google-cloud-eclipse) features.
 
 # RoadMap
 
-* V3 release EA is scheduled for November 2016 @ GWTCon (In the meantime use the GPE fork version).
+* The GWT Eclipse Plugin (V3) release Beta is scheduled for November 2016 @ GWTCon (In the meantime use the GPE fork version).
 
 ## Reference
 
 * [Documentation](http://gwt-plugins.github.io/documentation/)
 
-## V2 Repository (GPE-Fork)
+## GPE-Fork (V2) Repository
+The Google Plugin for Eclipse fork. GPE is now deprecated. 
 
 * [GPE Fork V2 GWT Eclipse Plugin](https://github.com/gwt-plugins/gwt-eclipse-plugin/tree/gpe-fork) * Recommended use
 
 
-## V3 Repository
+## GWT Eclipse Plugin (V3) Repository
 The Eclipse repositories for this plugin. 
 
 ### MarketPlace
+Install from the Eclipse marketplace.
 
 * [https://marketplace.eclipse.org/content/gwt-eclipse-plugin](https://marketplace.eclipse.org/content/gwt-eclipse-plugin)
 
 ### Production
+Release update site. 
 
 * [http://storage.googleapis.com/gwt-eclipse-plugin/v3/release](http://storage.googleapis.com/gwt-eclipse-plugin/v3/release)
 
 ### Snapshot
+Unstable update site
 
 * [http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot](http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot)
+
 
 ## Build
 Sencha has provided an internal build agent to build. 
@@ -52,6 +57,8 @@ Simply use Maven to import all the plugins and modules.
 * Use Eclipse Maven Import and import with recursion. 
 * Select all the projects and import. 
 
+### Target Definition
+The target defintion build is based off of the Google Cloud Tools. Follow their instructions to build.
 
 ## Thanks Sponsors
 Sponsors that provide man power and equipment to help get the job done. 
