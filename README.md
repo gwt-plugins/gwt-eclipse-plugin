@@ -19,14 +19,17 @@ This plugin does not contain the cloud tools as they have been split into
 ## V3 Repository
 The Eclipse repositories for this plugin. 
 
-### Snapshot
+### MarketPlace
 
-* [http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot](http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot)
+* [https://marketplace.eclipse.org/content/gwt-eclipse-plugin](https://marketplace.eclipse.org/content/gwt-eclipse-plugin)
 
 ### Production
 
 * [http://storage.googleapis.com/gwt-eclipse-plugin/v3/release](http://storage.googleapis.com/gwt-eclipse-plugin/v3/release)
 
+### Snapshot
+
+* [http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot](http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot)
 
 ## Build
 Sencha has provided an internal build agent to build. 
