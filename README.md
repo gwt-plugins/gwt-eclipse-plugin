@@ -37,21 +37,7 @@ Unstable update site
 
 * [http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot](http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot)
 
-
-## Build
-Sencha has provided an internal build agent to build. 
-[Sencha Eclipse Build](https://teamcity.sencha.com/viewType.html?buildTypeId=Gxt3_Gwt_GwtEclipsePlugin)
-
-* `mvn clean package`
-
-### Deploy
-Google storage write permissions are needed to deploy. 
-
-* `sh ./build-deploy-release.sh` - deploy production version
-* `sh ./build-deploy-snapshot.sh` - deploy snapshot version
-
-
-## Project
+## Development 
 
 ### Importing
 Simply use Maven to import all the plugins and modules. 
@@ -61,6 +47,19 @@ Simply use Maven to import all the plugins and modules.
 
 ### Target Definition
 The target defintion build is based off of the Google Cloud Tools. Follow their instructions to build.
+
+### Build
+Sencha has provided an internal build agent to build. 
+[Sencha Eclipse Build](https://teamcity.sencha.com/viewType.html?buildTypeId=Gxt3_Gwt_GwtEclipsePlugin)
+
+* `mvn clean install`
+
+### Deploy
+Google storage write permissions are needed to deploy. 
+
+* `sh ./build-deploy-release.sh` - deploy production version
+* `sh ./build-deploy-snapshot.sh` - deploy snapshot version
+
 
 ## Thanks Sponsors
 Sponsors that provide man power and equipment to help get the job done. 
