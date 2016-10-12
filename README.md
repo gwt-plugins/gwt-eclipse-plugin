@@ -64,7 +64,7 @@ Google storage write permissions are needed to deploy.
 There are a couple of archetypes that are used to test. 
 
 * [Single Module Mojo Archetype](https://github.com/branflake2267/Archetypes/tree/master/archetypes/gwt-test-gwt27)
-* [Single Module TBroyer Archetype](https://github.com/branflake2267/Archetypes/tree/master/archetypes/gwt-basic) [TBroyer GWT Maven Plugin](https://github.com/tbroyer/gwt-maven-plugin)
+* [Single Module TBroyer Archetype](https://github.com/branflake2267/Archetypes/tree/master/archetypes/gwt-basic) ([TBroyer GWT Maven Plugin](https://github.com/tbroyer/gwt-maven-plugin))
 
 
 ## Thanks Sponsors
