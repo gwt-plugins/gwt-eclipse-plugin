@@ -29,10 +29,6 @@
               <type>p2-installable-unit</type>
               <artifactId>org.eclipse.sdk.feature.group</artifactId>
             </dependency>
-            <dependency>
-              <type>p2-installable-unit</type>
-              <artifactId>org.eclipse.jdt.feature.group</artifactId>
-            </dependency>
           </dependencies>
           <excludes>
             <!-- <exclude>**/XXX.java</exclude> -->

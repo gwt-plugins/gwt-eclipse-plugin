@@ -29,14 +29,6 @@
               <type>p2-installable-unit</type>
               <artifactId>org.eclipse.sdk.feature.group</artifactId>
             </dependency>
-            <dependency>
-              <type>p2-installable-unit</type>
-              <artifactId>org.eclipse.platform.feature.group</artifactId>
-            </dependency>
-            <dependency>
-              <type>p2-installable-unit</type>
-              <artifactId>org.eclipse.jdt.feature.group</artifactId>
-            </dependency>
           </dependencies>
         </configuration>
       </plugin>
@@ -50,16 +42,6 @@
               <requirement>
                 <type>eclipse-feature</type>
                 <id>org.eclipse.sdk.feature</id>
-                <versionRange>0.0.0</versionRange>
-              </requirement>
-               <requirement>
-                <type>eclipse-feature</type>
-                <id>org.eclipse.platform.feature</id>
-                <versionRange>0.0.0</versionRange>
-              </requirement>
-              <requirement>
-                <type>eclipse-feature</type>
-                <id>org.eclipse.jdt.feature</id>
                 <versionRange>0.0.0</versionRange>
               </requirement>
               <requirement>
