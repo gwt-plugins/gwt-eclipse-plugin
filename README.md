@@ -11,6 +11,12 @@ This repository houses the source for the GWT Eclipse Plugin.
 
 * [Documentation](http://gwt-plugins.github.io/documentation/)
 
+### Maven
+Supported Maven Plugins.
+
+* [Mojo GWT Maven Plugin](https://gwt-maven-plugin.github.io/gwt-maven-plugin/)
+* [TBroyer GWT Maven Plugin](https://tbroyer.github.io/gwt-maven-plugin/)
+
 ## GPE-Fork (V2) Repository
 The Google Plugin for Eclipse fork. GPE is now deprecated. 
 
