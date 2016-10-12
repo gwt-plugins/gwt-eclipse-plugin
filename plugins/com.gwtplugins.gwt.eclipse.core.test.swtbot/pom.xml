@@ -23,6 +23,7 @@
           <useUIHarness>true</useUIHarness>
           <useUIThread>false</useUIThread>
           <product>org.eclipse.sdk.ide</product>
+          <application>org.eclipse.ui.ide.workbench</application>
           <dependencies>
             <dependency>
               <type>p2-installable-unit</type>
@@ -33,8 +34,7 @@
             <!-- <exclude>**/XXX.java</exclude> -->
           </excludes>
           
-          <!-- TODO build server Eclipse is gray background, it's missing something. Local runs good. -->
-          <skipTests>true</skipTests>
+          <skipTests>false</skipTests>
         </configuration>
       </plugin>
 

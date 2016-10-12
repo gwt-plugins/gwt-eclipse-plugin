@@ -62,10 +62,7 @@ public class DebugConfigurationSuperDevModeAsMavenTest extends TestCase {
     assertTrue(persistedArgs.contains("com.example.project.Project"));
   }
 
-  // TODO fix archetype first
-  // TODO then the module name will be a different assertion
-  // TODO fix building the module on import
-  public void TODO_ShortcutUsingDefaults2() {
+  public void testShortcutUsingDefaults2() {
     // Create project with GWT Maven Plugin 2
     SwtBotProjectCreation.createMavenGwtProjectIsCreated2(bot, PROJECT_NAME, PACKAGE_NAME);
 
@@ -81,7 +78,6 @@ public class DebugConfigurationSuperDevModeAsMavenTest extends TestCase {
     SwtBotProjectDebug.closeSaveChangesDialogIfNeedBe(bot);
 
     // Then the args should be
-    // TODO change for maven 2 plugin
     assertTrue(persistedArgs.contains("com.example.project.App"));
   }
 

@@ -206,7 +206,7 @@ public class SwtBotUtils {
     // for it to show up in the package explorer.
     //SwtBotTimeoutManager.setTimeout(); // TODO ? remove
 
-    bot.resetWorkbench();
+    //bot.resetWorkbench(); // DO NOT DO THIS FIRST
 
     SwtBotWorkbenchActions.closeDialogs(bot);
 
