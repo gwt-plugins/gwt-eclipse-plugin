@@ -110,4 +110,11 @@
 	  <facet id="com.gwtplugins.gwt.facet" version="[1.0"></facet>
 	</supported>
   </extension>
+  
+     <!-- New GWT App - Enable Wtp Facet -->
+  <extension
+         point="com.gwtplugins.gdt.eclipse.suite.webAppCreatorParticipant">
+      <client class="com.google.gwt.eclipse.wtp.projects.WtpFacetCreatorParicipant"></client>
+  </extension>
+   
 </plugin>

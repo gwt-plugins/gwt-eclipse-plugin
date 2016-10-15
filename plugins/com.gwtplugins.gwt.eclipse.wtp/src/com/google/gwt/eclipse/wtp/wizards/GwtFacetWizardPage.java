@@ -14,10 +14,7 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.wtp.wizards;
 
-import com.google.gwt.eclipse.core.preferences.GWTPreferences;
-import com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage;
-import com.google.gwt.eclipse.core.runtime.GwtSdk;
-import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
+import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -40,7 +37,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-import org.eclipse.wst.common.frameworks.datamodel.AbstractDataModelProvider;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.frameworks.internal.datamodel.ui.DataModelWizardPage;
@@ -48,10 +44,17 @@ import org.eclipse.wst.common.project.facet.core.events.IFacetedProjectListener;
 import org.eclipse.wst.common.project.facet.ui.IFacetWizardPage;
 import org.eclipse.wst.common.project.facet.ui.IWizardContext;
 
-import java.util.List;
+import com.google.gwt.eclipse.core.preferences.GWTPreferences;
+import com.google.gwt.eclipse.core.preferences.ui.GwtPreferencePage;
+import com.google.gwt.eclipse.core.runtime.GwtSdk;
+import com.google.gwt.eclipse.wtp.facet.data.GwtFacetInstallDataModelProvider;
+import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
 
 /**
  * Base class for GWT facets wizard pages.
+ * 
+ * TODO DataModelWizardPage is access restricted, switch?
+ * TODO figure out a better data model so I can reuse it in web app creator  
  */
 public class GwtFacetWizardPage extends DataModelWizardPage implements IFacetWizardPage,
     IGwtFacetConstants {
@@ -67,9 +70,7 @@ public class GwtFacetWizardPage extends DataModelWizardPage implements IFacetWiz
   private Combo comboViewerCombo;
 
   public GwtFacetWizardPage() {
-    super(DataModelFactory.createDataModel(new AbstractDataModelProvider() {
-      // fake one, to make super constructor happy, real model will be set in setConfig()
-    }), WIZARD_NAME);
+    super(DataModelFactory.createDataModel(new GwtFacetInstallDataModelProvider()), WIZARD_NAME);
 
     setTitle("GWT Facet Configuration");
     setDescription("Complete selections below to setup the GWT facet configuration.");

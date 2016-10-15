@@ -30,7 +30,6 @@ public final class GwtLaunchableAdapterDelegate extends LaunchableAdapterDelegat
 
   @Override
   public Object getLaunchable(IServer server, IModuleArtifact moduleArtifact) throws CoreException {
-
     IURLProvider urlProvider = (IURLProvider) server.loadAdapter(IURLProvider.class, null);
     if (urlProvider == null) {
       return null;

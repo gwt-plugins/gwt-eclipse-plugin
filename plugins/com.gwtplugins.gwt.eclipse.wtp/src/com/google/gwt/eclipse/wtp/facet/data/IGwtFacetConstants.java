@@ -14,10 +14,13 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.wtp.facet.data;
 
+import com.google.gwt.eclipse.wtp.GwtWtpPlugin;
+
 /**
  * Keeper for GWT constants.
  */
 public interface IGwtFacetConstants {
+  
   /**
    * GWT FACET
    */
@@ -26,5 +29,10 @@ public interface IGwtFacetConstants {
   static final String GWT_SDK = GWT_PLUGINS_FACET_ID + ".property.sdk";
 
   static final String LAUNCHER_ID = GWT_PLUGINS_FACET_ID + ".launcher.id";
+  
+  /**
+   * Used in the data model to mark as maven project
+   */
+  public static final String USE_MAVEN_DEPS_PROPERTY_NAME = GwtWtpPlugin.PLUGIN_ID + ".useMavenDependencies";
 
 }

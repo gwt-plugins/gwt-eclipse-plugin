@@ -14,6 +14,7 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.core.projects;
 
+import com.google.gdt.eclipse.core.sdk.Sdk;
 import com.google.gdt.eclipse.core.sdk.Sdk.SdkException;
 
 import org.eclipse.core.runtime.CoreException;
@@ -130,4 +131,12 @@ public interface IWebAppProjectCreator {
    * @return the progress monitor
    */
   IProgressMonitor getProgressMonitor();
+
+  /**
+   * GWT SDK
+   *
+   * @return the GWT SDK selected in New Project Wizard.
+   */
+  Sdk getGwtSdk();
+
 }

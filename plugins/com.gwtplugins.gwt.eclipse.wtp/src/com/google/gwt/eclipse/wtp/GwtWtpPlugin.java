@@ -70,7 +70,7 @@ import com.google.gwt.eclipse.wtp.utils.GwtFacetUtils;
 public final class GwtWtpPlugin extends AbstractUIPlugin {
 
   public static final String PLUGIN_ID = "com.gwtplugins.gwt.eclipse.wtp";
-  public static final String USE_MAVEN_DEPS_PROPERTY_NAME = PLUGIN_ID + ".useMavenDependencies";
+
 
   private static GwtWtpPlugin INSTANCE;
   private static final String LOCAL_URL = "http://%s:%s";

@@ -84,6 +84,7 @@ Require-Bundle: com.gwtplugins.gdt.eclipse.platform,
  org.eclipse.wst.sse.ui,
  org.eclipse.wst.xml.core,
  org.eclipse.wst.xml.ui
+ 
 
 
 

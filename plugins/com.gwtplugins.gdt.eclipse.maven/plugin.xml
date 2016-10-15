@@ -40,6 +40,7 @@
       </launchConfigVmArgProcessor>
    </extension>
    
+   <!-- New GWT App - Enable Maven -->
    <extension
          point="com.gwtplugins.gdt.eclipse.suite.webAppCreatorParticipant">
       <client
