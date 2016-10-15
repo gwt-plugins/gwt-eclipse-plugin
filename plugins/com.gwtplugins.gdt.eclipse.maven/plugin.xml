@@ -58,14 +58,14 @@
       <configurator
             class="com.google.gdt.eclipse.maven.configurators.MavenProjectConfigurator"
             id="com.gwtplugins.gdt.eclipse.maven.mavenProjectConfigurator1"
-            runsAfter="org.maven.ide.eclipse.configuration.wtp.configurator?,org.eclipse.m2e.jdt.javaConfigurator?"
+            runsAfter="org.maven.ide.eclipse.configuration.wtp.configurator?"
             name="Maven Project Configurator (first GWT maven plugin)">
       </configurator>
       
       <configurator
             class="com.google.gdt.eclipse.maven.configurators.MavenProjectConfigurator"
             id="com.gwtplugins.gdt.eclipse.maven.mavenProjectConfigurator2"
-            runsAfter="org.maven.ide.eclipse.configuration.wtp.configurator?,org.eclipse.m2e.jdt.javaConfigurator?"
+            runsAfter="org.maven.ide.eclipse.configuration.wtp.configurator?"
             name="Maven Project Configurator (second GWT maven plugin)">
       </configurator>
    </extension>
