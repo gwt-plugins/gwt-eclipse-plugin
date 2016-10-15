@@ -34,6 +34,7 @@ import org.eclipse.m2e.core.lifecyclemapping.model.IPluginExecutionMetadata;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.MavenProjectChangedEvent;
 import org.eclipse.m2e.core.project.configurator.AbstractBuildParticipant;
+import org.eclipse.m2e.core.project.configurator.MojoExecutionBuildParticipant;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -50,8 +51,8 @@ import java.util.List;
 public class MavenProjectConfigurator extends AbstracMavenProjectConfigurator {
 
   /**
-   * These properties may be pulled from the gwt-maven-plugin configuration of the pom to be used in configuring the
-   * GWT Web Application settings for the Eclipse project. If not present, defaults are used.
+   * These properties may be pulled from the gwt-maven-plugin configuration of the pom to be used in configuring the GWT
+   * Web Application settings for the Eclipse project. If not present, defaults are used.
    */
   private static final String ECLIPSE_LAUNCH_SRC_DIR_PROPERTY_KEY = "eclipseLaunchFromWarDir";
   private static final boolean ECLIPSE_LAUNCH_SRC_DIR_DEFAULT = false;
@@ -65,9 +66,19 @@ public class MavenProjectConfigurator extends AbstracMavenProjectConfigurator {
 
   @Override
   public AbstractBuildParticipant getBuildParticipant(final IMavenProjectFacade projectFacade, MojoExecution execution,
-      IPluginExecutionMetadata executionMetadata) {
+      final IPluginExecutionMetadata executionMetadata) {
     Activator.log("MavenProjectConfigurator.getBuildParticipant for Maven invoked");
-    return super.getBuildParticipant(projectFacade, execution, executionMetadata);
+
+    // Run the execution generate-module for maven2 plugin
+    // Don't run on war for gwt maven plugin1
+    MojoExecutionBuildParticipant build = null;
+    MavenProject mavenProject = projectFacade.getMavenProject();
+    if (mavenProject != null && isGwtMavenPlugin2(mavenProject)) {
+      Activator.log("MavenProjectConfigurator.getBuildParticipant adding build participant for generate-module.");
+      build = new MojoExecutionBuildParticipant(execution, true, true);
+    }
+
+    return build;
   }
 
   @Override

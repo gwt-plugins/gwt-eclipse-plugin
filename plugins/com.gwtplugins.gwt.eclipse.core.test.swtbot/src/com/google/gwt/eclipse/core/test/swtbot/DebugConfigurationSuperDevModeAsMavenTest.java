@@ -43,6 +43,9 @@ public class DebugConfigurationSuperDevModeAsMavenTest extends TestCase {
     SwtBotUtils.tearDown(bot);
   }
 
+  /**
+   * GWT Maven Plugin 1 test launch
+   */
   public void testCreatingLauncherWithJetty1() {
     // Create project with GWT Maven Plugin 1
     SwtBotProjectCreation.createMavenGwtProjectIsCreated1(bot, PROJECT_NAME, PACKAGE_NAME);
@@ -63,9 +66,9 @@ public class DebugConfigurationSuperDevModeAsMavenTest extends TestCase {
   }
 
   /**
-   * TODO Ignoring this test for now. m2e is not generating the module.
+   * GWT Maven Plugin 2 test launch
    */
-  public void TODO_testShortcutUsingDefaults2() {
+  public void testShortcutUsingDefaults2() {
     // Create project with GWT Maven Plugin 2
     SwtBotProjectCreation.createMavenGwtProjectIsCreated2(bot, PROJECT_NAME, PACKAGE_NAME);
 

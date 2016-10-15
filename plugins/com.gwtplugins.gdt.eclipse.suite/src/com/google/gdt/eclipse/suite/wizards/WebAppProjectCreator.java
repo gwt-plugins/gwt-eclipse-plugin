@@ -218,8 +218,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     return sanitized;
   }
 
-  private String appId;
-
   private List<IPath> containerPaths = new ArrayList<IPath>();
 
   private final List<FileInfo> fileInfos = new ArrayList<FileInfo>();
@@ -245,6 +243,8 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
   private IJavaProject createdJavaProject;
 
   private IProgressMonitor monitor;
+
+  private Sdk gwtSdk;
 
   protected WebAppProjectCreator() {
     // Always a java project
@@ -301,14 +301,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
         createGWTProject(monitor, packageName, locationPath.toOSString());
       }
 
-      // TODO ?
-      // else if (!useGae) {
-      // // Add "empty" web.xml since the project is using GWT but not using
-      // // Google App Engine and GPE has already generated an empty project.
-      // addFile(new Path(WebAppUtilities.DEFAULT_WAR_DIR_NAME + "/WEB-INF/web.xml"),
-      // ProjectResources.createWebXmlSource());
-      // }
-
       IPath projDirPath = locationPath.append(projectName);
 
       // Wipe out the existing .project file
@@ -357,11 +349,12 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
       // Set the default output directory
       WebAppUtilities.setOutputLocationToWebInfClasses(createdJavaProject, monitor);
 
-      /*
+      /**
        * Copy files into the web-inf lib folder. This code assumes that it is running in a context that has a workspace
        * lock.
        */
       Sdk gwtSdk = getGWTSdk();
+      setGwtSdk(gwtSdk);
       if (gwtSdk != null) {
         new GWTUpdateWebInfFolderCommand(createdJavaProject, gwtSdk).execute();
       }
@@ -385,6 +378,17 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
 
     // Allow other extensions to run after project creation
     includeExtensionPartipants();
+  }
+
+  /**
+   * @param gwtSdk
+   */
+  private void setGwtSdk(Sdk gwtSdk) {
+    this.gwtSdk = gwtSdk;
+  }
+
+  public Sdk getGwtSdk() {
+    return gwtSdk;
   }
 
   private void includeExtensionPartipants() throws CoreException {

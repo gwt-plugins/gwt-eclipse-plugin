@@ -25,22 +25,24 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IDelegate;
+import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
+import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.google.gdt.eclipse.core.BuilderUtilities;
 import com.google.gdt.eclipse.core.sdk.UpdateProjectSdkCommand.UpdateType;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 import com.google.gwt.eclipse.core.properties.ui.GWTProjectPropertyPage;
-import com.google.gwt.eclipse.core.runtime.GWTJarsRuntime;
 import com.google.gwt.eclipse.core.runtime.GwtSdk;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateProjectSdkCommand;
 import com.google.gwt.eclipse.core.sdk.GWTUpdateWebInfFolderCommand;
 import com.google.gwt.eclipse.wtp.GwtWtpPlugin;
+import com.google.gwt.eclipse.wtp.facet.data.GwtFacetInstallDataModelProvider;
 import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
 
 /**
- * Install the GWT Facet.
+ * Install the GWT Facet. It's just a marker that GWT is being used.
  * <p>
  * <ol>
  * <li>Standard Projects get a SDK container.</li>
@@ -61,8 +63,13 @@ public final class GwtFacetInstallSdkDelegate implements IDelegate, IGwtFacetCon
 
     dataModel = (IDataModel) config;
 
-    // Standard project GWT facet install
-    if (!isMavenProject(dataModel)) {
+    // Deprecated: make a project configurator in charge of gwt facet if need be
+    //installFacet();
+  }
+
+  private void installFacet() {
+    // Standard projects only, install the gwt sdk container
+    if (!GwtFacetInstallDataModelProvider.isMavenProject(dataModel)) {
       String message = "GwtFacetInstallSdkDelegate: installing standard classpath container.";
       GwtWtpPlugin.logMessage(message);
       installGwtFacetForStandardProject();
@@ -74,18 +81,13 @@ public final class GwtFacetInstallSdkDelegate implements IDelegate, IGwtFacetCon
     Display.getDefault().asyncExec(new Runnable() {
       @Override
       public void run() {
-        // Use the GWT editors
         reopenFilesWithGwtEditor();
       }
     });
-    
+
     installGwtNatureForProject();
   }
 
-  /**
-   * Support the legacy GWT operations, actions... Be sure the nature is enabled.
-   * TODO change out nature for facet
-   */
   private void installGwtNatureForProject() {
     try {
       GWTNature.addNatureToProject(project);
@@ -106,39 +108,28 @@ public final class GwtFacetInstallSdkDelegate implements IDelegate, IGwtFacetCon
    * Configure a standard GWT classpath container for Facet.
    */
   private void installGwtFacetForStandardProject() {
-    GWTJarsRuntime runtime = (GWTJarsRuntime) dataModel.getProperty(GWT_SDK);
-    if (runtime == null) { // no sdks have been installed.
-      // TODO add a warning dialog with link to preferences
-      GwtWtpPlugin
-          .logMessage("No GWT sdks have been added to the preferences. Fix this by adding a GWT SDK to Eclipse preferences.");
+    GwtSdk gwtSdk = GwtFacetInstallDataModelProvider.getGwtSdk(dataModel);
+    if (gwtSdk == null) {
+      GwtWtpPlugin.logMessage(
+          "No GWT sdks have been added to the preferences. Fix this by adding a GWT SDK to Eclipse preferences.");
       return;
     }
 
-    GwtWtpPlugin.logMessage("GwtFacetInstallSdkDelegate: selected runtime version=" + runtime.getVersion());
+    GwtWtpPlugin.logMessage("GwtFacetInstallSdkDelegate: selected runtime version=" + gwtSdk.getVersion());
 
     try {
-      addGwtSdkContainer(project, runtime);
+      addGwtSdkContainer(project, gwtSdk);
     } catch (FileNotFoundException | CoreException | BackingStoreException e) {
       String m = "GwtFacetInstallSdkDelegate.installGwtFacetForStandardProject(): was not able to add sdk container to project.";
       GwtWtpPlugin.logError(m, e);
     }
   }
 
-  private static boolean isMavenProject(IDataModel model) {
-    if (!model.isProperty(GwtWtpPlugin.USE_MAVEN_DEPS_PROPERTY_NAME)) {
-      return false;
-    }
-    if (!model.isPropertySet(GwtWtpPlugin.USE_MAVEN_DEPS_PROPERTY_NAME)) {
-      return false;
-    }
-    return model.getBooleanProperty(GwtWtpPlugin.USE_MAVEN_DEPS_PROPERTY_NAME);
-  }
-
   /**
    * Add a GWT SDK container for standard project only.
    */
-  private void addGwtSdkContainer(IProject project, GwtSdk newSdk) throws FileNotFoundException, CoreException,
-      BackingStoreException {
+  private void addGwtSdkContainer(IProject project, GwtSdk newSdk)
+      throws FileNotFoundException, CoreException, BackingStoreException {
     IJavaProject javaProject = JavaCore.create(project);
 
     GWTUpdateWebInfFolderCommand updateWebInfCommand = new GWTUpdateWebInfFolderCommand(javaProject, newSdk);

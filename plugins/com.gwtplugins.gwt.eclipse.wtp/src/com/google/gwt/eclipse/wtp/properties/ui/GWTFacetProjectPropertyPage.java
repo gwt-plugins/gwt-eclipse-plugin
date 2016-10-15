@@ -28,10 +28,8 @@ import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
 import com.google.gwt.eclipse.wtp.GwtWtpPlugin;
 
 /**
- * Property page for setting GWT project properties (SDK selection and the
- * default set of entry point modules).
+ * Property page for setting GWT project properties (SDK selection and the default set of entry point modules).
  */
-@SuppressWarnings("restriction")
 public class GWTFacetProjectPropertyPage extends AbstractProjectPropertyPage {
 
   public static final String ID = GwtWtpPlugin.PLUGIN_ID + ".properties.ui.gwtFacetProjectPropertyPage";
@@ -47,15 +45,12 @@ public class GWTFacetProjectPropertyPage extends AbstractProjectPropertyPage {
     gwtFacetPanel = new GwtFacetComposite(parent, SWT.NONE);
 
     loadSettings();
-    
+
     return gwtFacetPanel;
   }
 
   private void loadSettings() {
-    Boolean syncServer = GWTProjectProperties.getFacetSyncCodeServer(getProject());
-    if (syncServer == null) {
-      syncServer = true;
-    }
+    boolean syncServer = GWTProjectProperties.getFacetSyncCodeServer(getProject());
     gwtFacetPanel.setSyncServer(syncServer);
   }
 

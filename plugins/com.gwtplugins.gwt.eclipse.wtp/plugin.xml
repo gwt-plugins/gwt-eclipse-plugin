@@ -65,11 +65,12 @@
 
 
   <!-- Wizards -->
+  <!-- Disable wizard, make a project configurator in charge of setting up
   <extension point="org.eclipse.wst.common.project.facet.ui.wizardPages">
     <wizard-pages action="com.gwtplugins.gwt.facet.install">
     <page class="com.google.gwt.eclipse.wtp.wizards.GwtFacetWizardPage"/>
     </wizard-pages>
-  </extension>
+  </extension> -->
    
   <!-- TODO why can't I remove this, it causes the plugin not to load -->
   <extension point="org.eclipse.wst.server.core.internalStartup">
@@ -110,4 +111,11 @@
 	  <facet id="com.gwtplugins.gwt.facet" version="[1.0"></facet>
 	</supported>
   </extension>
+  
+     <!-- New GWT App - Enable Wtp Facet -->
+  <extension
+         point="com.gwtplugins.gdt.eclipse.suite.webAppCreatorParticipant">
+      <client class="com.google.gwt.eclipse.wtp.projects.WtpFacetCreatorParicipant"></client>
+  </extension>
+   
 </plugin>

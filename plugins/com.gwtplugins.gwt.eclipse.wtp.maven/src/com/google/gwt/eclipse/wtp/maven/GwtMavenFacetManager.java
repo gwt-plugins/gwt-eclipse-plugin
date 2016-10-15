@@ -14,29 +14,23 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.wtp.maven;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.gwt.eclipse.core.nature.GWTNature;
-import com.google.gwt.eclipse.wtp.GwtWtpPlugin;
-import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
-
 import org.apache.maven.model.Model;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.wst.common.frameworks.datamodel.AbstractDataModelProvider;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
-import org.eclipse.wst.common.frameworks.internal.datamodel.DataModelImpl;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IFacetedProjectWorkingCopy;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
-import java.util.Set;
+import com.google.gwt.eclipse.core.nature.GWTNature;
+import com.google.gwt.eclipse.wtp.facet.data.GwtFacetInstallDataModelProvider;
+import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
 
 /**
  * Provides a method for determining whether an GWT facet (for either war or ear packaging) should be added to a given
  * project, and if so, adding it.
  */
-@SuppressWarnings("restriction")
 public class GwtMavenFacetManager {
 
   /**
@@ -51,18 +45,19 @@ public class GwtMavenFacetManager {
    */
   public void addGwtFacet(Model pom, IFacetedProject facetedProject, IProgressMonitor monitor) {
     IProjectFacet gwtProjectFacet = null;
-    try { // Look for something odd going on here. If it does exit with out an error. Like finding some com.google.gwt.facet.
+    try { // Look for something odd going on here. If it does exit with out an error. Like finding some
+          // com.google.gwt.facet.
       gwtProjectFacet = ProjectFacetsManager.getProjectFacet(IGwtFacetConstants.GWT_PLUGINS_FACET_ID);
     } catch (Exception e) {
-      GwtMavenPlugin
-          .logInfo("GwtMavenFacetManager.addGwtFacet(): 1. Couldn't find facet: IGwtFacetConstants.GWT_PLUGINS_FACET_ID="
+      GwtMavenPlugin.logInfo(
+          "GwtMavenFacetManager.addGwtFacet(): 1. Couldn't find facet: IGwtFacetConstants.GWT_PLUGINS_FACET_ID="
               + IGwtFacetConstants.GWT_PLUGINS_FACET_ID);
       e.printStackTrace();
     }
     if (gwtProjectFacet == null) {
-      GwtMavenPlugin
-      .logInfo("GwtMavenFacetManager.addGwtFacet(): 2. Couldn't find facet: IGwtFacetConstants.GWT_PLUGINS_FACET_ID="
-          + IGwtFacetConstants.GWT_PLUGINS_FACET_ID);
+      GwtMavenPlugin.logInfo(
+          "GwtMavenFacetManager.addGwtFacet(): 2. Couldn't find facet: IGwtFacetConstants.GWT_PLUGINS_FACET_ID="
+              + IGwtFacetConstants.GWT_PLUGINS_FACET_ID);
       return;
     }
 
@@ -125,16 +120,8 @@ public class GwtMavenFacetManager {
    * @param workingCopy
    */
   private void markToUseMavenDependencies(IProjectFacet facet, IFacetedProjectWorkingCopy workingCopy) {
-    Object config = workingCopy.getProjectFacetAction(facet).getConfig();
-    IDataModel model = (IDataModel) config;
-    model.addNestedModel(GwtWtpPlugin.USE_MAVEN_DEPS_PROPERTY_NAME + ".model",
-        new DataModelImpl(new AbstractDataModelProvider() {
-          @Override
-          public Set<?> getPropertyNames() {
-            return ImmutableSet.of(GwtWtpPlugin.USE_MAVEN_DEPS_PROPERTY_NAME);
-          }
-        }));
-    model.setBooleanProperty(GwtWtpPlugin.USE_MAVEN_DEPS_PROPERTY_NAME, true);
+    IDataModel model = (IDataModel) workingCopy.getProjectFacetAction(facet).getConfig();
+    GwtFacetInstallDataModelProvider.setMavenProject(model, true);
     workingCopy.setProjectFacetActionConfig(facet, model);
   }
 

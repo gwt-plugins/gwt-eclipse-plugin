@@ -31,7 +31,8 @@
             </dependency>
           </dependencies>
           <excludes>
-            <!-- <exclude>**/XXX.java</exclude> -->
+            <!-- Fix project refresh after create -->
+            <exclude>**/UIBinderWizardTest.java</exclude>
           </excludes>
           
           <skipTests>false</skipTests>

@@ -14,19 +14,37 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.wtp.facet.data;
 
+import java.util.Set;
+
+import org.eclipse.wst.common.componentcore.datamodel.FacetInstallDataModelProvider;
+import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
+
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
 import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
-import org.eclipse.wst.common.componentcore.datamodel.FacetInstallDataModelProvider;
-
-import java.util.Set;
-
 /**
  * GWT facet install data model provider.
+ * 
+ * TODO wrap model in a specific type?
  */
-public class GwtFacetInstallDataModelProvider extends FacetInstallDataModelProvider implements
-    IGwtFacetConstants {
+public class GwtFacetInstallDataModelProvider extends FacetInstallDataModelProvider implements IGwtFacetConstants {
 
+  public static boolean isMavenProject(IDataModel model) {
+    return model.getBooleanProperty(IGwtFacetConstants.USE_MAVEN_DEPS_PROPERTY_NAME);
+  }
+  
+  public static void setMavenProject(IDataModel model, boolean isMaven) {
+    model.setBooleanProperty(IGwtFacetConstants.USE_MAVEN_DEPS_PROPERTY_NAME, isMaven);
+  }
+
+  public static void setGwtSdk(IDataModel model, GwtSdk selectedGwtSdk) {
+    model.setProperty(IGwtFacetConstants.GWT_SDK, selectedGwtSdk);
+  }
+
+  public static GwtSdk getGwtSdk(IDataModel model) {
+    return (GwtSdk) model.getProperty(IGwtFacetConstants.GWT_SDK);
+  }
+  
   @Override
   public Object getDefaultProperty(String propertyName) {
     if (propertyName.equals(FACET_ID)) {
@@ -36,10 +54,11 @@ public class GwtFacetInstallDataModelProvider extends FacetInstallDataModelProvi
   }
 
   @Override
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public Set getPropertyNames() {
     Set propertyNames = super.getPropertyNames();
     propertyNames.add(GWT_SDK);
+    propertyNames.add(USE_MAVEN_DEPS_PROPERTY_NAME);
 
     return propertyNames;
   }
@@ -48,11 +67,33 @@ public class GwtFacetInstallDataModelProvider extends FacetInstallDataModelProvi
   public Object create() {
     Object object = super.create();
 
-    GwtSdk sdk = GWTPreferences.getDefaultRuntime();
-    if (sdk != null) {
-      model.setProperty(GWT_SDK, sdk);
+    // default sdk
+    GwtSdk defaultGwtSdk = GWTPreferences.getDefaultRuntime();
+    if (defaultGwtSdk != null) {
+      model.setProperty(GWT_SDK, defaultGwtSdk);
     }
 
     return object;
   }
+
+  public void setGwtSdk(GwtSdk selectedGwtSdk) {
+    setProperty(IGwtFacetConstants.GWT_SDK, selectedGwtSdk);
+  }
+
+  public GwtSdk getGwtSdk() {
+    GwtSdk selectedGwtSdk = (GwtSdk) getProperty(IGwtFacetConstants.GWT_SDK);
+    if (selectedGwtSdk == null) {
+      selectedGwtSdk = GWTPreferences.getDefaultRuntime();
+    }
+    return selectedGwtSdk;
+  }
+
+  public boolean isMavenProject() {
+    return getBooleanProperty(IGwtFacetConstants.USE_MAVEN_DEPS_PROPERTY_NAME);
+  }
+
+  public void setMavenProject(boolean isMaven) {
+    setBooleanProperty(IGwtFacetConstants.USE_MAVEN_DEPS_PROPERTY_NAME, isMaven);
+  }
+  
 }
