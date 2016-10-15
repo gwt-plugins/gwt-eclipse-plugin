@@ -27,14 +27,14 @@
        <configurator
              class="com.google.gwt.eclipse.wtp.maven.GwtProjectConfigurator"
              id="com.gwtplugins.gwt.eclipse.wtp.maven.gwtConfigurator1"
-             runsAfter="com.gwtplugins.gdt.eclipse.maven.mavenProjectConfigurator1?,org.maven.ide.eclipse.configuration.wtp.configurator?,org.eclipse.m2e.jdt.javaConfigurator?"
+             runsAfter="org.maven.ide.eclipse.configuration.wtp.configurator?,org.eclipse.m2e.jdt.javaConfigurator?"
              name="GWT Dynamic Web Project Configurator (first GWT maven plugin)">
        </configurator>
        
        <configurator
              class="com.google.gwt.eclipse.wtp.maven.GwtProjectConfigurator"
              id="com.gwtplugins.gwt.eclipse.wtp.maven.gwtConfigurator2"
-             runsAfter="com.gwtplugins.gwt.eclipse.wtp.maven.gwtConfigurator1,com.gwtplugins.gdt.eclipse.maven.mavenProjectConfigurator2?,org.maven.ide.eclipse.configuration.wtp.configurator?,org.eclipse.m2e.jdt.javaConfigurator?"
+             runsAfter="org.maven.ide.eclipse.configuration.wtp.configurator?,org.eclipse.m2e.jdt.javaConfigurator?"
              name="GWT Dynamic Web Project Configurator (second GWT maven plugin)" >
        </configurator>
     </extension>
