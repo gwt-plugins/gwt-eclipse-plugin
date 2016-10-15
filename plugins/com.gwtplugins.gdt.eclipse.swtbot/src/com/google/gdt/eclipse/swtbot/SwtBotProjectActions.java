@@ -221,10 +221,13 @@ public final class SwtBotProjectActions {
   public static void deleteProject(final SWTWorkbenchBot bot, final String projectName) {
     SwtBotUtils.print("Deleting project " + projectName);
 
-    selectProject(bot, projectName).contextMenu("Refresh").click();
-
     // delete the launch configs created
     deleteLaunchConfigs(bot);
+
+    SwtBotWorkbenchActions.waitForIdle(bot);
+
+    SwtBotUtils.print("\tRefreshing Project " + projectName);
+    selectProject(bot, projectName).contextMenu("Refresh").click();
 
     SwtBotWorkbenchActions.waitForIdle(bot);
 
