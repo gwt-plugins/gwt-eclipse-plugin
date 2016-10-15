@@ -387,6 +387,6 @@ public class SwtBotUtils {
   }
 
   public static void print(String message) {
-    System.out.println(message);
+    System.out.println("SwtBot Message: " + message);
   }
 }
