@@ -42,7 +42,7 @@ import com.google.gwt.eclipse.wtp.facet.data.GwtFacetInstallDataModelProvider;
 import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
 
 /**
- * Install the GWT Facet.
+ * Install the GWT Facet. It's just a marker that GWT is being used.
  * <p>
  * <ol>
  * <li>Standard Projects get a SDK container.</li>
@@ -63,6 +63,11 @@ public final class GwtFacetInstallSdkDelegate implements IDelegate, IGwtFacetCon
 
     dataModel = (IDataModel) config;
 
+    // Deprecated: make a project configurator in charge of gwt facet if need be
+    //installFacet();
+  }
+
+  private void installFacet() {
     // Standard projects only, install the gwt sdk container
     if (!GwtFacetInstallDataModelProvider.isMavenProject(dataModel)) {
       String message = "GwtFacetInstallSdkDelegate: installing standard classpath container.";

@@ -45,7 +45,6 @@ public class WtpFacetCreatorParicipant implements IWebAppProjectCreator.Particip
 
   private void installGwtFacet(IWebAppProjectCreator webAppProjectCreator, IProgressMonitor monitor) {
     IProject project = webAppProjectCreator.getCreatedJavaProject().getProject();
-    GwtSdk gwtSdk = (GwtSdk) webAppProjectCreator.getGwtSdk();
     
     IFacetedProject facetedProject = null;
     try {

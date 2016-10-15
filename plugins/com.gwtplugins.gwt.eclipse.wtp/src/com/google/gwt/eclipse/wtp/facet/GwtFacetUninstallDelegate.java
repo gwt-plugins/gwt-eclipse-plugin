@@ -29,6 +29,11 @@ public final class GwtFacetUninstallDelegate implements IDelegate {
   @Override
   public void execute(IProject project, IProjectFacetVersion fv, Object config, IProgressMonitor monitor)
       throws CoreException {
+    // Deprecated: make a project configurator in charge
+    //removeFacet();
+  }
+
+  private void removeFacet(IProject project) throws CoreException {
     GWTProjectPropertyPage projectProperty = new GWTProjectPropertyPage();
     try {
       projectProperty.removeGWTSdkForFacet(project);

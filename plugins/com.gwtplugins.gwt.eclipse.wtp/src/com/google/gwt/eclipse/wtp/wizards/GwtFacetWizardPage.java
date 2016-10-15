@@ -53,9 +53,10 @@ import com.google.gwt.eclipse.wtp.facet.data.IGwtFacetConstants;
 /**
  * Base class for GWT facets wizard pages.
  * 
- * TODO DataModelWizardPage is access restricted, switch?
- * TODO figure out a better data model so I can reuse it in web app creator  
+ * Deprecated: Make a project configurator in charge
  */
+// TODO remove class later
+@Deprecated
 public class GwtFacetWizardPage extends DataModelWizardPage implements IFacetWizardPage,
     IGwtFacetConstants {
 
