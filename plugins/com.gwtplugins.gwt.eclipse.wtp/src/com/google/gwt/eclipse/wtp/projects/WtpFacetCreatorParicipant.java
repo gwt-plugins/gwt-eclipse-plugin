@@ -20,6 +20,7 @@ import com.google.gwt.eclipse.wtp.utils.GwtFacetUtils;
 public class WtpFacetCreatorParicipant implements IWebAppProjectCreator.Participant {
 
   private IJavaProject javaProject;
+  private IFacetedProjectListener projectFacetListener;
  
   @Override
   public void updateWebAppProjectCreator(IWebAppProjectCreator webAppProjectCreator) {
@@ -35,13 +36,19 @@ public class WtpFacetCreatorParicipant implements IWebAppProjectCreator.Particip
   }
 
   private void listenForFacetedProjectChange() {
-    FacetedProjectFramework.addListener(new IFacetedProjectListener() {
+    projectFacetListener = new IFacetedProjectListener() {
       @Override
       public void handleEvent(IFacetedProjectEvent event) {
+        // prevent recursion and only do this once.
+        FacetedProjectFramework.removeListener(projectFacetListener);
+        
         IFacetedProject facetedProject = event.getProject();
         runJob(facetedProject);
       }
-    }, IFacetedProjectEvent.Type.PROJECT_MODIFIED);
+    };
+    FacetedProjectFramework.addListener(projectFacetListener, IFacetedProjectEvent.Type.PROJECT_MODIFIED);
+    
+    
   }
 
   private void runJob(final IFacetedProject facetedProject) {
