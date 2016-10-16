@@ -13,7 +13,7 @@
       </pluginExecutionFilter>
       <action>
         <configurator>
-          <id>com.gwtplugins.gdt.eclipse.maven.mavenProjectConfigurator1</id>
+          <id>com.gwtplugins.gdt.eclipse.maven.mavenProjectConfigurator</id>
         </configurator>
       </action>
     </pluginExecution>
@@ -29,7 +29,7 @@
       </pluginExecutionFilter>
       <action>
         <configurator>
-          <id>com.gwtplugins.gdt.eclipse.maven.mavenProjectConfigurator2</id>
+          <id>com.gwtplugins.gdt.eclipse.maven.mavenProjectConfigurator</id>
         </configurator>
       </action>
     </pluginExecution>

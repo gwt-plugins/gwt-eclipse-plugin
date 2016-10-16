@@ -65,37 +65,10 @@ public class MavenProjectConfigurator extends AbstracMavenProjectConfigurator {
   private static final String WAR_SRC_DIR_DEFAULT = "src/main/webapp";
 
   @Override
-  public AbstractBuildParticipant getBuildParticipant(final IMavenProjectFacade projectFacade, MojoExecution execution,
-      final IPluginExecutionMetadata executionMetadata) {
-    Activator.log("MavenProjectConfigurator.getBuildParticipant for Maven invoked");
-
-    // Run the execution generate-module for maven2 plugin
-    // Don't run on war for gwt maven plugin1
-    MojoExecutionBuildParticipant build = null;
-    MavenProject mavenProject = projectFacade.getMavenProject();
-    if (mavenProject != null && isGwtMavenPlugin2(mavenProject)) {
-      Activator.log("MavenProjectConfigurator.getBuildParticipant adding build participant for generate-module.");
-      build = new MojoExecutionBuildParticipant(execution, true, true);
-    }
-
-    return build;
-  }
-
-  @Override
-  public void mavenProjectChanged(MavenProjectChangedEvent event, IProgressMonitor monitor) throws CoreException {
-    super.mavenProjectChanged(event, monitor);
-  }
-
-  @Override
-  public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
-    Activator.log("MavenProjectConfigurator.configure invoked");
-    super.configure(request, monitor);
-  }
-
-  @Override
   protected void doConfigure(final MavenProject mavenProject, IProject project, ProjectConfigurationRequest unused,
       final IProgressMonitor monitor) throws CoreException {
-    Activator.log("MavenProjectConfigurator.doConfigure invoked");
+    Activator.log("MavenProjectConfigurator.doConfigure() invoked");
+
     // configure the GWT Nature
     boolean hasGwtNature = configureNature(project, mavenProject, GWTNature.NATURE_ID, true, new NatureCallback() {
       @Override
@@ -121,6 +94,34 @@ public class MavenProjectConfigurator extends AbstracMavenProjectConfigurator {
     } catch (BackingStoreException exception) {
       Activator.logError("MavenProjectConfigurator: Problem configuring maven project.", exception);
     }
+  }
+
+  @Override
+  public AbstractBuildParticipant getBuildParticipant(final IMavenProjectFacade projectFacade, MojoExecution execution,
+      final IPluginExecutionMetadata executionMetadata) {
+    Activator.log("MavenProjectConfigurator.getBuildParticipant for Maven invoked");
+
+    // Run the execution generate-module for maven2 plugin
+    // Don't run on war for gwt maven plugin1
+    MojoExecutionBuildParticipant build = null;
+    MavenProject mavenProject = projectFacade.getMavenProject();
+    if (mavenProject != null && isGwtMavenPlugin2(mavenProject)) {
+      Activator.log("MavenProjectConfigurator.getBuildParticipant adding build participant for generate-module.");
+      build = new MojoExecutionBuildParticipant(execution, true, true);
+    }
+
+    return build;
+  }
+
+  @Override
+  public void mavenProjectChanged(MavenProjectChangedEvent event, IProgressMonitor monitor) throws CoreException {
+    super.mavenProjectChanged(event, monitor);
+  }
+
+  @Override
+  public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
+    Activator.log("MavenProjectConfigurator.configure invoked");
+    super.configure(request, monitor);
   }
 
   /**

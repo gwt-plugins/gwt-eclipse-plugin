@@ -49,11 +49,11 @@ public class GwtMavenFacetManager {
           // com.google.gwt.facet.
       gwtProjectFacet = ProjectFacetsManager.getProjectFacet(IGwtFacetConstants.GWT_PLUGINS_FACET_ID);
     } catch (Exception e) {
-      GwtMavenPlugin.logInfo(
+      GwtMavenPlugin.logError(
           "GwtMavenFacetManager.addGwtFacet(): 1. Couldn't find facet: IGwtFacetConstants.GWT_PLUGINS_FACET_ID="
-              + IGwtFacetConstants.GWT_PLUGINS_FACET_ID);
-      e.printStackTrace();
+              + IGwtFacetConstants.GWT_PLUGINS_FACET_ID, e);
     }
+    
     if (gwtProjectFacet == null) {
       GwtMavenPlugin.logInfo(
           "GwtMavenFacetManager.addGwtFacet(): 2. Couldn't find facet: IGwtFacetConstants.GWT_PLUGINS_FACET_ID="
