@@ -171,6 +171,8 @@ public final class SwtBotMenuActions {
   }
 
   public static void openPerspective(SWTWorkbenchBot bot, String perspectiveLabel) {
+    SwtBotUtils.print("Opening Perspective: " + perspectiveLabel);
+
     SWTBotShell shell = null;
     try {
       menu(bot, "Window").menu("Open Perspective").menu("Other...").click();
@@ -190,6 +192,8 @@ public final class SwtBotMenuActions {
       SWTBotPerspective perspective = bot.perspectiveByLabel(perspectiveLabel);
       perspective.activate();
     }
+
+    SwtBotUtils.print("Opened Perspective: " + perspectiveLabel);
   }
 
   public static SWTBotMenu menu(SWTWorkbenchBot bot, String name) {

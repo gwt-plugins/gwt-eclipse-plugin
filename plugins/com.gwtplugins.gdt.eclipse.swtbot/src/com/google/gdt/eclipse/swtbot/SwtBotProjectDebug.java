@@ -46,13 +46,19 @@ public class SwtBotProjectDebug {
     // Get the program arguments
     SWTBotText programArgs = bot.textInGroup("Program arguments:");
 
+    // And close the debug configuration dialog
+    bot.button("Close").click();
+
     return programArgs;
   }
 
   /**
    * Goto Debug As > "# MENU_GWT_SUPERDEVMODE"
    */
-  public static void whenIClickandRunDebugConfiguration(SWTWorkbenchBot bot, String projectName) {
+  public static void launchDevModeWithJettyAndWaitForReady(SWTWorkbenchBot bot,
+      String projectName) {
+    SwtBotUtils.print("launch DevMode with Jetty");
+
     // show it has focus
     SWTBotTreeItem project = SwtBotProjectActions.selectProject(bot, projectName);
     project.setFocus();
@@ -82,30 +88,24 @@ public class SwtBotProjectDebug {
     }
 
     // Wait for a successful launch
-    SwtBotUtils.print("Waiting for the code server to be ready.");
     ConsoleViewContains.waitForConsoleOutput(bot, "The code server is ready", 30000);
-    SwtBotUtils.print("It was a successful launch.");
+
+    SwtBotUtils.print("launched DevMode with Jetty");
   }
 
   /**
    * Right click on project and goto Debug As > 4 Run GWT Super Dev Mode Then Stop the debugging
    * process
    */
-  public static void createDebugGWTWithJetty(SWTWorkbenchBot bot, String projectName) {
-    whenIClickandRunDebugConfiguration(bot, projectName);
+  public static void launchGWTDevModeWithJettyThenTerminateIt(SWTWorkbenchBot bot,
+      String projectName) {
+    launchDevModeWithJettyAndWaitForReady(bot, projectName);
 
     // And then stop it
-    SwtBotUtils.print("Opening Debug Perspective and Terminate Process");
-    SwtBotMenuActions.openDebugPerspectiveAndTerminateProcess(bot);
-
-    bot.sleep(1000);
+    SwtBotLaunchManager.terminateAllLaunchConfigs(bot);
 
     // And back to the java perspective
-    SwtBotUtils.print("Opening Java Perspective");
     SwtBotMenuActions.openJavaPerpsective(bot);
-    SwtBotUtils.print("Opened Java Perspective");
-
-    bot.sleep(500);
   }
 
 }

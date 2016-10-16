@@ -242,6 +242,8 @@ public final class SwtBotProjectActions {
   public static void deleteLaunchConfigs(final SWTWorkbenchBot bot) {
     SwtBotUtils.print("\tDeleting launch configs");
 
+    SwtBotLaunchManager.terminateAllLaunchConfigs(bot);
+
     SwtBotMenuActions.openDebugConfiguration(bot);
 
     // TODO change to Messages.get

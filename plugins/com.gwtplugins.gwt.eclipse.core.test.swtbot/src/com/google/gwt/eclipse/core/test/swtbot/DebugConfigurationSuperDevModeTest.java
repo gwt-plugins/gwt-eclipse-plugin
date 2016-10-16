@@ -52,7 +52,7 @@ public class DebugConfigurationSuperDevModeTest extends TestCase {
    */
   public void testCreatingLauncherWithJetty1() throws Exception {
     // When I right click and Debug GWT Super Dev Mode
-    SwtBotProjectDebug.createDebugGWTWithJetty(bot, PROJECT_NAME);
+    SwtBotProjectDebug.launchGWTDevModeWithJettyThenTerminateIt(bot, PROJECT_NAME);
 
     // When I get the arguments for super dev mode config
     String persistedArgs = SwtBotProjectDebug.getTheProgramArgsTextBox(bot).getText();

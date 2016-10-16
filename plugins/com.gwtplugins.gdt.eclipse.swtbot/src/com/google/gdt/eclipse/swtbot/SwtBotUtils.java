@@ -201,24 +201,24 @@ public class SwtBotUtils {
    * Performs the necessary set up work for most SWTBot tests.
    */
   public static void setUp(SWTWorkbenchBot bot) {
-    // Increase the timeout (note: this is not a delay, so it's okay to increase
-    // for reliability). This is required when we create a new project and wait
-    // for it to show up in the package explorer.
-    // SwtBotTimeoutManager.setTimeout(); // TODO ? remove
-
-    // bot.resetWorkbench(); // DO NOT DO THIS FIRST
+    SwtBotUtils.print("SetUp");
 
     SwtBotWorkbenchActions.closeDialogs(bot);
 
     SwtBotWorkbenchActions.closeWelcomePage(bot);
+
+    SwtBotUtils.print("SetUp Done");
   }
 
   /**
    * Performs the necessary tear down work for most SWTBot tests.
    */
   public static void tearDown(SWTWorkbenchBot bot) {
-    // Set the SWTBot timeout back to the default value
-    // SwtBotTimeoutManager.resetTimeout(); // TODO remove
+    SwtBotUtils.print("Tear Down");
+
+    bot.resetWorkbench();
+
+    SwtBotUtils.print("Tear Down Done");
   }
 
   /**
