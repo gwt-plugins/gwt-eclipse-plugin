@@ -31,7 +31,7 @@ public class ActiveWidgetCondition implements ICondition {
 
   @Override
   public String getFailureMessage() {
-    return "Widget not active: " + widget;
+    return "ActiveWidgetCondition: Widget not active: " + widget;
   }
 
 }
