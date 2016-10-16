@@ -14,6 +14,8 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.wtp.maven;
 
+import java.util.List;
+
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.plugin.MojoExecution;
@@ -28,16 +30,18 @@ import org.eclipse.m2e.wtp.WTPProjectConfigurator;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
-import java.util.List;
+import com.google.gwt.eclipse.wtp.GwtWtpPlugin;
 
 /**
  * A {@link WTPProjectConfigurator} that adds GWT facets.
  */
 @SuppressWarnings("restriction")
-public class GwtProjectConfigurator extends WTPProjectConfigurator {
+public class WtpMavenProjectConfigurator extends WTPProjectConfigurator {
 
   @Override
   public void configure(ProjectConfigurationRequest request, IProgressMonitor monitor) throws CoreException {
+    GwtWtpPlugin.logMessage("WtpMavenProjectConfigurator.doConfigure() invoked");
+
     // Given a pom.xml configuration
     Model pom = request.getMavenProject().getModel();
 
@@ -54,7 +58,7 @@ public class GwtProjectConfigurator extends WTPProjectConfigurator {
   @Override
   public AbstractBuildParticipant getBuildParticipant(IMavenProjectFacade projectFacade, MojoExecution execution,
       IPluginExecutionMetadata executionMetadata) {
-    GwtMavenPlugin.logInfo("GwtProjectConfigurator.getBuildParticipant invoked");
+    GwtMavenPlugin.logInfo("WtpMavenProjectConfigurator.getBuildParticipant invoked");
 
     return super.getBuildParticipant(projectFacade, execution, executionMetadata);
   }

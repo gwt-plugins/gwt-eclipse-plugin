@@ -204,9 +204,9 @@ public class SwtBotUtils {
     // Increase the timeout (note: this is not a delay, so it's okay to increase
     // for reliability). This is required when we create a new project and wait
     // for it to show up in the package explorer.
-    //SwtBotTimeoutManager.setTimeout(); // TODO ? remove
+    // SwtBotTimeoutManager.setTimeout(); // TODO ? remove
 
-    //bot.resetWorkbench(); // DO NOT DO THIS FIRST
+    // bot.resetWorkbench(); // DO NOT DO THIS FIRST
 
     SwtBotWorkbenchActions.closeDialogs(bot);
 
@@ -218,7 +218,7 @@ public class SwtBotUtils {
    */
   public static void tearDown(SWTWorkbenchBot bot) {
     // Set the SWTBot timeout back to the default value
-    //SwtBotTimeoutManager.resetTimeout(); // TODO remove
+    // SwtBotTimeoutManager.resetTimeout(); // TODO remove
   }
 
   /**
@@ -388,5 +388,9 @@ public class SwtBotUtils {
 
   public static void print(String message) {
     System.out.println("SwtBot Message: " + message);
+  }
+
+  public static void printError(String message) {
+    System.err.println("SwtBot Error: " + message);
   }
 }

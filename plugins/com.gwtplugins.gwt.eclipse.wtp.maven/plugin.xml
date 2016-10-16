@@ -25,19 +25,11 @@
     <extension
           point="org.eclipse.m2e.core.projectConfigurators">
        <configurator
-             class="com.google.gwt.eclipse.wtp.maven.GwtProjectConfigurator"
-             id="com.gwtplugins.gwt.eclipse.wtp.maven.gwtConfigurator1"
-             runsBefore="org.maven.ide.eclipse.configuration.wtp.configurator?"
-             name="GWT Dynamic Web Project Configurator (first GWT maven plugin)">
-       </configurator>
-       
-       <configurator
-             class="com.google.gwt.eclipse.wtp.maven.GwtProjectConfigurator"
-             id="com.gwtplugins.gwt.eclipse.wtp.maven.gwtConfigurator2"
-             runsBefore="org.maven.ide.eclipse.configuration.wtp.configurator?"
-             name="GWT Dynamic Web Project Configurator (second GWT maven plugin)" >
+             class="com.google.gwt.eclipse.wtp.maven.WtpMavenProjectConfigurator"
+             id="com.gwtplugins.gwt.eclipse.wtp.maven.gwtConfigurator"
+             runsAfter="org.maven.ide.eclipse.configuration.wtp.configurator?"
+             name="GWT WTP Maven Project Configurator">
        </configurator>
     </extension>
     
-
 </plugin>

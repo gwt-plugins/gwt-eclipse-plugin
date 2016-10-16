@@ -184,7 +184,7 @@ public final class SwtBotMenuActions {
       bot.waitUntil(Conditions.shellCloses(shell));
     } catch (Exception e) {
       if (shell != null && shell.isOpen()) shell.close();
-      System.err.println("Couldn't open perspective '" + perspectiveLabel + "'\n"
+      SwtBotUtils.printError("Couldn't open perspective '" + perspectiveLabel + "'\n"
           + "trying to activate already open perspective instead");
       // maybe somehow the perspective is already opened (by another test before us)
       SWTBotPerspective perspective = bot.perspectiveByLabel(perspectiveLabel);

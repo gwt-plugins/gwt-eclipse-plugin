@@ -17,7 +17,6 @@ public class ActiveShellMenu extends AbstractedWaitCondition {
     return new ActiveShellMenu(bot, name, recursive).getMenus();
   }
 
-  protected SWTBot bot;
   private String name;
   private boolean recursive;
   private List<MenuItem> found;
@@ -35,15 +34,15 @@ public class ActiveShellMenu extends AbstractedWaitCondition {
   @Override
   public boolean test() throws Exception {
     MenuFinder finder = getMenuFinder();
-    SwtBotUtils.print("Getting menus for shell: " + bot.activeShell().getText());
-    SwtBotUtils.print("Is active: " + bot.activeShell().isActive() + "");
+    SwtBotUtils.print("ActiveShellMenu: Getting menus for shell: " + bot.activeShell().getText());
+    SwtBotUtils.print("ActiveShellMenu: Is active: " + bot.activeShell().isActive() + "");
 
     Matcher<MenuItem> menuMatcher = WidgetMatcherFactory.withMnemonic(name);
     Shell shell = bot.activeShell().widget;
     found = finder.findMenus(shell, menuMatcher, recursive);
 
     boolean hasFound = found != null && found.size() > 0;
-    SwtBotUtils.print("Has found menus: " + hasFound + " for: " + name);
+    SwtBotUtils.print("ActiveShellMenu: Has found menus: '" + hasFound + "' for: " + name);
     return hasFound;
   }
 
@@ -59,7 +58,7 @@ public class ActiveShellMenu extends AbstractedWaitCondition {
 
   @Override
   public String getFailureMessage() {
-    return "Failed to find menus for " + name + " in shell: " + bot.activeShell().getText();
+    return "ActiveShellMenu: Failed to find menus for '" + name + "' in shell: " + bot.activeShell().getText();
   }
 
 }
