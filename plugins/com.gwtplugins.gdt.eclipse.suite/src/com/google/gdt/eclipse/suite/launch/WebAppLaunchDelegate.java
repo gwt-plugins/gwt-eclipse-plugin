@@ -14,7 +14,6 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.launch;
 
-import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.NetworkUtilities;
 import com.google.gdt.eclipse.core.WebAppUtilities;
 import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
@@ -48,7 +47,6 @@ import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.ServerUtil;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -57,9 +55,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @SuppressWarnings({ "restriction", "nls" })
 public class WebAppLaunchDelegate extends JavaLaunchDelegate {
-
-  private static final String ARG_RDBMS_EXTRA_PROPERTIES = "-Drdbms.extra.properties=";
-  private static final String ARG_RDBMS_EXTRA_PROPERTIES_VALUE_FORMAT = "\"oauth2RefreshToken=%s,oauth2AccessToken=%s,oauth2ClientId=%s,oauth2ClientSecret=%s\"";
 
   /**
    * Publish any {@link IModule}s that the project has if it is not using a managed war directory and it is running a
@@ -225,68 +220,12 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
   /**
    * @return Returns {@code}false if unsuccessful in adding the VM arguments and the launch should be cancelled.
    */
+  @Deprecated
   private boolean addVmArgs(ILaunchConfiguration configuration) throws CoreException {
     IProject project = getJavaProject(configuration).getProject();
 
     ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
     String vmArgs = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");
-
-    // TODO remove?
-    // The regex is -Drdbms\.extra\.properties="\S+" which matches
-    // -Drdbms.extra.properties="<non-whitespace chars>".
-
-    String[] vmArgList = vmArgs.split("-Drdbms\\.extra\\.properties=\"\\S+\"");
-    vmArgs = "";
-    for (String string : vmArgList) {
-      vmArgs += string;
-    }
-
-    // TODO remove?
-    String refreshToken = null;
-    String accessToken = null;
-    String clientId = null;
-    String clientSecret = null;
-
-    // TODO remove leaving a trace for just in case
-    // // If the user is not logged in, prompt him to log in.
-    // GoogleLogin.promptToLogIn("Please Log in to continue launch");
-    // // Try to get the vm arguments.
-    // try {
-    // refreshToken = GoogleLogin.getInstance().fetchOAuth2RefreshToken();
-    // accessToken = GoogleLogin.getInstance().fetchAccessToken();
-    // clientId = GoogleLogin.getInstance().fetchOAuth2ClientId();
-    // clientSecret = GoogleLogin.getInstance().fetchOAuth2ClientSecret();
-    // } catch (SWTException e) {
-    // // The exception is thrown if the user did not log in when prompted. Just
-    // // show an error message and exit.
-    // Display.getDefault().syncExec(new Runnable() {
-    // public void run() {
-    // MessageDialog.openError(null, "Error in authentication",
-    // "Please sign in with your Google account before launching");
-    // }
-    // });
-    // } catch (IOException e) {
-    // CorePluginLog.logError(e);
-    // }
-    //
-    // if (refreshToken == null || accessToken == null || clientId == null || clientSecret == null) {
-    // return false;
-    // }
-
-    String rdbmsExtraPropertiesValue = String.format(ARG_RDBMS_EXTRA_PROPERTIES_VALUE_FORMAT, refreshToken, accessToken,
-        clientId, clientSecret);
-    vmArgs += " " + ARG_RDBMS_EXTRA_PROPERTIES + rdbmsExtraPropertiesValue;
-    workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArgs);
-    ILaunchConfiguration config = workingCopy.doSave();
-    IPath path = config.getLocation();
-
-    if ((path != null) && path.toFile().exists()) {
-      try {
-        Runtime.getRuntime().exec("chmod 600 " + path.toString());
-      } catch (IOException e) {
-        CorePluginLog.logError("Could not change permissions on the launch config file");
-      }
-    }
 
     return true;
   }
