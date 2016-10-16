@@ -16,6 +16,9 @@ package com.google.gdt.eclipse.swtbot;
 
 import static org.eclipse.swtbot.swt.finder.matchers.WidgetMatcherFactory.widgetOfType;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.Widget;
@@ -224,25 +227,12 @@ public final class SwtBotProjectActions {
     // delete the launch configs created
     deleteLaunchConfigs(bot);
 
-    SwtBotWorkbenchActions.waitForIdle(bot);
-
-    SwtBotUtils.print("\tRefreshing Project " + projectName);
-    selectProject(bot, projectName).contextMenu("Refresh").click();
-
-    SwtBotWorkbenchActions.waitForIdle(bot);
-
-    SwtBotUtils.performAndWaitForWindowChange(bot, new Runnable() {
-      @Override
-      public void run() {
-        selectProject(bot, projectName).contextMenu("Delete").click();
-        // Wait for confirmation window to come up
-      }
-    });
-
-    // Select the "Delete project contents on disk (cannot be undone)"
-    bot.checkBox(0).click();
-
-    SwtBotUtils.clickButtonAndWaitForWindowChange(bot, bot.button("OK"));
+    IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
+    try {
+      project.delete(true, null);
+    } catch (CoreException e) {
+      SwtBotUtils.printError("Could not delete project");
+    }
 
     SwtBotWorkbenchActions.waitForIdle(bot);
 
