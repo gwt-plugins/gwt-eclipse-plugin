@@ -1,5 +1,7 @@
 package com.google.gdt.eclipse.swtbot.conditions;
 
+import com.google.gdt.eclipse.swtbot.SwtBotUtils;
+
 import org.eclipse.swtbot.eclipse.finder.SWTWorkbenchBot;
 import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotView;
 import org.eclipse.swtbot.swt.finder.SWTBot;
@@ -8,16 +10,16 @@ import org.eclipse.swtbot.swt.finder.widgets.SWTBotStyledText;
 
 public class ConsoleViewContains implements ICondition {
 
-  public static ICondition consoleContains(String string) {
+  public static ICondition waitForConsoleContains(String string) {
     return new ConsoleViewContains(string);
   }
 
   public static void waitForConsoleOutput(SWTWorkbenchBot bot, String string, long timeout) {
-    bot.waitUntil(consoleContains(string), timeout);
+    bot.waitUntil(waitForConsoleContains(string), timeout);
   }
 
   public static void waitForConsoleOutput(SWTWorkbenchBot bot, String string) {
-    bot.waitUntil(consoleContains(string));
+    bot.waitUntil(waitForConsoleContains(string));
   }
 
   private SWTWorkbenchBot bot;
@@ -25,6 +27,7 @@ public class ConsoleViewContains implements ICondition {
   private String msg;
 
   protected ConsoleViewContains(String string) {
+    SwtBotUtils.print("ConsoleView: Waiting for '" + string + "'");
     this.searchString = string;
   }
 

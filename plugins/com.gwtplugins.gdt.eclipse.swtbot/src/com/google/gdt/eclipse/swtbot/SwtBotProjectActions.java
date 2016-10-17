@@ -90,7 +90,7 @@ public final class SwtBotProjectActions {
     SWTBotTree projectSelectionTree = bot.tree();
     SWTBotTreeItem projectSelectionGoogleTreeItem =
         SwtBotTreeActions.getUniqueTreeItem(bot, projectSelectionTree, "Java", "Java Project");
-    SwtBotUtils.selectTreeItem(bot, projectSelectionGoogleTreeItem, "Java Project");
+    SwtBotTreeActions.selectTreeItem(bot, projectSelectionGoogleTreeItem, "Java Project");
 
     bot.button("Next >").click();
 
@@ -175,7 +175,7 @@ public final class SwtBotProjectActions {
     SWTBotTree projectSelectionTree = bot.tree();
     SWTBotTreeItem projectSelectionGoogleTreeItem = SwtBotTreeActions
         .getUniqueTreeItem(bot, projectSelectionTree, "GWT Classes", "UiBinder").expand();
-    SwtBotUtils.selectTreeItem(bot, projectSelectionGoogleTreeItem, "UiBinder");
+    SwtBotTreeActions.selectTreeItem(bot, projectSelectionGoogleTreeItem, "UiBinder");
     bot.button("Next >").click();
 
     // Configure the UiBinder and then create it
@@ -204,7 +204,7 @@ public final class SwtBotProjectActions {
     // GWT Application
     SWTBotTreeItem projectSelectionTreeItem = SwtBotTreeActions.getUniqueTreeItem(bot,
         projectSelectionTree, "GWT Application", "GWT Web Application Project").expand();
-    SwtBotUtils.selectTreeItem(bot, projectSelectionTreeItem,
+    SwtBotTreeActions.selectTreeItem(bot, projectSelectionTreeItem,
         "GWT Web Application Project");
     bot.button("Next >").click();
 
@@ -241,6 +241,8 @@ public final class SwtBotProjectActions {
 
   public static void deleteLaunchConfigs(final SWTWorkbenchBot bot) {
     SwtBotUtils.print("\tDeleting launch configs");
+
+    SwtBotLaunchManagerActions.terminateAllLaunchConfigs(bot);
 
     SwtBotMenuActions.openDebugConfiguration(bot);
 

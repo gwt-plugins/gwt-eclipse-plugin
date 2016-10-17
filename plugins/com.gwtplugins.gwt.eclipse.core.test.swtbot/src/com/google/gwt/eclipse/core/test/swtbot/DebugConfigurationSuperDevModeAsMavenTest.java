@@ -51,15 +51,10 @@ public class DebugConfigurationSuperDevModeAsMavenTest extends TestCase {
     SwtBotProjectCreation.createMavenGwtProjectIsCreated1(bot, PROJECT_NAME, PACKAGE_NAME);
 
     // When I right click and Debug GWT Super Dev Mode
-    SwtBotProjectDebug.createDebugGWTWithJetty(bot, PROJECT_NAME);
+    SwtBotProjectDebug.launchGWTDevModeWithJettyThenTerminateIt(bot, PROJECT_NAME);
 
     // When I get the arguments for super dev mode config
-    String persistedArgs = SwtBotProjectDebug.getTheProgramArgsTextBox(bot).getText();
-
-    // And close the debug configuration dialog
-    bot.button("Close").click();
-    // And closing may cause a save change dialog
-    SwtBotProjectDebug.closeSaveChangesDialogIfNeedBe(bot);
+    String persistedArgs = SwtBotProjectDebug.getTheProgramArgsTextBox(bot);
 
     // Then the args should be
     assertTrue(persistedArgs.contains("com.example.project.Project"));
@@ -73,15 +68,10 @@ public class DebugConfigurationSuperDevModeAsMavenTest extends TestCase {
     SwtBotProjectCreation.createMavenGwtProjectIsCreated2(bot, PROJECT_NAME, PACKAGE_NAME);
 
     // When I right click and Debug GWT Super Dev Mode
-    SwtBotProjectDebug.createDebugGWTWithJetty(bot, PROJECT_NAME);
+    SwtBotProjectDebug.launchGWTDevModeWithJettyThenTerminateIt(bot, PROJECT_NAME);
 
     // When I get the arguments for super dev mode config
-    String persistedArgs = SwtBotProjectDebug.getTheProgramArgsTextBox(bot).getText();
-
-    // And close the debug configuration dialog
-    bot.button("Close").click();
-    // And closing may cause a save change dialog
-    SwtBotProjectDebug.closeSaveChangesDialogIfNeedBe(bot);
+    String persistedArgs = SwtBotProjectDebug.getTheProgramArgsTextBox(bot);
 
     // Then the args should be
     assertTrue(persistedArgs.contains("com.example.project.App"));

@@ -67,9 +67,11 @@ public final class SwtBotWorkbenchActions {
    * Wait until all background tasks are complete.
    */
   public static void waitForIdle(SWTBot bot) {
+    SwtBotUtils.print("\t\tWaiting for idle");
     while (!Job.getJobManager().isIdle()) {
-      bot.sleep(1000);
+      bot.sleep(500);
     }
+    SwtBotUtils.print("\t\tNow idle");
   }
 
   /**
