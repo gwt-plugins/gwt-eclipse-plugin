@@ -12,9 +12,9 @@ import org.eclipse.swtbot.swt.finder.SWTBot;
 /**
  * Launch Manager Actions
  */
-public class SwtBotLaunchManager {
+public class SwtBotLaunchManagerActions {
 
-  protected SwtBotLaunchManager() {
+  protected SwtBotLaunchManagerActions() {
   }
 
   public static void terminateAllLaunchConfigs(SWTBot bot) {

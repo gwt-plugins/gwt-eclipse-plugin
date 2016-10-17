@@ -55,12 +55,7 @@ public class DebugConfigurationSuperDevModeTest extends TestCase {
     SwtBotProjectDebug.launchGWTDevModeWithJettyThenTerminateIt(bot, PROJECT_NAME);
 
     // When I get the arguments for super dev mode config
-    String persistedArgs = SwtBotProjectDebug.getTheProgramArgsTextBox(bot).getText();
-
-    // And close the debug configuration dialog
-    bot.button("Close").click();
-    // And closing may cause a save change dialog
-    SwtBotProjectDebug.closeSaveChangesDialogIfNeedBe(bot);
+    String persistedArgs = SwtBotProjectDebug.getTheProgramArgsTextBox(bot);
 
     // Then the args should be
     assertTrue(persistedArgs.contains("com.example.project.Project"));

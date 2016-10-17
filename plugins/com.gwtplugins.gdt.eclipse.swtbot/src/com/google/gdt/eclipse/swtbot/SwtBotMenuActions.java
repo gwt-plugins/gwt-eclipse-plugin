@@ -125,7 +125,7 @@ public final class SwtBotMenuActions {
     // click on Maven Project
     SWTBotTree tree = bot.tree();
     SWTBotTreeItem[] items = tree.getAllItems();
-    SwtBotUtils.selectTreeItem(bot, items[0], "Maven Project");
+    SwtBotTreeActions.selectTreeItem(bot, items[0], "Maven Project");
 
     // move to next step
     bot.button("Next >").click();

@@ -36,7 +36,9 @@ public class SwtBotProjectDebug {
     });
   }
 
-  public static SWTBotText getTheProgramArgsTextBox(SWTWorkbenchBot bot) {
+  public static String getTheProgramArgsTextBox(SWTWorkbenchBot bot) {
+    SwtBotUtils.print("Retrieve Args");
+
     // When I open debug configuration
     SwtBotMenuActions.openDebugConfiguration(bot);
 
@@ -45,11 +47,17 @@ public class SwtBotProjectDebug {
 
     // Get the program arguments
     SWTBotText programArgs = bot.textInGroup("Program arguments:");
+    String text = programArgs.getText();
 
     // And close the debug configuration dialog
     bot.button("Close").click();
 
-    return programArgs;
+    // And closing may cause a save change dialog
+    SwtBotProjectDebug.closeSaveChangesDialogIfNeedBe(bot);
+
+    SwtBotUtils.print("Retrieved Args");
+
+    return text;
   }
 
   /**
@@ -57,7 +65,7 @@ public class SwtBotProjectDebug {
    */
   public static void launchDevModeWithJettyAndWaitForReady(SWTWorkbenchBot bot,
       String projectName) {
-    SwtBotUtils.print("launch DevMode with Jetty");
+    SwtBotUtils.print("Launch DevMode with Jetty");
 
     // show it has focus
     SWTBotTreeItem project = SwtBotProjectActions.selectProject(bot, projectName);
@@ -90,7 +98,7 @@ public class SwtBotProjectDebug {
     // Wait for a successful launch
     ConsoleViewContains.waitForConsoleOutput(bot, "The code server is ready", 30000);
 
-    SwtBotUtils.print("launched DevMode with Jetty");
+    SwtBotUtils.print("Launched DevMode with Jetty");
   }
 
   /**
@@ -102,7 +110,7 @@ public class SwtBotProjectDebug {
     launchDevModeWithJettyAndWaitForReady(bot, projectName);
 
     // And then stop it
-    SwtBotLaunchManager.terminateAllLaunchConfigs(bot);
+    SwtBotLaunchManagerActions.terminateAllLaunchConfigs(bot);
 
     // And back to the java perspective
     SwtBotMenuActions.openJavaPerpsective(bot);

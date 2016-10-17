@@ -37,7 +37,7 @@ public final class SwtBotSdkActions {
     SWTBotTreeItem prefGwtTreeItem =
         SwtBotTreeActions.getUniqueTreeItem(bot, bot.tree(),
             SwtBotProjectActions.GWT_MENU_LABELS, "GWT Settings").expand();
-    SwtBotUtils.selectTreeItem(bot, prefGwtTreeItem, treeItemText);
+    SwtBotTreeActions.selectTreeItem(bot, prefGwtTreeItem, treeItemText);
 
     bot.table().select(0);
     bot.button("Remove").click();
@@ -52,7 +52,7 @@ public final class SwtBotSdkActions {
     SWTBotTreeItem prefGwtTreeItem =
         SwtBotTreeActions.getUniqueTreeItem(bot, bot.tree(),
             SwtBotProjectActions.GWT_MENU_LABELS, "GWT Settings").expand();
-    SwtBotUtils.selectTreeItem(bot, prefGwtTreeItem, treeItemText);
+    SwtBotTreeActions.selectTreeItem(bot, prefGwtTreeItem, treeItemText);
 
     SwtBotUtils.clickButtonAndWaitForWindowChange(bot, bot.button("Add..."));
 
