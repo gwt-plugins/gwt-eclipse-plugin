@@ -21,6 +21,8 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 
 /**
  * Utility methods for GWT-related launch configuration processors.
+ *
+ * TODO duplicated in MainTypeProcessor
  */
 public final class GwtLaunchConfigurationProcessorUtilities {
 

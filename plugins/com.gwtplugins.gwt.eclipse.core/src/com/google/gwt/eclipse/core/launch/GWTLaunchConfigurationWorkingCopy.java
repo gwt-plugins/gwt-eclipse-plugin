@@ -24,6 +24,8 @@ import java.util.List;
 
 /**
  * Launch configuration working copy
+ *
+ * TODO some of this is duplicated in GWTLaunchConfigurationUtilities
  */
 public class GWTLaunchConfigurationWorkingCopy extends GWTLaunchConfiguration {
 

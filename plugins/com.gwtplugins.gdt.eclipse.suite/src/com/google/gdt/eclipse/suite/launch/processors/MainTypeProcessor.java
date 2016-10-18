@@ -43,12 +43,15 @@ public class MainTypeProcessor implements ILaunchConfigurationProcessor {
 
   /**
    * Possible main types for a launch configuration.
+   *
+   * TODO duplicated in GwtLaunchConfigurationProcessorUtilities
    */
   public enum MainType {
     /**
      * GWT 2.0+
      */
-    GWT_DEV_MODE("com.google.gwt.dev.DevMode");
+    GWT_DEV_MODE("com.google.gwt.dev.DevMode"),
+    GWT_CODE_SERVER("com.google.gwt.dev.codeserver.CodeServer");
 
     public final String mainTypeName;
 
