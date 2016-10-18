@@ -180,4 +180,11 @@
          version="3.0.0.qualifier"
          unpack="false"/>
 
+   <plugin
+         id="com.gwtplugins.gwt.eclipse.gss"
+         download-size="0"
+         install-size="0"
+         version="3.0.0.qualifier"
+         unpack="false"/>
+
 </feature>
