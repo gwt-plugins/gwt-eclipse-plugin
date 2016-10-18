@@ -22,6 +22,7 @@ import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.suite.GdtPlugin;
+import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 
 import org.eclipse.core.runtime.CoreException;
@@ -184,6 +185,11 @@ public class WarArgumentProcessor implements ILaunchConfigurationProcessor {
   @Override
   public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject, List<String> programArgs,
       List<String> vmArgs) throws CoreException {
+    // Do not run this if it's the code server
+    boolean isCodeServer = GwtLaunchConfigurationProcessorUtilities.isSuperDevModeCodeServer(launchConfig);
+    if (isCodeServer) {
+      return;
+    }
 
     // First, try to get a war argument from the extensions, then try everything
     // else.
