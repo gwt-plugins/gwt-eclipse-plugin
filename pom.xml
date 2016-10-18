@@ -65,7 +65,7 @@
     <module>plugins/com.gwtplugins.gwt.eclipse.oophm</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.oophm.test</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.testing</module>
-    <module>com.gwtplugins.gwt.eclipse.gss</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.gss</module>
 
     <!-- GWT Facet -->
     <module>plugins/com.gwtplugins.gwt.eclipse.wtp</module>
