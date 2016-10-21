@@ -29,7 +29,7 @@
     <gwt.version>2.7.0</gwt.version>
 
     <!-- SwtBot Timeout -->
-    <org.eclipse.swtbot.search.timeout>40000</org.eclipse.swtbot.search.timeout>
+    <org.eclipse.swtbot.search.timeout>50000</org.eclipse.swtbot.search.timeout>
 
     <!-- Skip the deployment here, submodules can override this property -->
     <maven.deploy.skip>true</maven.deploy.skip>
