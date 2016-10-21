@@ -3,35 +3,43 @@ This repository houses the source for the GWT Eclipse Plugin.
 
 * This plugin does not include the [Google Cloud Tools Eclipse](https://github.com/GoogleCloudPlatform/google-cloud-eclipse) features.
 
-# RoadMap
+## Quality
 
-* The GWT Eclipse Plugin (V3) release Beta is scheduled for November 2016 @ GWTCon (In the meantime use the GPE fork version).
+* This plugin is Beta Quality. 
 
 ## Reference
-
 * [Documentation](http://gwt-plugins.github.io/documentation/)
+* [GWT Eclipse Plugin Youtube Playlist](https://www.youtube.com/watch?v=DU7ZQVLR5Zo&list=PLBbgqtDgdc_TqzA-qXrjgTFMC_6DKAQyT)
+
+## Features
+
+* GWT SDK Selection
+* GWT Compiler Launcher
+* GWT Development Mode with Jetty Launcher (a.k.a DevMode Super Dev Mode)
+* GWT Development Mode Launcher (a.k.a CodeServer Super Dev Mode)
+* GWT Legacy Development Mode Launcher (a.k.a Classic Dev Mode or OOPHM Dev Mode)
+* GWT Java Editor
+* GWT UIBinder Editor
+* OOPHM for Legacy Dev Mode
+* CSS Resources Editor
+* Maven integration
 
 ### Maven
-Supported Maven Plugins.
+Supports the two GWT Maven plugins.
 
 * [Mojo GWT Maven Plugin](https://gwt-maven-plugin.github.io/gwt-maven-plugin/)
 * [TBroyer GWT Maven Plugin](https://tbroyer.github.io/gwt-maven-plugin/)
 
-## GPE-Fork (V2) Repository
-The Google Plugin for Eclipse fork. GPE is now deprecated. 
-
-* [GPE Fork V2 GWT Eclipse Plugin](https://github.com/gwt-plugins/gwt-eclipse-plugin/tree/gpe-fork) * Recommended use
-
-
-## GWT Eclipse Plugin (V3) Repository
-The Eclipse repositories for this plugin. 
-
-### MarketPlace
+## MarketPlace
 Install from the Eclipse marketplace.
 
 <a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=3107469" class="drag" title="Drag to your running Eclipse workspace to install GWT Eclipse Plugin"><img class="img-responsive" src="https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png" alt="Drag to your running Eclipse workspace to install GWT Eclipse Plugin" /></a>
 
 * [https://marketplace.eclipse.org/content/gwt-eclipse-plugin](https://marketplace.eclipse.org/content/gwt-eclipse-plugin)
+
+
+## Repository
+The Eclipse repositories for this plugin. 
 
 ### Production
 Release update site. 
@@ -42,6 +50,7 @@ Release update site.
 Unstable update site
 
 * [http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot](http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot)
+
 
 ## Development 
 
