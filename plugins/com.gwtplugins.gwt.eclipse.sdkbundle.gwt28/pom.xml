@@ -28,10 +28,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-
-              <!-- GWT 2.8.0 SDK zip -->
               <url>https://goo.gl/QWOlx0</url> 
-
               <unpack>true</unpack>
               <overwrite>true</overwrite>
               <outputFileName>${basedir}/gwt-2.8.0.zip</outputFileName>
