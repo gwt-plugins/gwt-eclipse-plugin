@@ -510,8 +510,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
   }
 
   /**
-   * TODO find a generic method to get the server publish/deploy path. TODO or put bits into a directory and use
-   * PublishHelper
+   * Return the launcher directory path. 
    * 
    * The -launcherDir war/output/path is the war deployment directory
    * 
@@ -524,8 +523,12 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       IFacetedProject gwtFacetedProject) {
     String launcherDir = null;
 
-    for (IModule module : server.getModules()) {
-      if (module.getProject() == gwtFacetedProject.getProject()) {
+    // The root module will be the server module
+    // The root module may have children such as, client, shared
+    // The root module may not have any children
+    IModule[] modules = server.getModules();
+    
+    for (IModule module : modules) {
         IPath path = null;
         if (server instanceof IModulePublishHelper) {
           path = ((IModulePublishHelper) server).getPublishDirectory(new IModule[] {module});
@@ -535,8 +538,11 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
             path = helper.getPublishDirectory(new IModule[] {module});
           }
         }
-        return path == null ? null : path.toOSString();
-      }
+        // example: /Users/branflake2267/Documents/runtime-EclipseApplication/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/broyer-sandbox-server
+        launcherDir = path == null ? null : path.toOSString();
+        if (launcherDir != null) {
+          return launcherDir;
+        }
     }
     // Get the the war output path from classic launch configuration working directory
     // Also used GaeServerBehaviour.setupLaunchConfig(...)
