@@ -211,6 +211,7 @@ public class GdtPlugin extends AbstractGwtPlugin {
 
     reg.put(GdtImages.GDT_ICON, imageDescriptorFromPath("icons/gdt_16x16.png"));
     reg.put(GdtImages.GWT_SERVER_ICON, imageDescriptorFromPath("icons/gwt_server_16x16.png"));
+    reg.put(GdtImages.GWT_SERVER_ICON, imageDescriptorFromPath("icons/gwt_compiler_16x16.png"));
 
     reg.put(GdtImages.GDT_NEW_PROJECT_ICON, imageDescriptorFromPath("icons/gdt-new-project_16x16.png"));
     reg.put(GdtImages.GDT_NEW_PROJECT_LARGE, imageDescriptorFromPath("icons/gdt-new-project_75x66.png"));

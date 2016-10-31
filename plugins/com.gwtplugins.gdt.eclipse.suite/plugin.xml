@@ -163,6 +163,35 @@
          <configurationType
                id="com.gwtplugins.gdt.eclipse.suite.webapp"/>
       </shortcut>
+      
+      <!-- GWT Compiler -->
+      <shortcut
+            label="GWT Compiler"
+            description="GWT Compile source"
+            path="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebApp/devModeGroup"
+            class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.CompilerLaunchShortcut"
+            icon="icons/gwt_compiler_16x16.png"
+            id="com.gwtplugins.gdt.eclipse.suite.launch.ui.compilerShortcut"
+            modes="run, debug">
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+                  <count value= "1"/>
+                     <iterate>
+                        <test property="com.gwtplugins.gdt.eclipse.suite.isGwtLaunchTarget"/>
+                     </iterate>
+               </with>
+            </enablement>
+         </contextualLaunch>
+         <description
+               description="Runs GWT Compiler"
+               mode="run" />
+         <description
+               description="Debugs GWT Compiler"
+               mode="debug" />
+         <configurationType
+               id="com.gwtplugins.gwt.eclipse.core.compiler"/>
+      </shortcut>
    </extension>  
    
    <extension
