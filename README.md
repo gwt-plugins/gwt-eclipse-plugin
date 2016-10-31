@@ -1,7 +1,7 @@
 #GWT Eclipse Plugin
 This repository houses the source for the GWT Eclipse Plugin. 
 
-## Thanks Sponsors
+## Thanks to our Sponsors
 Sponsors that provide man power and equipment to help get the job done. 
 
 ### Google
