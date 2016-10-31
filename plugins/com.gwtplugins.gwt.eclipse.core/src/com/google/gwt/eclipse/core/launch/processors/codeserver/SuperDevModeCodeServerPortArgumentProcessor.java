@@ -18,6 +18,7 @@ import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.launch.GWTLaunchAttributes;
 import com.google.gwt.eclipse.core.launch.GWTLaunchConfigurationWorkingCopy;
+import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 
 import org.eclipse.core.runtime.CoreException;
@@ -81,6 +82,11 @@ public class SuperDevModeCodeServerPortArgumentProcessor implements ILaunchConfi
       List<String> programArgs, List<String> vmArgs) throws CoreException {
     // only gwt projects use -codeServerPort
     if (!GWTNature.isGWTProject(javaProject.getProject())) {
+      return;
+    }
+
+    // No compiler arg processing
+    if (GwtLaunchConfigurationProcessorUtilities.isCompiler(launchConfig)) {
       return;
     }
 

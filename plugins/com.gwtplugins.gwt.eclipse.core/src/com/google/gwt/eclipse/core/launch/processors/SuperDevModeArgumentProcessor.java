@@ -67,6 +67,11 @@ public class SuperDevModeArgumentProcessor implements ILaunchConfigurationProces
       return;
     }
 
+    // No compiler arg processing
+    if (GwtLaunchConfigurationProcessorUtilities.isCompiler(launchConfig)) {
+      return;
+    }
+
     String gwtVersion = GwtVersionUtil.getProjectGwtVersion(javaProject);
     boolean superDevModeEnabled =
         GWTLaunchConfigurationWorkingCopy.getSuperDevModeEnabled(launchConfig);

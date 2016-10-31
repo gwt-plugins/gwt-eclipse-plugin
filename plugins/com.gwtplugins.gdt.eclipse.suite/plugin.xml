@@ -48,6 +48,7 @@
       </launchConfigurationTypeImage>
    </extension>
 
+   <!-- Launcher: GWT Dev Mode (DevMode) -->
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
@@ -66,7 +67,7 @@
          </launchMode>
       </launchConfigurationTabGroup>
       
-      <!-- GWT SDM Code Server -->
+      <!-- Launcher: GWT Dev Mode (CodeServer) -->
       <launchConfigurationTabGroup
             class="com.google.gdt.eclipse.suite.launch.ui.tab_groups.GwtSuperDevModeCodeServerTabGroup"
             id="com.gwtplugins.gwt.eclipse.core.launch.gwtSdmCodeServerTabGroup"
@@ -79,6 +80,23 @@
          </launchMode>
          <launchMode
                description="Run a GWT application with any server or device using the CodeServer"
+               mode="run">
+         </launchMode>
+      </launchConfigurationTabGroup>
+      
+      <!-- Launcher: GWT Compiler -->
+      <launchConfigurationTabGroup
+            class="com.google.gdt.eclipse.suite.launch.ui.tab_groups.GwtCompilerTabGroup"
+            id="com.gwtplugins.gwt.eclipse.core.launch.gwtCompilerTabGroup"
+            type="com.gwtplugins.gwt.eclipse.core.compiler" 
+            description="Compile GWT Source">
+         <launchMode
+               description="Debug GWT compiler"
+               mode="debug"
+               perspective="org.eclipse.debug.ui.DebugPerspective">
+         </launchMode>
+         <launchMode
+               description="Run GWT compiler"
                mode="run">
          </launchMode>
       </launchConfigurationTabGroup>

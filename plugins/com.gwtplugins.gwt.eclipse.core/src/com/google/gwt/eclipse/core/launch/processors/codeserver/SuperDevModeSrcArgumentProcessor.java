@@ -59,6 +59,11 @@ public class SuperDevModeSrcArgumentProcessor implements ILaunchConfigurationPro
       return;
     }
 
+    // No compiler arg processing
+    if (GwtLaunchConfigurationProcessorUtilities.isCompiler(launchConfig)) {
+      return;
+    }
+
     int srcArgIndex = getArgIndex(programArgs);
 
     // Prefer the existing value, fallback on the precanned one

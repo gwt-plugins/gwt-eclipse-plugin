@@ -42,16 +42,38 @@ import java.util.List;
 public class MainTypeProcessor implements ILaunchConfigurationProcessor {
 
   /**
+   * GWT >= 2.0
+   */
+  public static boolean isDevMode(ILaunchConfiguration config) throws CoreException {
+    String mainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
+    return MainType.GWT_DEV_MODE.equals(mainTypeName);
+  }
+
+  /**
+   * GWT >= 2.7
+   */
+  public static boolean isSuperDevModeCodeServer(ILaunchConfiguration config) throws CoreException {
+    String mainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
+    return MainType.GWT_CODE_SERVER.equals(mainTypeName);
+  }
+
+  /**
+   * GWT All
+   */
+  public static boolean isCompiler(ILaunchConfiguration config) throws CoreException {
+    String mainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
+    return MainType.GWT_COMPILER.equals(mainTypeName);
+  }
+
+  /**
    * Possible main types for a launch configuration.
    *
-   * TODO duplicated in GwtLaunchConfigurationProcessorUtilities
+   * Duplicated in GwtLaunchConfigurationProcessorUtilities to prevent circular classpath
    */
   public enum MainType {
-    /**
-     * GWT 2.0+
-     */
     GWT_DEV_MODE("com.google.gwt.dev.DevMode"),
-    GWT_CODE_SERVER("com.google.gwt.dev.codeserver.CodeServer");
+    GWT_CODE_SERVER("com.google.gwt.dev.codeserver.CodeServer"),
+    GWT_COMPILER("com.google.gwt.dev.Compiler");
 
     public final String mainTypeName;
 

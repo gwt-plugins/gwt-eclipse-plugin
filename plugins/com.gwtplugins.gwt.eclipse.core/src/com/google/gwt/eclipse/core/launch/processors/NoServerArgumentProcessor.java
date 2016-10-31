@@ -41,6 +41,11 @@ public class NoServerArgumentProcessor implements ILaunchConfigurationProcessor 
   @Override
   public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject,
       List<String> programArgs, List<String> vmArgs) throws CoreException {
+    // No compiler arg processing
+    if (GwtLaunchConfigurationProcessorUtilities.isCompiler(launchConfig)) {
+      return;
+    }
+
     IProject project = javaProject.getProject();
     int noServerArgIndex = programArgs.indexOf(ARG_NO_SERVER);
 

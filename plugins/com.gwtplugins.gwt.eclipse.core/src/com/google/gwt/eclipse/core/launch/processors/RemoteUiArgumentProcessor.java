@@ -76,6 +76,11 @@ public class RemoteUiArgumentProcessor implements ILaunchConfigurationProcessor 
       return;
     }
 
+    // No compiler arg processing
+    if (GwtLaunchConfigurationProcessorUtilities.isCompiler(launchConfig)) {
+      return;
+    }
+
     int index = programArgs.indexOf(ARG_REMOTE_UI);
 
     // Prefer the existing value, fallback on the precanned one

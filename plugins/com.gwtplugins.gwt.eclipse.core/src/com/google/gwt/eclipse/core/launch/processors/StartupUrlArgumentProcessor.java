@@ -205,6 +205,10 @@ public class StartupUrlArgumentProcessor implements
   public void update(ILaunchConfigurationWorkingCopy launchConfig,
       IJavaProject javaProject, List<String> programArgs, List<String> vmArgs)
       throws CoreException {
+    // No compiler arg processing
+    if (GwtLaunchConfigurationProcessorUtilities.isCompiler(launchConfig)) {
+      return;
+    }
 
     String persistedStartupUrl = GWTLaunchConfiguration.getStartupUrl(launchConfig);
 
