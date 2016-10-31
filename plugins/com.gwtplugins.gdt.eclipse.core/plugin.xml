@@ -75,9 +75,7 @@
             class="com.google.gdt.eclipse.core.console.CustomMessageConsole$ConsolePageParticipant"
             id="com.gwtplugins.gdt.eclipse.core.console.customMessageConsoleConsolePageParticipant">
          <enablement>
-            <instanceof
-                  value="com.google.gdt.eclipse.core.console.CustomMessageConsole">
-            </instanceof>
+            
          </enablement>
       </consolePageParticipant>
    </extension>
@@ -95,4 +93,5 @@
          </action>
       </actionSet>
    </extension>
+   
 </plugin>

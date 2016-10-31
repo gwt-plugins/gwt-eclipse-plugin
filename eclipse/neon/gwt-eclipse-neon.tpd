@@ -59,3 +59,7 @@ location "http://download.eclipse.org/tools/orbit/downloads/drops/R2016052021185
 location "https://storage.googleapis.com/gcloud-for-eclipse-testing/" {
 	com.google.cloud.tools.eclipse.suite.e45.feature.feature.group
 }
+
+location "http://sdbg.github.io/p2/" {
+	com.github.sdbg.feature.feature.group	
+}
