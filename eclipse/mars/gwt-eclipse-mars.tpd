@@ -41,8 +41,24 @@ location "http://download.eclipse.org/webtools/repository/mars/" {
     org.eclipse.wst.common.fproj.sdk.feature.group
     org.eclipse.wst.web_sdk.feature.feature.group
     org.eclipse.wst.server_adapters.sdk.feature.feature.group
+    
+    org.eclipse.jst.enterprise_ui.feature.feature.group
+    org.eclipse.jst.web_ui.feature.feature.group
+    org.eclipse.wst.web_ui.feature.feature.group
+    org.eclipse.jst.server_adapters.feature.feature.group
+    org.eclipse.jst.server_adapters.ext.feature.feature.group
+    org.eclipse.jst.server_ui.feature.feature.group
+    org.eclipse.wst.server_adapters.feature.feature.group
 }
 
 location "http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/" {
 	org.hamcrest
+}
+
+location "https://storage.googleapis.com/gcloud-for-eclipse-testing/" {
+	com.google.cloud.tools.eclipse.suite.e45.feature.feature.group
+}
+
+location "http://sdbg.github.io/p2/" {
+	com.github.sdbg.feature.feature.group	
 }

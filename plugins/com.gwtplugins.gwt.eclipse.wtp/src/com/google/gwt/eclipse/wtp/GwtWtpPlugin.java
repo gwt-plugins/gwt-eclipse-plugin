@@ -14,25 +14,17 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.wtp;
 
-import com.google.gwt.eclipse.core.launch.GWTLaunchConstants;
-import com.google.gwt.eclipse.core.launch.GwtSuperDevModeLaunchConfiguration;
-import com.google.gwt.eclipse.core.launch.util.GwtSuperDevModeCodeServerLaunchUtil;
-import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
-import com.google.gwt.eclipse.oophm.model.LaunchConfiguration;
-import com.google.gwt.eclipse.oophm.model.WebAppDebugModel;
-import com.google.gwt.eclipse.wtp.utils.GwtFacetUtils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugPlugin;
@@ -45,7 +37,6 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.IStreamListener;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IStreamMonitor;
-import org.eclipse.debug.core.model.RuntimeProcess;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
@@ -53,29 +44,31 @@ import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.IServer;
 import org.eclipse.wst.server.core.IServerListener;
 import org.eclipse.wst.server.core.ServerEvent;
-import org.eclipse.wst.server.core.ServerPort;
 import org.eclipse.wst.server.core.ServerUtil;
 import org.eclipse.wst.server.core.internal.IModulePublishHelper;
 import org.eclipse.wst.server.core.model.IURLProvider;
 import org.osgi.framework.BundleContext;
 
+import com.google.gwt.eclipse.core.launch.GWTLaunchConstants;
+import com.google.gwt.eclipse.core.launch.GwtSuperDevModeLaunchConfiguration;
+import com.google.gwt.eclipse.core.launch.util.GwtSuperDevModeCodeServerLaunchUtil;
+import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
+import com.google.gwt.eclipse.oophm.model.LaunchConfiguration;
+import com.google.gwt.eclipse.oophm.model.WebAppDebugModel;
+import com.google.gwt.eclipse.wtp.utils.GwtFacetUtils;
+
 /**
  * GWT WTP plug-in life-cycle.
  * 
- * TODO extract process listening TODO after sdm compile, publish bits. Either override CodeServer
- * or proxy the web server requests to CodeServer.
  * 
- * Note: For now, this will sync the code server with web server runtime, but won't figure out the
- * launcher directory. IPath deployPath = server.getModuleDeployDirectory(modules[0]);
- * 
+ * This will start/stop the code server with web server runtime, but won't figure out the launcher directory. <br/>
+ * IPath deployPath = server.getModuleDeployDirectory(modules[0]);
  */
 public final class GwtWtpPlugin extends AbstractUIPlugin {
 
   public static final String PLUGIN_ID = "com.gwtplugins.gwt.eclipse.wtp";
 
-
   private static GwtWtpPlugin INSTANCE;
-  private static final String LOCAL_URL = "http://%s:%s";
   private static HashSet<String[]> commandsToExecuteAtExit = new HashSet<String[]>();
   private static List<String> launchUrls = new ArrayList<String>();
 
@@ -107,14 +100,14 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     logError(null, e);
   }
 
-  private IDebugEventSetListener processListener;
-  private IStreamListener consoleStreamListener;
+  private IDebugEventSetListener serverProcessListener;
 
   /**
-   * Observe the console to notify SDM has launched
+   * Observe the CodeServer console output
    */
-  private IStreamMonitor streamMonitor;
-  
+  private IStreamListener consoleStreamListenerCodeServer;
+  private IStreamMonitor streamMonitorCodeServer;
+
   private IServerListener serverListener;
   private DebugEvent debugEvent;
   private boolean startedCodeServer;
@@ -131,23 +124,24 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
   public void start(BundleContext context) throws Exception {
     super.start(context);
 
-    // Observe launch events, that are for the WTP server
-    processListener = new IDebugEventSetListener() {
+    // Observe launch events that are from the WTP server
+    serverProcessListener = new IDebugEventSetListener() {
       @Override
       public void handleDebugEvents(DebugEvent[] events) {
         if (events != null) {
-          processProcessorEvents(events);
+          onDebugEvents(events);
         }
       }
     };
-    DebugPlugin.getDefault().addDebugEventListener(processListener);
+    DebugPlugin.getDefault().addDebugEventListener(serverProcessListener);
   }
 
-  protected void processProcessorEvents(DebugEvent[] events) {
+  protected void onDebugEvents(DebugEvent[] events) {
     for (int i = 0; i < events.length; i++) {
       try {
-        processLauncherEvent(events[i]);
+        onDebugEvent(events[i]);
       } catch (CoreException e) {
+        logError("Error processing debug events " + e.getMessage());
         e.printStackTrace();
       }
     }
@@ -156,7 +150,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
   /**
    * Start or stop processes automatically. Start or stop the CodeServer.
    */
-  private void processLauncherEvent(DebugEvent event) throws CoreException {
+  private void onDebugEvent(DebugEvent event) throws CoreException {
     if (!(event.getSource() instanceof IProcess)) {
       return;
     }
@@ -173,23 +167,20 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     ILaunchConfigurationType sdmCodeServerType = launchManager
         .getLaunchConfigurationType(GwtSuperDevModeLaunchConfiguration.TYPE_ID);
 
-    // CodeServer Start/Stop
     if (launchConfig.getType().equals(sdmCodeServerType)) {
       if (event.getKind() == DebugEvent.CREATE) {
-        // CodeServer Start: Observe the console for SDM launching
-        processSdmCodeServerLauncher(event);
+        onAfterCodeServerStarted(event);
       } else if (event.getKind() == DebugEvent.TERMINATE) {
-        // CodeServer Stop: Observe the console for SDM terminating
-        processSdmCodeServerTerminate(event);
+        onAfterCodeServerTerminated(event);
       }
     }
 
-    // pass along the event to server started. 
+    // pass along the event to server started.
     if (server != null && server.getServerState() == IServer.STATE_STARTING) {
       debugEvent = event;
       startedCodeServer = false; // safety reset
     }
-    
+
     // WTP Server Start/Stop
     if (server != null && serverListener == null) { // listen for server started. It throws two events...
       serverListener = new IServerListener() {
@@ -197,38 +188,43 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
         public void serverChanged(ServerEvent event) {
           if (event.getState() == IServer.STATE_STARTED && !startedCodeServer) {
             startedCodeServer = true;
-            possiblyLaunchGwtSuperDevModeCodeServer(debugEvent); // TODO rewrite so it can use the
-                                                                 // ServerEvent?
+            onServerStarted(debugEvent);
           }
         }
       };
       server.addServerListener(serverListener);
     }
 
-    if (server != null && server.getServerState() == IServer.STATE_STOPPING
-        && event.getKind() == DebugEvent.TERMINATE) {
+    if (server != null
+        && (server.getServerState() == IServer.STATE_STOPPING || server.getServerState() == IServer.STATE_STOPPED)) {
       // Server Stop: Delineate event for Server Launching and then possibly terminate SDM
-      possiblyTerminateLaunchConfiguration(event);
+      onServerStopped(event);
       serverListener = null;
       startedCodeServer = false;
+
+      onAfterWebServerTerminated(event);
     }
   }
 
-  private void processSdmCodeServerTerminate(DebugEvent event) {
-    if (streamMonitor == null) {
+  private void onAfterCodeServerTerminated(DebugEvent event) {
+    if (streamMonitorCodeServer == null) {
       return;
     }
-    streamMonitor.removeListener(consoleStreamListener);
+    streamMonitorCodeServer.removeListener(consoleStreamListenerCodeServer);
   }
 
-  private void processSdmCodeServerLauncher(DebugEvent event) {
-    RuntimeProcess runtimeProcess = (RuntimeProcess) event.getSource();
+  private void onAfterCodeServerStarted(DebugEvent event) {
+    if (!(event.getSource() instanceof IProcess)) {
+      return;
+    }
+
+    IProcess runtimeProcess = (IProcess) event.getSource();
     final ILaunch launch = runtimeProcess.getLaunch();
     IProcess[] processes = launch.getProcesses();
     final IProcess process = processes[0];
 
     // Look for the links in the sdm console output
-    consoleStreamListener = new IStreamListener() {
+    consoleStreamListenerCodeServer = new IStreamListener() {
       @Override
       public void streamAppended(String text, IStreamMonitor monitor) {
         displayCodeServerUrlInDevMode(launch, text);
@@ -236,71 +232,20 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     };
 
     // Listen to Console output
-    streamMonitor = process.getStreamsProxy().getOutputStreamMonitor();
-    streamMonitor.addListener(consoleStreamListener);
+    streamMonitorCodeServer = process.getStreamsProxy().getOutputStreamMonitor();
+    streamMonitorCodeServer.addListener(consoleStreamListenerCodeServer);
   }
 
-  private void addServerUrlsToDevModeView(ILaunch launch) {
-    IServer server = getServerFromLaunchConfig(launch);
-    if (server == null) {
-      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: No WTP server found.");
-      return;
-    }
-
-    IModule[] modules = server.getModules();
-    if (modules == null || modules.length == 0) {
-      return;
-    }
-
-    IModule rootMod = modules[0];
-    if (rootMod == null) {
-      return;
-    }
-
-    // First clear the previous urls, before adding new ones
-    launchUrls.clear();
-
-    // TODO: use IURLProvider/IURLProvider2
-    String host = server.getHost();
-    ServerPort[] ports = null;
-    try {
-      ports = server.getServerPorts(new NullProgressMonitor());
-    } catch (Exception e1) {
-    }
-
-    // Add server urls to DevModeViewer
-    if (ports != null) {
-      for (ServerPort port : ports) {
-        String baseUrl = String.format(LOCAL_URL, host, port.getPort());
-        String path = getPath(server, rootMod);
-        String fullUrl = baseUrl + path;
-        launchUrls.add(fullUrl);
-      }
-    }
-
-    // TODO extract, consider a plugin that does this, that adds the appengine dashboard url
-    // TODO or possibly do a extension query
-    // Add App Engine url to DevModeView
-    // See OpenLocalAdminConsoleHandler
-
-    // TODO fix
-    // if (server.getName().contains("Google")) {
-    // GaeServer gaeServer = GaeServer.getGaeServer(server);
-    // String gaeHost = server.getHost();
-    // ServerPort gaePort = gaeServer.getMainPort();
-    // String gaeUrl = String.format("http://%s:%s/_ah/admin", gaeHost, gaePort.getPort());
-    // launchUrls.add(gaeUrl);
-    // }
+  private void onAfterWebServerTerminated(DebugEvent event) {
+    // nothing at the moment
   }
 
-  private String getPath(IServer server, IModule rootMod) {
-    URL url = ((IURLProvider) server.loadAdapter(IURLProvider.class, null)).getModuleRootURL(rootMod);
-    String surl = "";
-    try {
-      surl = url.toURI().getPath().toString();
-    } catch (URISyntaxException e) {
+  private void onAfterWebServerStarted(DebugEvent event) {
+    if (!(event.getSource() instanceof IProcess)) {
+      return;
     }
-    return surl;
+
+    // nothing at the moment
   }
 
   private void displayCodeServerUrlInDevMode(final ILaunch launch, String text) {
@@ -336,11 +281,58 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     return server;
   }
 
-  protected void possiblyTerminateLaunchConfiguration(DebugEvent event) {
+  private void addServerUrlsToDevModeView(ILaunch launch) {
+    IServer server = getServerFromLaunchConfig(launch);
+    if (server == null) {
+      logMessage("posiblyLaunchGwtSuperDevModeCodeServer: No WTP server found.");
+      return;
+    }
+
+    IModule[] modules = server.getModules();
+    if (modules == null || modules.length == 0) {
+      return;
+    }
+
+    IModule rootMod = modules[0];
+    if (rootMod == null) {
+      return;
+    }
+
+    // First clear the previous urls, before adding new ones
+    launchUrls.clear();
+
+    String url = getServerUrl(server, rootMod);
+    if (url != null) {
+      launchUrls.add(url);
+    }
+  }
+
+  private String getServerUrl(IServer server, IModule rootMod) {
+    if (server == null || rootMod == null) {
+      return null;
+    }
+    
+    IURLProvider urlProvider = (IURLProvider) server.loadAdapter(IURLProvider.class, null);
+    if (urlProvider == null) {
+      return null;
+    }
+    
+    URL url = urlProvider.getModuleRootURL(rootMod);
+    if (url == null) {
+      return null;
+    }
+    return url.toString();
+  }
+
+  protected void onServerStopped(DebugEvent event) {
     logMessage("posiblyTerminateGwtSuperDevModeCodeServer: Stopping GWT Super Dev Mode Code Server.");
 
-    RuntimeProcess serverRuntimeProcess = (RuntimeProcess) event.getSource();
-    ILaunch serverLaunch = serverRuntimeProcess.getLaunch();
+    if (!(event.getSource() instanceof IProcess)) {
+      return;
+    }
+
+    IProcess runtimeProcess = (IProcess) event.getSource();
+    ILaunch serverLaunch = runtimeProcess.getLaunch();
     ILaunchConfiguration launchConfig = serverLaunch.getLaunchConfiguration();
 
     IServer server = null;
@@ -380,6 +372,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       serverType = serverLaunchConfig.getType();
     } catch (CoreException e) {
       logError("possiblyRemoveLaunchConfiguration: Could not retrieve the launch config type.", e);
+      return;
     }
 
     String serverLaunchId;
@@ -387,6 +380,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       serverLaunchId = serverLaunchConfig.getAttribute(GWTLaunchConstants.SUPERDEVMODE_LAUNCH_ID, "NoId");
     } catch (CoreException e1) {
       serverLaunchId = "NoId";
+      return;
     }
 
     try {
@@ -443,10 +437,14 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
   /**
    * Possibly start the GWT Super Dev Mode CodeServer. <br/>
    * <br/>
-   * This starts as separate process, which allows for custom args modification. It adds a launcher id to both processes
-   * for reference. 1. Get it from classic launch config 2. Get it from server VM properties
+   * This starts as separate process, which allows for custom args modification. <br/>
+   * It adds a launcher id to both processes for reference. <br/>
+   * 1. Get it from classic launch config <br/>
+   * 2. Get it from server VM properties <br/>
    */
-  protected void possiblyLaunchGwtSuperDevModeCodeServer(DebugEvent event) {
+  protected void onServerStarted(DebugEvent event) {
+    onAfterWebServerStarted(event);
+
     IProcess runtimeProcess = (IProcess) event.getSource();
     ILaunch launch = runtimeProcess.getLaunch();
     ILaunchConfiguration launchConfig = launch.getLaunchConfiguration();
@@ -475,8 +473,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
 
     // Sync Option - the sync is off, ignore stopping the server
     if (!GWTProjectProperties.getFacetSyncCodeServer(gwtFacetedProject.getProject())) {
-      logMessage(
-          "possiblyLaunchGwtSuperDevModeCodeServer: GWT Facet project properties, the code server sync is off.");
+      logMessage("possiblyLaunchGwtSuperDevModeCodeServer: GWT Facet project properties, the code server sync is off.");
       return;
     }
 
@@ -488,8 +485,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     // LauncherId used to reference and terminate the the process
     String launcherId = setLauncherIdToWtpRunTimeLaunchConfig(launchConfig);
 
-    logMessage(
-        "possiblyLaunchGwtSuperDevModeCodeServer: Launching GWT Super Dev Mode CodeServer. launcherId="
+    logMessage("possiblyLaunchGwtSuperDevModeCodeServer: Launching GWT Super Dev Mode CodeServer. launcherId="
         + launcherId + " launcherDir=" + launcherDir);
 
     // Just in case
@@ -501,7 +497,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     if (launcherId == null) { // ids to link two processes together
       logMessage("possiblyLaunchGwtSuperDevModeCodeServer: No launcherId.");
     }
-
+    
     // Add server urls to DevMode view for easy clicking on
     addServerUrlsToDevModeView(launch);
 
@@ -510,8 +506,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
   }
 
   /**
-   * TODO find a generic method to get the server publish/deploy path. TODO or put bits into a directory and use
-   * PublishHelper
+   * Return the launcher directory path.
    * 
    * The -launcherDir war/output/path is the war deployment directory
    * 
@@ -524,20 +519,28 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
       IFacetedProject gwtFacetedProject) {
     String launcherDir = null;
 
-    for (IModule module : server.getModules()) {
-      if (module.getProject() == gwtFacetedProject.getProject()) {
-        IPath path = null;
-        if (server instanceof IModulePublishHelper) {
-          path = ((IModulePublishHelper) server).getPublishDirectory(new IModule[] {module});
-        } else {
-          IModulePublishHelper helper = server.getAdapter(IModulePublishHelper.class);
-          if (helper != null) {
-            path = helper.getPublishDirectory(new IModule[] {module});
-          }
+    // The root module will be the server module
+    // The root module may have children such as, client, shared
+    // The root module may not have any children
+    IModule[] modules = server.getModules();
+    for (IModule module : modules) {
+      IPath path = null;
+      if (server instanceof IModulePublishHelper) {
+        path = ((IModulePublishHelper) server).getPublishDirectory(new IModule[] { module });
+      } else {
+        IModulePublishHelper helper = server.getAdapter(IModulePublishHelper.class);
+        if (helper != null) {
+          path = helper.getPublishDirectory(new IModule[] { module });
         }
-        return path == null ? null : path.toOSString();
+      }
+      // example:
+      // /Users/branflake2267/Documents/runtime-EclipseApplication/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/broyer-sandbox-server
+      launcherDir = path == null ? null : path.toOSString();
+      if (launcherDir != null) {
+        return launcherDir;
       }
     }
+
     // Get the the war output path from classic launch configuration working directory
     // Also used GaeServerBehaviour.setupLaunchConfig(...)
     try {
@@ -552,7 +555,7 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
 
   @Override
   public void stop(BundleContext v) throws Exception {
-    DebugPlugin.getDefault().removeDebugEventListener(processListener);
+    DebugPlugin.getDefault().removeDebugEventListener(serverProcessListener);
 
     for (String[] command : commandsToExecuteAtExit) {
       try {
