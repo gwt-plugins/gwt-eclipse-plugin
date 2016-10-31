@@ -21,7 +21,9 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -50,8 +52,13 @@ public class CompilerBlock extends Composite {
 
   private IUpdateLaunchConfig updateLaunchConfigHandler;
 
-  public CompilerBlock(Composite parent, int style) {
-    super(parent, style);
+  public CompilerBlock(Composite root, int style) {
+    super(root, style);
+
+    setLayout(new FillLayout(SWT.HORIZONTAL));
+
+    Composite parent = new Composite(this, SWT.NONE);
+    parent.setLayout(new GridLayout(1, false));
 
     groupDevMode = SWTFactory.createGroup(parent, GROUP_COMPILER_TITLE, 2, 1, GridData.FILL_HORIZONTAL);
 
