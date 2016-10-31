@@ -86,8 +86,8 @@ import java.util.List;
  * For webapp launch configuration, tab where you specify GWT options.
  */
 @SuppressWarnings("restriction")
-public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsContainer.ArgumentsListener,
-    UpdateLaunchConfigurationDialogBatcher.Listener {
+public class GWTSettingsTab extends JavaLaunchTab
+    implements ILaunchArgumentsContainer.ArgumentsListener, UpdateLaunchConfigurationDialogBatcher.Listener {
 
   /**
    * A factory that returns a GWT settings tab bound to an arguments tab.
@@ -193,7 +193,8 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
 
       // Dev Mode code server port
       GWTLaunchConfigurationWorkingCopy.setClassicDevModeCodeServerPort(configuration, getDevModeCodeServerPort());
-      GWTLaunchConfigurationWorkingCopy.setClassicDevModeCodeServerPortAuto(configuration, getDevModeCodeServerPortAuto());
+      GWTLaunchConfigurationWorkingCopy.setClassicDevModeCodeServerPortAuto(configuration,
+          getDevModeCodeServerPortAuto());
       LaunchConfigurationProcessorUtilities.updateViaProcessor(new DevModeCodeServerPortArgumentProcessor(),
           configuration);
     }
@@ -303,8 +304,7 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
 
       // Logic for determining Super Dev Mode is retrieved form working copy in
       // processors. So saving the Super Dev enabled here decouples processors.
-      // TODO refer to updateArgumentProcessors todo about
-      // LaunchCOnfigurationUpdater.
+      // TODO refer to updateArgumentProcessors todo about LaunchCOnfigurationUpdater.
       try {
         configuration.doSave();
       } catch (CoreException e) {
@@ -386,8 +386,8 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
           try {
             IJavaProject javaProject = getJavaProject();
             if (javaProject == null) {
-              MessageDialog.openError(Workbench.getInstance().getActiveWorkbenchWindow().getShell(),
-                  "No project found", "Please make sure that this launch configuration has a valid project assigned.");
+              MessageDialog.openError(Workbench.getInstance().getActiveWorkbenchWindow().getShell(), "No project found",
+                  "Please make sure that this launch configuration has a valid project assigned.");
               return;
             }
 
@@ -423,7 +423,10 @@ public class GWTSettingsTab extends JavaLaunchTab implements ILaunchArgumentsCon
     public void initializeFrom(ILaunchConfiguration config) throws CoreException {
       boolean hasNoServerArg =
           NoServerArgumentProcessor.hasNoServerArg(LaunchConfigurationProcessorUtilities.parseProgramArgs(config));
-      boolean showStartupUrl =  false; // TODO remove GwtLaunchConfigurationProcessorUtilities.isGwtShell(config) || GwtLaunchConfigurationProcessorUtilities.isHostedMode(config) || (GwtLaunchConfigurationProcessorUtilities.isDevMode(config) && hasNoServerArg);
+      boolean showStartupUrl = false; // TODO remove GwtLaunchConfigurationProcessorUtilities.isGwtShell(config)
+                                      // || GwtLaunchConfigurationProcessorUtilities.isHostedMode(config)
+                                      // || (GwtLaunchConfigurationProcessorUtilities.isDevMode(config)
+                                      // && hasNoServerArg);
       GridData layoutData = (GridData) browserGroup.getLayoutData();
       layoutData.exclude = !showStartupUrl;
       browserGroup.setVisible(showStartupUrl);

@@ -86,6 +86,11 @@ public class DevModeCodeServerPortArgumentProcessor implements ILaunchConfigurat
       return;
     }
 
+    // No compiler arg processing
+    if (GwtLaunchConfigurationProcessorUtilities.isCompiler(launchConfig)) {
+      return;
+    }
+
     int index = getArgIndex(programArgs);
 
     // Only run with the DevMode entrypoint and not the CodeServer entrypoint

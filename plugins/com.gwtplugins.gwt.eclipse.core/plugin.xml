@@ -257,6 +257,17 @@
             modes="run, debug"
             sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
             sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
+            
+      <!-- Compiler Launcher--> 
+      <launchConfigurationType
+            name="GWT Compiler"
+            delegateName="GWT Compiler"
+            delegateDescription="Compiles the GWT source"
+            delegate="com.google.gwt.eclipse.core.launch.GwtCompilerDelegate"
+            id="com.gwtplugins.gwt.eclipse.core.compiler"
+            modes="run, debug"
+            sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
+            sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
    </extension>
 
    <extension
@@ -267,7 +278,14 @@
             configTypeID="com.gwtplugins.gwt.eclipse.core.sdmCodeServer"
             icon="icons/gwt_codeserver_16x16.png"
             id="com.gwtplugins.gwt.eclipse.core.sdmCodeServerImage">
-       </launchConfigurationTypeImage>
+      </launchConfigurationTypeImage>
+       
+       <!-- GWT Compiler -->
+      <launchConfigurationTypeImage
+            configTypeID="com.gwtplugins.gwt.eclipse.core.compiler"
+            icon="icons/gwt_compiler_16x16.png"
+            id="com.gwtplugins.gwt.eclipse.core.compilerImage">
+      </launchConfigurationTypeImage>
        
       <!-- GWT Junit -->
       <launchConfigurationTypeImage

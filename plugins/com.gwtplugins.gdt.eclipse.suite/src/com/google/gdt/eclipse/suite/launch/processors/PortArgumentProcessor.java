@@ -18,6 +18,7 @@ import com.google.gdt.eclipse.core.StringUtilities;
 import com.google.gdt.eclipse.core.launch.ILaunchConfigurationProcessor;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.core.launch.WebAppLaunchConfigurationWorkingCopy;
+import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.launch.processors.NoServerArgumentProcessor;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 
@@ -169,6 +170,10 @@ public class PortArgumentProcessor implements ILaunchConfigurationProcessor {
   @Override
   public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject, List<String> programArgs,
       List<String> vmArgs) throws CoreException {
+    // No compiler arg processing
+    if (GwtLaunchConfigurationProcessorUtilities.isCompiler(launchConfig)) {
+      return;
+    }
 
     boolean isAuto = WebAppLaunchConfigurationWorkingCopy.getAutoPortSelection(launchConfig);
     String port = WebAppLaunchConfigurationWorkingCopy.getServerPort(launchConfig);

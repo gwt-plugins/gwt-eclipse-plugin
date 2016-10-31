@@ -353,7 +353,7 @@ public abstract class GwtSdk extends AbstractSdk {
 
     private IClasspathEntry findGwtCodeServerClasspathEntry() throws JavaModelException {
       IClasspathEntry entry = ClasspathUtilities.findRawClasspathEntryFor(javaProject,
-          GwtLaunchConfigurationProcessorUtilities.SUPERDEVMODE_CODESERVER_MAIN_TYPE);
+          GwtLaunchConfigurationProcessorUtilities.GWT_CODE_SERVER);
       return entry;
     }
 

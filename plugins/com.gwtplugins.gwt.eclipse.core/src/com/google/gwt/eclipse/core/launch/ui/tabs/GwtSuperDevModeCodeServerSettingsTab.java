@@ -101,7 +101,7 @@ public class GwtSuperDevModeCodeServerSettingsTab extends JavaLaunchTab implemen
    * {@link ILaunchConfiguration}.
    */
   protected class SdmModeBlock {
-    private static final String GROUP_DEVMODE_TITLE = "Super Dev Mode Mode";
+    private static final String GROUP_DEVMODE_TITLE = "Super Development Mode";
 
     private final Group groupDevMode;
     private final ComboViewer logLevelComboViewer;

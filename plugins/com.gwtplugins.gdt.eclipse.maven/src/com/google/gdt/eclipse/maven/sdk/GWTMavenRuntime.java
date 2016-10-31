@@ -231,7 +231,7 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
    */
   private IClasspathEntry findGwtCodeServerClasspathEntry() throws JavaModelException {
     IType type =
-        javaProject.findType(GwtLaunchConfigurationProcessorUtilities.SUPERDEVMODE_CODESERVER_MAIN_TYPE);
+        javaProject.findType(GwtLaunchConfigurationProcessorUtilities.GWT_CODE_SERVER);
     if (type == null) {
       return null;
     }

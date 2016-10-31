@@ -141,6 +141,7 @@ public class GWTPlugin extends AbstractGwtPlugin {
 
     reg.put(GWTImages.GWT_ICON, imageDescriptorFromPath("icons/gwt_16x16.png"));
     reg.put(GWTImages.GWT_ICON_CODESERVER, imageDescriptorFromPath("icons/gwt_codeserver_16x16.png"));
+    reg.put(GWTImages.GWT_ICON_COMPILER, imageDescriptorFromPath("icons/gwt_compiler_16x16.png"));
 
     reg.put(GWTImages.GWT_LOGO, imageDescriptorFromPath("icons/gwt_75x46.png"));
     reg.put(GWTImages.JAVA_ICON, imageDescriptorFromPath("icons/jcu_obj.gif"));

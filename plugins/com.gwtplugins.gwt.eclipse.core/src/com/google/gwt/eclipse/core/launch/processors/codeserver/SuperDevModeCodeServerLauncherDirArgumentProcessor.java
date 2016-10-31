@@ -50,6 +50,11 @@ public class SuperDevModeCodeServerLauncherDirArgumentProcessor implements ILaun
       return;
     }
 
+    // No compiler arg processing
+    if (GwtLaunchConfigurationProcessorUtilities.isCompiler(launchConfig)) {
+      return;
+    }
+
     // Only GWT projects with SDM mode CodeServer main type
     if (!GwtLaunchConfigurationProcessorUtilities.isSuperDevModeCodeServer(launchConfig)) {
       return;

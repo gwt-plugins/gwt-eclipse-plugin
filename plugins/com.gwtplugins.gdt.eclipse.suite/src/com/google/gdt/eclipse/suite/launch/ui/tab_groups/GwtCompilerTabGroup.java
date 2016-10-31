@@ -14,15 +14,12 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.launch.ui.tab_groups;
 
-import com.google.gdt.eclipse.core.extensions.ExtensionQuery;
 import com.google.gdt.eclipse.platform.debug.ui.CommonTab;
 import com.google.gdt.eclipse.suite.launch.ui.tabs.WebAppArgumentsTab;
 import com.google.gdt.eclipse.suite.launch.ui.tabs.WebAppMainTab;
-import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.launch.GWTLaunchConfigurationWorkingCopy;
 import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
-import com.google.gwt.eclipse.core.launch.ui.tabs.GwtSuperDevModeCodeServerSettingsTab;
-import com.google.gwt.eclipse.core.launch.ui.tabs.GwtSuperDevModeCodeServerSettingsTab.IGWTSettingsTabFactory;
+import com.google.gwt.eclipse.core.launch.ui.tabs.GwtCompilerSettingsTab;
 import com.google.gwt.eclipse.core.launch.util.GwtSuperDevModeCodeServerLaunchUtil;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -39,15 +36,13 @@ import org.eclipse.jdt.debug.ui.launchConfigurations.JavaClasspathTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaJRETab;
 import org.eclipse.ui.progress.WorkbenchJob;
 
-import java.util.List;
-
 /**
  * Tabs on the launch configuration for web apps.
  */
-public class GwtSuperDevModeCodeServerTabGroup extends AbstractLaunchConfigurationTabGroup {
+public class GwtCompilerTabGroup extends AbstractLaunchConfigurationTabGroup {
 
   public interface IGwtSdmTabFactory {
-    GwtSuperDevModeCodeServerTabGroup newInstance();
+    GwtCompilerTabGroup newInstance();
   }
 
   private ILaunchConfigurationDialog launchConfigurationDialog;
@@ -58,19 +53,7 @@ public class GwtSuperDevModeCodeServerTabGroup extends AbstractLaunchConfigurati
 
     WebAppArgumentsTab argsTab = new WebAppArgumentsTab();
 
-    GwtSuperDevModeCodeServerSettingsTab gwtSettingsTab = null;
-
-    ExtensionQuery<IGWTSettingsTabFactory> extQuery = new ExtensionQuery<IGWTSettingsTabFactory>(GWTPlugin.PLUGIN_ID, "gwtSettingsTabFactory", "class");
-    List<ExtensionQuery.Data<IGWTSettingsTabFactory>> gwtSettingsTabFactories = extQuery.getData();
-    for (ExtensionQuery.Data<IGWTSettingsTabFactory> factory : gwtSettingsTabFactories) {
-      IGWTSettingsTabFactory tabFactory = factory.getExtensionPointData();
-      gwtSettingsTab = tabFactory.newInstance(argsTab);
-      break;
-    }
-
-    if (gwtSettingsTab == null) {
-      gwtSettingsTab = new GwtSuperDevModeCodeServerSettingsTab(argsTab);
-    }
+    GwtCompilerSettingsTab gwtSettingsTab = new GwtCompilerSettingsTab(argsTab);
 
     WebAppMainTab webAppMainTab = new WebAppMainTab();
 
@@ -107,7 +90,7 @@ public class GwtSuperDevModeCodeServerTabGroup extends AbstractLaunchConfigurati
 
     GwtSuperDevModeCodeServerLaunchUtil.setDefaults(configuration, null);
 
-    GWTLaunchConfigurationWorkingCopy.setMainType(configuration, GwtLaunchConfigurationProcessorUtilities.GWT_CODE_SERVER);
+    GWTLaunchConfigurationWorkingCopy.setMainType(configuration, GwtLaunchConfigurationProcessorUtilities.GWT_COMPILER);
   }
 
   private void createUpdateJob() {

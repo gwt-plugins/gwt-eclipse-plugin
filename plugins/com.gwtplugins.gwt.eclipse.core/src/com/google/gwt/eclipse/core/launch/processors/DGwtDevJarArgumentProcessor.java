@@ -109,6 +109,10 @@ public class DGwtDevJarArgumentProcessor implements ILaunchConfigurationProcesso
   @Override
   public void update(ILaunchConfigurationWorkingCopy launchConfig, IJavaProject javaProject, List<String> programArgs,
       List<String> vmArgs) throws CoreException {
+    // No compiler arg processing
+    if (GwtLaunchConfigurationProcessorUtilities.isCompiler(launchConfig)) {
+      return;
+    }
 
     int devJarIndex = StringUtilities.indexOfThatStartsWith(vmArgs, ARG_DGWT_DEVJAR, 0);
 

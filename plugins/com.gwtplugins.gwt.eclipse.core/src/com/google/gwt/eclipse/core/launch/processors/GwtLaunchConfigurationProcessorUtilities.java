@@ -22,26 +22,31 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 /**
  * Utility methods for GWT-related launch configuration processors.
  *
- * TODO duplicated in MainTypeProcessor
+ * Duplicated in MainTypeProcessor to prevent circular classpath
  */
 public final class GwtLaunchConfigurationProcessorUtilities {
 
   /**
    * GWT >= 2.0
    */
-  public static final String DEV_MODE_MAIN_TYPE = "com.google.gwt.dev.DevMode";
+  public static final String GWT_DEV_MODE = "com.google.gwt.dev.DevMode";
 
   /**
    * GWT >= 2.7
    */
-  public static final String SUPERDEVMODE_CODESERVER_MAIN_TYPE = "com.google.gwt.dev.codeserver.CodeServer";
+  public static final String GWT_CODE_SERVER = "com.google.gwt.dev.codeserver.CodeServer";
+
+  /**
+   * All
+   */
+  public static final String GWT_COMPILER = "com.google.gwt.dev.Compiler";
 
   /**
    * GWT >= 2.0
    */
   public static boolean isDevMode(ILaunchConfiguration config) throws CoreException {
     String mainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
-    return DEV_MODE_MAIN_TYPE.equals(mainTypeName);
+    return GWT_DEV_MODE.equals(mainTypeName);
   }
 
   /**
@@ -49,7 +54,15 @@ public final class GwtLaunchConfigurationProcessorUtilities {
    */
   public static boolean isSuperDevModeCodeServer(ILaunchConfiguration config) throws CoreException {
     String mainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
-    return SUPERDEVMODE_CODESERVER_MAIN_TYPE.equals(mainTypeName);
+    return GWT_CODE_SERVER.equals(mainTypeName);
+  }
+
+  /**
+   * All
+   */
+  public static boolean isCompiler(ILaunchConfiguration config) throws CoreException {
+    String mainTypeName = LaunchConfigurationProcessorUtilities.getMainTypeName(config);
+    return GWT_COMPILER.equals(mainTypeName);
   }
 
 }

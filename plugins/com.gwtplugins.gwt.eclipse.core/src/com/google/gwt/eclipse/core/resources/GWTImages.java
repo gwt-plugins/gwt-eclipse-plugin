@@ -29,6 +29,8 @@ public final class GWTImages {
 
   public static final String GWT_ICON_CODESERVER = ".images.sdmCodeServerImage";
 
+  public static final String GWT_ICON_COMPILER = ".images.compileImage";
+
   public static final String GWT_LOGO = GWTPlugin.PLUGIN_ID + ".images.gwtLogo";
 
   public static final String JAVA_ICON = GWTPlugin.PLUGIN_ID + ".images.javaIcon";
