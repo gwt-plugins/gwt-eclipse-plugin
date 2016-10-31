@@ -94,3 +94,5 @@ The Google Cloud Tools team has put a significant amount of effort in helping br
 Sencha provides man power to help update the plugin and the build server which automates the build. 
 
 * [Sencha.com](http://sencha.com) 
+
+[![SenchaCon](https://ci3.googleusercontent.com/proxy/5yLAyQSq3jYSBiuto3dYR0V4BNarB2D5rfQ9Q9kCUcKea4GsgrOAgquQ4z5vBX0FO2g8TDVQ9Y7Ps7q2u79OqiiLMlNoaxEcsUeeYavco9DHlF7C64ZHUpGxEhLF4wWeuDMYiu3I=s0-d-e1-ft#http://pages.sencha.com/rs/374-WES-121/images/emailsig-senchacon2016-500x120.png)](https://www.senchacon.com/)
