@@ -98,6 +98,9 @@ public class GwtCompilerSettingsTab extends JavaLaunchTab
     super.updateLaunchConfigurationDialog();
   }
 
+  /**
+   * @wbp.parser.entryPoint
+   */
   @Override
   public void createControl(Composite parent) {
     comp = SWTFactory.createComposite(parent, parent.getFont(), 1, 1, GridData.FILL_BOTH);
@@ -105,6 +108,7 @@ public class GwtCompilerSettingsTab extends JavaLaunchTab
     setControl(comp);
 
     compilerModeBlock = new CompilerBlock(comp, SWT.NONE);
+    compilerModeBlock.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
     compilerModeBlock.addUpdateLaunchConfigHandler(new IUpdateLaunchConfig() {
       @Override
       public void updateLaunchConfig() {
