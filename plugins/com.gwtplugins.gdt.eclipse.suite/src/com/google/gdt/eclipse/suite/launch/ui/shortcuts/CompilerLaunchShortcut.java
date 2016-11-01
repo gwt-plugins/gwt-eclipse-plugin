@@ -6,9 +6,13 @@ package com.google.gdt.eclipse.suite.launch.ui.shortcuts;
 import com.google.gdt.eclipse.core.CorePluginLog;
 import com.google.gdt.eclipse.core.ResourceUtils;
 import com.google.gdt.eclipse.core.launch.CompilerLaunchConfiguration;
+import com.google.gdt.eclipse.core.launch.LaunchConfigurationProcessorUtilities;
 import com.google.gdt.eclipse.core.launch.LaunchConfigurationUtilities;
 import com.google.gdt.eclipse.suite.propertytesters.LaunchTargetTester;
+import com.google.gwt.eclipse.core.launch.GWTLaunchConfigurationWorkingCopy;
 import com.google.gwt.eclipse.core.launch.ModuleClasspathProvider;
+import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
+import com.google.gwt.eclipse.core.launch.processors.ModuleArgumentProcessor;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -136,6 +140,9 @@ public class CompilerLaunchShortcut implements ILaunchShortcut {
 
     final ILaunchConfigurationWorkingCopy config = type.newInstance(null, launchConfigName);
 
+    // Main type
+    GWTLaunchConfigurationWorkingCopy.setMainType(config, GwtLaunchConfigurationProcessorUtilities.GWT_COMPILER);
+
     // project name
     LaunchConfigurationUtilities.setProjectName(config, project.getName());
 
@@ -146,6 +153,9 @@ public class CompilerLaunchShortcut implements ILaunchShortcut {
     // Link the launch configuration to the project.
     // This will cause the launch config to be deleted automatically if the project is deleted.
     config.setMappedResources(new IResource[] { project });
+
+    // Modules
+    LaunchConfigurationProcessorUtilities.updateViaProcessor(new ModuleArgumentProcessor(), config);
 
     return config;
   }
