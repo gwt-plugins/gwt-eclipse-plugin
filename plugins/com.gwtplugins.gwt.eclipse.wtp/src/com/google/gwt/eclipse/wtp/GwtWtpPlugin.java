@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -522,22 +521,24 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     // The root module will be the server module
     // The root module may have children such as, client, shared
     // The root module may not have any children
-    IModule[] modules = server.getModules();
-    for (IModule module : modules) {
-      IPath path = null;
-      if (server instanceof IModulePublishHelper) {
-        path = ((IModulePublishHelper) server).getPublishDirectory(new IModule[] { module });
-      } else {
-        IModulePublishHelper helper = server.getAdapter(IModulePublishHelper.class);
-        if (helper != null) {
-          path = helper.getPublishDirectory(new IModule[] { module });
+    for (IModule[] module : getAllModules(server)) {
+      if (module[module.length - 1].getProject() == gwtFacetedProject.getProject()) {
+        // Child modules are overlaid or included in the root module
+        IPath path = null;
+        if (server instanceof IModulePublishHelper) {
+          path = ((IModulePublishHelper) server).getPublishDirectory(new IModule[] { module[0] });
+        } else {
+          IModulePublishHelper helper = server.getAdapter(IModulePublishHelper.class);
+          if (helper != null) {
+            path = helper.getPublishDirectory(new IModule[] { module[0] });
+          }
         }
-      }
-      // example:
-      // /Users/branflake2267/Documents/runtime-EclipseApplication/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/broyer-sandbox-server
-      launcherDir = path == null ? null : path.toOSString();
-      if (launcherDir != null) {
-        return launcherDir;
+        // example:
+        // /Users/branflake2267/Documents/runtime-EclipseApplication/.metadata/.plugins/org.eclipse.wst.server.core/tmp0/wtpwebapps/broyer-sandbox-server
+        launcherDir = path == null ? null : path.toOSString();
+        if (launcherDir != null) {
+          return launcherDir;
+        }
       }
     }
 
@@ -551,6 +552,21 @@ public final class GwtWtpPlugin extends AbstractUIPlugin {
     }
 
     return launcherDir;
+  }
+
+  /**
+   * Return all the modules on the server, including child modules.
+   */
+  private List<IModule[]> getAllModules(IServer server) {
+    List<IModule[]> modules = new ArrayList<>();
+    // todo: add grandchildren
+    for (IModule root : server.getModules()) {
+      modules.add(new IModule[] {root});
+      for (IModule child : server.getChildModules(new IModule[] {root}, null)) {
+        modules.add(new IModule[] {root, child});
+      }
+    }
+    return modules;
   }
 
   @Override
