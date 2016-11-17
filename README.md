@@ -14,7 +14,7 @@ Sencha provides man power to help update the plugin and the build server which a
 
 * [Sencha.com](http://sencha.com) 
 
-[![SenchaCon](http://cdn.sencha.com/img/gwt-eclipse-plugin-banner.png)](https://www.senchacon.com/)
+[![Sencha](http://cdn.sencha.com/img/gwt-eclipse-plugin-banner.png)](http://cdn.sencha.com/img/gwt-eclipse-plugin-banner.png)](https://www.sencha.com/products/gxt/)
 
 
 ## Quality
