@@ -45,7 +45,7 @@ public class SdkUtils {
             String currentMaxVersion = maxVersion;
             String version = sdk.getVersion();
             if (version == null || version.isEmpty()) {
-              return "";
+              return null;
             }
 
             if (isInternal(version)) {
