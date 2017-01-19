@@ -17,6 +17,10 @@ package com.google.gdt.eclipse.suite.update.builders;
 import com.google.gdt.eclipse.suite.update.GdtExtPlugin;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.compiler.CompilationParticipant;
 
@@ -33,11 +37,50 @@ public class UpdateTriggerCompilationParticipant extends CompilationParticipant 
     }
 
     if (GWTNature.isGWTProject(project.getProject())) {
-      GdtExtPlugin.getFeatureUpdateManager().checkForUpdates();
-      GdtExtPlugin.getAnalyticsPingManager().sendCompilationPing();
+      runProcesses();
       return true;
     } else {
       return false;
     }
   }
+
+  /**
+   * TODO add preferences to disable
+   */
+  private void runProcesses() {
+    checkUpdates();
+    pingAnalytics();
+  }
+
+  private void checkUpdates() {
+    Job job = new Job("Check Update") {
+      @Override
+      protected IStatus run(IProgressMonitor monitor) {
+        try {
+          GdtExtPlugin.getFeatureUpdateManager().checkForUpdates();
+        } catch (Exception e) {
+          // No need to catch network issues.
+        }
+        System.out.println("check updates");
+        return Status.OK_STATUS;
+      }
+    };
+    job.schedule();
+  }
+
+  public void pingAnalytics() {
+    Job job = new Job("Analytics Ping") {
+      @Override
+      protected IStatus run(IProgressMonitor monitor) {
+        try {
+          GdtExtPlugin.getAnalyticsPingManager().sendCompilationPing();
+        } catch (Exception e) {
+          // No need to catch neetowrk issues
+        }
+        return Status.OK_STATUS;
+      }
+    };
+    job.schedule();
+  }
+
 }
