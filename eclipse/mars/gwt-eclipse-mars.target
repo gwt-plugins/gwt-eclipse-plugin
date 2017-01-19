@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="GWT Eclipse Plugin Mars" sequenceNumber="1477801221">
+<target name="GWT Eclipse Plugin Mars" sequenceNumber="1484857966">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.license.feature.group" version="1.0.1.v20140414-1359"/>
@@ -43,8 +43,12 @@
       <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="com.google.cloud.tools.eclipse.suite.e45.feature.feature.group" version="0.1.0.201610281926"/>
+      <unit id="com.google.cloud.tools.eclipse.suite.e45.feature.feature.group" version="0.1.0.201701171430"/>
       <repository location="https://storage.googleapis.com/gcloud-for-eclipse-testing/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="com.github.sdbg.feature.feature.group" version="1.0.10.201610081555"/>
+      <repository location="http://sdbg.github.io/p2/"/>
     </location>
   </locations>
 </target>

@@ -75,7 +75,7 @@ public class UpdateTriggerCompilationParticipant extends CompilationParticipant 
         try {
           GdtExtPlugin.getAnalyticsPingManager().sendCompilationPing();
         } catch (Exception e) {
-          // No need to catch neetowrk issues
+          // No need to catch network issues
         }
         return Status.OK_STATUS;
       }
