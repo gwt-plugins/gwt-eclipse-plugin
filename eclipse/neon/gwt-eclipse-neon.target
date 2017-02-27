@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="GWT Eclipse Plugin Neon" sequenceNumber="1484858816">
+<target name="GWT Eclipse Plugin Neon" sequenceNumber="1488230776">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.license.feature.group" version="1.0.1.v20140414-1359"/>
@@ -45,7 +45,7 @@
       <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="com.google.cloud.tools.eclipse.suite.e45.feature.feature.group" version="0.1.0.201701171430"/>
+      <unit id="com.google.cloud.tools.eclipse.suite.e45.feature.feature.group" version="1.0.0.201702221633"/>
       <repository location="https://storage.googleapis.com/gcloud-for-eclipse-testing/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
