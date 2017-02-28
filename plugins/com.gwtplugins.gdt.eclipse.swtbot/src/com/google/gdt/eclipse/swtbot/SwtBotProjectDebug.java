@@ -95,8 +95,8 @@ public class SwtBotProjectDebug {
       }
     }
 
-    // Wait for a successful launch
-    ConsoleViewContains.waitForConsoleOutput(bot, "The code server is ready", 30000);
+    // Wait for a successful launch - 60s build server wait time, just in case
+    ConsoleViewContains.waitForConsoleOutput(bot, "The code server is ready", 60000);
 
     SwtBotUtils.print("Launched DevMode with Jetty");
   }
