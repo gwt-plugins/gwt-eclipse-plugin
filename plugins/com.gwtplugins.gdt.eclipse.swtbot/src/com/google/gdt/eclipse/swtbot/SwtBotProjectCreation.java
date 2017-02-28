@@ -37,7 +37,7 @@ public class SwtBotProjectCreation {
     String groupId = projectName;
     String artifactId = projectName;
     String archetypeGroupId = "com.github.branflake2267.archetypes";
-    String archetypeArtifactId = "gwt-test-gwt27-archetype";
+    String archetypeArtifactId = "gwt-gpe-test-gwt27-archetype";
     String archetypeVersion = "1.0-SNAPSHOT";
     String archetypeUrl = "https://oss.sonatype.org/content/repositories/snapshots";
 
