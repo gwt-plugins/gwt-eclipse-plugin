@@ -44,6 +44,9 @@ public class SdkUtils {
           if (sdk != null) {
             String currentMaxVersion = maxVersion;
             String version = sdk.getVersion();
+            if (version == null || version.isEmpty()) {
+              return null;
+            }
 
             if (isInternal(version)) {
               // Internal SDKs are not updateable.

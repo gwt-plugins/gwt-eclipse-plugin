@@ -42,15 +42,26 @@ public class GWTNature implements IProjectNature {
 
   /**
    * Returns if the GWT nature installed or if the GWT facet is enabled.
+   *
+   * TODO Same method is ProjectUtilities.isGwtProject
    */
   public static boolean isGWTProject(IProject project) {
+    boolean isAccessible = project.isAccessible();
+    boolean hasGwtNature = false;
+    boolean hasGwtFacet = false;
+
     try {
-      return project.isAccessible() && (project.hasNature(GWTNature.NATURE_ID)
-          || FacetedProjectFramework.hasProjectFacet(project, "com.gwtplugins.gwt.facet"));
+      hasGwtNature = project.hasNature(GWTNature.NATURE_ID);
     } catch (CoreException e) {
-      GWTPluginLog.logError(e);
+      GWTPluginLog.logError("isGWTProject(project) hasGwtnature exception " + e.getMessage());
     }
-    return false;
+    try {
+      hasGwtFacet = FacetedProjectFramework.hasProjectFacet(project, "com.gwtplugins.gwt.facet");
+    } catch (CoreException e) {
+      GWTPluginLog.logError("isGWTProject(project) hasGwtFacet exception " + e.getMessage());
+    }
+
+    return isAccessible && (hasGwtNature || hasGwtFacet);
   }
 
   // TODO: do this in background (WorkspaceJob)?

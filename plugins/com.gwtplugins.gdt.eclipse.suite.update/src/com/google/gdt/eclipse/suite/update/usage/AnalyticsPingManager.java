@@ -111,7 +111,7 @@ public class AnalyticsPingManager implements PingManager {
     IJavaProject[] projects = GdtExtPlugin.getJavaProjects();
     String maxGwtSdkVersion = new GwtMaxSdkVersionComputer().computeMaxSdkVersion(projects);
 
-    if (maxGwtSdkVersion == null) {
+    if (maxGwtSdkVersion == null || maxGwtSdkVersion.isEmpty()) {
       return "none";
     } else {
       return "GWT " + maxGwtSdkVersion;
