@@ -14,6 +14,7 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.update.builders;
 
+import com.google.gdt.eclipse.suite.preferences.GdtPreferences;
 import com.google.gdt.eclipse.suite.update.GdtExtPlugin;
 import com.google.gwt.eclipse.core.nature.GWTNature;
 
@@ -36,7 +37,8 @@ public class UpdateTriggerCompilationParticipant extends CompilationParticipant 
       return false;
     }
 
-    if (GWTNature.isGWTProject(project.getProject())) {
+    // Only run when preferences are set to ok, and it's a gwt project
+    if (GdtPreferences.getCaptureAnalytics() && GWTNature.isGWTProject(project.getProject())) {
       runProcesses();
       return true;
     } else {
@@ -44,9 +46,6 @@ public class UpdateTriggerCompilationParticipant extends CompilationParticipant 
     }
   }
 
-  /**
-   * TODO add preferences to disable
-   */
   private void runProcesses() {
     checkUpdates();
     pingAnalytics();

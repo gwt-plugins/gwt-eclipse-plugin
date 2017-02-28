@@ -35,8 +35,8 @@ public class PingRunnable implements IRunnableWithProgressAndStatus {
     this.url = url;
   }
 
+  @Override
   public IStatus run(IProgressMonitor monitor) {
-
     IStatus jobStatus = Status.OK_STATUS;
 
     try {
