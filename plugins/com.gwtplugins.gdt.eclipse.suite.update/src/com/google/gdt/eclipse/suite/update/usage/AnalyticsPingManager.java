@@ -97,8 +97,14 @@ public class AnalyticsPingManager implements PingManager {
     setCustomDimension(parametersMap, CustomDimensionName.GWT_VERSION, gwtVersion);
     setCustomDimension(
         parametersMap, CustomDimensionName.ECLIPSE_VERSION, GdtPlugin.getEclipseVersion());
-    setCustomDimension(
-        parametersMap, CustomDimensionName.ECLIPSE_PRODUCT_ID, Platform.getProduct().getId());
+
+    if (Platform.getProduct() != null) {
+      setCustomDimension(
+          parametersMap, CustomDimensionName.ECLIPSE_PRODUCT_ID, Platform.getProduct().getId());
+    } else {
+      setCustomDimension(
+          parametersMap, CustomDimensionName.ECLIPSE_PRODUCT_ID, "null");
+    }
 
     setCustomDimension(parametersMap, CustomDimensionName.SDK_VERSIONS, getSdkVersions());
     for (CustomDimensionAssignment nameValuePair : customDimensions) {
