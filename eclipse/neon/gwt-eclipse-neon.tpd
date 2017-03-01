@@ -31,9 +31,11 @@ location "http://download.eclipse.org/releases/neon" {
 	org.eclipse.jetty.util
 }
 
-// /webtools/repository/neon currently has some issues
-// location "http://download.eclipse.org/webtools/repository/neon/" {
-location "http://download.eclipse.org/webtools/downloads/drops/R3.8.0/R-3.8.0-20160608130753/repository" {
+// if: /webtools/repository/neon currently has some issues
+// then: location "http://download.eclipse.org/webtools/downloads/drops/R3.8.0/R-3.8.0-20160608130753/repository" {
+
+location "http://download.eclipse.org/webtools/repository/neon/" {
+
     org.eclipse.jst.web_sdk.feature.feature.group
     org.eclipse.jst.server_sdk.feature.feature.group
     org.eclipse.jst.common.fproj.enablement.jdt.sdk.feature.group

@@ -125,6 +125,11 @@ public final class GdtPreferences {
   private static final String UPDATE_NOTIFICATIONS = "updateNotifications";
 
   /**
+   * Capture analytics of the use of this plugin.
+   */
+  private static final String CAPTURE_ANALYTICS = "captureAnalytics";
+
+  /**
    * Records the GEP plugin version that most recently forced a rebuild on a project after install (to clean up and
    * regenerate stale markers, etc.).
    */
@@ -132,6 +137,10 @@ public final class GdtPreferences {
 
   public static boolean areUpdateNotificationsEnabled() {
     return getConfigurationPreferences().getBoolean(UPDATE_NOTIFICATIONS, true);
+  }
+
+  public static boolean getCaptureAnalytics() {
+    return getConfigurationPreferences().getBoolean(CAPTURE_ANALYTICS, true);
   }
 
   public static List<String> getAddedNewWizardActionsForPerspective(String perspectiveId) {
@@ -279,6 +288,12 @@ public final class GdtPreferences {
   public static void setUpdateNotificationsEnabled(boolean enabled) {
     IEclipsePreferences configurationPreferences = getConfigurationPreferences();
     configurationPreferences.putBoolean(UPDATE_NOTIFICATIONS, enabled);
+    flushPreferences(configurationPreferences);
+  }
+
+  public static void setAnalytics(boolean capture) {
+    IEclipsePreferences configurationPreferences = getConfigurationPreferences();
+    configurationPreferences.putBoolean(CAPTURE_ANALYTICS, capture);
     flushPreferences(configurationPreferences);
   }
 

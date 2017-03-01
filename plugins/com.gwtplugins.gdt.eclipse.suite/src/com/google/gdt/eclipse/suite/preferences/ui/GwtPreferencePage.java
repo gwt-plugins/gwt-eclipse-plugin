@@ -29,23 +29,25 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
- * 
+ *
  */
-public class GwtPreferencePage extends PreferencePage implements
-    IWorkbenchPreferencePage {
+public class GwtPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
   private Button updateNotificationCheckbox;
   private boolean updateNotificationsEnabledInitalValue;
 
   private Button removeTerminatedLaunchesButton;
   private boolean removeTerminatedLaunchesInitialValue;
-  
+
   private Button jsoDetailFormattingButton;
   private boolean jsoDetailFormattingInitialValue;
 
+  private Button analyticsButton;
+
   private boolean performDeferredOk;
+  private boolean analyticsInitialValue;
 
   /**
-   * 
+   * @wbp.parser.constructor
    */
   public GwtPreferencePage() {
   }
@@ -82,21 +84,29 @@ public class GwtPreferencePage extends PreferencePage implements
     super.dispose();
   }
 
+  @Override
   public void init(IWorkbench workbench) {
   }
 
   @Override
   public boolean performOk() {
-    boolean selection = updateNotificationCheckbox.getSelection();
+    boolean selectionUpdateNotification = updateNotificationCheckbox.getSelection();
 
-    if (selection != updateNotificationsEnabledInitalValue) {
-      GdtPreferences.setUpdateNotificationsEnabled(selection);
+    // Update Notifications
+    if (selectionUpdateNotification != updateNotificationsEnabledInitalValue) {
+      GdtPreferences.setUpdateNotificationsEnabled(selectionUpdateNotification);
     }
 
-    boolean removeTerminatedLaunches = removeTerminatedLaunchesButton.getSelection();
-    
-    if (removeTerminatedLaunchesInitialValue != removeTerminatedLaunches) {
-      GWTPreferences.setRemoveTerminatedLaunches(removeTerminatedLaunches);
+    // Remove terminated launches
+    boolean selectionRemoveTerminated = removeTerminatedLaunchesButton.getSelection();
+    if (removeTerminatedLaunchesInitialValue != selectionRemoveTerminated) {
+      GWTPreferences.setRemoveTerminatedLaunches(selectionRemoveTerminated);
+    }
+
+    // Capture Analytics
+    boolean selectionAnalytics = analyticsButton.getSelection();
+    if (analyticsInitialValue != selectionAnalytics) {
+      GdtPreferences.setAnalytics(selectionAnalytics);
     }
 
     performDeferredOk = true;
@@ -115,6 +125,7 @@ public class GwtPreferencePage extends PreferencePage implements
     layout.marginHeight = 0;
     panel.setLayout(layout);
 
+    // Update Notifiations
     updateNotificationCheckbox = new Button(panel, SWT.CHECK);
     GridData autoUpdateGridData = new GridData();
     autoUpdateGridData.horizontalSpan = 2;
@@ -123,16 +134,17 @@ public class GwtPreferencePage extends PreferencePage implements
     updateNotificationsEnabledInitalValue = GdtPreferences.areUpdateNotificationsEnabled();
     updateNotificationCheckbox.setSelection(updateNotificationsEnabledInitalValue);
 
+    // Remove Terminated
     removeTerminatedLaunchesButton = new Button(panel, SWT.CHECK);
     GridData removeTerminatedGridData = new GridData();
     removeTerminatedGridData.horizontalSpan = 2;
     removeTerminatedLaunchesButton.setLayoutData(removeTerminatedGridData);
     // Remove terminated launches when a new launch is created
-    removeTerminatedLaunchesButton.setText("Remove terminated launches from " +
-      "Development Mode view");
+    removeTerminatedLaunchesButton.setText("Remove terminated launches from " + "Development Mode view");
     removeTerminatedLaunchesInitialValue = GWTPreferences.getRemoveTerminatedLaunches();
     removeTerminatedLaunchesButton.setSelection(removeTerminatedLaunchesInitialValue);
 
+    // Display JSO properties
     jsoDetailFormattingButton = new Button(panel, SWT.CHECK);
     GridData jsoDetailFormattingGridData = new GridData();
     jsoDetailFormattingGridData.horizontalSpan = 2;
@@ -140,7 +152,18 @@ public class GwtPreferencePage extends PreferencePage implements
     jsoDetailFormattingButton.setText("Display Javascript object properties");
     jsoDetailFormattingInitialValue = GWTPreferences.getJsoDetailFormatting();
     jsoDetailFormattingButton.setSelection(jsoDetailFormattingInitialValue);
-    
+
+    // Capture Analytics
+    String shareAnon = "Share anonymous usage statistics of the GWT Eclipse Plugin with the GWT Community.\n"
+        + "This helps provide a reason to continue development.";
+    analyticsInitialValue = GdtPreferences.getCaptureAnalytics();
+    analyticsButton = new Button(panel, SWT.CHECK);
+    GridData analtyicsGridData = new GridData();
+    analtyicsGridData.horizontalSpan = 2;
+    analyticsButton.setLayoutData(analtyicsGridData);
+    analyticsButton.setText(shareAnon);
+    analyticsButton.setSelection(analyticsInitialValue);
+
     return panel;
   }
 }
