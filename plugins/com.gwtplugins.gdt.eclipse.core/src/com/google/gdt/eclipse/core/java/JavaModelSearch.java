@@ -125,7 +125,7 @@ public class JavaModelSearch {
    * Finds the topmost declaration of the given method (in terms of super
    * interfaces/classes), and then finds all declarations that override that
    * method.
-   * 
+   *
    * @param method the method that will be used to search
    * @return a non-null array of overridden methods
    */
@@ -156,7 +156,7 @@ public class JavaModelSearch {
 
   /**
    * Returns a list of package fragments for the given package name.
-   * 
+   *
    * @param javaProject the java project whose classpath will be searched
    * @param packageName the package name to find corresponding fragments for
    * @return a possibly empty list of package fragments
@@ -202,13 +202,13 @@ public class JavaModelSearch {
    * Note: As we discover new meanings for "validity", the checks could change.
    */
   public static boolean isValidElement(IJavaElement element) {
-    return element != null && element.exists()
-        && element.getJavaProject().isOnClasspath(element);
+    return element != null && (element.exists()
+        && element.getJavaProject().isOnClasspath(element));
   }
 
   /**
    * Resolves a type from the type's signature.
-   * 
+   *
    * @param contextType context of the signature
    * @param typeSignature the type's signature (does not have to be fully
    *          qualified)
@@ -233,7 +233,7 @@ public class JavaModelSearch {
    * Resolves a type name to a fully-qualified name.
    * <p>
    * Note: This only returns the first match on ambiguous lookups.
-   * 
+   *
    * @return the fully-qualified name, or null if it could not be resolved
    * @throws JavaModelException if there was an error when resolving
    */
