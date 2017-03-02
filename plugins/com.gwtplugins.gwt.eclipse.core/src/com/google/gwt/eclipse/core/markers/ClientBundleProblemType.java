@@ -23,58 +23,52 @@ import com.google.gdt.eclipse.core.markers.IGdtProblemType;
  */
 public enum ClientBundleProblemType implements IGdtProblemType {
 
-  INVALID_RETURN_TYPE(
-      CLIENTBUNDLE_OFFSET + 1,
-      "Invalid return type",
-      "Return type must be another ClientBundle or a subtype of ResourcePrototype",
-      GdtProblemSeverity.ERROR),
+  INVALID_RETURN_TYPE(CLIENTBUNDLE_OFFSET + 1, "Invalid return type",
+      "Return type must be another ClientBundle or a subtype of ResourcePrototype", GdtProblemSeverity.ERROR),
 
   MISSING_RESOURCE_FILE(CLIENTBUNDLE_OFFSET + 2, "Missing resource file",
-      "Resource file {0} is missing (expected at {1})",
-      GdtProblemSeverity.ERROR),
+      "Resource file {0} is missing (expected at {1})", GdtProblemSeverity.ERROR),
 
   NON_EMPTY_PARAMETER_LIST(CLIENTBUNDLE_OFFSET + 3, "Non-empty parameter list",
-      "ClientBundle methods should not have parameters",
-      GdtProblemSeverity.ERROR),
+      "ClientBundle methods should not have parameters", GdtProblemSeverity.ERROR),
 
-  SOURCE_ANNOTATION_REQUIRED(
-      CLIENTBUNDLE_OFFSET + 4,
-      "Missing required @Source annotation",
-      "Method requires an @Source annotation ({0} does not define any default extensions)",
-      GdtProblemSeverity.ERROR);
+  SOURCE_ANNOTATION_REQUIRED(CLIENTBUNDLE_OFFSET + 4, "Missing required @Source annotation",
+      "Method requires an @Source annotation ({0} does not define any default extensions)", GdtProblemSeverity.IGNORE);
 
   private final GdtProblemSeverity defaultSeverity;
-
   private final String description;
-
   private final String message;
-
   private final int problemId;
 
-  private ClientBundleProblemType(int problemId, String description,
-      String message, GdtProblemSeverity defaultSeverity) {
+  private ClientBundleProblemType(int problemId, String description, String message,
+      GdtProblemSeverity defaultSeverity) {
     this.problemId = problemId;
     this.description = description;
     this.message = message;
     this.defaultSeverity = defaultSeverity;
   }
 
+  @Override
   public GdtProblemCategory getCategory() {
     return GdtProblemCategory.CLIENT_BUNDLE;
   }
 
+  @Override
   public GdtProblemSeverity getDefaultSeverity() {
     return defaultSeverity;
   }
 
+  @Override
   public String getDescription() {
     return description;
   }
 
+  @Override
   public String getMessage() {
     return message;
   }
 
+  @Override
   public int getProblemId() {
     return problemId;
   }

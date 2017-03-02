@@ -27,59 +27,48 @@ import org.eclipse.jdt.core.dom.Type;
 /**
  * Defines a problem on a ClientBundle interface.
  */
-public class ClientBundleProblem extends
-    GdtJavaProblem<ClientBundleProblemType> {
+public class ClientBundleProblem extends GdtJavaProblem<ClientBundleProblemType> {
 
-  public static final String MARKER_ID = GWTPlugin.PLUGIN_ID
-      + ".clientBundleProblemMarker";
+  public static final String MARKER_ID = GWTPlugin.PLUGIN_ID + ".clientBundleProblemMarker";
 
-  private static final IGdtJavaProblemFactory<ClientBundleProblemType> FACTORY = new IGdtJavaProblemFactory<ClientBundleProblemType>() {
-    public ClientBundleProblem createProblem(ASTNode node, int offset,
-        int length, ClientBundleProblemType problemType,
-        GdtProblemSeverity severity, String[] messageArgs, String[] problemArgs) {
-      return new ClientBundleProblem(node, offset, length, problemType,
-          severity, messageArgs, problemArgs);
-    }
-  };
+  private static final IGdtJavaProblemFactory<ClientBundleProblemType> FACTORY =
+      new IGdtJavaProblemFactory<ClientBundleProblemType>() {
+        @Override
+        public ClientBundleProblem createProblem(ASTNode node, int offset, int length,
+            ClientBundleProblemType problemType, GdtProblemSeverity severity, String[] messageArgs,
+            String[] problemArgs) {
+          return new ClientBundleProblem(node, offset, length, problemType, severity, messageArgs, problemArgs);
+        }
+      };
 
   public static ClientBundleProblem createInvalidReturnType(Type returnType) {
-    return create(returnType, ClientBundleProblemType.INVALID_RETURN_TYPE,
-        NO_STRINGS, NO_STRINGS);
+    return create(returnType, ClientBundleProblemType.INVALID_RETURN_TYPE, NO_STRINGS, NO_STRINGS);
   }
 
-  public static ClientBundleProblem createMissingResourceFile(ASTNode node,
-      String expectedFileName, IPath expectedResourcePath) {
+  public static ClientBundleProblem createMissingResourceFile(ASTNode node, String expectedFileName,
+      IPath expectedResourcePath) {
     return create(node, ClientBundleProblemType.MISSING_RESOURCE_FILE,
-        new String[] {expectedFileName, expectedResourcePath.toString()},
-        NO_STRINGS);
+        new String[] {expectedFileName, expectedResourcePath.toString()}, NO_STRINGS);
   }
 
-  public static ClientBundleProblem createNonEmptyParameterList(
-      MethodDeclaration methodDecl) {
-    return create(methodDecl.getName(),
-        ClientBundleProblemType.NON_EMPTY_PARAMETER_LIST, NO_STRINGS,
-        NO_STRINGS);
+  public static ClientBundleProblem createNonEmptyParameterList(MethodDeclaration methodDecl) {
+    return create(methodDecl.getName(), ClientBundleProblemType.NON_EMPTY_PARAMETER_LIST, NO_STRINGS, NO_STRINGS);
   }
 
-  public static ClientBundleProblem createSourceAnnotationRequired(
-      MethodDeclaration methodDecl, String resourceTypeName) {
-    return create(methodDecl.getName(),
-        ClientBundleProblemType.SOURCE_ANNOTATION_REQUIRED,
+  public static ClientBundleProblem createSourceAnnotationRequired(MethodDeclaration methodDecl,
+      String resourceTypeName) {
+    return create(methodDecl.getName(), ClientBundleProblemType.SOURCE_ANNOTATION_REQUIRED,
         new String[] {resourceTypeName}, NO_STRINGS);
   }
 
-  private static ClientBundleProblem create(ASTNode node,
-      ClientBundleProblemType problemType, String[] messageArgs,
+  private static ClientBundleProblem create(ASTNode node, ClientBundleProblemType problemType, String[] messageArgs,
       String[] problemArgs) {
-    return (ClientBundleProblem) GdtJavaProblem.createProblem(FACTORY, node,
-        problemType, messageArgs, problemArgs);
+    return (ClientBundleProblem) GdtJavaProblem.createProblem(FACTORY, node, problemType, messageArgs, problemArgs);
   }
 
-  private ClientBundleProblem(ASTNode node, int offset, int length,
-      ClientBundleProblemType type, GdtProblemSeverity severity,
-      String[] messageArguments, String[] problemArguments) {
-    super(node, offset, length, type, severity, messageArguments,
-        problemArguments);
+  private ClientBundleProblem(ASTNode node, int offset, int length, ClientBundleProblemType type,
+      GdtProblemSeverity severity, String[] messageArguments, String[] problemArguments) {
+    super(node, offset, length, type, severity, messageArguments, problemArguments);
   }
 
   @Override
