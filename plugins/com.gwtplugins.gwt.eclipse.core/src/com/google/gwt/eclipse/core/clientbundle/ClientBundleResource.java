@@ -60,8 +60,7 @@ import java.util.Arrays;
 @SuppressWarnings("restriction")
 public class ClientBundleResource {
 
-  public static ClientBundleResource create(IFile file, String methodName,
-      String resourceTypeName) {
+  public static ClientBundleResource create(IFile file, String methodName, String resourceTypeName) {
     // CssResource gets special treatment: we automatically synthesize custom
     // subtypes for CSS files.
     if (resourceTypeName.equals(ClientBundleUtilities.CSS_RESOURCE_TYPE_NAME)) {
@@ -71,21 +70,19 @@ public class ClientBundleResource {
   }
 
   /**
-   * Creates a new ClientBundle resource from the given file, inferring its
-   * accessor method name and resource type from the filename.
-   * 
-   * NOTE: If the file is probably not intended to be bundled (e.g. a .java
-   * source file), this method returns null.
+   * Creates a new ClientBundle resource from the given file, inferring its accessor method name and
+   * resource type from the filename.
+   *
+   * NOTE: If the file is probably not intended to be bundled (e.g. a .java source file), this
+   * method returns null.
    */
-  public static ClientBundleResource createFromFile(IJavaProject javaProject,
-      IFile file) {
+  public static ClientBundleResource createFromFile(IJavaProject javaProject, IFile file) {
     if (!isProbableClientBundleResource(file)) {
       return null;
     }
 
     String methodName = ClientBundleUtilities.suggestMethodName(file);
-    String resourceTypeName = ClientBundleUtilities.suggestResourceTypeName(
-        javaProject, file);
+    String resourceTypeName = ClientBundleUtilities.suggestResourceTypeName(javaProject, file);
 
     return ClientBundleResource.create(file, methodName, resourceTypeName);
   }
@@ -114,33 +111,30 @@ public class ClientBundleResource {
 
   private final String resourceTypeName;
 
-  protected ClientBundleResource(IFile file, String methodName,
-      String resourceTypeName) {
+  protected ClientBundleResource(IFile file, String methodName, String resourceTypeName) {
     this.file = file;
     this.methodName = methodName;
     this.resourceTypeName = resourceTypeName;
   }
 
-  public void addToClientBundle(IType clientBundle, ImportsManager imports,
-      boolean addComments, IProgressMonitor monitor) throws CoreException {
-    String methodSource = MessageFormat.format("{0} {1}();",
-        Signature.getSimpleName(getReturnTypeName()), getMethodName());
+  public void addToClientBundle(IType clientBundle, ImportsManager imports, boolean addComments,
+      IProgressMonitor monitor) throws CoreException {
+    String methodSource =
+        MessageFormat.format("{0} {1}();", Signature.getSimpleName(getReturnTypeName()), getMethodName());
 
     String sourceAnnotation = getSourceAnnotationValue(clientBundle);
     if (sourceAnnotation != null) {
       // Insert the annotation above the method declaration
       methodSource = MessageFormat.format("@Source(\"{0}\")", sourceAnnotation)
-          + StubUtility.getLineDelimiterUsed(clientBundle.getJavaProject())
-          + methodSource;
+          + StubUtility.getLineDelimiterUsed(clientBundle.getJavaProject()) + methodSource;
     }
 
     clientBundle.createMethod(methodSource, null, false, monitor);
     imports.addImport(getReturnTypeName());
   }
 
-  public MethodDeclaration createMethodDeclaration(IType clientBundle,
-      ASTRewrite astRewrite, ImportRewrite importRewrite, boolean addComments)
-      throws CoreException {
+  public MethodDeclaration createMethodDeclaration(IType clientBundle, ASTRewrite astRewrite,
+      ImportRewrite importRewrite, boolean addComments) throws CoreException {
     AST ast = astRewrite.getAST();
     MethodDeclaration methodDecl = ast.newMethodDeclaration();
 
@@ -148,8 +142,7 @@ public class ClientBundleResource {
     methodDecl.setName(ast.newSimpleName(getMethodName()));
 
     // Method return type is a ResourcePrototype subtype
-    ITypeBinding resourceTypeBinding = JavaASTUtils.resolveType(
-        clientBundle.getJavaProject(), getReturnTypeName());
+    ITypeBinding resourceTypeBinding = JavaASTUtils.resolveType(clientBundle.getJavaProject(), getReturnTypeName());
     Type resourceType = importRewrite.addImport(resourceTypeBinding, ast);
     methodDecl.setReturnType2(resourceType);
 
@@ -165,8 +158,7 @@ public class ClientBundleResource {
 
       // Add the annotation to the method
       ChildListPropertyDescriptor modifiers = methodDecl.getModifiersProperty();
-      ListRewrite modifiersRewriter = astRewrite.getListRewrite(methodDecl,
-          modifiers);
+      ListRewrite modifiersRewriter = astRewrite.getListRewrite(methodDecl, modifiers);
       modifiersRewriter.insertFirst(sourceAnnotation, null);
     }
 
@@ -188,8 +180,7 @@ public class ClientBundleResource {
       return false;
     }
 
-    if (!JavaUtilities.equalsWithNullCheck(resourceTypeName,
-        other.resourceTypeName)) {
+    if (!JavaUtilities.equalsWithNullCheck(resourceTypeName, other.resourceTypeName)) {
       return false;
     }
 
@@ -224,23 +215,19 @@ public class ClientBundleResource {
     return result;
   }
 
-  public IStatus validate(IJavaProject javaProject,
-      String[] extendedInterfaces, String[] methodNames) {
+  public IStatus validate(IJavaProject javaProject, String[] extendedInterfaces, String[] methodNames) {
     IStatus fileStatus = validateFile(javaProject);
-    IStatus methodNameStatus = validateMethodName(javaProject,
-        extendedInterfaces, methodNames);
+    IStatus methodNameStatus = validateMethodName(javaProject, extendedInterfaces, methodNames);
     IStatus resourceTypeStatus = validateResourceTypeName(javaProject);
 
-    return StatusUtil.getMostSevere(new IStatus[] {
-        fileStatus, methodNameStatus, resourceTypeStatus});
+    return StatusUtil.getMostSevere(new IStatus[] {fileStatus, methodNameStatus, resourceTypeStatus});
   }
 
   protected String getReturnTypeName() {
     return resourceTypeName;
   }
 
-  private String getSourceAnnotationValue(IType clientBundle)
-      throws JavaModelException {
+  private String getSourceAnnotationValue(IType clientBundle) throws JavaModelException {
     IJavaProject javaProject = clientBundle.getJavaProject();
     assert (javaProject.isOnClasspath(file));
 
@@ -249,8 +236,7 @@ public class ClientBundleResource {
     // If the resource is not in the same package as our ClientBundle, we need
     // an @Source with the full classpath-relative path to the resource.
     if (!clientBundle.getPackageFragment().equals(resourcePckg)) {
-      return ResourceUtils.getClasspathRelativePath(resourcePckg,
-          file.getName()).toString();
+      return ResourceUtils.getClasspathRelativePath(resourcePckg, file.getName()).toString();
     }
 
     // If the resource has a different name than the method, we need an @Source,
@@ -271,8 +257,7 @@ public class ClientBundleResource {
     return null;
   }
 
-  private boolean hasDefaultExtension(IFile file, IType resourceType)
-      throws JavaModelException {
+  private boolean hasDefaultExtension(IFile file, IType resourceType) throws JavaModelException {
     String fileExtension = "." + file.getFileExtension();
 
     for (String defaultExtension : ResourceTypeDefaultExtensions.getDefaultExtensions(resourceType)) {
@@ -283,8 +268,8 @@ public class ClientBundleResource {
     return false;
   }
 
-  private boolean isMethodAlreadyDefined(IJavaProject javaProject,
-      String[] extendedInterfaces) throws JavaModelException {
+  private boolean isMethodAlreadyDefined(IJavaProject javaProject, String[] extendedInterfaces)
+      throws JavaModelException {
     for (String extendedInterface : extendedInterfaces) {
       IType type = JavaModelSearch.findType(javaProject, extendedInterface);
       if (type == null) {
@@ -306,8 +291,7 @@ public class ClientBundleResource {
 
       // Find a matching method in this interface or an extended interface
       ITypeHierarchy superHierarchy = type.newSupertypeHierarchy(null);
-      IMethod method = JavaModelSearch.findMethodInHierarchy(superHierarchy,
-          type, methodName, new String[0]);
+      IMethod method = JavaModelSearch.findMethodInHierarchy(superHierarchy, type, methodName, new String[0]);
       if (method != null) {
         // We found a matching accessor method
         return true;
@@ -322,15 +306,13 @@ public class ClientBundleResource {
     }
 
     if (!javaProject.isOnClasspath(file)) {
-      return errorStatus("The file ''{0}'' is not on the project''s classpath",
-          file.getName());
+      return errorStatus("The file ''{0}'' is not on the project''s classpath", file.getName());
     }
 
     return StatusUtilities.OK_STATUS;
   }
 
-  private IStatus validateMethodName(IJavaProject javaProject,
-      String[] extendedInterfaces, String[] methodNames) {
+  private IStatus validateMethodName(IJavaProject javaProject, String[] extendedInterfaces, String[] methodNames) {
     assert (methodName != null);
 
     if (methodName.length() == 0) {
@@ -345,8 +327,7 @@ public class ClientBundleResource {
     try {
       // Look for a conflict with one of our super interfaces
       if (isMethodAlreadyDefined(javaProject, extendedInterfaces)) {
-        return errorStatus("Another method is already named ''{0}''",
-            methodName);
+        return errorStatus("Another method is already named ''{0}''", methodName);
       }
     } catch (JavaModelException e) {
       GWTPluginLog.logError(e);
@@ -371,19 +352,16 @@ public class ClientBundleResource {
 
     IType resourceType = JavaModelSearch.findType(javaProject, resourceTypeName);
     if (resourceType == null) {
-      return errorStatus("Resource type ''{0}'' does not exist",
-          resourceTypeName);
+      return errorStatus("Resource type ''{0}'' does not exist", resourceTypeName);
     }
 
     if (ClientBundleUtilities.findResourcePrototypeType(javaProject) == null) {
-      return errorStatus("{0} is not on the project''s classpath",
-          ClientBundleUtilities.RESOURCE_PROTOTYPE_TYPE_NAME);
+      return errorStatus("{0} is not on the project''s classpath", ClientBundleUtilities.RESOURCE_PROTOTYPE_TYPE_NAME);
     }
 
     try {
       if (!ClientBundleUtilities.isResourceType(javaProject, resourceType)) {
-        return errorStatus("{0} is not a ClientBundle resource type",
-            resourceType.getFullyQualifiedName());
+        return errorStatus("{0} is not a ClientBundle resource type", resourceType.getFullyQualifiedName());
       }
     } catch (JavaModelException e) {
       GWTPluginLog.logError(e);

@@ -17,6 +17,7 @@ package com.google.gdt.eclipse.core.java;
 import com.google.gdt.eclipse.core.JavaUtilities;
 import com.google.gdt.eclipse.core.ResourceUtils;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IStorage;
@@ -31,27 +32,25 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
 /**
- * Provides methods for working with resources based on classpath-relative
- * paths.
+ * Provides methods for working with resources based on classpath-relative paths.
  */
 public class ClasspathResourceUtilities {
 
   /**
    * Gets the classpath relative path of a given resource.
-   * 
+   *
    * Note: This method does not consider build path exclusion/inclusion filters.
-   * 
+   *
    * @param resource
    * @param javaProject
    * @return the classpath relative path, or null if it could not be determined
    * @throws JavaModelException
    * @see JavaModelSearch#isValidElement(org.eclipse.jdt.core.IJavaElement)
    */
-  public static IPath getClasspathRelativePathOfResource(IResource resource,
-      IJavaProject javaProject) throws JavaModelException {
+  public static IPath getClasspathRelativePathOfResource(IResource resource, IJavaProject javaProject)
+      throws JavaModelException {
 
-    IPackageFragmentRoot root = getPackageFragmentRootForResource(resource,
-        javaProject);
+    IPackageFragmentRoot root = getPackageFragmentRootForResource(resource, javaProject);
     if (root == null) {
       return null;
     }
@@ -69,53 +68,61 @@ public class ClasspathResourceUtilities {
 
   /**
    * Determines whether the given path is a source file (not in a JAR).
-   * 
+   *
    * @throws JavaModelException
    */
-  public static boolean isFile(IPath classpathRelativePath,
-      IJavaProject javaProject) throws JavaModelException {
-    return ClasspathResourceUtilities.resolveFile(classpathRelativePath,
-        javaProject) instanceof IFile;
+  public static boolean isFile(IPath classpathRelativePath, IJavaProject javaProject) throws JavaModelException {
+    return ClasspathResourceUtilities.resolveFile(classpathRelativePath, javaProject) instanceof IFile;
   }
 
   /**
-   * Determines whether the given file is on the given package fragment. The
-   * file can be a Java file, class file, or a non-Java resource.
-   * 
-   * @param fileName the file name
-   * @param pckgFragment the package fragment to search
+   * Determines whether the given file is on the given package fragment. The file can be a Java file, class file, or a
+   * non-Java resource.
+   *
+   * @param fileName
+   *          the file name
+   * @param pckgFragment
+   *          the package fragment to search
    * @return whether the given file is on the given package fragment
    * @throws JavaModelException
    */
-  public static boolean isFileOnPackageFragment(String fileName,
-      IPackageFragment pckgFragment) throws JavaModelException {
+  public static boolean isFileOnPackageFragment(String fileName, IPackageFragment pckgFragment)
+      throws JavaModelException {
     return resolveFileOnPackageFragment(fileName, pckgFragment) != null;
   }
 
   /**
    * Determines whether the given path is in a JAR.
-   * 
+   *
    * @throws JavaModelException
    */
-  public static boolean isInJar(IPath classpathRelativePath,
-      IJavaProject javaProject) throws JavaModelException {
-    return ClasspathResourceUtilities.resolveFile(classpathRelativePath,
-        javaProject) instanceof IJarEntryResource;
+  public static boolean isInJar(IPath classpathRelativePath, IJavaProject javaProject) throws JavaModelException {
+    return ClasspathResourceUtilities.resolveFile(classpathRelativePath, javaProject) instanceof IJarEntryResource;
   }
 
   /**
-   * Determines if a resource is available on a project's classpath. This method
-   * searches both source paths and JAR/ZIP files.
+   * Determines if a resource is available on a project's classpath. This method searches both source paths and JAR/ZIP
+   * files.
    */
-  public static boolean isResourceOnClasspath(IJavaProject javaProject,
-      IPath resourcePath) throws JavaModelException {
+  public static boolean isResourceOnClasspath(IJavaProject javaProject, IPath resourcePath) throws JavaModelException {
     String pckg = JavaUtilities.getPackageNameFromPath(resourcePath.removeLastSegments(1));
     String fileName = resourcePath.lastSegment();
 
-    for (IPackageFragment pckgFragment : JavaModelSearch.getPackageFragments(
-        javaProject, pckg)) {
-      if (ClasspathResourceUtilities.isFileOnPackageFragment(fileName,
-          pckgFragment)) {
+    for (IPackageFragment pckgFragment : JavaModelSearch.getPackageFragments(javaProject, pckg)) {
+      if (ClasspathResourceUtilities.isFileOnPackageFragment(fileName, pckgFragment)) {
+        return true;
+      }
+    }
+
+    // If the resource doesn't follow normal java naming convention for resources, such as /resources/folder-name/file-name.js
+    for (IPackageFragmentRoot root : javaProject.getAllPackageFragmentRoots()) {
+      IPackageFragment folderFragment = root.getPackageFragment(pckg);
+      IResource folder = folderFragment.getResource();
+      if (folder == null || !folder.exists() || !(folder instanceof IContainer)) {
+        continue;
+      }
+      IResource resource = ((IContainer) folder).findMember(fileName);
+      if (resource != null && resource.exists()) {
         return true;
       }
     }
@@ -124,13 +131,11 @@ public class ClasspathResourceUtilities {
     return false;
   }
 
-  public static IStorage resolveFile(IPath classpathRelativePath,
-      IJavaProject javaProject) throws JavaModelException {
+  public static IStorage resolveFile(IPath classpathRelativePath, IJavaProject javaProject) throws JavaModelException {
     String fileName = classpathRelativePath.lastSegment();
     String packageName = JavaUtilities.getPackageNameFromPath(classpathRelativePath.removeLastSegments(1));
 
-    for (IPackageFragment packageFragment : JavaModelSearch.getPackageFragments(
-        javaProject, packageName)) {
+    for (IPackageFragment packageFragment : JavaModelSearch.getPackageFragments(javaProject, packageName)) {
       IStorage file = resolveFileOnPackageFragment(fileName, packageFragment);
       if (file != null) {
         return file;
@@ -141,18 +146,20 @@ public class ClasspathResourceUtilities {
   }
 
   /**
-   * Returns the given file or JAR entry if it is on the given package fragment.
-   * The file can be a Java file, class file, or a non-Java resource.
+   * Returns the given file or JAR entry if it is on the given package fragment. The file can be a Java file, class
+   * file, or a non-Java resource.
    * <p>
    * This method returns null for .java files or .class files inside JARs.
-   * 
-   * @param fileName the file name
-   * @param pckgFragment the package fragment to search
+   *
+   * @param fileName
+   *          the file name
+   * @param pckgFragment
+   *          the package fragment to search
    * @return the file as an IResource or IJarEntryResource, or null
    * @throws JavaModelException
    */
-  public static IStorage resolveFileOnPackageFragment(String fileName,
-      IPackageFragment pckgFragment) throws JavaModelException {
+  public static IStorage resolveFileOnPackageFragment(String fileName, IPackageFragment pckgFragment)
+      throws JavaModelException {
 
     boolean isJavaFile = JavaCore.isJavaLikeFileName(fileName);
     boolean isClassFile = ResourceUtils.endsWith(fileName, ".class");
@@ -180,8 +187,7 @@ public class ClasspathResourceUtilities {
       // differently
       if (nonJavaResource instanceof IJarEntryResource) {
         IJarEntryResource jarEntry = (IJarEntryResource) nonJavaResource;
-        if (jarEntry.isFile()
-            && ResourceUtils.areFilenamesEqual(jarEntry.getName(), fileName)) {
+        if (jarEntry.isFile() && ResourceUtils.areFilenamesEqual(jarEntry.getName(), fileName)) {
           return jarEntry;
         }
       }
@@ -207,14 +213,14 @@ public class ClasspathResourceUtilities {
     return null;
   }
 
-  private static IPackageFragmentRoot getPackageFragmentRootForResource(
-      IResource resource, IJavaProject javaProject) throws JavaModelException {
+  private static IPackageFragmentRoot getPackageFragmentRootForResource(IResource resource, IJavaProject javaProject)
+      throws JavaModelException {
 
     while (resource != null) {
       IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(resource);
       /*
-       * Not using JavaModelSearch.isValidElement since checking for exclusions
-       * from the buildpath is the caller's responsibility.
+       * Not using JavaModelSearch.isValidElement since checking for exclusions from the buildpath is the caller's
+       * responsibility.
        */
       if (root != null && root.exists()) {
         return root;

@@ -59,11 +59,10 @@ public class ClientBundleValidator {
     /**
      * Returns the string to use as the first argument of a
      * {@link com.google.gwt.eclipse.core.markers.ClientBundleProblemType#MISSING_RESOURCE_FILE}
-     * problem. For resource types that support multiple default extensions
-     * (e.g. ImageResource), we want to indicate them to the user.
+     * problem. For resource types that support multiple default extensions (e.g. ImageResource), we
+     * want to indicate them to the user.
      */
-    private static String computeExpectedFileNameArgument(
-        String nameWithoutExtension, String[] extensions) {
+    private static String computeExpectedFileNameArgument(String nameWithoutExtension, String[] extensions) {
       if (extensions.length == 0) {
         return nameWithoutExtension;
       }
@@ -81,28 +80,24 @@ public class ClientBundleValidator {
       }
 
       // Indicate all the possible extensions for this resource
-      return nameWithoutExtension + " (supported extensions: "
-          + StringUtilities.join(extensions, ", ") + ")";
+      return nameWithoutExtension + " (supported extensions: " + StringUtilities.join(extensions, ", ") + ")";
     }
 
     /**
-     * Determine where a missing resource should actually have been found. This
-     * is used only for generating the error message string.
-     * 
-     * Note that the @Source path can be interpreted as either an absolute
-     * classpath reference (com/example/foo.jpg) or as a path relative to the
-     * containing package (foo.jpg). This method uses a simple heuristic to
-     * figure out which interpretation you wanted: if the path is just a
-     * filename you meant it as a relative path; otherwise, it was probably an
-     * absolute path.
-     * 
+     * Determine where a missing resource should actually have been found. This is used only for
+     * generating the error message string.
+     *
+     * Note that the @Source path can be interpreted as either an absolute classpath reference
+     * (com/example/foo.jpg) or as a path relative to the containing package (foo.jpg). This method
+     * uses a simple heuristic to figure out which interpretation you wanted: if the path is just a
+     * filename you meant it as a relative path; otherwise, it was probably an absolute path.
+     *
      * @param literalPath the literal path specified by @Source
-     * @param absResourcePath the resource path computed by appending the
-     *          literal path onto the end of the container (package) path
+     * @param absResourcePath the resource path computed by appending the literal path onto the end
+     *        of the container (package) path
      * @return the expected resource path
      */
-    private static IPath computeMissingResourceExpectedPath(IPath literalPath,
-        IPath absResourcePath) {
+    private static IPath computeMissingResourceExpectedPath(IPath literalPath, IPath absResourcePath) {
       // If the the user specified just a filename, we would expect to find the
       // resource in the current package.
       if (literalPath.segmentCount() == 1) {
@@ -113,8 +108,7 @@ public class ClientBundleValidator {
     }
 
     /**
-     * Returns the classpath of the package containing the compilation unit
-     * being validated.
+     * Returns the classpath of the package containing the compilation unit being validated.
      */
     private static IPath getPackagePath(ASTNode node) {
       ICompilationUnit cu = JavaASTUtils.getCompilationUnit(node);
@@ -122,8 +116,7 @@ public class ClientBundleValidator {
       return new Path(pckg.getElementName().replace('.', '/'));
     }
 
-    private static ITypeBinding getReturnTypeBinding(
-        MethodDeclaration methodDecl) {
+    private static ITypeBinding getReturnTypeBinding(MethodDeclaration methodDecl) {
       Type returnType = methodDecl.getReturnType2();
       if (returnType != null) {
         return returnType.resolveBinding();
@@ -142,7 +135,8 @@ public class ClientBundleValidator {
         }
 
         // Simple name is fine, too
-        String sourceAnnotationSimpleName = Signature.getSimpleName(ClientBundleUtilities.CLIENT_BUNDLE_SOURCE_ANNOTATION_NAME);
+        String sourceAnnotationSimpleName =
+            Signature.getSimpleName(ClientBundleUtilities.CLIENT_BUNDLE_SOURCE_ANNOTATION_NAME);
         if (typeName.equals(sourceAnnotationSimpleName)) {
           return true;
         }
@@ -218,18 +212,16 @@ public class ClientBundleValidator {
     }
 
     /**
-     * Validates the existence of the resource file backing an accessor method.
-     * We also index the file by its classpath-relative path so we know to
-     * re-validate this compilation unit when it changes. We need to do this
-     * whether the file currently exists or not.
+     * Validates the existence of the resource file backing an accessor method. We also index the
+     * file by its classpath-relative path so we know to re-validate this compilation unit when it
+     * changes. We need to do this whether the file currently exists or not.
      */
     @SuppressWarnings("unchecked")
     private void validateResourceFile(MethodDeclaration methodDecl) {
       // Only need to worry about methods that return a ResourceProtoype (except
       // GwtCreateResource, which does not have a backing resource file).
       ITypeBinding returnTypeBinding = getReturnTypeBinding(methodDecl);
-      if (returnTypeBinding == null
-          || !ClientBundleUtilities.isResourceType(returnTypeBinding)
+      if (returnTypeBinding == null || !ClientBundleUtilities.isResourceType(returnTypeBinding)
           || ClientBundleUtilities.isGwtCreateResource(returnTypeBinding)) {
         return;
       }
@@ -247,8 +239,7 @@ public class ClientBundleValidator {
         // If no @Source, try locating resource file via via naming conventions
         // and resource types' default extensions
         String resourceTypeName = returnTypeBinding.getErasure().getQualifiedName();
-        IType resourceType = JavaModelSearch.findType(javaProject,
-            resourceTypeName);
+        IType resourceType = JavaModelSearch.findType(javaProject, resourceTypeName);
         if (resourceType == null) {
           // Shouldn't happen since we already resolved the return type binding,
           // but we'll be defensive here anyway
@@ -263,15 +254,13 @@ public class ClientBundleValidator {
           // Compute resource path with each default extension, and add to index
           Set<IPath> possibleResourcePaths = new HashSet<IPath>();
           for (String defaultExtension : defaultExtensions) {
-            possibleResourcePaths.add(pckgPath.append(methodName
-                + defaultExtension));
+            possibleResourcePaths.add(pckgPath.append(methodName + defaultExtension));
           }
           result.addAllPossibleResourcePaths(possibleResourcePaths);
 
           // Now see if there's actually a resource at any of those paths
           for (IPath possibleResourcePath : possibleResourcePaths) {
-            if (ClasspathResourceUtilities.isResourceOnClasspath(javaProject,
-                possibleResourcePath)) {
+            if (ClasspathResourceUtilities.isResourceOnClasspath(javaProject, possibleResourcePath)) {
               // We found a matching resource with one of the default
               // extensions, so no errors on this method.
               return;
@@ -280,24 +269,25 @@ public class ClientBundleValidator {
         } else {
           // If the resource type doesn't define any default extensions, there
           // must be an @Source annotation.
-          result.addProblem(ClientBundleProblem.createSourceAnnotationRequired(
-              methodDecl, resourceType.getFullyQualifiedName()));
+          result.addProblem(
+              ClientBundleProblem.createSourceAnnotationRequired(methodDecl, resourceType.getFullyQualifiedName()));
           return;
         }
 
+        //if its a file with "-", in a resources folder
+
+
         // Couldn't find any matching files with the default extensions
-        String expectedFileName = computeExpectedFileNameArgument(methodName,
-            defaultExtensions);
-        result.addProblem(ClientBundleProblem.createMissingResourceFile(
-            methodDecl.getName(), expectedFileName, pckgPath));
+        String expectedFileName = computeExpectedFileNameArgument(methodName, defaultExtensions);
+        result.addProblem(
+            ClientBundleProblem.createMissingResourceFile(methodDecl.getName(), expectedFileName, pckgPath));
       } catch (JavaModelException e) {
         GWTPluginLog.logError(e);
       }
     }
 
     /**
-     * Validates that a ClientBundle method returns either a resource type or
-     * another ClientBundle.
+     * Validates that a ClientBundle method returns either a resource type or another ClientBundle.
      */
     private void validateReturnType(MethodDeclaration methodDecl) {
       ITypeBinding returnTypeBinding = getReturnTypeBinding(methodDecl);
@@ -317,39 +307,32 @@ public class ClientBundleValidator {
       result.addProblem(ClientBundleProblem.createInvalidReturnType(methodDecl.getReturnType2()));
     }
 
-    private void validateSourceAnnotationValue(StringLiteral literalNode)
-        throws JavaModelException {
+    private void validateSourceAnnotationValue(StringLiteral literalNode) throws JavaModelException {
       String value = literalNode.getLiteralValue();
 
       // Interpret the literal path as an absolute path, and then as a path
       // relative to the containing package (indexing both).
       IPath literalPath = new Path(value);
       result.addPossibleResourcePath(literalPath);
-      IPath fullResourcePathIfPackageRelative = getPackagePath(literalNode).append(
-          literalPath);
+      IPath fullResourcePathIfPackageRelative = getPackagePath(literalNode).append(literalPath);
       result.addPossibleResourcePath(fullResourcePathIfPackageRelative);
 
       // If the @Source path was absolute and we found it, great
-      if (ClasspathResourceUtilities.isResourceOnClasspath(javaProject,
-          literalPath)) {
+      if (ClasspathResourceUtilities.isResourceOnClasspath(javaProject, literalPath)) {
         return;
       }
 
-      if (!ClasspathResourceUtilities.isResourceOnClasspath(javaProject,
-          fullResourcePathIfPackageRelative)) {
+      if (!ClasspathResourceUtilities.isResourceOnClasspath(javaProject, fullResourcePathIfPackageRelative)) {
         // Didn't work as a relative path either, so now it's an error
-        IPath expectedResourcePath = computeMissingResourceExpectedPath(
-            literalPath, fullResourcePathIfPackageRelative);
-        ClientBundleProblem problem = ClientBundleProblem.createMissingResourceFile(
-            literalNode, literalPath.lastSegment(),
-            expectedResourcePath.removeLastSegments(1));
+        IPath expectedResourcePath = computeMissingResourceExpectedPath(literalPath, fullResourcePathIfPackageRelative);
+        ClientBundleProblem problem = ClientBundleProblem.createMissingResourceFile(literalNode,
+            literalPath.lastSegment(), expectedResourcePath.removeLastSegments(1));
         result.addProblem(problem);
       }
     }
 
     @SuppressWarnings("unchecked")
-    private void validateSourceAnnotationValues(Annotation annotation)
-        throws JavaModelException {
+    private void validateSourceAnnotationValues(Annotation annotation) throws JavaModelException {
       Expression exp = JavaASTUtils.getAnnotationValue(annotation);
       if (exp == null) {
         return;
@@ -378,13 +361,12 @@ public class ClientBundleValidator {
    */
   public ValidationResult validate(CompilationUnit cu) {
     ICompilationUnit icu = JavaASTUtils.getCompilationUnit(cu);
-    ClientBundleValidationVisitor visitor = new ClientBundleValidationVisitor(
-        icu.getJavaProject());
+    ClientBundleValidationVisitor visitor = new ClientBundleValidationVisitor(icu.getJavaProject());
     cu.accept(visitor);
     ClientBundleValidationResult result = visitor.getResult();
 
-    ClientBundleResourceDependencyIndex.getInstance().putResourcesForCompilationUnit(
-        icu, result.getPossibleResourcePaths());
+    ClientBundleResourceDependencyIndex.getInstance().putResourcesForCompilationUnit(icu,
+        result.getPossibleResourcePaths());
 
     return result;
   }
