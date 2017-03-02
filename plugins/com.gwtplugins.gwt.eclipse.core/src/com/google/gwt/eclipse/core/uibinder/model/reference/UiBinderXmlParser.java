@@ -110,7 +110,7 @@ public class UiBinderXmlParser {
 
   /**
    * Returns a new instance of the parser.
-   * 
+   *
    * @param xmlModel the XML model to be parsed
    * @param referenceManager an optional reference manager that receives the
    *          parsed references types and XML files
@@ -164,6 +164,7 @@ public class UiBinderXmlParser {
    */
   private final Set<String> javaTypeReferences = new HashSet<String>();
   private final NodeVisitor parseNodesVisitor = new NodeVisitor() {
+    @Override
     public boolean visitNode(Node node) {
       parse((IDOMNode) node);
       return true;
@@ -400,6 +401,7 @@ public class UiBinderXmlParser {
     // We visit each fragment and add references/problems accordingly
     UiBinderUtilities.resolveJavaElExpression(elementType, allButFirstFragment,
         new ElExpressionFragmentVisitor() {
+          @Override
           public void visitNonterminalPrimitiveFragment(String fragment,
               int offset, int length) {
             problemMarkerManager.setPrimitiveFragmentWithLeftoverFragmentsError(
@@ -407,11 +409,13 @@ public class UiBinderXmlParser {
                 fragment);
           }
 
+          @Override
           public void visitResolvedFragmentMethod(IMethod method, int offset,
               int length) {
             javaTypeReferences.add(method.getDeclaringType().getFullyQualifiedName());
           }
 
+          @Override
           public void visitUnresolvedFragment(String fragment, int offset,
               int length, IType enclosingType) {
             problemMarkerManager.setMethodFragmentUndefinedError(new Region(
@@ -606,6 +610,13 @@ public class UiBinderXmlParser {
       IPackageFragment packageFragment = packageFragmentRoot.getPackageFragment(packageName);
       if (JavaModelSearch.isValidElement(packageFragment)) {
         return; // Return as soon as we find any valid package with the name in the import
+      } else {
+
+        // Inner classes are seen as a package. Find the type, it must be good. The inner class could have a widget.
+        IType type = JavaModelSearch.findType(javaProject, packageFragment.getElementName());
+        if (type != null) {
+          return;
+        }
       }
     }
 
@@ -633,11 +644,11 @@ public class UiBinderXmlParser {
     if (IGNORED_CAPITALIZED_SYNTHETIC_ELEMENTS.contains(fqWidgetType)) {
       return;
     }
-    
+
     // even if this type doens't exist, we'll add the name so that if the type
     // is added later, this ui.xml file gets revalidated.
     javaTypeReferences.add(fqWidgetType);
-    
+
     final IType type = JavaModelSearch.findType(javaProject, fqWidgetType);
     boolean validType = JavaModelSearch.isValidElement(type);
 
