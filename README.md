@@ -73,8 +73,8 @@ Unstable update site
 ### Importing
 Simply use Maven to import all the plugins and modules. 
 
-* Use Eclipse Maven Import and import with recursion. 
-* Select all the projects and import. 
+* Use Eclipse Import and choose import with Existing Maven projects. Don't forget to select recursive import.  
+* Select all the projects and import them. This will create the .project, .classpath and .settings files. If some exist, they will be overwritten.  
 
 ### Target Definition
 The target defintion build is based off of the Google Cloud Tools. Follow their instructions to build.
