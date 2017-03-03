@@ -206,14 +206,6 @@ public class WebAppServerTab extends JavaLaunchTab implements WebAppArgumentsTab
       return false;
     }
 
-    // TODO ?
-    if (runServerButton != null) {
-      if (!runServerButton.getSelection()) {
-        setErrorMessage("App Engine projects need to run the built-in server.");
-        return false;
-      }
-    }
-
     return true;
   }
 
