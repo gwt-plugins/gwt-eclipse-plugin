@@ -1,4 +1,6 @@
 #GWT Eclipse Plugin
+
+[![Join the chat at https://gitter.im/gwt-plugins/gwt-eclipse-plugin](https://badges.gitter.im/gwt-plugins/gwt-eclipse-plugin.svg)](https://gitter.im/gwt-plugins/gwt-eclipse-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 This repository houses the source for the GWT Eclipse Plugin. 
 
 ## Thanks to our Sponsors
