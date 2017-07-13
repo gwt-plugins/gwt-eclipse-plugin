@@ -6,6 +6,5 @@ Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.wtp.maven.test
 Bundle-Vendor: GWT Project
 Bundle-Version: 3.0.0.qualifier
 Fragment-Host: com.gwtplugins.gwt.eclipse.core
-Require-Bundle: org.junit,
- com.gwtplugins.gwt.eclipse.testing,
- com.gwtplugins.gdt.eclipse.suite
+Require-Bundle: com.gwtplugins.gwt.eclipse.testing,
+ org.junit
