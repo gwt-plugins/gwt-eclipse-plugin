@@ -9,10 +9,10 @@
   <packaging>pom</packaging>
 
   <properties>
-    <tycho.version>0.26.0</tycho.version>
-    <tycho-extras.version>0.26.0</tycho-extras.version>
+    <tycho.version>1.0.0</tycho.version>
+    <tycho-extras.version>1.0.0</tycho-extras.version> <!-- TODO Remove this tag later -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <eclipse.target>mars</eclipse.target>
+    <eclipse.target>mars</eclipse.target> <!-- TODO change to neon -->
 
     <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
@@ -297,7 +297,6 @@
         <!-- <jettyMinVersion>9.3</jettyMinVersion> -->
         <!-- <jettyMaxVersion>9.4</jettyMaxVersion> -->
       </properties>
-      <!-- build against a known target platform -->
       <modules>
         <module>eclipse/neon</module>
       </modules>
@@ -312,6 +311,38 @@
                   <groupId>com.gwtplugins.eclipse</groupId>
                   <artifactId>gwt-eclipse-neon</artifactId>
                   <version>4.6.0-SNAPSHOT</version>
+                </artifact>
+              </target>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    
+    <profile>
+      <id>build-eclipse-oxygen</id>
+      <activation>
+        <property>
+          <name>eclipse.target</name>
+          <value>oxygen</value>
+        </property>
+      </activation>
+      <properties>
+      </properties>
+      <modules>
+        <module>eclipse/oxygen</module>
+      </modules>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.eclipse.tycho</groupId>
+            <artifactId>target-platform-configuration</artifactId>
+            <configuration>
+              <target>
+                <artifact>
+                  <groupId>com.gwtplugins.eclipse</groupId>
+                  <artifactId>gwt-eclipse-oxygen</artifactId>
+                  <version>4.7.0-SNAPSHOT</version>
                 </artifact>
               </target>
             </configuration>

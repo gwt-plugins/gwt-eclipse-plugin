@@ -1,0 +1,62 @@
+/* 
+ * Target Platform Definition created using Mikael Barbero's TPD editor 
+ * <https://github.com/mbarbero/fr.obeo.releng.targetplatform/>
+ * 
+ * If you make changes to this file, either:
+ * 
+ *    * Right-click in the editor and choose 'Create Target Definition File'
+ *      to update the corresponding .target file.
+ *    * Right-lick in the editor and choose 'Set as Target Platform'
+ *      to update your IDE's target platform (regenerates the .target too)
+ */
+target "GWT Eclipse Plugin for Oxygen" with source requirements
+
+location "http://download.eclipse.org/cbi/updates/license" {
+    org.eclipse.license.feature.group
+}
+
+// 201706281000 = Oxygen.0
+location "http://download.eclipse.org/releases/oxygen/201706281000/" {
+	org.eclipse.sdk.feature.group
+	org.eclipse.jdt.feature.group
+	org.eclipse.m2e.feature.feature.group
+	org.eclipse.m2e.sdk.feature.feature.group
+	org.eclipse.m2e.wtp.feature.feature.group
+	org.eclipse.m2e.wtp.sdk.feature.feature.group
+	org.eclipse.mylyn.commons.feature.group
+	org.eclipse.jpt.jpa.feature.feature.group
+	org.eclipse.datatools.sdk.feature.feature.group
+	org.eclipse.swtbot.eclipse.feature.group
+	
+	org.eclipse.epp.logging.aeri.feature.feature.group
+	org.eclipse.epp.logging.aeri.feature.source.feature.group
+	
+	org.eclipse.jetty.http
+	org.eclipse.jetty.servlet
+	org.eclipse.jetty.server
+	org.eclipse.jetty.util
+}
+
+
+// WTP SDKs aren't exposed through the main release links
+location "http://download.eclipse.org/webtools/downloads/drops/R3.9.0/R-3.9.0-20170613094504/repository" {
+    org.eclipse.jst.web_sdk.feature.feature.group
+    org.eclipse.jst.server_sdk.feature.feature.group
+    org.eclipse.jst.common.fproj.enablement.jdt.sdk.feature.group
+    org.eclipse.wst.common.fproj.sdk.feature.group
+    org.eclipse.wst.web_sdk.feature.feature.group
+    org.eclipse.jst.enterprise_sdk.feature.feature.group
+    org.eclipse.wst.server_adapters.sdk.feature.feature.group
+}
+
+location "http://download.eclipse.org/tools/orbit/downloads/drops/R20170516192513/repository" {
+    org.hamcrest
+}
+
+//location "https://dl.google.com/eclipse/google-cloud-eclipse/stable/" {
+//	com.google.cloud.tools.eclipse.suite.e45.feature.feature.group
+//}
+
+//location "http://sdbg.github.io/p2/" {
+//	com.github.sdbg.feature.feature.group	
+//}

@@ -8,6 +8,4 @@ Bundle-Version: 3.0.0.qualifier
 Fragment-Host: com.gwtplugins.gwt.eclipse.core
 Require-Bundle: com.gwtplugins.gcp.eclipse.testing,
  com.gwtplugins.gwt.eclipse.testing,
- org.eclipse.m2e.core,
- org.junit,
- com.gwtplugins.gdt.eclipse.suite
+ org.junit
