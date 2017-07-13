@@ -16,9 +16,12 @@ package com.google.gdt.eclipse.core;
 
 import com.google.gdt.eclipse.platform.jdt.formatter.CodeFormatterFlags;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jdt.core.IBuffer;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -33,9 +36,12 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
+import org.eclipse.jdt.internal.corext.CorextMessages;
+import org.eclipse.jdt.internal.corext.ValidateEditException;
 import org.eclipse.jdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.jdt.internal.corext.dom.TokenScanner;
 import org.eclipse.jdt.internal.corext.util.JavaModelUtil;
+import org.eclipse.jdt.internal.corext.util.Resources;
 import org.eclipse.jdt.internal.corext.util.Strings;
 import org.eclipse.jdt.ui.CodeGeneration;
 import org.eclipse.jface.text.BadLocationException;
@@ -43,9 +49,9 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
 
 /**
- * Generates new top-level types. By itself, it creates types with empty bodies,
- * but subclasses can override createTypeMembers() to populate the type.
- * 
+ * Generates new top-level types. By itself, it creates types with empty bodies, but subclasses can override
+ * createTypeMembers() to populate the type.
+ *
  * NOTE: Much of the implementation is based on the type generation code in
  * {@link org.eclipse.jdt.ui.wizards.NewTypeWizardPage}.
  */
@@ -71,8 +77,8 @@ public class TypeCreator {
 
   private final String simpleTypeName;
 
-  public TypeCreator(IPackageFragment pckg, String simpleTypeName,
-      ElementType elementType, String[] interfaces, boolean addComments) {
+  public TypeCreator(IPackageFragment pckg, String simpleTypeName, ElementType elementType, String[] interfaces,
+      boolean addComments) {
     this.pckg = pckg;
     this.simpleTypeName = simpleTypeName;
     this.elementType = elementType;
@@ -83,10 +89,9 @@ public class TypeCreator {
 
   /**
    * Creates the new type.
-   * 
-   * NOTE: If this method throws a {@link JavaModelException}, its
-   * {@link JavaModelException#getJavaModelStatus()} method can provide more
-   * detailed information about the problem.
+   *
+   * NOTE: If this method throws a {@link JavaModelException}, its {@link JavaModelException#getJavaModelStatus()}
+   * method can provide more detailed information about the problem.
    */
   public IType createType() throws CoreException {
     IProgressMonitor monitor = new NullProgressMonitor();
@@ -125,7 +130,7 @@ public class TypeCreator {
 
       // Rewrite the imports and apply the edit
       TextEdit edit = imports.rewriteImports(monitor);
-      JavaModelUtil.applyEdit(cu, edit, false, null);
+      applyEdit(cu, edit, false, null);
 
       // Format the Java code
       String formattedSource = formatJava(type);
@@ -143,16 +148,42 @@ public class TypeCreator {
     }
   }
 
+  // Copied from JavaModelUtil
+  private static void applyEdit(ICompilationUnit cu, TextEdit edit, boolean save, IProgressMonitor monitor)
+      throws CoreException, ValidateEditException {
+    IFile file = (IFile) cu.getResource();
+    if (!save || !file.exists()) {
+      cu.applyTextEdit(edit, monitor);
+    } else {
+      if (monitor == null) {
+        monitor = new NullProgressMonitor();
+      }
+      monitor.beginTask(CorextMessages.JavaModelUtil_applyedit_operation, 2);
+      try {
+        IStatus status = Resources.makeCommittable(file, null);
+        if (!status.isOK()) {
+          throw new ValidateEditException(status);
+        }
+
+        cu.applyTextEdit(edit, SubMonitor.convert(monitor, 1));
+
+        cu.save(SubMonitor.convert(monitor, 1), true);
+      } finally {
+        monitor.done();
+      }
+    }
+  }
+
   /**
-   * Subclasses should override this method to add methods and/or fields to the
-   * generated type.
-   * 
-   * @param newType the newly-generated type
-   * @param imports import rewriter
+   * Subclasses should override this method to add methods and/or fields to the generated type.
+   *
+   * @param newType
+   *          the newly-generated type
+   * @param imports
+   *          import rewriter
    * @throws CoreException
    */
-  protected void createTypeMembers(IType newType, ImportRewrite imports)
-      throws CoreException {
+  protected void createTypeMembers(IType newType, ImportRewrite imports) throws CoreException {
     // Do nothing by default
   }
 
@@ -171,23 +202,20 @@ public class TypeCreator {
     }
   }
 
-  private String createCuContent(ICompilationUnit cu, String typeContent)
-      throws CoreException {
+  private String createCuContent(ICompilationUnit cu, String typeContent) throws CoreException {
     String fileComment = getFileComment(cu);
     String typeComment = getTypeComment(cu);
     IPackageFragment cuPckg = (IPackageFragment) cu.getParent();
 
     // Use the 'New Java File' code template specified by workspace preferences
-    String content = CodeGeneration.getCompilationUnitContent(cu, fileComment,
-        typeComment, typeContent, lineDelimiter);
+    String content = CodeGeneration.getCompilationUnitContent(cu, fileComment, typeComment, typeContent, lineDelimiter);
     if (content != null) {
       // Parse the generated source to make sure it's error-free
       ASTParser parser = ASTParser.newParser(AST.JLS3);
       parser.setProject(cu.getJavaProject());
       parser.setSource(content.toCharArray());
       CompilationUnit unit = (CompilationUnit) parser.createAST(null);
-      if ((cuPckg.isDefaultPackage() || unit.getPackage() != null)
-          && !unit.types().isEmpty()) {
+      if ((cuPckg.isDefaultPackage() || unit.getPackage() != null) && !unit.types().isEmpty()) {
         return content;
       }
     }
@@ -209,8 +237,7 @@ public class TypeCreator {
     return "public class " + simpleTypeName + "{ }";
   }
 
-  private String createTypeStub(ICompilationUnit cu, ImportRewrite imports)
-      throws CoreException {
+  private String createTypeStub(ICompilationUnit cu, ImportRewrite imports) throws CoreException {
     StringBuffer buffer = new StringBuffer();
 
     // Default modifiers is just: public
@@ -219,14 +246,14 @@ public class TypeCreator {
     String type = "";
     String templateID = "";
     switch (elementType) {
-      case CLASS:
-        type = "class ";
-        templateID = CodeGeneration.CLASS_BODY_TEMPLATE_ID;
-        break;
-      case INTERFACE:
-        type = "interface ";
-        templateID = CodeGeneration.INTERFACE_BODY_TEMPLATE_ID;
-        break;
+    case CLASS:
+      type = "class ";
+      templateID = CodeGeneration.CLASS_BODY_TEMPLATE_ID;
+      break;
+    case INTERFACE:
+      type = "interface ";
+      templateID = CodeGeneration.INTERFACE_BODY_TEMPLATE_ID;
+      break;
     }
     buffer.append(type);
     buffer.append(simpleTypeName);
@@ -236,8 +263,7 @@ public class TypeCreator {
     buffer.append(" {").append(lineDelimiter);
 
     // Generate the type body according to the template in preferences
-    String typeBody = CodeGeneration.getTypeBody(templateID, cu,
-        simpleTypeName, lineDelimiter);
+    String typeBody = CodeGeneration.getTypeBody(templateID, cu, simpleTypeName, lineDelimiter);
     if (typeBody != null) {
       buffer.append(typeBody);
     } else {
@@ -250,14 +276,11 @@ public class TypeCreator {
 
   private String formatJava(IType type) throws JavaModelException {
     String source = type.getCompilationUnit().getSource();
-    CodeFormatter formatter = ToolFactory.createCodeFormatter(type.getJavaProject().getOptions(
-        true));
-    TextEdit formatEdit = formatter.format(
-        CodeFormatterFlags.getFlagsForCompilationUnitFormat(), source, 0,
+    CodeFormatter formatter = ToolFactory.createCodeFormatter(type.getJavaProject().getOptions(true));
+    TextEdit formatEdit = formatter.format(CodeFormatterFlags.getFlagsForCompilationUnitFormat(), source, 0,
         source.length(), 0, lineDelimiter);
     if (formatEdit == null) {
-      CorePluginLog.logError("Could not format source for "
-          + type.getCompilationUnit().getElementName());
+      CorePluginLog.logError("Could not format source for " + type.getCompilationUnit().getElementName());
       return source;
     }
 
@@ -283,8 +306,7 @@ public class TypeCreator {
   private String getTypeComment(ICompilationUnit cu) {
     if (addComments) {
       try {
-        String comment = CodeGeneration.getTypeComment(cu, simpleTypeName,
-            new String[0], lineDelimiter);
+        String comment = CodeGeneration.getTypeComment(cu, simpleTypeName, new String[0], lineDelimiter);
         if (comment != null && isValidComment(comment)) {
           return comment;
         }
