@@ -9,10 +9,10 @@
   <packaging>pom</packaging>
 
   <properties>
-    <tycho.version>0.26.0</tycho.version>
-    <tycho-extras.version>0.26.0</tycho-extras.version>
+    <tycho.version>1.0.0</tycho.version>
+    <tycho-extras.version>1.0.0</tycho-extras.version> <!-- TODO Remove this tag later -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <eclipse.target>mars</eclipse.target>
+    <eclipse.target>mars</eclipse.target> <!-- TODO change to neon -->
 
     <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
     <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
