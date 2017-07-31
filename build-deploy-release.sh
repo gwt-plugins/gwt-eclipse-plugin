@@ -9,6 +9,9 @@ mvn clean install
 cd ..
 
 
-# upload
+# upload repo
 sh ./repo/upload-release.sh
 
+
+# upload release zip
+sh ./repo/upload-release-zip.sh
