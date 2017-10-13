@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
+ *
  */
 @SuppressWarnings("restriction")
 public final class ClasspathUtilities {
@@ -77,7 +77,7 @@ public final class ClasspathUtilities {
   /**
    * Finds all the classpath containers in the specified project that match the
    * provided container ID.
-   * 
+   *
    * @param javaProject the project to query
    * @param containerId The container ID we are trying to match.
    * @return an array of matching classpath containers.
@@ -87,6 +87,7 @@ public final class ClasspathUtilities {
       throws JavaModelException {
 
     Predicate<IClasspathEntry> matchPredicate = new Predicate<IClasspathEntry>() {
+      @Override
       public boolean apply(IClasspathEntry entry) {
         if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
           IPath containerPath = entry.getPath();
@@ -123,7 +124,7 @@ public final class ClasspathUtilities {
   /**
    * Returns the {@link IClasspathEntry#CPE_CONTAINER} entry with the specified
    * container ID or <code>null</code> if one could not be found.
-   * 
+   *
    * @param classpathEntries array of classpath entries
    * @param containerId container ID
    * @return {@link IClasspathEntry#CPE_CONTAINER} entry with the specified
@@ -141,7 +142,7 @@ public final class ClasspathUtilities {
   /**
    * Return the raw classpath entry on the project's classpath that contributes
    * the given type to the project.
-   * 
+   *
    * @param javaProject The java project
    * @param fullyQualifiedName The fully-qualified type name
    * @return The raw classpath entry that contributes the type to the project,
@@ -160,8 +161,20 @@ public final class ClasspathUtilities {
       IClasspathEntry[] rawClasspath = javaProject.getRawClasspath();
       for (IClasspathEntry rawClasspathEntry : rawClasspath) {
         IClasspathEntry[] resolvedClasspath = jProject.resolveClasspath(new IClasspathEntry[] {rawClasspathEntry});
-        IPackageFragmentRoot[] computePackageFragmentRoots = jProject.computePackageFragmentRoots(
-            resolvedClasspath, true, null);
+
+        // was this - which is no longer, internal api refactor
+        //IPackageFragmentRoot[] computePackageFragmentRoots = jProject.computePackageFragmentRoots(resolvedClasspath, true, null);
+
+        // now this - from IPackage
+        List<IPackageFragmentRoot> fragmentRoots = new ArrayList<IPackageFragmentRoot>();
+        for (IClasspathEntry classPathEntry : resolvedClasspath) {
+          IPackageFragmentRoot[] foundRoots = javaProject.findPackageFragmentRoots(classPathEntry);
+          fragmentRoots.addAll(Arrays.asList(foundRoots));
+        }
+
+        IPackageFragmentRoot[] computePackageFragmentRoots = new IPackageFragmentRoot[fragmentRoots.size()];
+        fragmentRoots.toArray(computePackageFragmentRoots);
+
         if (Arrays.asList(computePackageFragmentRoots).contains(
             packageFragmentRoot)) {
           return rawClasspathEntry;
@@ -177,7 +190,7 @@ public final class ClasspathUtilities {
   /**
    * Returns a String (in the format of the JVM classpath argument) which
    * contains the given classpath entries.
-   * 
+   *
    * @param classpathEntries array of runtime classpath entries
    * @return flattened String of the given classpath entries in the format
    *         suitable for passing as a JVM argument
@@ -217,7 +230,7 @@ public final class ClasspathUtilities {
   /**
    * Determines whether a ClasspathContainer exists on the provided project that
    * matches the provided container ID.
-   * 
+   *
    * @param javaProject the project to query
    * @param containerId The container ID we are trying to match.
    * @return whether at least one classpath container exists that matches the
@@ -235,7 +248,7 @@ public final class ClasspathUtilities {
    * Returns the first index of the specified
    * {@link IClasspathEntry#CPE_CONTAINER} entry with the specified container ID
    * or -1 if one could not be found.
-   * 
+   *
    * @param classpathEntries array of classpath entries
    * @param containerId container ID
    * @return index of the specified {@link IClasspathEntry#CPE_CONTAINER} entry
@@ -263,11 +276,11 @@ public final class ClasspathUtilities {
   /**
    * Replace an {@link IClasspathEntry#CPE_CONTAINER} entry with the given
    * container ID, with its corresponding resolved classpath entries.
-   * 
+   *
    * @param javaProject java project
    * @param containerId container ID to replace
    * @return true if a container was replaced
-   * 
+   *
    * @throws JavaModelException
    */
   public static boolean replaceContainerWithClasspathEntries(
@@ -294,7 +307,7 @@ public final class ClasspathUtilities {
   /**
    * Replaces a project's classpath container entry with a new one or appends it
    * to the classpath if none were found.
-   * 
+   *
    * @param javaProject The target project
    * @param containerId the identifier of the classpath container type
    * @param newContainerPath the path for the new classpath. Note: this path
@@ -333,7 +346,7 @@ public final class ClasspathUtilities {
    * more information: <a
    * href="http://bugs.eclipse.org/bugs/show_bug.cgi?id=243692"
    * >http://bugs.eclipse.org/bugs/show_bug.cgi?id=243692</a>
-   * 
+   *
    * <p>
    * Note that this method is asynchronous, so the caller will regain control
    * immediately, and the raw classpath will be set at some future time. Right
@@ -341,7 +354,7 @@ public final class ClasspathUtilities {
    * If this becomes a concern in the future, a callback parameter can be
    * introduced.
    * </p>
-   * 
+   *
    * <p>
    * This method does not accept an IProgressMonitor, unlike the equivalent
    * method in IJavaProject, because there is an implicit progress monitor
@@ -349,7 +362,7 @@ public final class ClasspathUtilities {
    * future, this method could be modified to accept a user-specified progress
    * monitor.
    * </p>
-   * 
+   *
    * NOTE: If you are already running in a job, you probably don't want to call
    * this method.
    */
@@ -357,6 +370,7 @@ public final class ClasspathUtilities {
       final IClasspathEntry[] newClasspathEntries) {
 
     IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+      @Override
       public void run(IProgressMonitor monitor) throws CoreException,
           OperationCanceledException {
         javaProject.setRawClasspath(newClasspathEntries, monitor);
@@ -376,7 +390,7 @@ public final class ClasspathUtilities {
    * more information: <a
    * href="http://bugs.eclipse.org/bugs/show_bug.cgi?id=243692"
    * >http://bugs.eclipse.org/bugs/show_bug.cgi?id=243692</a>
-   * 
+   *
    * <p>
    * Note that this method is asynchronous, so the caller will regain control
    * immediately, and the raw classpath will be set at some future time. Right
@@ -384,7 +398,7 @@ public final class ClasspathUtilities {
    * If this becomes a concern in the future, a callback parameter can be
    * introduced.
    * </p>
-   * 
+   *
    * <p>
    * This method does not accept an IProgressMonitor, unlike the equivalent
    * method in IJavaProject, because there is an implicit progress monitor
@@ -401,7 +415,7 @@ public final class ClasspathUtilities {
   /**
    * Waits indefinitely until the given classpath entries are on the given
    * project's raw classpath.
-   * 
+   *
    * @throws JavaModelException
    * @throws InterruptedException
    */
