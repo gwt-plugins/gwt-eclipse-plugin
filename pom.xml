@@ -26,7 +26,7 @@
     <os-jvm-flags />
 
     <!-- Used In: GwtRuntimeTestUtilities.java TODO remove? -->
-    <gwt.version>2.7.0</gwt.version>
+    <gwt.version>2.8.1</gwt.version>
 
     <!-- SwtBot Timeout -->
     <org.eclipse.swtbot.search.timeout>50000</org.eclipse.swtbot.search.timeout>
@@ -55,13 +55,18 @@
     <module>plugins/com.gwtplugins.gdt.eclipse.suite</module>
     <module>plugins/com.gwtplugins.gdt.eclipse.suite.update</module>
     <module>plugins/com.gwtplugins.gdt.eclipse.suite.test</module>
-    <module>plugins/com.gwtplugins.gdt.eclipse.suite.test.swtbot</module>
-    <module>plugins/com.gwtplugins.gdt.eclipse.swtbot</module>
+    
+    <!-- TODO not enabled yet -->
+    <!-- <module>plugins/com.gwtplugins.gdt.eclipse.suite.test.swtbot</module> -->
+    <!-- <module>plugins/com.gwtplugins.gdt.eclipse.swtbot</module> -->
 
     <!-- GWT -->
     <module>plugins/com.gwtplugins.gwt.eclipse.core</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.core.test</module>
-    <module>plugins/com.gwtplugins.gwt.eclipse.core.test.swtbot</module>
+    
+    <!-- TODO enable swtbot -->
+    <!-- <module>plugins/com.gwtplugins.gwt.eclipse.core.test.swtbot</module> -->
+    
     <module>plugins/com.gwtplugins.gwt.eclipse.oophm</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.oophm.test</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.testing</module>
