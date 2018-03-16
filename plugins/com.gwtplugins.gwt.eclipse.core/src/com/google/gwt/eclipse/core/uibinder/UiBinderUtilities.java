@@ -33,8 +33,11 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
+import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Modifier;
+import org.eclipse.jdt.internal.corext.dom.Bindings;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 
@@ -406,6 +409,16 @@ public final class UiBinderUtilities {
               method.getDeclaringType(),
               returnTypeSignature);
           if (JavaModelSearch.isValidElement(fragmentType)) {
+            currentType = fragmentType;
+            continue;
+          }
+
+          // Final attempt to resolve the type, this resolves the binding
+          // in the case of generics or parameterized types. Fixes issue 373
+          ITypeBinding binding = JavaASTUtils.findTypeBinding(currentType);
+          IMethodBinding methodBinding = Bindings.findMethodInHierarchy(binding,
+              fragment, new ITypeBinding[] {});
+          if(methodBinding.getReturnType() != null) {
             currentType = fragmentType;
             continue;
           }
