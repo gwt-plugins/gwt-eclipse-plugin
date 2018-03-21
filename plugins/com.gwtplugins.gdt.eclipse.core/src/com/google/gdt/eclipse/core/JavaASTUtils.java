@@ -265,7 +265,7 @@ public final class JavaASTUtils {
   }
 
   public static ITypeBinding findTypeBinding(IType currentType) throws JavaModelException{
-    final ASTParser parser = ASTParser.newParser(AST.JLS8);
+    final ASTParser parser = ASTParser.newParser(AST.JLS3);
     parser.setKind(ASTParser.K_COMPILATION_UNIT);
     parser.setSource(currentType.getCompilationUnit());
     parser.setResolveBindings(true);
