@@ -46,7 +46,7 @@ import java.util.List;
 public class NewModuleWizard extends AbstractNewFileWizard {
 
   private static final String NO_VERSION_FOUND_DTD =
-      "<!DOCTYPE module PUBLIC \"-//Google Inc.//DTD GWT//EN\" \"http://gwtproject.org/doctype/2.8.1/gwt-module.dtd\">";
+      "<!DOCTYPE module PUBLIC \"-//Google Inc.//DTD GWT//EN\" \"http://gwtproject.org/doctype/2.8.0/gwt-module.dtd\">";
   private NewModuleWizardPage newModuleWizardPage;
 
   @Override
