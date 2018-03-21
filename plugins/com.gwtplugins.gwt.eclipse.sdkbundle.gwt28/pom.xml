@@ -28,10 +28,10 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://goo.gl/TysXZl</url> 
+              <url>https://goo.gl/pZZPXS</url> 
               <unpack>true</unpack>
               <overwrite>true</overwrite>
-              <outputFileName>gwt-2.8.1.zip</outputFileName>
+              <outputFileName>gwt-2.8.2.zip</outputFileName>
               <outputDirectory>${basedir}</outputDirectory>
             </configuration>
           </execution>

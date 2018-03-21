@@ -29,11 +29,11 @@ import com.gwtplugins.gwt.eclipse.gss.model.GssResourceSourceViewerConfiguration
  */
 public class GssResourceTextEditor extends StructuredTextEditor {
 
-  @Override
-  protected void doSetInput(IEditorInput input) throws CoreException {
-    super.doSetInput(input);
+	@Override
+	protected void doSetInput(IEditorInput input) throws CoreException {
+		super.doSetInput(input);
 
-    setSourceViewerConfiguration(new GssResourceSourceViewerConfiguration());
-  }
+		setSourceViewerConfiguration(new GssResourceSourceViewerConfiguration());
+	}
 
 }

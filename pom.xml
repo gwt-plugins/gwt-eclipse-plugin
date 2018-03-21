@@ -26,7 +26,7 @@
     <os-jvm-flags />
 
     <!-- Used In: GwtRuntimeTestUtilities.java TODO remove? -->
-    <gwt.version>2.8.1</gwt.version>
+    <gwt.version>2.8.2</gwt.version>
 
     <!-- SwtBot Timeout -->
     <org.eclipse.swtbot.search.timeout>50000</org.eclipse.swtbot.search.timeout>
