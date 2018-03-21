@@ -31,7 +31,7 @@
               <url>https://goo.gl/pZZPXS</url> 
               <unpack>true</unpack>
               <overwrite>true</overwrite>
-              <outputFileName>${basedir}/gwt-2.8.2.zip</outputFileName>
+              <outputFileName>gwt-2.8.2.zip</outputFileName>
               <outputDirectory>${basedir}</outputDirectory>
             </configuration>
           </execution>

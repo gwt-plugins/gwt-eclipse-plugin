@@ -49,6 +49,7 @@ import org.eclipse.jdt.core.dom.StringLiteral;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.rewrite.ImportRewrite;
+import org.eclipse.jdt.internal.corext.dom.ASTNodes;
 import org.eclipse.jdt.internal.corext.dom.TypeBindingVisitor;
 import org.eclipse.jdt.internal.ui.text.correction.ASTResolving;
 
@@ -122,6 +123,7 @@ public final class JavaASTUtils {
     final boolean[] containsTypeVariable = {false};
 
     ASTResolving.visitAllBindings(type, new TypeBindingVisitor() {
+      @Override
       public boolean visit(ITypeBinding visitedBinding) {
         if (visitedBinding.isTypeVariable()) {
           containsTypeVariable[0] = true;
@@ -260,6 +262,15 @@ public final class JavaASTUtils {
     }
 
     return null;
+  }
+
+  public static ITypeBinding findTypeBinding(IType currentType) throws JavaModelException{
+    final ASTParser parser = ASTParser.newParser(AST.JLS3);
+    parser.setKind(ASTParser.K_COMPILATION_UNIT);
+    parser.setSource(currentType.getCompilationUnit());
+    parser.setResolveBindings(true);
+    CompilationUnit unit = (CompilationUnit) parser.createAST(null);
+    return ASTNodes.getTypeBinding(unit, currentType);
   }
 
   /**
