@@ -56,7 +56,7 @@ location "http://download.eclipse.org/tools/orbit/downloads/drops/R2016022119215
 }
 
 location "https://dl.google.com/eclipse/google-cloud-eclipse/stable/" {
-	com.google.cloud.tools.eclipse.suite.e45.feature.feature.group
+	com.google.cloud.tools.eclipse.suite.feature.feature.group
 }
 
 location "http://sdbg.github.io/p2/" {
