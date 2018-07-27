@@ -15,7 +15,7 @@ The Google Cloud Tools team has put a significant amount of effort in helping br
 ### Sencha
 Sencha provides man power to help update the plugin and the build server which automates the build. 
 
-  [![Sencha](http://cdn.sencha.com/img/gwt-eclipse-plugin-banner.png)](https://www.sencha.com/products/gxt/)
+  [![Sencha GXT](http://cdn.sencha.com/img/gwt-eclipse-plugin-banner.png)](https://www.sencha.com/products/gxt/)
 
 
 ## Quality
