@@ -58,6 +58,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -99,6 +101,8 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
 
   private boolean useGWT;
 
+  private Text gwtFixedSdkVersionTextField;
+
   private Button useGWTCheckbox;
 
   public GWTProjectPropertyPage() {
@@ -137,6 +141,7 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
 
     if (useGWT) {
       saveChangesToEntryPointModules();
+      saveFixedGwtSdkVersion();
     }
   }
 
@@ -269,6 +274,21 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
         return GWTPreferences.getSdkManager();
       }
     };
+
+    Group groupFixedSdk = SWTFactory.createGroup(parent, "Fixed GWT SDK Version", 1, 1, GridData.FILL_HORIZONTAL);
+
+    Label label = new Label(groupFixedSdk, SWT.NULL);
+    label.setText("Version: ");
+
+    gwtFixedSdkVersionTextField = new Text(groupFixedSdk, SWT.SINGLE | SWT.BORDER);
+    GridData gridData = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+    gridData.horizontalSpan = 3;
+    gwtFixedSdkVersionTextField.setLayoutData(gridData);
+
+    String version = GWTProjectProperties.getFixedGwtSdkVersion(getProject());
+    gwtFixedSdkVersionTextField.setText(version);
+    gwtFixedSdkVersionTextField.setToolTipText("This is a workaround for a performance issue in large projects."
+        + " Enter the version string of the SDK to use with this project, for example '2.7.0'.");
   }
 
   private void fieldChanged() {
@@ -359,6 +379,10 @@ public class GWTProjectPropertyPage extends AbstractProjectPropertyPage {
         GWTPluginLog.logError(e, "Could not open GWT Java editor on {0}", editorRef.getTitleToolTip());
       }
     }
+  }
+
+  private void saveFixedGwtSdkVersion() throws BackingStoreException {
+    GWTProjectProperties.setFixedGwtSdkVersion(getProject(), gwtFixedSdkVersionTextField.getText());
   }
 
   private void saveChangesToEntryPointModules() throws BackingStoreException {

@@ -24,6 +24,7 @@ import com.google.gwt.eclipse.core.GWTPlugin;
 import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.launch.processors.GwtLaunchConfigurationProcessorUtilities;
 import com.google.gwt.eclipse.core.preferences.GWTPreferences;
+import com.google.gwt.eclipse.core.properties.GWTProjectProperties;
 import com.google.gwt.eclipse.core.util.Util;
 
 import org.eclipse.core.resources.IProject;
@@ -86,6 +87,20 @@ public abstract class GwtSdk extends AbstractSdk {
     protected ProjectBoundSdk(IJavaProject javaProject) {
       super("", null);
       this.javaProject = javaProject;
+    }
+
+    @Override
+    public String getVersion() {
+      // Retrieving the version of a ProjectBoundSdk via the classloader is SLOW!
+      // This is a workaround that skips the whole procedure if the version string can be found
+      // in the properties of the project instead.
+      String version = GWTProjectProperties.getFixedGwtSdkVersion(javaProject.getProject());
+      if (version == null || version.isEmpty()) {
+        // TODO: Maybe output a warning message here that points out the slow behaviour due to
+        // not having configured the property?
+        return super.getVersion();
+      }
+      return SdkUtils.cleanupVersion(version);
     }
 
     /**
