@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="GWT Eclipse Plugin Mars" sequenceNumber="1521650710">
+<target name="GWT Eclipse Plugin Mars" sequenceNumber="1533891458">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.license.feature.group" version="2.0.0.v20180130-0820"/>
+      <unit id="org.eclipse.license.feature.group" version="2.0.1.v20180423-1114"/>
       <repository location="http://download.eclipse.org/cbi/updates/license"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
@@ -43,7 +43,7 @@
       <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="com.google.cloud.tools.eclipse.suite.feature.feature.group" version="1.6.0.201803071812"/>
+      <unit id="com.google.cloud.tools.eclipse.suite.feature.feature.group" version="1.7.1.201807071456"/>
       <repository location="https://dl.google.com/eclipse/google-cloud-eclipse/stable/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
