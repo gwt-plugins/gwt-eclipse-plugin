@@ -51,6 +51,8 @@ public final class GWTProjectProperties {
 
   private static final String SYNC_CODESERVER_RUNNING =  "gwtSyncCodeServer";
 
+  private static final String FIXED_GWT_SDK_VERSION =  "gwtFixedSdkVersion";
+
   /**
    * Returns the default set of entry point modules for a project. This set
    * contains all modules defined in source (.gwt.xml) in the project.
@@ -143,6 +145,17 @@ public final class GWTProjectProperties {
     String valueStr = prefs.get(SYNC_CODESERVER_RUNNING, "true");
     Boolean b = Boolean.valueOf(valueStr);
     return b;
+  }
+
+  public static void setFixedGwtSdkVersion(IProject project, String version) throws BackingStoreException {
+    IEclipsePreferences prefs = getProjectProperties(project);
+    prefs.put(FIXED_GWT_SDK_VERSION, version);
+    prefs.flush();
+  }
+
+  public static String getFixedGwtSdkVersion(IProject project) {
+    IEclipsePreferences prefs = getProjectProperties(project);
+    return prefs.get(FIXED_GWT_SDK_VERSION, "");
   }
 
   public static void setEntryPointModules(IProject project, List<String> modules)

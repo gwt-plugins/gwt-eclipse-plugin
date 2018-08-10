@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/mbarbero/fr.obeo.releng.targetplatform -->
-<target name="GWT Eclipse Plugin Neon" sequenceNumber="1521650840">
+<target name="GWT Eclipse Plugin Neon" sequenceNumber="1533891509">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.license.feature.group" version="2.0.0.v20180130-0820"/>
+      <unit id="org.eclipse.license.feature.group" version="2.0.1.v20180423-1114"/>
       <repository location="http://download.eclipse.org/cbi/updates/license"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
@@ -23,21 +23,21 @@
       <repository location="http://download.eclipse.org/releases/neon"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="org.eclipse.jst.web_sdk.feature.feature.group" version="3.8.0.v201608191717"/>
+      <unit id="org.eclipse.jst.web_sdk.feature.feature.group" version="3.8.0.v201702270442"/>
       <unit id="org.eclipse.jst.server_sdk.feature.feature.group" version="3.4.300.v201606081655"/>
       <unit id="org.eclipse.jst.common.fproj.enablement.jdt.sdk.feature.group" version="3.8.0.v201603091933"/>
       <unit id="org.eclipse.wst.common.fproj.sdk.feature.group" version="3.7.0.v201505072140"/>
-      <unit id="org.eclipse.wst.web_sdk.feature.feature.group" version="3.8.0.v201609072018"/>
-      <unit id="org.eclipse.wst.server_adapters.sdk.feature.feature.group" version="3.2.600.v201606081655"/>
-      <unit id="org.eclipse.jst.enterprise_ui.feature.feature.group" version="3.8.0.v201605251556"/>
-      <unit id="org.eclipse.jst.web_ui.feature.feature.group" version="3.8.0.v201608191717"/>
-      <unit id="org.eclipse.wst.web_ui.feature.feature.group" version="3.8.1.v201609072018"/>
+      <unit id="org.eclipse.wst.web_sdk.feature.feature.group" version="3.8.2.v201702270442"/>
+      <unit id="org.eclipse.wst.server_adapters.sdk.feature.feature.group" version="3.2.600.v201703062119"/>
+      <unit id="org.eclipse.jst.enterprise_ui.feature.feature.group" version="3.8.0.v201701262139"/>
+      <unit id="org.eclipse.jst.web_ui.feature.feature.group" version="3.8.0.v201702270442"/>
+      <unit id="org.eclipse.wst.web_ui.feature.feature.group" version="3.8.2.v201702270442"/>
       <unit id="org.eclipse.jst.server_adapters.feature.feature.group" version="3.2.400.v201606081655"/>
       <unit id="org.eclipse.jst.server_adapters.ext.feature.feature.group" version="3.3.501.v201609071751"/>
       <unit id="org.eclipse.jst.server_ui.feature.feature.group" version="3.4.300.v201606081655"/>
-      <unit id="org.eclipse.wst.server_adapters.feature.feature.group" version="3.2.500.v201606081655"/>
+      <unit id="org.eclipse.wst.server_adapters.feature.feature.group" version="3.2.500.v201703062119"/>
       <unit id="org.eclipse.jst.server_adapters.ext.sdk.feature.feature.group" version="3.3.501.v201609071751"/>
-      <unit id="org.eclipse.wst.server_core.feature.feature.group" version="3.3.601.v201605201456"/>
+      <unit id="org.eclipse.wst.server_core.feature.feature.group" version="3.3.601.v201610211907"/>
       <repository location="http://download.eclipse.org/webtools/repository/neon/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
@@ -45,7 +45,7 @@
       <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="com.google.cloud.tools.eclipse.suite.feature.feature.group" version="1.6.0.201803071812"/>
+      <unit id="com.google.cloud.tools.eclipse.suite.feature.feature.group" version="1.7.1.201807071456"/>
       <repository location="https://dl.google.com/eclipse/google-cloud-eclipse/stable/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
