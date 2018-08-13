@@ -301,4 +301,5 @@ public final class GWTProjectProperties {
   private GWTProjectProperties() {
     // Not instantiable
   }
+
 }

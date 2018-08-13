@@ -23,9 +23,10 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import java.io.File;
 
 /**
- * 
+ *
  */
 public interface Sdk {
+
   /**
    * Thrown when there is a problem with an Sdk.
    */
@@ -41,46 +42,44 @@ public interface Sdk {
   }
 
   /**
-   * Returns the set of {@link IClasspathEntry IClasspathEntries} associated
-   * with this Sdk.
-   * 
-   * @return the set of {@link IClasspathEntry IClasspathEntries} associated
-   *         with this Sdk
-   * 
+   * Returns the set of {@link IClasspathEntry IClasspathEntries} associated with this Sdk.
+   *
+   * @return the set of {@link IClasspathEntry IClasspathEntries} associated with this Sdk
+   *
    */
   IClasspathEntry[] getClasspathEntries();
 
   /**
    * Returns a description of the Sdk.
-   * 
+   *
    * @return Sdk description
    */
   String getDescription();
 
   /**
    * Returns the installation path for this Sdk.
-   * 
+   *
    * @return installation path for this Sdk
    */
   IPath getInstallationPath();
 
   /**
    * Returns the name of this Sdk.
-   * 
+   *
    * @return name of this Sdk
    */
   String getName();
 
   /**
    * Returns the version string for this Sdk.
-   * 
+   *
    * @return the version
    */
   String getVersion();
 
   /**
    * Returns the set of files that belong in WEB-INF/lib folder.
-   * 
+   *
    * @return set of files that belong in WEB-INF/lib folder
    */
   File[] getWebAppClasspathFiles(IProject project);
@@ -88,5 +87,5 @@ public interface Sdk {
   String toXml();
 
   IStatus validate();
-}
 
+}

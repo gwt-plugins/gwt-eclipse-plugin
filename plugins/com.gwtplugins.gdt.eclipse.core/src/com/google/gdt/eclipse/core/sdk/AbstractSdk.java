@@ -112,4 +112,5 @@ public abstract class AbstractSdk implements Sdk {
     return (getVersion() == null ? otherSdk.getVersion() == null : getVersion().equals(
         otherSdk.getVersion()));
   }
+
 }

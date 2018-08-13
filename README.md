@@ -85,6 +85,10 @@ Simply use Maven to import all the plugins and modules.
 ### Target Definition
 The target defintion build is based off of the Google Cloud Tools. Follow their instructions to build.
 
+* [Install the target.tbd plugin](https://github.com/mbarbero/fr.obeo.releng.targetplatform) - Install the targets plugin. 
+* Once the plugin is installed, right click on the target.tbd file and set the target. 
+* Note: The targets will have to be updated by setting the targets. This will regenerate the Eclipse target files.  
+
 ### Build
 Sencha has provided an internal build agent to build. 
 [Sencha Eclipse Build](https://teamcity.sencha.com/viewType.html?buildTypeId=Gxt3_Gwt_GwtEclipsePlugin)

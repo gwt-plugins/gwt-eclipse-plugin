@@ -37,16 +37,15 @@ public class GwtCapabilityChecker {
   /**
    * @return whether the fully-qualified class name exists in the GWT SDK
    */
-  private static boolean doesGwtClassExist(GwtSdk gwtRuntime,
-      String qualifiedClassName) {
+  private static boolean doesGwtClassExist(GwtSdk gwtRuntime, String qualifiedClassName) {
     try {
       URLClassLoader cl = gwtRuntime.createClassLoader();
       cl.loadClass(qualifiedClassName);
       return true;
     } catch (ClassNotFoundException e) {
       /*
-       * No need for logging an exception here; we're just checking to see if
-       * this runtime contains the given class or not.
+       * No need for logging an exception here; we're just checking to see if this runtime contains the
+       * given class or not.
        */
     } catch (MalformedURLException e) {
       GWTPluginLog.logError(e);
@@ -70,4 +69,5 @@ public class GwtCapabilityChecker {
     // This new Compiler allows multiple modules to be passed in
     return doesGwtClassExist(sdk, "com.google.gwt.dev.Compiler");
   }
+
 }

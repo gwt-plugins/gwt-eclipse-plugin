@@ -75,14 +75,12 @@ public class GWTJarsRuntimeTest extends AbstractGWTPluginTestCase {
 
       // Verify that our classpath entries point at the GWT javadoc.
       IClasspathAttribute[] extraAttributes = gwtClasspathEntry.getExtraAttributes();
-      assertTrue("No extra attributes seen for classpath entry: " + gwtClasspathEntry,
-          extraAttributes.length > 0);
-      assertEquals(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME,
-          extraAttributes[0].getName());
+      assertTrue("No extra attributes seen for classpath entry: " + gwtClasspathEntry, extraAttributes.length > 0);
+      assertEquals(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, extraAttributes[0].getName());
 
       /*
-       * Entries should have their javadoc location point at a directory with "index.html".
-       * Strangely, the values of these classpath attributes are specified as "file://" urls.
+       * Entries should have their javadoc location point at a directory with "index.html". Strangely, the values of
+       * these classpath attributes are specified as "file://" urls.
        */
       File jdLocation = new File(new URL(extraAttributes[0].getValue()).getFile());
       assertTrue("Javadoc file does not exist", jdLocation.exists());
@@ -141,8 +139,7 @@ public class GWTJarsRuntimeTest extends AbstractGWTPluginTestCase {
     }
 
     // Verify that the sources and binary entries correspond to each other
-    assertTrue(Util.findSourcesJarForClassesJar(binaryEntry.getPath()).equals(
-        sourcesEntry.getPath()));
+    assertTrue(Util.findSourcesJarForClassesJar(binaryEntry.getPath()).equals(sourcesEntry.getPath()));
 
     // Verify that the source attachment path has been set for the binary
     // entry
@@ -165,4 +162,5 @@ public class GWTJarsRuntimeTest extends AbstractGWTPluginTestCase {
         || jarName.equalsIgnoreCase(Util.getDevJarName(jarsRuntime.getInstallationPath()))
         || "gwt-servlet.jar".equals(jarName);
   }
+
 }

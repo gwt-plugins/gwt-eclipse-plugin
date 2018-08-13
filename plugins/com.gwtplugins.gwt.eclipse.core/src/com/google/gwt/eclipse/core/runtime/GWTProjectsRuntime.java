@@ -434,4 +434,5 @@ public class GWTProjectsRuntime extends GwtSdk {
   private IStringVariableManager getVariableManager() {
     return VariablesPlugin.getDefault().getStringVariableManager();
   }
+
 }
