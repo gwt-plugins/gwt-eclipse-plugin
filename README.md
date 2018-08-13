@@ -68,8 +68,8 @@ Download the repo in a zip file.
 
 * [http://storage.googleapis.com/gwt-eclipse-plugin/v3/downloads/repo-3.0.0.zip](http://storage.googleapis.com/gwt-eclipse-plugin/v3/downloads/repo-3.0.0.zip)
 
-### Snapshot
-Unstable update site
+### Staging
+Staging repo for testing before production release.
 
 * [http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot](http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot)
 
