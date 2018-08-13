@@ -59,6 +59,7 @@ import org.eclipse.swt.widgets.TableColumn;
  *          type of Sdk that is managed
  */
 public abstract class SdkTable<T extends Sdk> extends Composite {
+
   /**
    *
    */
@@ -344,4 +345,5 @@ public abstract class SdkTable<T extends Sdk> extends Composite {
     IStructuredSelection selection = (IStructuredSelection) sdkTableViewer.getSelection();
     removeButton.setEnabled(selection.size() != 0);
   }
+
 }
