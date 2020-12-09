@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde?>
+<!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
+<target name="GWT Eclipse Plugin for Photon" sequenceNumber="1607446260">
+  <locations>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.license.feature.group" version="2.0.2.v20181016-2210"/>
+      <repository location="https://download.eclipse.org/cbi/updates/license"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.sdk.feature.group" version="4.8.0.v20180611-0826"/>
+      <unit id="org.eclipse.jdt.feature.group" version="3.14.0.v20180611-0500"/>
+      <unit id="org.eclipse.m2e.feature.feature.group" version="1.9.0.20180606-2036"/>
+      <unit id="org.eclipse.m2e.sdk.feature.feature.group" version="1.9.0.20180606-2036"/>
+      <unit id="org.eclipse.m2e.wtp.feature.feature.group" version="1.4.0.20180606-2005"/>
+      <unit id="org.eclipse.m2e.wtp.sdk.feature.feature.group" version="1.4.0.20180606-2005"/>
+      <unit id="org.eclipse.mylyn.commons.feature.group" version="3.24.0.v20180613-1658"/>
+      <unit id="org.eclipse.jpt.jpa.feature.feature.group" version="3.5.101.v201803161350"/>
+      <unit id="org.eclipse.datatools.sdk.feature.feature.group" version="1.14.100.201801242337"/>
+      <unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.7.0.201806111355"/>
+      <unit id="org.eclipse.epp.logging.aeri.feature.feature.group" version="2.0.7.v20170906-1327"/>
+      <unit id="org.eclipse.epp.logging.aeri.feature.source.feature.group" version="2.0.7.v20170906-1327"/>
+      <unit id="org.eclipse.jetty.http" version="9.4.10.v20180503"/>
+      <unit id="org.eclipse.jetty.servlet" version="9.4.10.v20180503"/>
+      <unit id="org.eclipse.jetty.server" version="9.4.10.v20180503"/>
+      <unit id="org.eclipse.jetty.util" version="9.4.10.v20180503"/>
+      <repository location="https://download.eclipse.org/releases/photon/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.eclipse.jst.web_sdk.feature.feature.group" version="3.8.0.v201802202154"/>
+      <unit id="org.eclipse.jst.server_sdk.feature.feature.group" version="3.4.301.v201802152148"/>
+      <unit id="org.eclipse.jst.common.fproj.enablement.jdt.sdk.feature.group" version="3.8.0.v201802151734"/>
+      <unit id="org.eclipse.wst.common.fproj.sdk.feature.group" version="3.7.1.v201802151734"/>
+      <unit id="org.eclipse.wst.web_sdk.feature.feature.group" version="3.11.0.v201807251925"/>
+      <unit id="org.eclipse.jst.enterprise_sdk.feature.feature.group" version="3.8.1.v201802202154"/>
+      <unit id="org.eclipse.wst.server_adapters.sdk.feature.feature.group" version="3.2.601.v201802152148"/>
+      <repository location="https://download.eclipse.org/webtools/downloads/drops/R3.11.0/R-3.11.0-20180910170749/repository/"/>
+    </location>
+    <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
+      <unit id="org.hamcrest" version="1.1.0.v20090501071000"/>
+      <repository location="https://download.eclipse.org/tools/orbit/downloads/drops/R20170516192513/repository"/>
+    </location>
+  </locations>
+</target>

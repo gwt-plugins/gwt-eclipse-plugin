@@ -20,7 +20,7 @@
 
   <properties>
     <!-- TODO Add SDBG -->
-    <installIUs>org.eclipse.platform.feature.group,com.gwtplugins.eclipse.suite.v3.feature.feature.group,com.gwtplugins.eclipse.sdkbundle.gwt27.feature.feature.group,com.gwtplugins.eclipse.sdkbundle.gwt28.feature.feature.group</installIUs>
+    <installIUs>org.eclipse.platform.feature.group,com.gwtplugins.eclipse.suite.v3.feature.feature.group,com.gwtplugins.eclipse.sdkbundle.gwt27.feature.feature.group,com.gwtplugins.eclipse.sdkbundle.gwt28.feature.feature.group,com.gwtplugins.eclipse.sdkbundle.gwt29.feature.feature.group</installIUs>
     <build.rootUri>${project.baseUri}/../..</build.rootUri>
     <eclipse.repoUrl>${build.rootUri}/eclipse/ide-target-platform/target/repository</eclipse.repoUrl>
     <gwt.repoUrl>${build.rootUri}/repo/target/repository</gwt.repoUrl>

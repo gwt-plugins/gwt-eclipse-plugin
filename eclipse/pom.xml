@@ -15,9 +15,10 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>mars</module>
-    <module>neon</module>
+    <!-- <module>mars</module> -->
+    <!-- <module>neon</module> -->
     <module>oxygen</module>
+    <module>photon</module>
     <module>ide-target-platform</module>
   </modules>
 
