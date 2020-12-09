@@ -59,7 +59,7 @@ public class GdtExtPlugin extends AbstractGwtPlugin {
   public static final String FEATURE_UPDATE_SITE_URL;
   public static final PluginVersionIdentifier FEATURE_VERSION;
   public static final String PLUGIN_ID = "com.gwtplugins.gdt.eclipse.suite.update";
-  public static final String GWT_SDK_BUNDLE_FEATURE_ID = "com.gwtplugins.gwt.eclipse.sdkbundle.gwt28.feature";
+  public static final String GWT_SDK_BUNDLE_FEATURE_ID = "com.gwtplugins.gwt.eclipse.sdkbundle.gwt29.feature";
 
   private static BundleContext context;
   private static FeatureUpdateManager featureUpdateManager;

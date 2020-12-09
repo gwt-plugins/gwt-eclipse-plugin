@@ -22,6 +22,8 @@ gwt-2.8.2/
 gwt-2.7.0.zip
 gwt-2.8*.zip
 *.jar
+gwt-2.9*.zip
+gwt-2.9.0/
 
 # TODO remove the others, some of these have been committed
 .project
