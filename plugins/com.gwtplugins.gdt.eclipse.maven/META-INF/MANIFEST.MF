@@ -7,7 +7,7 @@ Bundle-Name: %pluginName
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: com.gwtplugins.gdt.eclipse.maven;singleton:=true
 Bundle-Vendor: %providerName
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 3.0.0.99
 Export-Package: com.google.gdt.eclipse.maven,
  com.google.gdt.eclipse.maven.configurators,
  com.google.gdt.eclipse.maven.launch,

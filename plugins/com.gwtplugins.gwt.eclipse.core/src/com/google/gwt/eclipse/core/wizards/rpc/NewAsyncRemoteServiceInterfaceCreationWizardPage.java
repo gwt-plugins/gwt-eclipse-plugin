@@ -30,7 +30,7 @@ import org.eclipse.jdt.core.Signature;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
-import org.eclipse.jdt.internal.corext.codemanipulation.StubUtility;
+import org.eclipse.jdt.internal.core.manipulation.StubUtility;
 import org.eclipse.jdt.internal.corext.dom.Bindings;
 import org.eclipse.jdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.DialogField;
@@ -52,10 +52,10 @@ import java.util.List;
 /**
  * Modifications to the {@link NewInterfaceWizardPage} to enable us to add the
  * necessary type members to the asynchronous remote service interface.
- * 
+ *
  * TODO: We might be able to use an AST based approach here. If so, we could
  * unify this with the individual method quick fixes.
- * 
+ *
  * NOTE: This class assumes that the package, enclosing type and sync type
  * fields cannot be edited. Additional work will be required to change this
  * invariant.
@@ -265,6 +265,7 @@ public class NewAsyncRemoteServiceInterfaceCreationWizardPage extends
     this.syncTypeBinding = syncTypeBinding;
     syncTypeDialogField = new StringButtonDialogField(
         new IStringButtonAdapter() {
+          @Override
           public void changeControlPressed(DialogField field) {
             // Purposely ignored
           }
@@ -323,10 +324,12 @@ public class NewAsyncRemoteServiceInterfaceCreationWizardPage extends
 
     ImportManagerAdapter importAdapter = new ImportManagerAdapter() {
 
+      @Override
       public String addImport(ITypeBinding typeBinding) {
         return imports.addImport(typeBinding);
       }
 
+      @Override
       public String addImport(String qualifiedTypeName) {
         return imports.addImport(qualifiedTypeName);
       }
@@ -346,13 +349,13 @@ public class NewAsyncRemoteServiceInterfaceCreationWizardPage extends
   /**
    * Creates the controls for the sync type name field. Expects a
    * <code>GridLayout</code> with at least 4 columns.
-   * 
+   *
    * @param composite the parent composite
    * @param columns number of columns to span
    */
   private void createSyncTypeControls(Composite composite, int columns) {
     syncTypeDialogField.doFillIntoGrid(composite, columns);
-    Text text = syncTypeDialogField.getTextControl(null);    
+    Text text = syncTypeDialogField.getTextControl(null);
     LayoutUtil.setWidthHint(text, getMaxFieldWidth());
   }
 }

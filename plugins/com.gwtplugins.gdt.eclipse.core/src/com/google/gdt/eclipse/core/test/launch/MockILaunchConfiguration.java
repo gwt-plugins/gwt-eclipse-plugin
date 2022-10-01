@@ -268,6 +268,20 @@ public class MockILaunchConfiguration implements ILaunchConfiguration {
         // TODO(${user}): Auto-generated method stub
         return false;
       }
+
+    @Override
+    public boolean supportsCommandLine()
+    {
+        // TODO(${user}): Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean supportsOutputMerging()
+    {
+        // TODO(${user}): Auto-generated method stub
+        return false;
+    }
     };
   }
 

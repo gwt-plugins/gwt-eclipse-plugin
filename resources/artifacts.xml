@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?artifactRepository version='1.1.0'?>
+<repository name='repo' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1'>
+  <properties size='3'>
+    <property name='publishPackFilesAsSiblings' value='true'/>
+    <property name='p2.compressed' value='true'/>
+    <property name='p2.timestamp' value='1662140660475'/>
+  </properties>
+  <mappings size='5'>
+    <rule filter='(&amp; (classifier=osgi.bundle) (format=packed))' output='${repoUrl}/plugins/${id}_${version}.jar.pack.gz'/>
+    <rule filter='(&amp; (classifier=osgi.bundle))' output='${repoUrl}/plugins/${id}_${version}.jar'/>
+    <rule filter='(&amp; (classifier=binary))' output='${repoUrl}/binary/${id}_${version}'/>
+    <rule filter='(&amp; (classifier=org.eclipse.update.feature) (format=packed))' output='${repoUrl}/features/${id}_${version}.jar.pack.gz'/>
+    <rule filter='(&amp; (classifier=org.eclipse.update.feature))' output='${repoUrl}/features/${id}_${version}.jar'/>
+  </mappings>
+  <artifacts size='22'>
+    <artifact classifier='osgi.bundle' id='com.gwtplugins.gdt.eclipse.apiclientlib' version='3.0.0.99'>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='com.gwtplugins.gdt.eclipse.platform' version='3.0.0.202209021742'>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='com.gwtplugins.gdt.eclipse.core' version='3.0.0.202209021742'>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='com.gwtplugins.gwt.eclipse.core' version='3.0.0.202209021742'>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='com.gwtplugins.gdt.eclipse.suite' version='3.0.0.202209021742'>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='com.gwtplugins.gwt.eclipse.oophm' version='3.0.0.202209021742'>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='com.gwtplugins.gwt.eclipse.wtp' version='3.0.0.202209021742'>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='com.gwtplugins.gwt.eclipse.wtp.maven' version='3.0.0.202209021742'>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='com.gwtplugins.gdt.eclipse.suite.update' version='3.0.0.202209021742'>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='com.gwtplugins.gwt.eclipse.gss' version='3.0.0.202209021742'>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='com.gwtplugins.gdt.eclipse.maven' version='3.0.0.202209021742'>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='com.gwtplugins.eclipse.suite.v3.feature' version='3.0.0.202209021742'>
+      <properties>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='com.github.sdbg.debug.ui' version='1.0.10.201610081555'>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='com.github.sdbg.integration.jdt' version='1.0.10.201610081555'>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='com.github.sdbg.debug.core' version='1.0.10.201610081555'>
+    </artifact>
+    <artifact classifier='org.eclipse.update.feature' id='com.github.sdbg.feature' version='1.0.10.201610081555'>
+    </artifact>
+  </artifacts>
+</repository>
