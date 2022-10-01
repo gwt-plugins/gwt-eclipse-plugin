@@ -43,11 +43,11 @@ public class WtpMavenProjectConfigurator extends WTPProjectConfigurator {
     GwtWtpPlugin.logMessage("WtpMavenProjectConfigurator.doConfigure() invoked");
 
     // Given a pom.xml configuration
-    Model pom = request.getMavenProject().getModel();
+    Model pom = request.mavenProject().getModel();
 
     // When the GWT plugin exists in POM
     if (isGwtProject(pom)) {
-      IProject eclipseProject = request.getProject();
+      IProject eclipseProject = request.mavenProjectFacade().getProject();
       IFacetedProject facetedProject = ProjectFacetsManager.create(eclipseProject);
 
       // Then add GWT facet
