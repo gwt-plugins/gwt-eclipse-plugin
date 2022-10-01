@@ -22,7 +22,7 @@ Require-Bundle:
  org.eclipse.core.runtime,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
- org.eclipse.mylyn.commons.ui,
  org.eclipse.ui,
  org.eclipse.ui.ide,
- org.eclipse.update.configurator
+ org.eclipse.update.configurator,
+ org.eclipse.jface.notifications;bundle-version="0.5.0"

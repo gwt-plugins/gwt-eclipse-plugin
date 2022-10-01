@@ -72,7 +72,6 @@ Export-Package: com.google.gwt.eclipse.core,
  com.google.gwt.eclipse.core.wizards.rpc
 Require-Bundle: com.gwtplugins.gdt.eclipse.core;visibility:=reexport,
  com.gwtplugins.gdt.eclipse.platform,
- javax.servlet,
  org.eclipse.core.expressions,
  org.eclipse.core.filesystem,
  org.eclipse.core.runtime,
@@ -103,4 +102,5 @@ Require-Bundle: com.gwtplugins.gdt.eclipse.core;visibility:=reexport,
  org.eclipse.wst.validation,
  org.eclipse.wst.xml.core,
  org.eclipse.wst.xml.ui,
- org.eclipse.wst.common.project.facet.core
+ org.eclipse.wst.common.project.facet.core,
+ jakarta.servlet-api;bundle-version="4.0.0"

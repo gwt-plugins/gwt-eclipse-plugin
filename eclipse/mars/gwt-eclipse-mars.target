@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde?>
 <!-- generated with https://github.com/eclipse-cbi/targetplatform-dsl -->
-<target name="GWT Eclipse Plugin Mars" sequenceNumber="1607124253">
+<target name="GWT Eclipse Plugin Mars" sequenceNumber="1656237605">
   <locations>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
       <unit id="org.eclipse.license.feature.group" version="2.0.2.v20181016-2210"/>
@@ -43,7 +43,7 @@
       <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">
-      <unit id="com.google.cloud.tools.eclipse.suite.feature.feature.group" version="1.8.4.202002191941"/>
+      <unit id="com.google.cloud.tools.eclipse.suite.feature.feature.group" version="1.8.5.202108061424"/>
       <repository location="https://dl.google.com/eclipse/google-cloud-eclipse/stable/"/>
     </location>
     <location includeMode="planner" includeAllPlatforms="false" includeSource="true" includeConfigurePhase="false" type="InstallableUnit">

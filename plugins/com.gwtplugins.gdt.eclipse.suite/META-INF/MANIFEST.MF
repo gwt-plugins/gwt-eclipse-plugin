@@ -41,5 +41,6 @@ Require-Bundle:
  org.eclipse.equinox.common,
  system.bundle,
  org.eclipse.core.runtime,
- com.gwtplugins.gdt.eclipse.apiclientlib
+ com.gwtplugins.gdt.eclipse.apiclientlib,
+ javax.inject;bundle-version="1.0.0"
 Import-Package: org.eclipse.core.runtime.preferences

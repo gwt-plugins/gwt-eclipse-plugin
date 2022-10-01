@@ -83,8 +83,8 @@ Require-Bundle: com.gwtplugins.gdt.eclipse.platform,
  org.eclipse.wst.sse.core,
  org.eclipse.wst.sse.ui,
  org.eclipse.wst.xml.core,
- org.eclipse.wst.xml.ui
- 
+ org.eclipse.wst.xml.ui,
+ org.eclipse.jdt.core.manipulation;bundle-version="1.16.100"
 
 
 

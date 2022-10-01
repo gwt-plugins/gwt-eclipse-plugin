@@ -21,8 +21,7 @@ Export-Package: com.google.gdt.eclipse.platform.debug.ui,
  com.google.gwt.eclipse.platform.editors.java.contentassist,
  com.google.gwt.eclipse.platform.uibinder,
  org.eclipse.jdt.internal.debug.ui
-Require-Bundle: javax.servlet,
- org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.debug.ui,
  org.eclipse.equinox.p2.metadata,
  org.eclipse.equinox.p2.operations,
@@ -45,7 +44,8 @@ Require-Bundle: javax.servlet,
  org.eclipse.wst.server.core,
  org.eclipse.wst.sse.core,
  org.eclipse.wst.sse.ui,
- com.gwtplugins.gdt.eclipse.platform
+ com.gwtplugins.gdt.eclipse.platform,
+ jakarta.servlet-api;bundle-version="4.0.0"
 Bundle-ClassPath: libs/gwt-dev.jar,
  .
 Import-Package: org.mortbay.util.ajax

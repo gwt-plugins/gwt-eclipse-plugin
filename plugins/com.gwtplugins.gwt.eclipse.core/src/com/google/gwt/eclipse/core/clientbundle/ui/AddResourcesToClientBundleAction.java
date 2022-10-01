@@ -44,7 +44,7 @@ import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.jdt.core.refactoring.CompilationUnitChange;
-import org.eclipse.jdt.internal.corext.codemanipulation.StubUtility;
+import org.eclipse.jdt.internal.core.manipulation.StubUtility;
 import org.eclipse.jdt.internal.corext.dom.ASTNodes;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -82,6 +82,7 @@ public class AddResourcesToClientBundleAction extends Action implements
       this.resources = resources;
     }
 
+    @Override
     public void run(IProgressMonitor monitor) throws CoreException {
       ICompilationUnit icu = clientBundle.getCompilationUnit();
       CompilationUnit cu = JavaASTUtils.parseCompilationUnit(icu);
@@ -147,6 +148,7 @@ public class AddResourcesToClientBundleAction extends Action implements
 
   private IProject project;
 
+  @Override
   public void run(IAction action) {
     AddResourcesToClientBundleDialog dlg = new AddResourcesToClientBundleDialog(
         getShell(), project, clientBundleType, files);
@@ -169,6 +171,7 @@ public class AddResourcesToClientBundleAction extends Action implements
     }
   }
 
+  @Override
   public void selectionChanged(IAction action, ISelection selection) {
     // Reset our old initial selections
     project = null;
