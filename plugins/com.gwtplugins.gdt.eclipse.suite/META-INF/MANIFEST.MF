@@ -4,7 +4,7 @@ Bundle-Activator: com.google.gdt.eclipse.suite.GdtPlugin
 Bundle-Localization: plugin
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-SymbolicName: com.gwtplugins.gdt.eclipse.suite;singleton:=true
 Bundle-Vendor: %providerName
 Bundle-Version: 3.0.0.qualifier

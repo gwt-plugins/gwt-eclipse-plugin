@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GWT Eclipse Plugin SWTBot Test Fragment
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.wtp.test
 Bundle-Vendor: GWT Project
 Bundle-Version: 3.0.0.qualifier

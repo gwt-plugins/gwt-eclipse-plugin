@@ -1,0 +1,48 @@
+/* 
+ * Target Platform Definition created using Mikael Barbero's TPD editor 
+ * <https://github.com/mbarbero/fr.obeo.releng.targetplatform/>
+ * 
+ * If you make changes to this file, either:
+ * 
+ *    * Right-click in the editor and choose 'Create Target Definition File'
+ *      to update the corresponding .target file.
+ *    * Right-lick in the editor and choose 'Set as Target Platform'
+ *      to update your IDE's target platform (regenerates the .target too)
+ */
+target "GWT Eclipse Plugin for 2022-09" with source requirements
+
+location "https://download.eclipse.org/cbi/updates/license" {
+    org.eclipse.license.feature.group
+}
+
+location "https://download.eclipse.org/releases/2022-09/" {
+	org.eclipse.sdk.feature.group
+	org.eclipse.jdt.feature.group
+	org.eclipse.m2e.feature.feature.group
+	org.eclipse.m2e.sdk.feature.feature.group
+	org.eclipse.m2e.wtp.feature.feature.group
+	org.eclipse.m2e.wtp.sdk.feature.feature.group
+	org.eclipse.jpt.jpa.feature.feature.group
+	org.eclipse.datatools.sdk.feature.feature.group
+	org.eclipse.swtbot.eclipse.feature.group
+	
+	org.eclipse.jetty.http
+	org.eclipse.jetty.servlet
+	org.eclipse.jetty.server
+	org.eclipse.jetty.util
+}
+
+// WTP SDKs aren't exposed through the main release links
+// https://ci.eclipse.org/webtools/job/WTP-Publish-Repo/
+location "https://download.eclipse.org/webtools/repository/2022-09/" {
+    org.eclipse.jst.web_sdk.feature.feature.group
+    org.eclipse.jst.server_sdk.feature.feature.group
+    org.eclipse.jst.common.fproj.enablement.jdt.sdk.feature.group
+    org.eclipse.wst.common.fproj.sdk.feature.group
+    org.eclipse.wst.web_sdk.feature.feature.group
+    org.eclipse.jst.enterprise_sdk.feature.feature.group
+    org.eclipse.wst.server_adapters.sdk.feature.feature.group
+}
+
+
+
