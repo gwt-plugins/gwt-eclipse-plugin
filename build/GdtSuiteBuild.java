@@ -1,52 +1,23 @@
 import java.io.File;
-import java.io.IOException;
 
-import de.exware.nobuto.Utilities;
-
-public class Build extends de.exware.nobuto.JavaBuilder
+public class GdtSuiteBuild extends AbstractGWTBuild
 {
-    private static final String CLASSES_DIR = "out";
-    private static final String TMP = "tmp";
-    private static final String DISTRIBUTION_DIR = "dist";
-    private static final String ECLIPSE_DIR = "/usr/local/eclipse";
-
-    @Override
-    public void dist() throws Exception
+    public GdtSuiteBuild()
     {
-        File distDir = new File(DISTRIBUTION_DIR);
-        distDir.mkdirs();
-        File classesDir = new File(CLASSES_DIR);
-        classesDir.mkdirs();
-        File target = new File(TMP, "make-jar");
-        target.mkdirs();
-
-        super.dist();
-        Utilities.copy(new File("out"), target, true);
-        Utilities.copy(new File("plugin.xml"), target, true);
-        Utilities.copy(new File("plugin.properties"), target, true);
-        Utilities.replaceInFile("META-INF/MANIFEST.MF", "UTF-8", "Bundle-Version: .*",
-            "Bundle-Version: " + getVersion());
-        jar(DISTRIBUTION_DIR + "/com.gwtplugins.gdt.eclipse.suite_" + getVersion() + ".jar", target.getPath(),
-            "META-INF/MANIFEST.MF");
+        super("com.gwtplugins.gdt.eclipse.suite");
     }
-
-    public void clean() throws IOException
-    {
-        System.out.println("Cleaning up");
-        Utilities.delete(CLASSES_DIR);
-        Utilities.delete(DISTRIBUTION_DIR);
-        Utilities.delete(TMP);
-    }
-
+    
     @Override
     public void compile() throws Exception
     {
-        addSources("src");
+        addSources(getProjectDir() + "/src");
 
-        addClasspathItem(new File("../com.gwtplugins.gdt.eclipse.core/lib/guava-11.0.1.jar").getAbsolutePath());
-        addClasspathItem(new File("../com.gwtplugins.gwt.eclipse.oophm/lib/gwt-dev-transport.jar").getAbsolutePath());
-        addClasspathItem(new File("../com.gwtplugins.gwt.eclipse.core/libs/gwt-user.jar").getAbsolutePath());
-        addClasspathItem(new File("../com.gwtplugins.gwt.eclipse.core/libs/gwt-dev.jar").getAbsolutePath());
+        addClasspathItem(new File("plugins/com.gwtplugins.gdt.eclipse.core/lib/guava-11.0.1.jar").getAbsolutePath());
+        addClasspathItem(new File("plugins/com.gwtplugins.gwt.eclipse.oophm/lib/gwt-dev-transport.jar").getAbsolutePath());
+        addClasspathItem(new File("plugins/com.gwtplugins.gwt.eclipse.core/libs/gwt-user.jar").getAbsolutePath());
+        addClasspathItem(new File("plugins/com.gwtplugins.gwt.eclipse.core/libs/gwt-dev.jar").getAbsolutePath());
+        
+        addSiblingJar("com.gwtplugins.gdt.eclipse.core");
         addSiblingJar("com.gwtplugins.gwt.eclipse.core");
         addSiblingJar("com.gwtplugins.gdt.eclipse.platform");
         addSiblingJar("com.gwtplugins.gwt.eclipse.oophm");
@@ -99,17 +70,4 @@ public class Build extends de.exware.nobuto.JavaBuilder
         super.compile();
     }
 
-    private void addSiblingJar(String name)
-    {
-        File pluginsDir = new File("../" + name + "/dist/");
-        File lib = findJarInPlugins(pluginsDir, name);
-        addClasspathItem(lib.getAbsolutePath());
-    }
-
-    private void addPluginJarToClasspath(String name)
-    {
-        File pluginsDir = new File(ECLIPSE_DIR, "plugins");
-        File lib = findJarInPlugins(pluginsDir, name);
-        addClasspathItem(lib.getAbsolutePath());
-    }
 }

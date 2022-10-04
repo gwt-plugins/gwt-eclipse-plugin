@@ -30,3 +30,11 @@ gwt-2.9.0/
 .settings
 .classpath
 /.metadata/
+/.compileoptions
+
+/dist/
+/out/
+/tmp/
+/update-site/
+/build/*.class
+

@@ -1,48 +1,15 @@
-import java.io.File;
-import java.io.IOException;
 
-import de.exware.nobuto.Utilities;
-
-public class Build extends de.exware.nobuto.JavaBuilder
+public class GdtPlatformBuild extends AbstractGWTBuild
 {
-    private static final String CLASSES_DIR = "out";
-    private static final String TMP = "tmp";
-    private static final String DISTRIBUTION_DIR = "dist";
-    private static final String ECLIPSE_DIR = "/usr/local/eclipse";
-
-    @Override
-    public void dist() throws Exception
+    public GdtPlatformBuild()
     {
-        File distDir = new File(DISTRIBUTION_DIR);
-        distDir.mkdirs();
-        File classesDir = new File(CLASSES_DIR);
-        classesDir.mkdirs();
-        File target = new File(TMP, "make-jar/libs");
-        target.mkdirs();
-
-        super.dist();
-        Utilities.copy(new File("libs"), target, true);
-        target = target.getParentFile();
-        Utilities.copy(new File("out"), target, true);
-        Utilities.copy(new File("plugin.properties"), target, true);
-        Utilities.replaceInFile("META-INF/MANIFEST.MF", "UTF-8", "Bundle-Version: .*",
-            "Bundle-Version: " + getVersion());
-        jar(DISTRIBUTION_DIR + "/com.gwtplugins.gdt.eclipse.platform_" + getVersion() + ".jar", target.getPath(),
-            "META-INF/MANIFEST.MF");
+        super("com.gwtplugins.gdt.eclipse.platform");
     }
-
-    public void clean() throws IOException
-    {
-        System.out.println("Cleaning up");
-        Utilities.delete(CLASSES_DIR);
-        Utilities.delete(DISTRIBUTION_DIR);
-        Utilities.delete(TMP);
-    }
-
+    
     @Override
     public void compile() throws Exception
     {
-        addSources("src");
+        addSources(getProjectDir() + "/src");
 
         addPluginJarToClasspath("javax.servlet_");
         addPluginJarToClasspath("org.eclipse.core.commands_");
@@ -79,10 +46,4 @@ public class Build extends de.exware.nobuto.JavaBuilder
         super.compile();
     }
 
-    private void addPluginJarToClasspath(String name)
-    {
-        File pluginsDir = new File(ECLIPSE_DIR, "plugins");
-        File lib = findJarInPlugins(pluginsDir, name);
-        addClasspathItem(lib.getAbsolutePath());
-    }
 }

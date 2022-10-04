@@ -1,63 +1,35 @@
 import java.io.File;
-import java.io.IOException;
 
-import de.exware.nobuto.Maven;
-import de.exware.nobuto.Utilities;
-
-public class Build extends de.exware.nobuto.JavaBuilder
+public class GwtCoreBuild extends AbstractGWTBuild
 {
-    private static final String CLASSES_DIR = "out";
-    private static final String TMP = "tmp";
-    private static final String DISTRIBUTION_DIR = "dist";
-    private static final String ECLIPSE_DIR = "/usr/local/eclipse";
-
-    @Override
-    public void dist() throws Exception
+    public GwtCoreBuild()
     {
-        File distDir = new File(DISTRIBUTION_DIR);
-        distDir.mkdirs();
-        File classesDir = new File(CLASSES_DIR);
-        classesDir.mkdirs();
-        File target = new File(TMP, "make-jar");
-        target.mkdirs();
-
-        super.dist();
-        Utilities.copy(new File("out"), target, true);
-        Utilities.copy(new File("plugin.xml"), target, true);
-        Utilities.replaceInFile("META-INF/MANIFEST.MF", "UTF-8", "Bundle-Version: .*",
-            "Bundle-Version: " + getVersion());
-        jar(DISTRIBUTION_DIR + "/com.gwtplugins.gwt.eclipse.gss_" + getVersion() + ".jar", target.getPath(),
-            "META-INF/MANIFEST.MF");
+        super("com.gwtplugins.gwt.eclipse.core");
     }
-
-    public void clean() throws IOException
-    {
-        System.out.println("Cleaning up");
-        Utilities.delete(CLASSES_DIR);
-        Utilities.delete(DISTRIBUTION_DIR);
-        Utilities.delete(TMP);
-    }
-
+    
     @Override
     public void compile() throws Exception
     {
-        addSources("src");
+        addSources(getProjectDir() + "/src");
 
-        addClasspathItem(new File("../com.gwtplugins.gdt.eclipse.core/lib/guava-11.0.1.jar").getAbsolutePath());
-        addClasspathItem(new File("../com.gwtplugins.gwt.eclipse.core/libs/gwt-user.jar").getAbsolutePath());
-        addClasspathItem(new File("../com.gwtplugins.gwt.eclipse.core/libs/gwt-dev.jar").getAbsolutePath());
-
-        addSiblingJar("com.gwtplugins.gdt.eclipse.core");
-        addSiblingJar("com.gwtplugins.gwt.eclipse.core");
+        addClasspathItem(new File("plugins/com.gwtplugins.gdt.eclipse.core/lib/guava-11.0.1.jar").getAbsolutePath());
+        addClasspathItem(new File(getProjectDir() + "/libs/gwt-dev.jar").getAbsolutePath());
+        addClasspathItem(new File(getProjectDir() + "/libs/gwt-user.jar").getAbsolutePath());
         addSiblingJar("com.gwtplugins.gdt.eclipse.platform");
-        
+        addSiblingJar("com.gwtplugins.gdt.eclipse.core");
+
         addPluginJarToClasspath("org.eclipse.core.commands_");
         addPluginJarToClasspath("org.eclipse.core.contenttype_");
+        addPluginJarToClasspath("org.eclipse.core.expressions_");
+        addPluginJarToClasspath("org.eclipse.core.filebuffers_");
         addPluginJarToClasspath("org.eclipse.core.filesystem_");
         addPluginJarToClasspath("org.eclipse.core.jobs_");
         addPluginJarToClasspath("org.eclipse.core.runtime_");
         addPluginJarToClasspath("org.eclipse.core.resources_");
         addPluginJarToClasspath("org.eclipse.core.variables_");
+        addPluginJarToClasspath("org.eclipse.debug.ui_");
+        addPluginJarToClasspath("org.eclipse.e4.ui.workbench_");
+        addPluginJarToClasspath("org.eclipse.equinox.app_");
         addPluginJarToClasspath("org.eclipse.equinox.common_");
         addPluginJarToClasspath("org.eclipse.equinox.preferences_");
         addPluginJarToClasspath("org.eclipse.equinox.registry_");
@@ -67,15 +39,21 @@ public class Build extends de.exware.nobuto.JavaBuilder
         addPluginJarToClasspath("org.eclipse.jdt.core.manipulation_");
         addPluginJarToClasspath("jdimodel.jar");
         addPluginJarToClasspath("org.eclipse.jdt.debug.ui_");
+        addPluginJarToClasspath("org.eclipse.jdt.junit_");
+        addPluginJarToClasspath("org.eclipse.jdt.junit.core_");
         addPluginJarToClasspath("org.eclipse.jdt.launching_");
         addPluginJarToClasspath("org.eclipse.jdt.ui_");
         addPluginJarToClasspath("org.eclipse.jface_");
         addPluginJarToClasspath("org.eclipse.jface.text");
+        addPluginJarToClasspath("org.eclipse.ltk.core.refactoring_");
         addPluginJarToClasspath("org.eclipse.osgi_");
+        addPluginJarToClasspath("org.eclipse.search_");
         addPluginJarToClasspath("org.eclipse.swt");
         addPluginJarToClasspath("org.eclipse.text");
+        addPluginJarToClasspath("org.eclipse.ui.browser_");
         addPluginJarToClasspath("org.eclipse.ui.console_");
         addPluginJarToClasspath("org.eclipse.ui.editors_");
+        addPluginJarToClasspath("org.eclipse.ui.forms");
         addPluginJarToClasspath("org.eclipse.ui.ide");
         addPluginJarToClasspath("org.eclipse.ui.workbench.texteditor");
         addPluginJarToClasspath("org.eclipse.ui.workbench_");
@@ -83,24 +61,15 @@ public class Build extends de.exware.nobuto.JavaBuilder
         addPluginJarToClasspath("org.eclipse.wst.common.project.facet.core_");
         addPluginJarToClasspath("org.eclipse.wst.css.core_");
         addPluginJarToClasspath("org.eclipse.wst.css.ui");
+        addPluginJarToClasspath("org.eclipse.wst.jsdt.core_");
+        addPluginJarToClasspath("org.eclipse.wst.jsdt.ui");
         addPluginJarToClasspath("org.eclipse.wst.sse.core_");
         addPluginJarToClasspath("org.eclipse.wst.sse.ui_");
+        addPluginJarToClasspath("org.eclipse.wst.validation_");
         addPluginJarToClasspath("org.eclipse.wst.xml.core_");
+        addPluginJarToClasspath("org.eclipse.wst.xml.ui_");
 
         super.compile();
     }
 
-    private void addSiblingJar(String name)
-    {
-        File pluginsDir = new File("../" + name + "/dist/");
-        File lib = findJarInPlugins(pluginsDir, name);
-        addClasspathItem(lib.getAbsolutePath());
-    }
-
-    private void addPluginJarToClasspath(String name)
-    {
-        File pluginsDir = new File(ECLIPSE_DIR, "plugins");
-        File lib = findJarInPlugins(pluginsDir, name);
-        addClasspathItem(lib.getAbsolutePath());
-    }
 }

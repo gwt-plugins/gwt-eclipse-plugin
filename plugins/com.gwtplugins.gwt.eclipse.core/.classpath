@@ -7,9 +7,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="build"/>
 	<classpathentry exported="true" kind="lib" path="libs/gwt-dev.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/gwt-user.jar"/>
-	<classpathentry kind="lib" path="build/nobuto.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
