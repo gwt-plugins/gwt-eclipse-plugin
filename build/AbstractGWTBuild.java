@@ -41,6 +41,11 @@ abstract public class AbstractGWTBuild extends JavaBuilder
         {
             Utilities.copy(pluginProps, classesDir, true);
         }
+        File pluginXML = new File(getProjectDir() + "/plugin.xml");
+        if(pluginXML.exists())
+        {
+            Utilities.copy(pluginXML, classesDir, true);
+        }
         
         copyIcons();
         
