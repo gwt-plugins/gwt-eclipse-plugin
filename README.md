@@ -25,6 +25,8 @@ The current version installs on Windows and Linux with Eclipse 2021-12 and 2022-
 
 ## Install
 To install just download the zip file from the release, and add it to the Eclipse software sites.
+### Eclipse-2022-06
+You need to install Mylyn before installing this gwt-eclipse-plugin, because it is no longer included Eclipse. Mylyn can be installed from the Marketplace.
 
 ## Development 
 To compile from source, you will only need this command:
