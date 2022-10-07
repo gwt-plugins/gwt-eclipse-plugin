@@ -38,7 +38,7 @@ public class Build extends de.exware.nobuto.JavaBuilder
             AbstractGWTBuild builder = subprojects.get(i);
             System.out.println("Build Subproject: " + builder.getProjectName());
             
-            Utilities.delete(Config.TMP + "make-jar");
+            Utilities.delete(Config.TMP + "/make-jar");
             Utilities.delete(Config.CLASSES_DIR);
             String plugin = builder.getProjectName();
             builder.dist();
