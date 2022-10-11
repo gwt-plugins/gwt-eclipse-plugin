@@ -72,10 +72,10 @@ abstract public class AbstractGWTBuild extends JavaBuilder
     {
         addSources(getProjectDir() + "/src");
 
-        addClasspathItem(new File("plugins/com.gwtplugins.gdt.eclipse.apiclientlib/lib/google-http-client-1.16.0-rc.jar").getAbsolutePath());
-        addClasspathItem(new File("plugins/com.gwtplugins.gdt.eclipse.core/lib/guava-11.0.1.jar").getAbsolutePath());
-        addClasspathItem(new File("plugins/com.gwtplugins.gdt.eclipse.apiclientlib/lib/jetty-util-6.1.26.jar").getAbsolutePath());
-        addClasspathItem(new File("plugins/com.gwtplugins.gwt.eclipse.oophm/lib/gwt-dev-transport.jar").getAbsolutePath());
+        addClasspathItem(new File("plugins/com.gwtplugins.gdt.eclipse.apiclientlib/libs/google-http-client-1.16.0-rc.jar").getAbsolutePath());
+        addClasspathItem(new File("plugins/com.gwtplugins.gdt.eclipse.core/libs/guava-11.0.1.jar").getAbsolutePath());
+        addClasspathItem(new File("plugins/com.gwtplugins.gdt.eclipse.apiclientlib/libs/jetty-util-6.1.26.jar").getAbsolutePath());
+        addClasspathItem(new File("plugins/com.gwtplugins.gwt.eclipse.oophm/libs/gwt-dev-transport.jar").getAbsolutePath());
         addClasspathItem(new File("plugins/com.gwtplugins.gwt.eclipse.core/libs/gwt-dev.jar").getAbsolutePath());
         addClasspathItem(new File("plugins/com.gwtplugins.gwt.eclipse.core/libs/gwt-user.jar").getAbsolutePath());
 
