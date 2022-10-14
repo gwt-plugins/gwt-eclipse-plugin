@@ -143,13 +143,13 @@ abstract public class AbstractGWTBuild extends JavaBuilder
         addEclipseJarToClasspath("org.eclipse.jetty.server_10.0.6.jar");
         addEclipseJarToClasspath("org.eclipse.jetty.servlet_10.0.6.jar");
         addEclipseJarToClasspath("org.eclipse.jface_3.24.0.v20211110-1517.jar");
+        addEclipseJarToClasspath("org.eclipse.jface.notifications_0.4.0.v20211004-0555.jar");
         addEclipseJarToClasspath("org.eclipse.jface.text_3.19.0.v20211026-2100.jar");
         addEclipseJarToClasspath("org.eclipse.jst.server.core_1.2.700.v202103192305.jar");
         addEclipseJarToClasspath("org.eclipse.ltk.core.refactoring_3.12.100.v20210926-1112.jar");
         addEclipseJarToClasspath("org.eclipse.m2e.core_1.18.3.20211018-0804.jar");
         addEclipseJarToClasspath("org.eclipse.m2e.jdt_1.18.3.20211112-0847.jar");
         addEclipseJarToClasspath("org.eclipse.m2e.wtp_1.4.4.20201128-1705.jar");
-        addEclipseJarToClasspath("org.eclipse.mylyn.commons.ui_3.25.2.v20200813-0821.jar");
         addEclipseJarToClasspath("org.eclipse.osgi_3.17.100.v20211104-1730.jar");
         addEclipseJarToClasspath("org.eclipse.search_3.14.0.v20211108-0804.jar");
         addEclipseJarToClasspath("org.eclipse.swt.gtk.linux.x86_64_3.118.0.v20211123-0851.jar");
