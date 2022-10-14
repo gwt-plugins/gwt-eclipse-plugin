@@ -24,7 +24,8 @@ The current version installs on Windows and Linux with Eclipse 2021-12 up to Ecl
 * Maven integration
 
 ## Install
-To install just download the zip file from the release, and add it to the Eclipse software sites.
+To install just add this to your available software sites:
+  http://keeitsi.com/software/eclipse-plugins/ 
 ### Eclipse-2022-06 and newer
 You need to have Mylyn before installing this gwt-eclipse-plugin, because it is no longer included Eclipse. Mylyn can be installed from the Marketplace.
 Or you can simply add "https://download.eclipse.org/mylyn/releases/latest/" to your available Software Sites.
