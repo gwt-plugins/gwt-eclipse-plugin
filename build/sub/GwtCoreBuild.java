@@ -1,8 +1,9 @@
-public class GwtOophmBuild extends AbstractGWTBuild
+package sub;
+public class GwtCoreBuild extends AbstractGWTBuild
 {
-    public GwtOophmBuild()
+    public GwtCoreBuild()
     {
-        super("com.gwtplugins.gwt.eclipse.oophm");
+        super("com.gwtplugins.gwt.eclipse.core");
     }
     
     @Override
@@ -10,7 +11,6 @@ public class GwtOophmBuild extends AbstractGWTBuild
     {
         addSiblingJar("com.gwtplugins.gdt.eclipse.platform");
         addSiblingJar("com.gwtplugins.gdt.eclipse.core");
-        addSiblingJar("com.gwtplugins.gwt.eclipse.core");
 
         super.compile();
     }

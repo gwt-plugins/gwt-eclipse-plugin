@@ -4,8 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.exware.nobuto.Utilities;
+import de.exware.nobuto.java.JavaBuilder;
+import sub.AbstractGWTBuild;
+import sub.Config;
+import sub.GdtAPIClientLibBuild;
+import sub.GdtCoreBuild;
+import sub.GdtMavenBuild;
+import sub.GdtPlatformBuild;
+import sub.GdtSuiteBuild;
+import sub.GdtSuiteUpdateBuild;
+import sub.GwtCoreBuild;
+import sub.GwtGssBuild;
+import sub.GwtOophmBuild;
+import sub.GwtWtpBuild;
+import sub.GwtWtpMavenBuild;
+import sub.SuiteV3FeatureBuild;
 
-public class Build extends de.exware.nobuto.JavaBuilder
+public class Build extends JavaBuilder
 {
     private List<AbstractGWTBuild> subprojects = new ArrayList<>();
     
@@ -39,7 +54,6 @@ public class Build extends de.exware.nobuto.JavaBuilder
             System.out.println("Build Subproject: " + builder.getProjectName());
             
             Utilities.delete(Config.TMP +  "/make-jar");
-            Utilities.delete(Config.CLASSES_DIR);
             String plugin = builder.getProjectName();
             builder.dist();
             String version = builder.getVersion();

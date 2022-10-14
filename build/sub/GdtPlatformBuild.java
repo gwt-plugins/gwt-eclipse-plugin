@@ -1,3 +1,4 @@
+package sub;
 public class GdtPlatformBuild extends AbstractGWTBuild
 {
     public GdtPlatformBuild()

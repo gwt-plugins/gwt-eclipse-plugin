@@ -1,8 +1,9 @@
-public class GdtSuiteBuild extends AbstractGWTBuild
+package sub;
+public class GdtMavenBuild extends AbstractGWTBuild
 {
-    public GdtSuiteBuild()
+    public GdtMavenBuild()
     {
-        super("com.gwtplugins.gdt.eclipse.suite");
+        super("com.gwtplugins.gdt.eclipse.maven");
     }
     
     @Override
@@ -11,7 +12,6 @@ public class GdtSuiteBuild extends AbstractGWTBuild
         addSiblingJar("com.gwtplugins.gdt.eclipse.core");
         addSiblingJar("com.gwtplugins.gwt.eclipse.core");
         addSiblingJar("com.gwtplugins.gdt.eclipse.platform");
-        addSiblingJar("com.gwtplugins.gwt.eclipse.oophm");
 
         super.compile();
     }

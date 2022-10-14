@@ -1,3 +1,4 @@
+package sub;
 public class GdtAPIClientLibBuild extends AbstractGWTBuild
 {
     public GdtAPIClientLibBuild()

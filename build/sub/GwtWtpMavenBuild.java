@@ -1,3 +1,4 @@
+package sub;
 public class GwtWtpMavenBuild extends AbstractGWTBuild
 {
     public GwtWtpMavenBuild()

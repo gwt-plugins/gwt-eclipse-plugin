@@ -1,3 +1,4 @@
+package sub;
 
 
 import java.io.BufferedInputStream;
@@ -7,9 +8,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
-import de.exware.nobuto.JavaBuilder;
-import de.exware.nobuto.Maven;
 import de.exware.nobuto.Utilities;
+import de.exware.nobuto.java.JavaBuilder;
+import de.exware.nobuto.maven.Maven;
 
 abstract public class AbstractGWTBuild extends JavaBuilder
 {
@@ -27,8 +28,9 @@ abstract public class AbstractGWTBuild extends JavaBuilder
         checkTools();
         File distDir = new File(Config.DISTRIBUTION_DIR);
         distDir.mkdirs();
-        File classesDir = new File(Config.CLASSES_DIR);
+        File classesDir = new File(Config.CLASSES_DIR + "/" + getProjectName());
         classesDir.mkdirs();
+        setOutputFolder(classesDir.getPath());
         File tmpmaven = new File(Config.TMP, "maven");
         tmpmaven.mkdirs();
         
@@ -36,22 +38,20 @@ abstract public class AbstractGWTBuild extends JavaBuilder
 
         compile();
         
-        File pluginProps = new File(getProjectDir() + "/plugin.properties");
-        if(pluginProps.exists())
-        {
-            Utilities.copy(pluginProps, classesDir, true);
-        }
-        File pluginXML = new File(getProjectDir() + "/plugin.xml");
-        if(pluginXML.exists())
-        {
-            Utilities.copy(pluginXML, classesDir, true);
-        }
+        copyPluginXMLs(classesDir);
         
         copyIcons();
         
         File target = new File(Config.TMP, "make-jar");
         target.mkdirs();
-        Utilities.copy("out", target, true);
+        Utilities.copy(classesDir, target, true);
+        
+        makeJar(target);
+        
+    }
+    
+    private void makeJar(File target) throws IOException
+    {
         File manifestFile = new File(getProjectDir() + "/META-INF/MANIFEST.MF");
         String jarname = Config.DISTRIBUTION_DIR + "/" + getProjectName() + "_" + getVersion() + ".jar";
         if(manifestFile.exists())
@@ -66,7 +66,31 @@ abstract public class AbstractGWTBuild extends JavaBuilder
         }
         Utilities.copy(jarname, Config.UPDATE_SITE + "/" + new File(getProjectDir()).getParentFile().getPath(), true);
     }
-    
+
+    private void copyPluginXMLs(File classesDir) throws IOException
+    {
+        File pluginProps = new File(getProjectDir() + "/plugin.properties");
+        if(pluginProps.exists())
+        {
+            Utilities.copy(pluginProps, classesDir, true);
+        }
+        File pluginXML = new File(getProjectDir() + "/plugin.xml");
+        if(pluginXML.exists())
+        {
+            Utilities.copy(pluginXML, classesDir, true);
+        }
+        File featureXML = new File(getProjectDir() + "/feature.xml");
+        if(featureXML.exists())
+        {
+            Utilities.copy(featureXML, classesDir, true);
+        }
+        File featureProps = new File(getProjectDir() + "/feature.properties");
+        if(featureProps.exists())
+        {
+            Utilities.copy(featureProps, classesDir, true);
+        }
+    }
+
     @Override
     public void compile() throws Exception
     {
