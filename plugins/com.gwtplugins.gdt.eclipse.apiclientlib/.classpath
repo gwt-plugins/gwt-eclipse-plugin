@@ -18,7 +18,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/google-oauth-client-jetty-1.16.0-rc.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/google-oauth-client-servlet-1.16.0-rc.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/gson-2.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/guava-jdk5-13.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/httpclient-4.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/httpcore-4.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-core-2.1.3.jar"/>
