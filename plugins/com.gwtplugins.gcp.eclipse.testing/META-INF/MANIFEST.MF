@@ -18,4 +18,5 @@ Require-Bundle:
  org.eclipse.jdt.ui,
  org.eclipse.jface.text,
  org.eclipse.swt,
- org.eclipse.m2e.maven.runtime
+ org.eclipse.m2e.maven.runtime,
+ com.google.guava

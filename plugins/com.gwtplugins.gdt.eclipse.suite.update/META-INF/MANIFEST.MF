@@ -25,4 +25,5 @@ Require-Bundle:
  org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.update.configurator,
- org.eclipse.jface.notifications
+ org.eclipse.jface.notifications,
+ com.google.guava
