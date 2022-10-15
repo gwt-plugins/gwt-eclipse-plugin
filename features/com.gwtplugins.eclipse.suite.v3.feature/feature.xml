@@ -2,7 +2,7 @@
 <feature
       id="com.gwtplugins.eclipse.suite.v3.feature"
       label="%featureName"
-      version="3.0.0.99"
+      version="3.0.0.100"
       provider-name="%providerName"
       plugin="com.gwtplugins.gdt.eclipse.suite">
 
@@ -51,7 +51,6 @@
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.wst.css.core"/>
       <import plugin="org.eclipse.wst.css.ui"/>
-      <import plugin="javax.servlet"/>
       <import plugin="org.eclipse.pde.core"/>
       <import plugin="org.eclipse.ui.browser"/>
       <import plugin="org.eclipse.wst.jsdt.core"/>
@@ -101,90 +100,91 @@
       <import plugin="org.eclipse.equinox.p2.ui.sdk"/>
       <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.core.runtime" version="3.9.0" match="greaterOrEqual"/>
+      <import plugin="jakarta.servlet-api"/>
    </requires>
 
    <plugin
          id="com.gwtplugins.gdt.eclipse.apiclientlib"
          download-size="0"
          install-size="0"
-         version="3.0.0.99"
+         version="3.0.0.100"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gwt.eclipse.core"
          download-size="0"
          install-size="0"
-         version="3.0.0.99"
+         version="3.0.0.100"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gdt.eclipse.maven"
          download-size="0"
          install-size="0"
-         version="3.0.0.99"
+         version="3.0.0.100"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gdt.eclipse.platform"
          download-size="0"
          install-size="0"
-         version="3.0.0.99"
+         version="3.0.0.100"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gdt.eclipse.suite"
          download-size="0"
          install-size="0"
-         version="3.0.0.99"
+         version="3.0.0.100"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gdt.eclipse.suite.update"
          download-size="0"
          install-size="0"
-         version="3.0.0.99"
+         version="3.0.0.100"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gwt.eclipse.core"
          download-size="0"
          install-size="0"
-         version="3.0.0.99"
+         version="3.0.0.100"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gwt.eclipse.oophm"
          download-size="0"
          install-size="0"
-         version="3.0.0.99"
+         version="3.0.0.100"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gwt.eclipse.wtp"
          download-size="0"
          install-size="0"
-         version="3.0.0.99"
+         version="3.0.0.100"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gwt.eclipse.wtp.maven"
          download-size="0"
          install-size="0"
-         version="3.0.0.99"
+         version="3.0.0.100"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gdt.eclipse.core"
          download-size="0"
          install-size="0"
-         version="3.0.0.99"
+         version="3.0.0.100"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gwt.eclipse.gss"
          download-size="0"
          install-size="0"
-         version="3.0.0.99"
+         version="3.0.0.100"
          unpack="false"/>
 
 </feature>

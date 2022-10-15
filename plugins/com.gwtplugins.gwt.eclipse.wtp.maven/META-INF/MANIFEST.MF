@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.wtp.maven;singleton:=true
-Bundle-Version: 3.0.0.99
+Bundle-Version: 3.0.0.100
 Bundle-Localization: plugin
 Bundle-Activator: com.google.gwt.eclipse.wtp.maven.GwtMavenPlugin
 Bundle-Vendor: %providerName

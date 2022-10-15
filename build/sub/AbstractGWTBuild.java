@@ -97,19 +97,19 @@ abstract public class AbstractGWTBuild extends JavaBuilder
         addSources(getProjectDir() + "/src");
 
         addClasspathItem(new File("plugins/com.gwtplugins.gdt.eclipse.apiclientlib/libs/google-http-client-1.16.0-rc.jar").getAbsolutePath());
-        addClasspathItem(new File("plugins/com.gwtplugins.gdt.eclipse.core/libs/guava-11.0.1.jar").getAbsolutePath());
         addClasspathItem(new File("plugins/com.gwtplugins.gdt.eclipse.apiclientlib/libs/jetty-util-6.1.26.jar").getAbsolutePath());
         addClasspathItem(new File("plugins/com.gwtplugins.gwt.eclipse.oophm/libs/gwt-dev-transport.jar").getAbsolutePath());
         addClasspathItem(new File("plugins/com.gwtplugins.gwt.eclipse.core/libs/gwt-dev.jar").getAbsolutePath());
         addClasspathItem(new File("plugins/com.gwtplugins.gwt.eclipse.core/libs/gwt-user.jar").getAbsolutePath());
 
-        addMavenJarToClasspath("javax.servlet", "javax.servlet-api", "4.0.1");
+        addMavenJarToClasspath("jakarta.servlet", "jakarta.servlet-api", "6.0.0");
         addMavenJarToClasspath("org.apache.ant", "ant", "1.10.9");
         addMavenJarToClasspath("org.apache.maven", "maven-artifact", "3.0");
         addMavenJarToClasspath("org.apache.maven", "maven-core", "3.0");
         addMavenJarToClasspath("org.apache.maven", "maven-model", "3.0");
         addMavenJarToClasspath("org.codehaus.plexus", "plexus-utils", "3.4.2");
         
+        addEclipseJarToClasspath("com.google.guava_21.0.0.v20170206-1425.jar");
         addEclipseJarToClasspath("javax.inject_1.0.0.v20091030.jar");
         addEclipseJarToClasspath("org.eclipse.core.commands_3.10.100.v20210722-1426.jar");
         addEclipseJarToClasspath("org.eclipse.core.contenttype_3.8.100.v20210910-0640.jar");

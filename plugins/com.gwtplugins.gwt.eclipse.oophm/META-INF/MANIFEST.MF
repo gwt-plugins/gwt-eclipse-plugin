@@ -9,7 +9,7 @@ Bundle-Name: %pluginName
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.oophm;singleton:=true
 Bundle-Vendor: %providerName
-Bundle-Version: 3.0.0.99
+Bundle-Version: 3.0.0.100
 Export-Package: com.google.gwt.eclipse.oophm,
  com.google.gwt.eclipse.oophm.breadcrumbs,
  com.google.gwt.eclipse.oophm.devmode,

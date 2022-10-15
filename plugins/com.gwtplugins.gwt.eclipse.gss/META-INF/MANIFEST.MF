@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GWT GSS Tools
 Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.gss;singleton:=true
-Bundle-Version: 3.0.0.99
+Bundle-Version: 3.0.0.100
 Bundle-Activator: com.gwtplugins.gwt.eclipse.gss.Activator
 Bundle-Vendor: GWT Eclipse Plugin
 Require-Bundle: org.eclipse.ui,

@@ -13,7 +13,7 @@
         <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
       </provides>
       <requires>
-        <required namespace='osgi.bundle' name='javax.servlet' range='0.0.0'/>
+        <required namespace='osgi.bundle' name='jakarta.servlet-api' range='0.0.0'/>
         <required namespace='osgi.bundle' name='com.gwtplugins.gdt.eclipse.apiclientlib' range='3.0.0.99'/>
       </requires>
       <artifacts>
@@ -28,7 +28,7 @@
         <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
       </provides>
       <requires>
-        <required namespace='osgi.bundle' name='javax.servlet' range='0.0.0'/>
+        <required namespace='osgi.bundle' name='jakarta.servlet-api' range='0.0.0'/>
         <required namespace='osgi.bundle' name='com.gwtplugins.gdt.eclipse.platform' range='0.0.0'/>
       </requires>
       <artifacts>
@@ -43,7 +43,7 @@
         <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
       </provides>
       <requires>
-        <required namespace='osgi.bundle' name='javax.servlet' range='0.0.0'/>
+        <required namespace='osgi.bundle' name='jakarta.servlet-api' range='0.0.0'/>
         <required namespace='osgi.bundle' name='com.gwtplugins.gdt.eclipse.core' range='3.0.0.99'/>
       </requires>
       <artifacts>
@@ -58,7 +58,7 @@
         <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
       </provides>
       <requires>
-        <required namespace='osgi.bundle' name='javax.servlet' range='0.0.0'/>
+        <required namespace='osgi.bundle' name='jakarta.servlet-api' range='0.0.0'/>
         <required namespace='osgi.bundle' name='com.gwtplugins.gwt.eclipse.core' range='3.0.0.99'/>
       </requires>
       <artifacts>
@@ -73,7 +73,7 @@
         <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
       </provides>
       <requires>
-        <required namespace='osgi.bundle' name='javax.servlet' range='0.0.0'/>
+        <required namespace='osgi.bundle' name='jakarta.servlet-api' range='0.0.0'/>
         <required namespace='osgi.bundle' name='com.gwtplugins.gwt.eclipse.oophm' range='3.0.0.99'/>
       </requires>
       <artifacts>
@@ -88,7 +88,7 @@
         <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
       </provides>
       <requires>
-        <required namespace='osgi.bundle' name='javax.servlet' range='0.0.0'/>
+        <required namespace='osgi.bundle' name='jakarta.servlet-api' range='0.0.0'/>
         <required namespace='osgi.bundle' name='com.gwtplugins.gdt.eclipse.suite' range='3.0.0.99'/>
       </requires>
       <artifacts>
@@ -103,7 +103,7 @@
         <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
       </provides>
       <requires>
-        <required namespace='osgi.bundle' name='javax.servlet' range='0.0.0'/>
+        <required namespace='osgi.bundle' name='jakarta.servlet-api' range='0.0.0'/>
         <required namespace='osgi.bundle' name='com.gwtplugins.gwt.eclipse.wtp' range='3.0.0.99'/>
       </requires>
       <artifacts>
@@ -118,7 +118,7 @@
         <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
       </provides>
       <requires>
-        <required namespace='osgi.bundle' name='javax.servlet' range='0.0.0'/>
+        <required namespace='osgi.bundle' name='jakarta.servlet-api' range='0.0.0'/>
         <required namespace='osgi.bundle' name='com.gwtplugins.gwt.eclipse.wtp.maven' range='3.0.0.99'/>
       </requires>
       <artifacts>
@@ -133,7 +133,7 @@
         <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
       </provides>
       <requires>
-        <required namespace='osgi.bundle' name='javax.servlet' range='0.0.0'/>
+        <required namespace='osgi.bundle' name='jakarta.servlet-api' range='0.0.0'/>
         <required namespace='osgi.bundle' name='com.gwtplugins.gdt.eclipse.suite.update' range='3.0.0.99'/>
       </requires>
       <artifacts>
@@ -148,7 +148,7 @@
         <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
       </provides>
       <requires>
-        <required namespace='osgi.bundle' name='javax.servlet' range='0.0.0'/>
+        <required namespace='osgi.bundle' name='jakarta.servlet-api' range='0.0.0'/>
         <required namespace='osgi.bundle' name='com.gwtplugins.gdt.eclipse.maven' range='3.0.0.99'/>
       </requires>
       <artifacts>
@@ -163,7 +163,7 @@
         <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
       </provides>
       <requires>
-        <required namespace='osgi.bundle' name='javax.servlet' range='0.0.0'/>
+        <required namespace='osgi.bundle' name='jakarta.servlet-api' range='0.0.0'/>
         <required namespace='osgi.bundle' name='com.gwtplugins.gwt.eclipse.gss' range='3.0.0.99'/>
       </requires>
       <artifacts>
@@ -248,7 +248,6 @@
         <required namespace='org.eclipse.equinox.p2.iu' name='com.gwtplugins.gwt.eclipse.gss' range='3.0.0.99'/>
         <required namespace='org.eclipse.equinox.p2.iu' name='com.gwtplugins.eclipse.suite.v3.feature' range='3.0.0.99'/>
         <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.jst.j2ee' range='0.0.0'/>
-        <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.mylyn.commons.ui' range='0.0.0'/>
         <required namespace="osgi.bundle" name="org.eclipse.m2e.wtp" range="0.0.0"/>
         <required namespace="osgi.bundle" name="org.eclipse.jst.common.project.facet.ui" range="0.0.0"/>
         <required namespace="osgi.bundle" name="org.eclipse.wst.css.core" range="0.0.0"/>

@@ -6,7 +6,7 @@ This version has been created, because there is no official version any more.
   
 * See Issues here: https://github.com/gwt-plugins/gwt-eclipse-plugin/issues
 
-The current version installs on Windows and Linux with Eclipse 2021-12 up to Eclipse 2022-09 (see Eclipse-2022-06 and newer if you have problems with installing). Other versions aren't testet.
+The current version installs on Windows and Linux with Eclipse 2021-12 up to Eclipse 2022-09. Other versions have not been testet.
 
 ## Quality
 * This plugin is Beta Quality. 
@@ -26,9 +26,6 @@ The current version installs on Windows and Linux with Eclipse 2021-12 up to Ecl
 ## Install
 To install just add this to your available software sites:
   http://keeitsi.com/software/eclipse-plugins/ 
-### Eclipse-2022-06 and newer
-You need to have Mylyn before installing this gwt-eclipse-plugin, because it is no longer included Eclipse. Mylyn can be installed from the Marketplace.
-Or you can simply add "https://download.eclipse.org/mylyn/releases/latest/" to your available Software Sites.
 
 ## Development 
 To compile from source, you will only need this command:
