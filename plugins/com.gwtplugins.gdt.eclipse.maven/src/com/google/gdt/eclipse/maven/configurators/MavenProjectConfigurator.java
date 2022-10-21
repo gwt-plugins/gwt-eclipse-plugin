@@ -48,7 +48,7 @@ import java.util.List;
  * only invoked through m2Eclipe's extension points, other parts of this plug-in can be used without requiring the
  * m2Eclipse dependencies.
  */
-public class MavenProjectConfigurator extends AbstracMavenProjectConfigurator {
+public class MavenProjectConfigurator extends AbstractMavenProjectConfigurator {
 
   /**
    * These properties may be pulled from the gwt-maven-plugin configuration of the pom to be used in configuring the GWT
