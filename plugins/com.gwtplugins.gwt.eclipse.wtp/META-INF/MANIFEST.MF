@@ -7,7 +7,7 @@ Bundle-Localization: plugin
 Bundle-Activator: com.google.gwt.eclipse.wtp.GwtWtpPlugin
 Bundle-Vendor: %providerName
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.eclipse.core.resources,
  org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.jst.server.core,

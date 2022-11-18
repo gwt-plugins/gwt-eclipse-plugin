@@ -17,7 +17,7 @@ package com.google.gdt.eclipse.suite.update.ui;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.resources.GdtImages;
 
-import org.eclipse.mylyn.commons.ui.dialogs.AbstractNotificationPopup;
+import org.eclipse.jface.notifications.AbstractNotificationPopup;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
