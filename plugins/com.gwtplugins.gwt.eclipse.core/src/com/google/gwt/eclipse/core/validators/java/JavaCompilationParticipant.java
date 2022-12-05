@@ -17,7 +17,6 @@ package com.google.gwt.eclipse.core.validators.java;
 import com.google.gdt.eclipse.core.BuilderUtilities;
 import com.google.gdt.eclipse.core.JavaASTUtils;
 import com.google.gdt.eclipse.core.validation.ValidationResult;
-import com.google.gwt.dev.util.Empty;
 import com.google.gwt.eclipse.core.GWTPluginLog;
 import com.google.gwt.eclipse.core.clientbundle.ClientBundleResourceDependencyIndex;
 import com.google.gwt.eclipse.core.markers.ClientBundleProblem;
@@ -412,7 +411,7 @@ public class JavaCompilationParticipant extends CompilationParticipant {
               // Record the JSNI dependencies so that changing any referenced
               // types
               // will automatically trigger a rebuild of this file
-              buildContext.recordDependencies(typeDependencies.toArray(Empty.STRINGS));
+              buildContext.recordDependencies(typeDependencies.toArray(new String[typeDependencies.size()]));
             } catch (OperationCanceledException e) {
               // Thrown by Eclipse to abort long-running processes
               throw e;
