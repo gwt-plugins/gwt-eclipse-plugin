@@ -46,6 +46,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.wst.sse.ui,
  com.gwtplugins.gdt.eclipse.platform,
  jakarta.servlet-api;bundle-version="4.0.0"
-Bundle-ClassPath: libs/gwt-dev.jar,
- .
+Bundle-ClassPath: .
 Import-Package: org.mortbay.util.ajax
