@@ -46,6 +46,5 @@ Require-Bundle: javax.servlet,
  org.eclipse.wst.sse.core,
  org.eclipse.wst.sse.ui,
  com.gwtplugins.gdt.eclipse.platform
-Bundle-ClassPath: libs/gwt-dev.jar,
- .
+Bundle-ClassPath: .
 Import-Package: org.mortbay.util.ajax
