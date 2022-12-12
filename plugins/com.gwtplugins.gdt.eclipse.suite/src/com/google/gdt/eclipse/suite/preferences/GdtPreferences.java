@@ -136,11 +136,11 @@ public final class GdtPreferences {
   private static final String VERSION_FOR_LAST_FORCED_REBUILD_PREFIX = "versionForLastForcedRebuild_";
 
   public static boolean areUpdateNotificationsEnabled() {
-    return getConfigurationPreferences().getBoolean(UPDATE_NOTIFICATIONS, true);
+    return getConfigurationPreferences().getBoolean(UPDATE_NOTIFICATIONS, false);
   }
 
   public static boolean getCaptureAnalytics() {
-    return getConfigurationPreferences().getBoolean(CAPTURE_ANALYTICS, true);
+    return getConfigurationPreferences().getBoolean(CAPTURE_ANALYTICS, false);
   }
 
   public static List<String> getAddedNewWizardActionsForPerspective(String perspectiveId) {
