@@ -52,6 +52,7 @@ import java.util.Set;
 public class GWTMavenRuntime extends ProjectBoundSdk {
 
   public static final String MAVEN_GWT_GROUP_ID = "com.google.gwt";
+  public static final String MAVEN_GWT_NEW_GROUP_ID = "org.gwtproject";
   public static final String MAVEN_GWT_DEV_JAR_ARTIFACT_ID = "gwt-dev";
   public static final String MAVEN_GWT_USER_ARTIFACT_ID = "gwt-user";
   public static final String MAVEN_GWT_SERVLET_ARTIFACT_ID = "gwt-servlet";
@@ -154,7 +155,11 @@ public class GWTMavenRuntime extends ProjectBoundSdk {
     IPath path = MavenUtils.getArtifactPathForPeerMavenArtifact(classpathEntry.getPath(), MAVEN_GWT_GROUP_ID,
         MAVEN_GWT_DEV_JAR_ARTIFACT_ID);
     if (path == null) {
-      throw new SdkException("Unable to locate gwt-dev.jar");
+      path = MavenUtils.getArtifactPathForPeerMavenArtifact(classpathEntry.getPath(), MAVEN_GWT_NEW_GROUP_ID,
+          MAVEN_GWT_DEV_JAR_ARTIFACT_ID);
+      if (path == null) {
+          throw new SdkException("Unable to locate gwt-dev.jar");
+      }
     }
 
     if (!path.toFile().exists()) {
