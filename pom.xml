@@ -9,15 +9,14 @@
   <packaging>pom</packaging>
 
   <properties>
-    <tycho.version>1.0.0</tycho.version>
-    <tycho-extras.version>1.0.0</tycho-extras.version> <!-- TODO Remove this tag later -->
+    <tycho.version>3.0.1</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <eclipse.target>mars</eclipse.target> <!-- TODO change to neon -->
+    <eclipse.target>2022-09</eclipse.target> <!-- TODO change to neon -->
 
     <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
-    <eclipse-repo.url>http://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
-    <swtbot-repo.url>http://download.eclipse.org/technology/swtbot/releases/latest/</swtbot-repo.url>
-    <sdbg-repo.url>http://sdbg.github.io/p2/</sdbg-repo.url>
+    <eclipse-repo.url>https://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
+    <webtools-repo.url>https://download.eclipse.org/webtools/repository/${eclipse.target}</webtools-repo.url>
+    <swtbot-repo.url>https://download.eclipse.org/technology/swtbot/releases/latest/</swtbot-repo.url>
 
     <!-- Release url determined by upload in upload-release.sh -->
     <comparator.repo>http://storage.googleapis.com/gwt-eclipse-plugin/v3/release</comparator.repo>
@@ -33,6 +32,7 @@
 
     <!-- Skip the deployment here, submodules can override this property -->
     <maven.deploy.skip>true</maven.deploy.skip>
+    
   </properties>
 
   <modules>
@@ -98,13 +98,13 @@
       <layout>p2</layout>
     </repository>
     <repository>
-      <id>swtbot</id>
-      <url>${swtbot-repo.url}</url>
+      <id>webtools</id>
+      <url>${webtools-repo.url}</url>
       <layout>p2</layout>
     </repository>
     <repository>
-      <id>sdbg</id>
-      <url>${sdbg-repo.url}</url>
+      <id>swtbot</id>
+      <url>${swtbot-repo.url}</url>
       <layout>p2</layout>
     </repository>
   </repositories>
@@ -114,10 +114,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.0</version>
+        <version>3.10.1</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>11</source>
+          <target>11</target>
         </configuration>
       </plugin>
 
@@ -202,8 +202,7 @@
             <useUIThread>false</useUIThread>
             <product>org.eclipse.sdk.ide</product>
             <application>org.eclipse.ui.ide.workbench</application>
-            <argLine>-Dorg.eclipse.swtbot.search.timeout=${org.eclipse.swtbot.search.timeout} -Xms40m -Xmx1G
-              -XX:MaxPermSize=512m -Djava.awt.headless=true ${os-jvm-flags}</argLine>
+            <argLine>-Dorg.eclipse.swtbot.search.timeout=${org.eclipse.swtbot.search.timeout} -Xms40m -Xmx1G -Djava.awt.headless=true ${os-jvm-flags}</argLine>
           </configuration>
         </plugin>
 
@@ -237,7 +236,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>2.7</version>
+          <version>3.3.0</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -257,55 +256,17 @@
     </profile>
 
     <profile>
-      <id>build-eclipse-mars</id>
-      <activation>
-        <!-- Default target if no eclipse.target specified. -->
-        <property>
-          <name>!eclipse.target</name>
-          <!-- when no longer the default: <name>eclipse.target</name> <value>mars</value> -->
-        </property>
-      </activation>
-      <properties>
-        <!-- <jettyMinVersion>9.1</jettyMinVersion> -->
-        <!-- <jettyMaxVersion>9.3</jettyMaxVersion> -->
-      </properties>
-      <!-- build against a known target platform -->
-      <modules>
-        <module>eclipse/mars</module>
-      </modules>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>target-platform-configuration</artifactId>
-            <configuration>
-              <target>
-                <artifact>
-                  <groupId>com.gwtplugins.eclipse</groupId>
-                  <artifactId>gwt-eclipse-mars</artifactId>
-                  <version>4.5.0-SNAPSHOT</version>
-                </artifact>
-              </target>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>build-eclipse-neon</id>
+      <id>build-eclipse-2022-09</id>
       <activation>
         <property>
           <name>eclipse.target</name>
-          <value>neon</value>
+          <value>2022-09</value>
         </property>
       </activation>
       <properties>
-        <!-- <jettyMinVersion>9.3</jettyMinVersion> -->
-        <!-- <jettyMaxVersion>9.4</jettyMaxVersion> -->
       </properties>
       <modules>
-        <module>eclipse/neon</module>
+        <module>eclipse/2022-09</module>
       </modules>
       <build>
         <plugins>
@@ -316,40 +277,8 @@
               <target>
                 <artifact>
                   <groupId>com.gwtplugins.eclipse</groupId>
-                  <artifactId>gwt-eclipse-neon</artifactId>
-                  <version>4.6.0-SNAPSHOT</version>
-                </artifact>
-              </target>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    
-    <profile>
-      <id>build-eclipse-oxygen</id>
-      <activation>
-        <property>
-          <name>eclipse.target</name>
-          <value>oxygen</value>
-        </property>
-      </activation>
-      <properties>
-      </properties>
-      <modules>
-        <module>eclipse/oxygen</module>
-      </modules>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.eclipse.tycho</groupId>
-            <artifactId>target-platform-configuration</artifactId>
-            <configuration>
-              <target>
-                <artifact>
-                  <groupId>com.gwtplugins.eclipse</groupId>
-                  <artifactId>gwt-eclipse-oxygen</artifactId>
-                  <version>4.7.0-SNAPSHOT</version>
+                  <artifactId>gwt-eclipse-2022-09</artifactId>
+                  <version>4.25.0-SNAPSHOT</version>
                 </artifact>
               </target>
             </configuration>

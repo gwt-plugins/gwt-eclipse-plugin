@@ -173,8 +173,7 @@ public class MockILaunchConfiguration implements ILaunchConfiguration {
       }
 
       @Override
-      public ILaunchConfigurationDelegate getDelegate(String mode)
-          throws CoreException {
+      public ILaunchConfigurationDelegate getDelegate(String mode)          throws CoreException {
         return null;
       }
 
@@ -199,8 +198,7 @@ public class MockILaunchConfiguration implements ILaunchConfiguration {
       }
 
       @Override
-      public ILaunchDelegate getPreferredDelegate(Set modes)
-          throws CoreException {
+      public ILaunchDelegate getPreferredDelegate(Set modes)          throws CoreException {
         return null;
       }
 
@@ -265,6 +263,18 @@ public class MockILaunchConfiguration implements ILaunchConfiguration {
 
       @Override
       public boolean supportsPrototypes() {
+        // TODO(${user}): Auto-generated method stub
+        return false;
+      }
+
+      @Override
+      public boolean supportsCommandLine() {
+        // TODO(${user}): Auto-generated method stub
+        return false;
+      }
+
+      @Override
+      public boolean supportsOutputMerging() {
         // TODO(${user}): Auto-generated method stub
         return false;
       }

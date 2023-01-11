@@ -4,7 +4,7 @@ Bundle-Activator: com.google.gcp.eclipse.testing.TestingPlugin
 Bundle-ClassPath: .
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-SymbolicName: com.gwtplugins.gcp.eclipse.testing;singleton:=true
 Bundle-Vendor: %providerName
 Bundle-Version: 3.0.0.qualifier

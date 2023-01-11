@@ -13,9 +13,6 @@
       <category name="GWT_SDK"/>
    </feature>
    <category-def name="GWT" label="GWT Eclipse Plugin"/>
-   <feature  id="com.github.sdbg.feature">
-      <category name="GWT"/>
-   </feature>
    <category-def name="GWT" label="GWT Plugin for Eclipse"/>
    <category-def name="GWT_SDK" label="GWT SDK">
       <description>

@@ -4,7 +4,7 @@ Bundle-Activator: com.google.gdt.eclipse.maven.Activator
 Bundle-Localization: plugin
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-SymbolicName: com.gwtplugins.gdt.eclipse.maven;singleton:=true
 Bundle-Vendor: %providerName
 Bundle-Version: 3.0.0.qualifier
