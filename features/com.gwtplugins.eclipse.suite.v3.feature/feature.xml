@@ -51,7 +51,6 @@
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.wst.css.core"/>
       <import plugin="org.eclipse.wst.css.ui"/>
-      <import plugin="javax.servlet"/>
       <import plugin="org.eclipse.pde.core"/>
       <import plugin="org.eclipse.ui.browser"/>
       <import plugin="org.eclipse.wst.jsdt.core"/>
@@ -101,6 +100,7 @@
       <import plugin="org.eclipse.equinox.p2.ui.sdk"/>
       <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.core.runtime" version="3.9.0" match="greaterOrEqual"/>
+      <import plugin="jakarta.servlet-api"/>
    </requires>
 
    <plugin
