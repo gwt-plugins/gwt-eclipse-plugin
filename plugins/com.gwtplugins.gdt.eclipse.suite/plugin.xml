@@ -109,7 +109,7 @@
       <!-- GWT Super DevMode Launch shortcut when using GWT -->
       <shortcut
             label="GWT Development Mode with Jetty"
-            description="Launch GWT legacy development mode with embedded Jetty server (Super Development Mode)"
+            description="Launch GWT development mode with embedded Jetty server (Super Development Mode)"
             path="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebApp/devModeGroup"
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTSuperDevModeLaunchShortcut"
             icon="icons/gwt_server_16x16.png"
@@ -135,35 +135,6 @@
                id="com.gwtplugins.gdt.eclipse.suite.webapp"/>
       </shortcut>
 
-      <!-- GWT Legacy Dev Mode Launch shortcut when using GWT -->
-      <shortcut
-            label="GWT Legacy Development Mode with Jetty"
-            description="Launch legacy GWT development mode with Jetty (Classic Development Mode)"
-            path="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebApp/devModeGroup"
-            class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTClassicDevModeLaunchShortcut"
-            icon="icons/gwt_server_16x16.png"
-            id="com.gwtplugins.gdt.eclipse.suite.launch.ui.webappLaunchShortcutGwtClassicDevMode"
-            modes="run, debug">
-         <contextualLaunch>
-            <enablement>
-               <with variable="selection">
-                  <count value= "1"/>
-                     <iterate>
-                        <test property="com.gwtplugins.gdt.eclipse.suite.isGwtLaunchTarget"/>
-                     </iterate>
-               </with>
-            </enablement>
-         </contextualLaunch>
-         <description
-               description="Runs GWT legacy devopment mode with Jetty"
-               mode="run" />
-         <description
-               description="Debugs GWT legacy devopment mode with Jetty"
-               mode="debug" />
-         <configurationType
-               id="com.gwtplugins.gdt.eclipse.suite.webapp"/>
-      </shortcut>
-      
       <!-- GWT Compiler -->
       <shortcut
             label="GWT Compiler"
