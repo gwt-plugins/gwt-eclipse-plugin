@@ -5,7 +5,7 @@ Bundle-ClassPath: .
 Bundle-ManifestVersion: 2
 Bundle-Name: GWT Development Tools Suite Plugin
 Bundle-SymbolicName: com.gwtplugins.gdt.eclipse.suite.update;singleton:=true
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: GWT Eclipse Plugin
 Bundle-Version: 3.0.0.qualifier
 Export-Package: com.google.gdt.eclipse.suite.update,
@@ -22,7 +22,7 @@ Require-Bundle:
  org.eclipse.core.runtime,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
- org.eclipse.mylyn.commons.ui,
  org.eclipse.ui,
  org.eclipse.ui.ide,
- org.eclipse.update.configurator
+ org.eclipse.update.configurator,
+ org.eclipse.jface.notifications;bundle-version="0.5.0"

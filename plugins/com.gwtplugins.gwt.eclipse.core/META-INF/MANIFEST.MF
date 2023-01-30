@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: com.google.gwt.eclipse.core.GWTPlugin
 Bundle-ClassPath: .,
- libs/gwt-dev.jar,
+ libs/gwt-dev-eclipse.jar,
  libs/gwt-user.jar
 Bundle-Localization: plugin
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.core;singleton:=true
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: %providerName
 Bundle-Version: 3.0.0.qualifier
 Export-Package: com.google.gwt.eclipse.core,
@@ -72,7 +72,6 @@ Export-Package: com.google.gwt.eclipse.core,
  com.google.gwt.eclipse.core.wizards.rpc
 Require-Bundle: com.gwtplugins.gdt.eclipse.core;visibility:=reexport,
  com.gwtplugins.gdt.eclipse.platform,
- javax.servlet,
  org.eclipse.core.expressions,
  org.eclipse.core.filesystem,
  org.eclipse.core.runtime,
@@ -103,4 +102,5 @@ Require-Bundle: com.gwtplugins.gdt.eclipse.core;visibility:=reexport,
  org.eclipse.wst.validation,
  org.eclipse.wst.xml.core,
  org.eclipse.wst.xml.ui,
- org.eclipse.wst.common.project.facet.core
+ org.eclipse.wst.common.project.facet.core,
+ jakarta.servlet-api;bundle-version="4.0.0"

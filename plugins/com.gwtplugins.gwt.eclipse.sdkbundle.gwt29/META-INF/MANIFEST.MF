@@ -6,6 +6,6 @@ Bundle-Version: 2.9.0.qualifier
 Bundle-Vendor: %providerName
 Require-Bundle: org.eclipse.core.runtime,
  com.gwtplugins.gwt.eclipse.core;visibility:=reexport
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Eclipse-BundleShape: dir

@@ -39,7 +39,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ImportRewrite;
-import org.eclipse.jdt.internal.corext.codemanipulation.StubUtility;
+import org.eclipse.jdt.internal.core.manipulation.StubUtility;
 import org.eclipse.jdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.jdt.ui.wizards.NewTypeWizardPage.ImportsManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -221,6 +221,7 @@ public class GeneratedCssResource extends ClientBundleResource {
     // TODO: would nice if we could aggregate these and show them all at the end
     if (status.getSeverity() == IStatus.WARNING) {
       Display.getDefault().syncExec(new Runnable() {
+        @Override
         public void run() {
           MessageDialog.openWarning(null, "CSS Parsing", status.getMessage());
         }

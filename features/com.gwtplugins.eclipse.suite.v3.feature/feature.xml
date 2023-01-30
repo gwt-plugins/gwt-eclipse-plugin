@@ -23,7 +23,6 @@
    </url>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.launching"/>
@@ -51,7 +50,6 @@
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.wst.css.core"/>
       <import plugin="org.eclipse.wst.css.ui"/>
-      <import plugin="javax.servlet"/>
       <import plugin="org.eclipse.pde.core"/>
       <import plugin="org.eclipse.ui.browser"/>
       <import plugin="org.eclipse.wst.jsdt.core"/>
@@ -61,7 +59,6 @@
       <import plugin="org.eclipse.wst.common.modulecore"/>
       <import plugin="org.eclipse.e4.ui.workbench"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.mylyn.commons.ui"/>
       <import plugin="org.eclipse.update.configurator"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.ui.workbench"/>
@@ -101,6 +98,7 @@
       <import plugin="org.eclipse.equinox.p2.ui.sdk"/>
       <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.core.runtime" version="3.9.0" match="greaterOrEqual"/>
+      <import plugin="jakarta.servlet-api"/>
    </requires>
 
    <plugin

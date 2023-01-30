@@ -5,7 +5,6 @@
   <feature id="org.eclipse.jdt" version="0.0.0"/>
   <feature id="org.eclipse.m2e.feature" version="0.0.0"/>
   <feature id="org.eclipse.m2e.wtp.feature" version="0.0.0"/>
-  <feature id="org.eclipse.mylyn.commons" version="0.0.0"/>
   <feature id="org.eclipse.jpt.jpa.feature" version="0.0.0"/>
   <feature id="org.eclipse.datatools.sdk.feature" version="0.0.0"/>
   <feature id="org.eclipse.swtbot.eclipse" version="0.0.0"/>

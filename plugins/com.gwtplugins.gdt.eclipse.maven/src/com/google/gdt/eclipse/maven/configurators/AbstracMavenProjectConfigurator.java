@@ -71,12 +71,12 @@ public abstract class AbstracMavenProjectConfigurator extends AbstractProjectCon
     Activator.log("AbstractMavenProjectConfigurator.configure request=" + request);
     // Sometimes M2Eclipse calls this method with request == null. Why?
     if (request != null) {
-      MavenProject mavenProject = request.getMavenProject();
+      MavenProject mavenProject = request.mavenProject();
       Activator.log("AbstractMavenProjectConfigurator.configure mavenProject=" + mavenProject
           + " getGWtMavenPlugin=" + getGwtMavenPlugin(mavenProject));
 
       if (mavenProject != null && getGwtMavenPlugin(mavenProject) != null) {
-        IProject project = request.getProject();
+        IProject project = request.mavenProjectFacade().getProject();
 
         // Make sure it is a java project, GWT Maven Plugin 2 gwt-app will not auto configure as one
         NatureUtils.addNature(project, JavaCore.NATURE_ID);

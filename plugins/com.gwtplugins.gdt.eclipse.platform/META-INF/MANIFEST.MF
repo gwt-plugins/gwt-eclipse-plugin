@@ -3,7 +3,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-SymbolicName: com.gwtplugins.gdt.eclipse.platform;singleton:=true
 Bundle-Vendor: %providerName
 Bundle-Version: 3.0.0.qualifier
@@ -21,8 +21,7 @@ Export-Package: com.google.gdt.eclipse.platform.debug.ui,
  com.google.gwt.eclipse.platform.editors.java.contentassist,
  com.google.gwt.eclipse.platform.uibinder,
  org.eclipse.jdt.internal.debug.ui
-Require-Bundle: javax.servlet,
- org.eclipse.core.runtime,
+Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.debug.ui,
  org.eclipse.equinox.p2.metadata,
  org.eclipse.equinox.p2.operations,
@@ -45,7 +44,7 @@ Require-Bundle: javax.servlet,
  org.eclipse.wst.server.core,
  org.eclipse.wst.sse.core,
  org.eclipse.wst.sse.ui,
- com.gwtplugins.gdt.eclipse.platform
-Bundle-ClassPath: libs/gwt-dev.jar,
- .
+ com.gwtplugins.gdt.eclipse.platform,
+ jakarta.servlet-api;bundle-version="4.0.0"
+Bundle-ClassPath: .
 Import-Package: org.mortbay.util.ajax
