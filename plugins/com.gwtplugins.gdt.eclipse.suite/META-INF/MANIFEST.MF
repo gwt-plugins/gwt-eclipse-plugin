@@ -7,7 +7,7 @@ Bundle-Name: %pluginName
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-SymbolicName: com.gwtplugins.gdt.eclipse.suite;singleton:=true
 Bundle-Vendor: %providerName
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Export-Package: com.google.gdt.eclipse.suite,
  com.google.gdt.eclipse.suite.actions,
  com.google.gdt.eclipse.suite.launch,
