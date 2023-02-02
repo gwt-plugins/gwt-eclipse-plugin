@@ -6,7 +6,7 @@ Bundle-Name: %pluginName
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-SymbolicName: com.gwtplugins.gdt.eclipse.platform;singleton:=true
 Bundle-Vendor: %providerName
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Export-Package: com.google.gdt.eclipse.platform.debug.ui,
  com.google.gdt.eclipse.platform.jdt.dom,
  com.google.gdt.eclipse.platform.jdt.formatter,

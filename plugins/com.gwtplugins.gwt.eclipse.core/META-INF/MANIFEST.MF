@@ -10,7 +10,7 @@ Bundle-Name: %pluginName
 Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.core;singleton:=true
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: %providerName
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Export-Package: com.google.gwt.eclipse.core,
  com.google.gwt.eclipse.core.actions,
  com.google.gwt.eclipse.core.applications,
