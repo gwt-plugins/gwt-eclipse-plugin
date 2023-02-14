@@ -109,7 +109,7 @@
       <!-- GWT Super DevMode Launch shortcut when using GWT -->
       <shortcut
             label="GWT Development Mode with Jetty"
-            description="Launch GWT legacy development mode with embedded Jetty server (Super Development Mode)"
+            description="Launch GWT development mode with embedded Jetty server (Super Development Mode)"
             path="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebApp/devModeGroup"
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTSuperDevModeLaunchShortcut"
             icon="icons/gwt_server_16x16.png"
@@ -137,7 +137,7 @@
 
       <!-- GWT Legacy Dev Mode Launch shortcut when using GWT -->
       <shortcut
-            label="GWT Legacy Development Mode with Jetty"
+            label="GWT Legacy Development Mode with Jetty (Deprecated)"
             description="Launch legacy GWT development mode with Jetty (Classic Development Mode)"
             path="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebApp/devModeGroup"
             class="com.google.gdt.eclipse.suite.launch.ui.shortcuts.WebAppGWTClassicDevModeLaunchShortcut"
