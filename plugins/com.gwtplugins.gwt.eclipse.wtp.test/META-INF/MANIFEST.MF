@@ -4,7 +4,7 @@ Bundle-Name: GWT Eclipse Plugin SWTBot Test Fragment
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.wtp.test
 Bundle-Vendor: GWT Project
-Bundle-Version: 4.0.0.qualifier
+Bundle-Version: 4.0.1.qualifier
 Fragment-Host: com.gwtplugins.gwt.eclipse.core
 Require-Bundle: com.gwtplugins.gwt.eclipse.testing,
  org.junit,

@@ -33,7 +33,7 @@ Bundle-Name: %pluginName
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-SymbolicName: com.gwtplugins.gdt.eclipse.apiclientlib;singleton:=true
 Bundle-Vendor: %providerName
-Bundle-Version: 4.0.0.qualifier
+Bundle-Version: 4.0.1.qualifier
 Export-Package: com.google.api.client.auth.oauth2,
  com.google.api.client.googleapis,
  com.google.api.client.googleapis.auth.clientlogin,
