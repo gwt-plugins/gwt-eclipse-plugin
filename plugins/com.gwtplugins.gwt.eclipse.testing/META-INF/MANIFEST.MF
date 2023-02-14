@@ -6,7 +6,7 @@ Bundle-Name: GWT Testing Plug-in
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-SymbolicName: com.gwtplugins.gwt.eclipse.testing;singleton:=true
 Bundle-Vendor: GWT Project
-Bundle-Version: 4.0.0.qualifier
+Bundle-Version: 4.0.1.qualifier
 Export-Package: com.google.gwt.eclipse.testing
 Require-Bundle: com.gwtplugins.gcp.eclipse.testing,
  com.gwtplugins.gdt.eclipse.core,
