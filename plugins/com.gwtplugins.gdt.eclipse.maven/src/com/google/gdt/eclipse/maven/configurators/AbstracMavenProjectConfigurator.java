@@ -28,6 +28,8 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 
+import maven.compatibility.ProjectConfigurationRequestWrapper;
+
 /**
  * An abstract Maven project configurator that should be extended by configurators that wish to
  * configure a GWT project to work with a particular SDK.
@@ -71,12 +73,12 @@ public abstract class AbstracMavenProjectConfigurator extends AbstractProjectCon
     Activator.log("AbstractMavenProjectConfigurator.configure request=" + request);
     // Sometimes M2Eclipse calls this method with request == null. Why?
     if (request != null) {
-      MavenProject mavenProject = request.mavenProject();
+      MavenProject mavenProject = ProjectConfigurationRequestWrapper.getMavenProject(request);
       Activator.log("AbstractMavenProjectConfigurator.configure mavenProject=" + mavenProject
           + " getGWtMavenPlugin=" + getGwtMavenPlugin(mavenProject));
 
       if (mavenProject != null && getGwtMavenPlugin(mavenProject) != null) {
-        IProject project = request.mavenProjectFacade().getProject();
+        IProject project = ProjectConfigurationRequestWrapper.getProject(request);
 
         // Make sure it is a java project, GWT Maven Plugin 2 gwt-app will not auto configure as one
         NatureUtils.addNature(project, JavaCore.NATURE_ID);

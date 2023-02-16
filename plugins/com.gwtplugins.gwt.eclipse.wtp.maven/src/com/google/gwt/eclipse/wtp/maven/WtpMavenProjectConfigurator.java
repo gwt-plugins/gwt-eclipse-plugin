@@ -32,6 +32,8 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
 import com.google.gwt.eclipse.wtp.GwtWtpPlugin;
 
+import maven.compatibility.ProjectConfigurationRequestWrapper;
+
 /**
  * A {@link WTPProjectConfigurator} that adds GWT facets.
  */
@@ -43,11 +45,11 @@ public class WtpMavenProjectConfigurator extends WTPProjectConfigurator {
     GwtWtpPlugin.logMessage("WtpMavenProjectConfigurator.doConfigure() invoked");
 
     // Given a pom.xml configuration
-    Model pom = request.mavenProject().getModel();
+    Model pom = ProjectConfigurationRequestWrapper.getModel(request);
 
     // When the GWT plugin exists in POM
     if (isGwtProject(pom)) {
-      IProject eclipseProject = request.mavenProjectFacade().getProject();
+      IProject eclipseProject = ProjectConfigurationRequestWrapper.getProject(request);
       IFacetedProject facetedProject = ProjectFacetsManager.create(eclipseProject);
 
       // Then add GWT facet

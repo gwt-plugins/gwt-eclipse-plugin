@@ -6,8 +6,8 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="src/"/>
+	<classpathentry exported="true" kind="lib" path="libs/gwt-dev-eclipse.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/gwt-user.jar"/>
-	<classpathentry kind="lib" path="libs/gwt-dev-eclipse.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

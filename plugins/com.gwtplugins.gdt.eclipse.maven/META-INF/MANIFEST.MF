@@ -23,4 +23,5 @@ Require-Bundle: com.gwtplugins.gdt.eclipse.core,
  org.eclipse.jdt.launching,
  org.eclipse.m2e.core;resolution:=optional,
  org.eclipse.m2e.maven.runtime;resolution:=optional,
- org.eclipse.ui
+ org.eclipse.ui,
+ com.gwtplugins.gdt.eclipse.apiclientlib;bundle-version="4.0.1"
