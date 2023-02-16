@@ -44,7 +44,6 @@ import org.eclipse.jdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.LayoutUtil;
-import org.eclipse.jdt.internal.ui.wizards.dialogfields.SelectionButtonDialogFieldGroup;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.Separator;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.StringDialogField;
@@ -55,7 +54,6 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
@@ -74,10 +72,12 @@ public class NewHostPageWizardPage extends WizardPage {
   private class HostPageFieldAdapter implements IDialogFieldListener,
       IModulesChangeListener {
 
+    @Override
     public void dialogFieldChanged(DialogField field) {
       validateFields();
     }
 
+    @Override
     public void onModulesChanged() {
       validateFields();
     }
@@ -86,6 +86,7 @@ public class NewHostPageWizardPage extends WizardPage {
   private class PathFieldAdapter extends HostPageFieldAdapter implements
       IStringButtonAdapter {
 
+    @Override
     public void changeControlPressed(DialogField field) {
       IPath path = choosePath(new Path(pathField.getText()));
       if (path != null) {
@@ -97,6 +98,7 @@ public class NewHostPageWizardPage extends WizardPage {
   private class ProjectFieldAdapter extends HostPageFieldAdapter implements
       IStringButtonAdapter {
 
+    @Override
     public void changeControlPressed(DialogField field) {
       IJavaProject jproject = chooseProject();
       if (jproject != null) {
@@ -109,8 +111,6 @@ public class NewHostPageWizardPage extends WizardPage {
   private String fileName;
 
   private StringDialogField fileNameField;
-
-  private SelectionButtonDialogFieldGroup hostPageElementsButtons;
 
   private IPath hostPagePath;
 
@@ -149,13 +149,9 @@ public class NewHostPageWizardPage extends WizardPage {
 
     modulesBlock = new EntryPointModulesSelectionBlock("Modules:",
         new HostPageFieldAdapter());
-
-    String[] buttonNames = new String[] {"Support for browser history (Back, Forward, bookmarks)"};
-    hostPageElementsButtons = new SelectionButtonDialogFieldGroup(SWT.CHECK,
-        buttonNames, 1);
-    hostPageElementsButtons.setLabelText("Which elements do you want to include in your page?");
   }
 
+  @Override
   public void createControl(Composite parent) {
     initializeDialogUnits(parent);
     Composite composite = new Composite(parent, SWT.NONE);
@@ -172,7 +168,6 @@ public class NewHostPageWizardPage extends WizardPage {
 
     createFileNameControls(composite, columns);
     createModulesComponent(composite, columns);
-    createPageElementsControls(composite, columns);
   }
 
   public String getFileName() {
@@ -208,14 +203,8 @@ public class NewHostPageWizardPage extends WizardPage {
       initModules(selection);
     }
 
-    setPageElementsSelection(true);
-
     // Validate the initial field values
     validateFields();
-  }
-
-  public boolean isHistorySupportIncluded() {
-    return hostPageElementsButtons.isSelected(0);
   }
 
   @Override
@@ -284,16 +273,6 @@ public class NewHostPageWizardPage extends WizardPage {
 
   private void createModulesComponent(Composite parent, int columns) {
     modulesBlock.doFillIntoGrid(parent, columns);
-  }
-
-  private void createPageElementsControls(Composite composite, int nColumns) {
-    Control labelControl = hostPageElementsButtons.getLabelControl(composite);
-    LayoutUtil.setHorizontalSpan(labelControl, nColumns);
-
-    DialogField.createEmptySpace(composite);
-
-    Control buttonGroup = hostPageElementsButtons.getSelectionButtonsGroup(composite);
-    LayoutUtil.setHorizontalSpan(buttonGroup, nColumns - 1);
   }
 
   private void createPathControls(Composite composite, int columns) {
@@ -381,10 +360,6 @@ public class NewHostPageWizardPage extends WizardPage {
 
   private void setFocus() {
     fileNameField.setFocus();
-  }
-
-  private void setPageElementsSelection(boolean historySupport) {
-    hostPageElementsButtons.setSelection(0, historySupport);
   }
 
   private void updateModulesIfProjectChanged() {
