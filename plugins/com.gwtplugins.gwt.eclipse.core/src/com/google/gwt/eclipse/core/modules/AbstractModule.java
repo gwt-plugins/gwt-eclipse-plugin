@@ -291,29 +291,29 @@ abstract class AbstractModule implements IModule {
    * @return the short name for module
    */
   private String getShortName() {
-    IFile file = (IFile) storage;
-    IFolder moduleFolder = (IFolder) file.getParent();
-    String shortName = WebAppProjectProperties.getGwtMavenModuleShortName(moduleFolder.getProject());
-    return shortName;
+    if(storage instanceof IFile) {
+      IFile file = (IFile) storage;
+      IFolder moduleFolder = (IFolder) file.getParent();
+      String shortName = WebAppProjectProperties.getGwtMavenModuleShortName(moduleFolder.getProject());
+      return shortName;
+    } else {
+      return "";
+    }
   }
 
   /**
    * Get the gwt maven2 module name
    * @return module name
    */
-  private String getModuleNameGwtMaven2() {
-    IFile file = (IFile) storage;
-    IFolder moduleFolder = (IFolder) file.getParent();
-    String moduleName = WebAppProjectProperties.getGwtMavenModuleName(moduleFolder.getProject());
-    moduleName = moduleName.replaceAll(".*\\.(.*)", "$1");
-    return moduleName;
-  }
-
   private String getGWtMaven2ModuleName() {
-    IFile file = (IFile) storage;
-    IFolder moduleFolder = (IFolder) file.getParent();
-    String moduleName = WebAppProjectProperties.getGwtMavenModuleName(moduleFolder.getProject());
-    return moduleName;
+    if(storage instanceof IFile) {
+      IFile file = (IFile) storage;
+      IFolder moduleFolder = (IFolder) file.getParent();
+      String moduleName = WebAppProjectProperties.getGwtMavenModuleName(moduleFolder.getProject());
+      return moduleName;
+    } else {
+      return "";
+    }
   }
 
   /**
