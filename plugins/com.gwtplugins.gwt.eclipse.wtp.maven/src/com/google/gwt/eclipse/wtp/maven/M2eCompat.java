@@ -4,6 +4,8 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 
+import com.google.gdt.eclipse.core.ReflectionUtilities;
+
 /**
  * @author Luca Piccarreta
  *
@@ -12,13 +14,11 @@ import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 public class M2eCompat {
   public static MavenProject getMavenProject(ProjectConfigurationRequest request) {
     try {
-      java.lang.reflect.Method m;
       try {
-          m = ProjectConfigurationRequest.class.getMethod("getMavenProject");
-      } catch (NoSuchMethodException ignore) { // try the m2e 2.x accessor method
-          m = ProjectConfigurationRequest.class.getMethod("mavenProject");
+        return ReflectionUtilities.invoke(request, "getMavenProject");
+      } catch (ReflectiveOperationException ignore) { // try the m2e 2.x accessor method
+        return ReflectionUtilities.invoke(request, "mavenProject");
       }
-      return (MavenProject) m.invoke(request);
     } catch (ReflectiveOperationException e) {
       throw new IllegalStateException("Failed getting MavenProject from ProjectConfigurationRequest", e);
     }
@@ -26,13 +26,11 @@ public class M2eCompat {
 
   public static IMavenProjectFacade getMavenProjectFacade(ProjectConfigurationRequest request) {
     try {
-      java.lang.reflect.Method m;
       try {
-          m = ProjectConfigurationRequest.class.getMethod("getMavenProjectFacade");
+        return ReflectionUtilities.invoke(request, "getMavenProjectFacade");
       } catch (NoSuchMethodException ignore) { // try the m2e 2.x accessor method
-          m = ProjectConfigurationRequest.class.getMethod("mavenProjectFacade");
+        return ReflectionUtilities.invoke(request, "mavenProjectFacade");
       }
-      return (IMavenProjectFacade) m.invoke(request);
     } catch (ReflectiveOperationException e) {
         throw new IllegalStateException("Failed getting IMavenProjectFacade from ProjectConfigurationRequest", e);
     }
