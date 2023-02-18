@@ -47,10 +47,10 @@ Install from the Eclipse marketplace.
 
 
 ## Repository
-The Eclipse repositories for this plugin. 
+The Eclipse repositories for this plugin.
 
 ### Production
-Release update site. 
+Release update site.
 
 * [Eclipse Marketplace entry for the GWT Plugin](https://marketplace.eclipse.org/content/gwt-plugin)
 * [Update sites for the GWT Plugin](https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin/)
@@ -61,14 +61,15 @@ Download the repo in a zip file from the latest release at the
 [4.0.0](https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/download/v4.0.0/repository.zip)
 
 ### Staging
-The staging repository is also at plugins.gwtproject.org, under the `nightly` version:
+The staging repository is also at plugins.gwtproject.org, under the `nightly` version. At this time,
+these are signed with a self-signed certificate.
 
-* [https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin/](nightly)
+* Nightly update site: https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin/nightly
 
-## Development 
+## Development
 
 ### Importing
-Simply use Maven to import all the plugins and modules. 
+Simply use Maven to import all the plugins and modules.
 
 * Use Eclipse Import and choose import with Existing Maven projects. Don't forget to select recursive import.  
 * Select all the projects and import them. This will create the .project, .classpath and .settings files. If some exist, they will be overwritten.  
