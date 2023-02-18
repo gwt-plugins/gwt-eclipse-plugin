@@ -17,10 +17,6 @@ Sencha provides man power to help update the plugin and the build server which a
 
   [![Sencha GXT](http://cdn.sencha.com/img/gwt-eclipse-plugin-banner.png)](https://www.sencha.com/products/gxt/)
 
-
-## Quality
-* This plugin is Beta Quality. 
-
 ## Not Included
 * This plugin does not include the [Google Cloud Tools Eclipse](https://github.com/GoogleCloudPlatform/google-cloud-eclipse) features.
 
@@ -50,28 +46,15 @@ Supports the two GWT Maven plugins.
 ## MarketPlace
 Install from the Eclipse marketplace.
 
-<a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=3107469" class="drag" title="Drag to your running Eclipse workspace to install GWT Eclipse Plugin"><img class="img-responsive" src="https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png" alt="Drag to your running Eclipse workspace to install GWT Eclipse Plugin" /></a>
+<a href="https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=5576850" class="drag" title="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client"><img style="width:80px;" typeof="foaf:Image" class="img-responsive" src="https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.svg" alt="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client" /></a>
 
-* [https://marketplace.eclipse.org/content/gwt-eclipse-plugin](https://marketplace.eclipse.org/content/gwt-eclipse-plugin)
+* [https://marketplace.eclipse.org/content/gwt-plugin](https://marketplace.eclipse.org/content/gwt-plugin)
 
 
 ## Repository
-The Eclipse repositories for this plugin. 
-
-### Production
-Release update site. 
-
-* [http://storage.googleapis.com/gwt-eclipse-plugin/v3/release](http://storage.googleapis.com/gwt-eclipse-plugin/v3/release)
-
-### Production Zip
 Download the repo in a zip file. 
 
-* [http://storage.googleapis.com/gwt-eclipse-plugin/v3/downloads/repo-3.0.0.zip](http://storage.googleapis.com/gwt-eclipse-plugin/v3/downloads/repo-3.0.0.zip)
-
-### Staging
-Staging repo for testing before production release.
-
-* [http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot](http://storage.googleapis.com/gwt-eclipse-plugin/v3/snapshot)
+* [https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/download/v4.0.0/repository.zip](https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/download/v4.0.0/repository.zip)
 
 
 ## Development 
