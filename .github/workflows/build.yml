@@ -15,6 +15,25 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
+      - name: If present (and if on a branch that should be released), write the keystore to a file, and note it exists for the next step
+        # if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
+        id: keystore
+        run: |
+        if [ "${{ secrets.SIGN_KEYSTORE_CONTENTS }}" != '' ]; then
+          echo "available=true" >> $GITHUB_OUTPUT;
+          echo "${{ secrets.SIGN_KEYSTORE_CONTENTS }}" | base64 --decode > ${HOME}/key
+        else
+          echo "available=false" >> $GITHUB_OUTPUT;
+        fi
+      - name: Provide signing information as env vars, if the keystore was available
+        if: ${{ steps.keystore.outputs.available == 'true' }}
+        env:
+          SIGN_KEYSTORE: ${HOME}/key
+          SIGN_STOREPASS: ${{ secrets.SIGN_STOREPASS }}
+          SIGN_ALIAS: ${{ secrets.SIGN_ALIAS }}
+          SIGN_KEYPASS: ${{ secrets.SIGN_KEYPASS }}
+          SIGN_STORETYPE: ${{ secrets.SIGN_STORETYPE }}
+          SIGN_TSA: http://timestamp.digicert.com/
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots package
 
