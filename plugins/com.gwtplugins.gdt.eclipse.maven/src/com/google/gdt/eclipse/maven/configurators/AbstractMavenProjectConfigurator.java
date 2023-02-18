@@ -39,7 +39,7 @@ import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
  * installation. As long as these classes are only invoked through m2Eclipe's extension points,
  * other parts of this plugin can be used without requiring the m2Eclipse dependencies.
  */
-public abstract class AbstracMavenProjectConfigurator extends AbstractProjectConfigurator {
+public abstract class AbstractMavenProjectConfigurator extends AbstractProjectConfigurator {
   /**
    * Optional callback interface for callers to get notifications before or after adding natures to
    * a project. Useful in cases where callers want to execute code before or after applying the

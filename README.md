@@ -12,9 +12,6 @@ The Google Cloud Tools team has put a significant amount of effort in helping br
 
 * [Google Cloud Tools](https://cloud.google.com/)
 
-## Quality
-* This plugin is Beta Quality. 
-
 ## Not Included
 * This plugin does not include the [Google Cloud Tools Eclipse](https://github.com/GoogleCloudPlatform/google-cloud-eclipse) features.
 
@@ -44,9 +41,9 @@ Supports the two GWT Maven plugins.
 ## MarketPlace
 Install from the Eclipse marketplace.
 
-<a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=3107469" class="drag" title="Drag to your running Eclipse workspace to install GWT Eclipse Plugin"><img class="img-responsive" src="https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png" alt="Drag to your running Eclipse workspace to install GWT Eclipse Plugin" /></a>
+<a href="https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=5576850" class="drag" title="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client"><img style="width:80px;" typeof="foaf:Image" class="img-responsive" src="https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.svg" alt="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client" /></a>
 
-* [https://marketplace.eclipse.org/content/gwt-eclipse-plugin](https://marketplace.eclipse.org/content/gwt-eclipse-plugin)
+* [https://marketplace.eclipse.org/content/gwt-plugin](https://marketplace.eclipse.org/content/gwt-plugin)
 
 
 ## Repository
@@ -60,13 +57,13 @@ Release update site.
 
 ### Production Zip
 Download the repo in a zip file from the latest release at the
-[releases page](https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/).
+[releases page](https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/). The current release is
+[4.0.0](https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/download/v4.0.0/repository.zip)
 
 ### Staging
 The staging repository is also at plugins.gwtproject.org, under the `nightly` version:
 
 * [https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin/](nightly)
-
 
 ## Development 
 
