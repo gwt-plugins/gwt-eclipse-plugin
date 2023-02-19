@@ -21,30 +21,22 @@ jobs:
         env:
           SIGN_KEYSTORE_CONTENTS: ${{ secrets.SIGN_KEYSTORE_CONTENTS }}
         run: |
-          set -eux
           if [ "$SIGN_KEYSTORE_CONTENTS" != '' ]; then
             echo "available=true" >> $GITHUB_OUTPUT
             echo "$SIGN_KEYSTORE_CONTENTS" | base64 --decode > ${HOME}/key
           else
             echo "available=false" >> $GITHUB_OUTPUT
           fi
-          ls ${HOME}
 
       - name: Build with maven (sign artifacts)
         if: ${{ steps.keystore.outputs.available == 'true' }}
         env:
-          SIGN_KEYSTORE: ${HOME}/key
           SIGN_STOREPASS: ${{ secrets.SIGN_STOREPASS }}
           SIGN_ALIAS: ${{ secrets.SIGN_ALIAS }}
           SIGN_KEYPASS: ${{ secrets.SIGN_KEYPASS }}
           SIGN_STORETYPE: ${{ secrets.SIGN_STORETYPE }}
           SIGN_TSA: http://timestamp.digicert.com/
-        run: |
-          set -eux
-          ls -l ${HOME}
-          ls -l ${HOME}/key
-          ls -l ${SIGN_KEYSTORE}
-          mvn --batch-mode --update-snapshots package
+        run: SIGN_KEYSTORE=${HOME}/key mvn --batch-mode --update-snapshots package
 
       - name: Build with maven (no signing)
         if: ${{ steps.keystore.outputs.available != 'true' }}
