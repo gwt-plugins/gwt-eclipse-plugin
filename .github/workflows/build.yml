@@ -21,12 +21,12 @@ jobs:
         env:
           SIGN_KEYSTORE_CONTENTS: ${{ secrets.SIGN_KEYSTORE_CONTENTS }}
         run: |
-        if [ "$SIGN_KEYSTORE_CONTENTS" != '' ]; then
-          echo "available=true" >> $GITHUB_OUTPUT;
-          echo "$SIGN_KEYSTORE_CONTENTS" | base64 --decode > ${HOME}/key
-        else
-          echo "available=false" >> $GITHUB_OUTPUT;
-        fi
+          if [ "$SIGN_KEYSTORE_CONTENTS" != '' ]; then
+            echo "available=true" >> $GITHUB_OUTPUT
+            echo "$SIGN_KEYSTORE_CONTENTS" | base64 --decode > ${HOME}/key
+          else
+            echo "available=false" >> $GITHUB_OUTPUT
+          fi
       - name: Provide signing information as env vars, if the keystore was available
         if: ${{ steps.keystore.outputs.available == 'true' }}
         env:
