@@ -12,11 +12,6 @@ The Google Cloud Tools team has put a significant amount of effort in helping br
 
 * [Google Cloud Tools](https://cloud.google.com/)
 
-### Sencha
-Sencha provides man power to help update the plugin and the build server which automates the build. 
-
-  [![Sencha GXT](http://cdn.sencha.com/img/gwt-eclipse-plugin-banner.png)](https://www.sencha.com/products/gxt/)
-
 ## Not Included
 * This plugin does not include the [Google Cloud Tools Eclipse](https://github.com/GoogleCloudPlatform/google-cloud-eclipse) features.
 
@@ -52,15 +47,29 @@ Install from the Eclipse marketplace.
 
 
 ## Repository
-Download the repo in a zip file. 
+The Eclipse repositories for this plugin.
 
-* [https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/download/v4.0.0/repository.zip](https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/download/v4.0.0/repository.zip)
+### Production
+Release update site.
 
+* [Eclipse Marketplace entry for the GWT Plugin](https://marketplace.eclipse.org/content/gwt-plugin)
+* [Update sites for the GWT Plugin](https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin/)
 
-## Development 
+### Production Zip
+Download the repo in a zip file from the latest release at the
+[releases page](https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/). The current release is
+[4.0.0](https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/download/v4.0.0/repository.zip)
+
+### Staging
+The staging repository is also at plugins.gwtproject.org, under the `nightly` version. At this time,
+these are signed with a self-signed certificate.
+
+* Nightly update site: https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin/nightly
+
+## Development
 
 ### Importing
-Simply use Maven to import all the plugins and modules. 
+Simply use Maven to import all the plugins and modules.
 
 * Use Eclipse Import and choose import with Existing Maven projects. Don't forget to select recursive import.  
 * Select all the projects and import them. This will create the .project, .classpath and .settings files. If some exist, they will be overwritten.  
@@ -73,16 +82,27 @@ The target defintion build is based off of the Google Cloud Tools. Follow their 
 * Note: The targets will have to be updated by setting the targets. This will regenerate the Eclipse target files.  
 
 ### Build
-Sencha has provided an internal build agent to build. 
-[Sencha Eclipse Build](https://teamcity.sencha.com/viewType.html?buildTypeId=Gxt3_Gwt_GwtEclipsePlugin)
+To build, Apache Maven and Java 17 are required. Invoke `mvn verify` to build and test. The resulting
+update site can be found in `repo/target/repository` for local deployment and testing.
 
-* `mvn clean install`
+### Release
+Creating a release requires signing artifacts. Set the following environment variables before running
+`mvn verify`:
+ * `SIGN_KEYSTORE` - Path to a pkcs12 keystore that contains a key to use to sign this release
+ * `SIGN_STOREPASS` - Passphrase for the keystore
+ * `SIGN_ALIAS` - Alias of the key to use to sign the release
+ * `SIGN_KEYPASS` - Passphrase for the key
+ * `SIGN_TSA` - URL of a Time stamp authority to use to sign this release
+ 
+ At this time, releases are performed manually. The releases deployed to the marketplace will be signed
+ with the certificate for `plugins.gwtproject.org`.
 
 ### Deploy
-Google storage write permissions are needed to deploy. 
-
-* `sh ./build-deploy-release.sh` - deploy production version
-* `sh ./build-deploy-snapshot.sh` - deploy snapshot version
+Releases are uploaded as zips to the [release](https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/)
+part of the Github project page, and also deployed at
+https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin as Eclipse update sites. Releases will be
+added to the [GWT-Plugin](https://marketplace.eclipse.org/content/gwt-plugin) page on the Eclipse
+Marketplace.
 
 ### Testing
 There are a couple of archetypes that are used to test. 

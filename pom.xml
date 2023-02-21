@@ -294,7 +294,41 @@
         <module>eclipse/ide-target-platform</module>
       </modules>
     </profile>
-
+    <profile>
+      <!-- We only sign the jars when the keystore has been provided in the environment -->
+      <id>sign-jars</id>
+      <activation>
+        <file>
+          <exists>${env.SIGN_KEYSTORE}</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jarsigner-plugin</artifactId>
+            <version>3.0.0</version>
+            <configuration>
+              <keystore>${env.SIGN_KEYSTORE}</keystore>
+              <storepass>${env.SIGN_STOREPASS}</storepass>
+              <alias>${env.SIGN_ALIAS}</alias>
+              <keypass>${env.SIGN_KEYPASS}</keypass>
+              <storetype>${env.SIGN_STORETYPE}</storetype>
+              <tsa>${env.SIGN_TSA}</tsa>
+              <verbose>true</verbose>
+            </configuration>
+            <executions>
+              <execution>
+                <id>sign</id>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>teamcity</id>
       <properties>

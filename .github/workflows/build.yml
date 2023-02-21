@@ -15,7 +15,31 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Build with Maven
+      - name: If present (and if on a branch that should be released), write the keystore to a file, and note it exists for the next step
+        #if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
+        id: keystore
+        env:
+          SIGN_KEYSTORE_CONTENTS: ${{ secrets.SIGN_KEYSTORE_CONTENTS }}
+        run: |
+          if [ "$SIGN_KEYSTORE_CONTENTS" != '' ]; then
+            echo "available=true" >> $GITHUB_OUTPUT
+            echo "$SIGN_KEYSTORE_CONTENTS" | base64 --decode > ${HOME}/key
+          else
+            echo "available=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build with maven (sign artifacts)
+        if: ${{ steps.keystore.outputs.available == 'true' }}
+        env:
+          SIGN_STOREPASS: ${{ secrets.SIGN_STOREPASS }}
+          SIGN_ALIAS: ${{ secrets.SIGN_ALIAS }}
+          SIGN_KEYPASS: ${{ secrets.SIGN_KEYPASS }}
+          SIGN_STORETYPE: ${{ secrets.SIGN_STORETYPE }}
+          SIGN_TSA: http://timestamp.digicert.com/
+        run: SIGN_KEYSTORE=${HOME}/key mvn --batch-mode --update-snapshots package
+
+      - name: Build with maven (no signing)
+        if: ${{ steps.keystore.outputs.available != 'true' }}
         run: mvn --batch-mode --update-snapshots package
 
       - uses: actions/upload-artifact@v3
