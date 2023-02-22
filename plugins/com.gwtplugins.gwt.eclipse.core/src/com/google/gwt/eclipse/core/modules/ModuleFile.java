@@ -85,8 +85,11 @@ public class ModuleFile extends AbstractModule {
     }
   }
 
+  private String qualifiedName = null;
+  private final IFile storage;
+
   protected ModuleFile(IFile file) {
-    super(file);
+    this.storage = file;
   }
 
   /**
@@ -115,13 +118,58 @@ public class ModuleFile extends AbstractModule {
   }
 
   /**
+   * Returns the package name for the module.
+   */
+  @Override
+  public String getQualifiedName() {
+    // Cache the qualified name
+    if (qualifiedName == null) {
+      String shortName = getShortName();
+      if (shortName != null && !shortName.isEmpty()) {
+        qualifiedName = getGwtMaven2ModuleName();
+        return qualifiedName;
+      }
+
+      qualifiedName = Util.removeFileExtension(storage.getName());
+
+      String modulePckg = doGetPackageName();
+      if (modulePckg != null) {
+        qualifiedName = modulePckg + "." + qualifiedName;
+      }
+    }
+
+    return qualifiedName;
+  }
+
+  /**
+   * GWT Maven project will have a short name
+   * @return the short name for module
+   */
+  private String getShortName() {
+    IFile file = storage;
+    IFolder moduleFolder = (IFolder) file.getParent();
+    String shortName = WebAppProjectProperties.getGwtMavenModuleShortName(moduleFolder.getProject());
+    return shortName;
+  }
+
+  /**
+   * Get the gwt maven2 module name
+   * @return module name
+   */
+  private String getGwtMaven2ModuleName() {
+    IFile file = storage;
+    IFolder moduleFolder = (IFolder) file.getParent();
+    String moduleName = WebAppProjectProperties.getGwtMavenModuleName(moduleFolder.getProject());
+    return moduleName;
+  }
+
+  /**
    * Returns the backing IFile for the module XML file.
    *
    * @return IFile referencing the module XML
    */
   public IFile getFile() {
-    // We received storage as an IFile in our ctor, so we know this cast works
-    return (IFile) storage;
+    return storage;
   }
 
   /**
@@ -233,8 +281,7 @@ public class ModuleFile extends AbstractModule {
     return (IDOMModel) modelManager.getModelForRead(getFile());
   }
 
-  @Override
-  protected String doGetPackageName() {
+  private final String doGetPackageName() {
     IFolder moduleFolder = (IFolder) getFile().getParent();
     IJavaElement javaElement = JavaCore.create(moduleFolder);
 
@@ -256,7 +303,6 @@ public class ModuleFile extends AbstractModule {
     } else {
       // TODO: handle super-source case here
     }
-
     return "";
   }
 

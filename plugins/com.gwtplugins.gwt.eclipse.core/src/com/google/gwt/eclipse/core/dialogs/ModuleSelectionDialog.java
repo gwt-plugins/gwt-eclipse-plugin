@@ -55,7 +55,7 @@ public class ModuleSelectionDialog extends FilteredItemsSelectionDialog {
 
   /**
    * A label provider for details of IModule objects.
-   * 
+   *
    * This code was adapted from the
    * FilteredTypesSelectionDialog.TypeItemDetailsLabelProvider class.
    */
@@ -70,7 +70,7 @@ public class ModuleSelectionDialog extends FilteredItemsSelectionDialog {
       Image image = null;
 
       IModule module = (IModule) element;
-      if (!module.isBinary()) {
+      if (module instanceof ModuleFile) {
         ModuleFile moduleFile = (ModuleFile) module;
         IFile file = moduleFile.getFile();
         IPackageFragment pkFrag;
@@ -101,7 +101,7 @@ public class ModuleSelectionDialog extends FilteredItemsSelectionDialog {
       IModule module = (IModule) element;
       String packageName = module.getPackageName();
 
-      if (!module.isBinary()) {
+      if (module instanceof ModuleFile) {
         ModuleFile moduleFile = (ModuleFile) module;
         IFile file = moduleFile.getFile();
         String modulePath = file.getFullPath().makeRelative().toString();
@@ -119,7 +119,7 @@ public class ModuleSelectionDialog extends FilteredItemsSelectionDialog {
 
   /**
    * A label provider for IModule objects.
-   * 
+   *
    * This code was adapted from the
    * FilteredTypesSelectionDialog.TypeItemLabelProvider class.
    */
@@ -279,7 +279,7 @@ public class ModuleSelectionDialog extends FilteredItemsSelectionDialog {
 
   /**
    * Extends functionality of SearchPatterns.
-   * 
+   *
    * This code was adapted from the
    * FilteredTypesSelectionDialog.TypeSearchPattern class.
    */
@@ -341,12 +341,12 @@ public class ModuleSelectionDialog extends FilteredItemsSelectionDialog {
 
   /**
    * Create a new ModuleSelectionDialog and display it.
-   * 
+   *
    * @param shell The current display shell
    * @param project The Java project that should be searched for GWT Modules
    * @param showModulesInJars true if modules that are located in jars on the
    *          project's classpath should be displayed
-   * 
+   *
    * @return the IModule corresponding to the module chosen from the list by
    *         pressing the OK button, null if CANCEL was pressed.
    */
@@ -366,25 +366,25 @@ public class ModuleSelectionDialog extends FilteredItemsSelectionDialog {
 
   /**
    * Helper method to return the absolute workspace path of a GWT Module.
-   * 
+   *
    * If the module file is located in a JAR, then the absolute path of the JAR
    * on the file system is returned.
    */
   private static IPath getPathForModule(IModule module) {
 
-    if (module == null) {
-      return null;
-    }
-
-    if (!module.isBinary()) {
+    if (module instanceof ModuleFile) {
       ModuleFile moduleFile = (ModuleFile) module;
       IFile file = moduleFile.getFile();
       return file.getFullPath();
     }
-
-    ModuleJarResource moduleJarResource = (ModuleJarResource) module;
-    IJarEntryResource jarEntryResource = moduleJarResource.getJarEntryResource();
-    return jarEntryResource.getPackageFragmentRoot().getPath();
+    else if(module instanceof ModuleJarResource) {
+      ModuleJarResource moduleJarResource = (ModuleJarResource) module;
+      IJarEntryResource jarEntryResource = moduleJarResource.getJarEntryResource();
+      return jarEntryResource.getPackageFragmentRoot().getPath();
+    }
+    else {
+      return null;
+    }
   }
 
   private IJavaProject javaProject;
@@ -449,39 +449,37 @@ public class ModuleSelectionDialog extends FilteredItemsSelectionDialog {
 
   @Override
   protected Comparator<?> getItemsComparator() {
-    return new Comparator<Object>() {
-      public int compare(Object o1, Object o2) {
-        Collator collator = Collator.getInstance();
-        IModule module1 = (IModule) o1;
-        IModule module2 = (IModule) o2;
+    return (Object o1, Object o2) -> {
+      Collator collator = Collator.getInstance();
+      IModule module1 = (IModule) o1;
+      IModule module2 = (IModule) o2;
 
-        // Compare module names
+      // Compare module names
 
-        String s1 = module1.getSimpleName();
-        String s2 = module2.getSimpleName();
+      String s1 = module1.getSimpleName();
+      String s2 = module2.getSimpleName();
 
-        int comparability = collator.compare(s1, s2);
+      int comparability = collator.compare(s1, s2);
 
-        // If module names are identical, then compare
-        // fully-qualified module names
+      // If module names are identical, then compare
+      // fully-qualified module names
 
-        if (comparability == 0) {
-          s1 = module1.getQualifiedName();
-          s2 = module2.getQualifiedName();
-          comparability = collator.compare(s1, s2);
-        }
-
-        // If fully-qualified module names are identical, then
-        // compare file paths.
-
-        if (comparability == 0) {
-          s1 = getPathForModule(module1).toString();
-          s2 = getPathForModule(module2).toString();
-          comparability = collator.compare(s1, s2);
-        }
-
-        return comparability;
+      if (comparability == 0) {
+        s1 = module1.getQualifiedName();
+        s2 = module2.getQualifiedName();
+        comparability = collator.compare(s1, s2);
       }
+
+      // If fully-qualified module names are identical, then
+      // compare file paths.
+
+      if (comparability == 0) {
+        s1 = getPathForModule(module1).toString();
+        s2 = getPathForModule(module2).toString();
+        comparability = collator.compare(s1, s2);
+      }
+
+      return comparability;
     };
   }
 
