@@ -86,10 +86,10 @@ public class ModuleFile extends AbstractModule {
   }
 
   private String qualifiedName = null;
-  private final IFile storage;
+  private final IFile manifestFile;
 
   protected ModuleFile(IFile file) {
-    this.storage = file;
+    this.manifestFile = file;
   }
 
   /**
@@ -130,7 +130,7 @@ public class ModuleFile extends AbstractModule {
         return qualifiedName;
       }
 
-      qualifiedName = Util.removeFileExtension(storage.getName());
+      qualifiedName = Util.removeFileExtension(manifestFile.getName());
 
       String modulePckg = doGetPackageName();
       if (modulePckg != null) {
@@ -146,8 +146,7 @@ public class ModuleFile extends AbstractModule {
    * @return the short name for module
    */
   private String getShortName() {
-    IFile file = storage;
-    IFolder moduleFolder = (IFolder) file.getParent();
+    IFolder moduleFolder = (IFolder) manifestFile.getParent();
     String shortName = WebAppProjectProperties.getGwtMavenModuleShortName(moduleFolder.getProject());
     return shortName;
   }
@@ -156,9 +155,8 @@ public class ModuleFile extends AbstractModule {
    * Get the gwt maven2 module name
    * @return module name
    */
-  private String getGwtMaven2ModuleName() {
-    IFile file = storage;
-    IFolder moduleFolder = (IFolder) file.getParent();
+  private final String getGwtMaven2ModuleName() {
+    IFolder moduleFolder = (IFolder) manifestFile.getParent();
     String moduleName = WebAppProjectProperties.getGwtMavenModuleName(moduleFolder.getProject());
     return moduleName;
   }
@@ -169,7 +167,7 @@ public class ModuleFile extends AbstractModule {
    * @return IFile referencing the module XML
    */
   public IFile getFile() {
-    return storage;
+    return manifestFile;
   }
 
   /**
@@ -182,7 +180,7 @@ public class ModuleFile extends AbstractModule {
    * @return IFolder corresponding to the path
    */
   public IFolder getFolder(IPath moduleRelativePath) {
-    IPath moduleFolderPath = storage.getFullPath().removeLastSegments(1);
+    IPath moduleFolderPath = manifestFile.getFullPath().removeLastSegments(1);
     IPath folderPath = moduleFolderPath.append(moduleRelativePath);
     IResource folder = Util.getWorkspaceRoot().findMember(folderPath);
     return (IFolder) folder;

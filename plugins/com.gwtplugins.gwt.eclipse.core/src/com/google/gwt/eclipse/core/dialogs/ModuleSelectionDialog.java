@@ -448,11 +448,9 @@ public class ModuleSelectionDialog extends FilteredItemsSelectionDialog {
   }
 
   @Override
-  protected Comparator<?> getItemsComparator() {
-    return (Object o1, Object o2) -> {
+  protected Comparator<IModule> getItemsComparator() {
+    return (IModule module1, IModule module2) -> {
       Collator collator = Collator.getInstance();
-      IModule module1 = (IModule) o1;
-      IModule module2 = (IModule) o2;
 
       // Compare module names
 
