@@ -119,9 +119,6 @@ abstract class AbstractModule implements IModule {
     return attrValues;
   }
 
-  protected AbstractModule() {
-  }
-
   /**
    * Two modules are considered equal iff their qualified names are the same.
    *

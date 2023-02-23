@@ -209,22 +209,19 @@ public final class ModuleUtils {
     final String modulePckg = Signature.getQualifier(qualifiedName);
     final String simpleName = Signature.getSimpleName(qualifiedName);
 
-    return visitFragments(javaProject, includeJars, new IPackageFragmentVisitor<IModule>() {
-      @Override
-      public IModule visit(IPackageFragment pckg) throws JavaModelException {
-        // Look for the package fragment matching the module qualifier
-        if (modulePckg.equals(pckg.getElementName())) {
-          for (Object resource : pckg.getNonJavaResources()) {
-            IModule module = create(resource, includeJars);
-            // Now compare the resource name to the module name
-            if (module != null && module.getSimpleName().equals(simpleName)) {
-              return module;
-            }
+    return visitFragments(javaProject, includeJars, (IPackageFragment pckg) -> {
+      // Look for the package fragment matching the module qualifier
+      if (modulePckg.equals(pckg.getElementName())) {
+        for (Object resource : pckg.getNonJavaResources()) {
+          IModule module = create(resource, includeJars);
+          // Now compare the resource name to the module name
+          if (module != null && module.getSimpleName().equals(simpleName)) {
+            return module;
           }
         }
-
-        return null;
       }
+
+      return null;
     });
   }
 
@@ -311,9 +308,9 @@ public final class ModuleUtils {
     IFile file = AdapterUtilities.getAdapter(resource, IFile.class);
     if (file != null) {
       return create(file);
-    } else {
+    } else if(allowModulesInJars) {
       IJarEntryResource jarEntryRes = AdapterUtilities.getAdapter(resource, IJarEntryResource.class);
-      if (jarEntryRes != null && allowModulesInJars) {
+      if (jarEntryRes != null) {
         return create(jarEntryRes);
       }
     }
@@ -335,9 +332,11 @@ public final class ModuleUtils {
         }
 
         for (IJavaElement elem : pckgRoot.getChildren()) {
-          T result = visitor.visit((IPackageFragment) elem);
-          if (result != null) {
-            return result;
+          if(elem instanceof IPackageFragment) {
+            T result = visitor.visit((IPackageFragment) elem);
+            if (result != null) {
+              return result;
+            }
           }
         }
       }
