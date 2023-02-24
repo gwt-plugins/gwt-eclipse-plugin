@@ -85,8 +85,11 @@ public class ModuleFile extends AbstractModule {
     }
   }
 
+  private String qualifiedName = null;
+  private final IFile manifestFile;
+
   protected ModuleFile(IFile file) {
-    super(file);
+    this.manifestFile = file;
   }
 
   /**
@@ -115,13 +118,56 @@ public class ModuleFile extends AbstractModule {
   }
 
   /**
+   * Returns the package name for the module.
+   */
+  @Override
+  public String getQualifiedName() {
+    // Cache the qualified name
+    if (qualifiedName == null) {
+      String shortName = getShortName();
+      if (shortName != null && !shortName.isEmpty()) {
+        qualifiedName = getGwtMaven2ModuleName();
+        return qualifiedName;
+      }
+
+      qualifiedName = Util.removeFileExtension(manifestFile.getName());
+
+      String modulePckg = doGetPackageName();
+      if (modulePckg != null) {
+        qualifiedName = modulePckg + "." + qualifiedName;
+      }
+    }
+
+    return qualifiedName;
+  }
+
+  /**
+   * GWT Maven project will have a short name
+   * @return the short name for module
+   */
+  private String getShortName() {
+    IFolder moduleFolder = (IFolder) manifestFile.getParent();
+    String shortName = WebAppProjectProperties.getGwtMavenModuleShortName(moduleFolder.getProject());
+    return shortName;
+  }
+
+  /**
+   * Get the gwt maven2 module name
+   * @return module name
+   */
+  private final String getGwtMaven2ModuleName() {
+    IFolder moduleFolder = (IFolder) manifestFile.getParent();
+    String moduleName = WebAppProjectProperties.getGwtMavenModuleName(moduleFolder.getProject());
+    return moduleName;
+  }
+
+  /**
    * Returns the backing IFile for the module XML file.
    *
    * @return IFile referencing the module XML
    */
   public IFile getFile() {
-    // We received storage as an IFile in our ctor, so we know this cast works
-    return (IFile) storage;
+    return manifestFile;
   }
 
   /**
@@ -134,7 +180,7 @@ public class ModuleFile extends AbstractModule {
    * @return IFolder corresponding to the path
    */
   public IFolder getFolder(IPath moduleRelativePath) {
-    IPath moduleFolderPath = storage.getFullPath().removeLastSegments(1);
+    IPath moduleFolderPath = manifestFile.getFullPath().removeLastSegments(1);
     IPath folderPath = moduleFolderPath.append(moduleRelativePath);
     IResource folder = Util.getWorkspaceRoot().findMember(folderPath);
     return (IFolder) folder;
@@ -233,8 +279,7 @@ public class ModuleFile extends AbstractModule {
     return (IDOMModel) modelManager.getModelForRead(getFile());
   }
 
-  @Override
-  protected String doGetPackageName() {
+  private final String doGetPackageName() {
     IFolder moduleFolder = (IFolder) getFile().getParent();
     IJavaElement javaElement = JavaCore.create(moduleFolder);
 
@@ -256,7 +301,6 @@ public class ModuleFile extends AbstractModule {
     } else {
       // TODO: handle super-source case here
     }
-
     return "";
   }
 

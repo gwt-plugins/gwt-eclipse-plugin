@@ -14,13 +14,8 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.modules;
 
-import com.google.gdt.eclipse.core.properties.WebAppProjectProperties;
 import com.google.gwt.eclipse.core.GWTPluginLog;
-import com.google.gwt.eclipse.core.util.Util;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -122,15 +117,6 @@ abstract class AbstractModule implements IModule {
     }
 
     return attrValues;
-  }
-
-  protected final IStorage storage;
-
-  private String qualifiedName;
-
-  protected AbstractModule(IStorage storage) {
-    assert (storage != null);
-    this.storage = storage;
   }
 
   /**
@@ -263,60 +249,6 @@ abstract class AbstractModule implements IModule {
   }
 
   /**
-   * Returns the package name for the module.
-   */
-  @Override
-  public String getQualifiedName() {
-    // Cache the qualified name
-    if (qualifiedName == null) {
-      String shortName = getShortName();
-      if (shortName != null && !shortName.isEmpty()) {
-        qualifiedName = getGWtMaven2ModuleName();
-        return qualifiedName;
-      }
-
-      qualifiedName = Util.removeFileExtension(storage.getName());
-
-      String modulePckg = doGetPackageName();
-      if (modulePckg != null) {
-        qualifiedName = modulePckg + "." + qualifiedName;
-      }
-    }
-
-    return qualifiedName;
-  }
-
-  /**
-   * GWT Maven project will have a short name
-   * @return the short name for module
-   */
-  private String getShortName() {
-    IFile file = (IFile) storage;
-    IFolder moduleFolder = (IFolder) file.getParent();
-    String shortName = WebAppProjectProperties.getGwtMavenModuleShortName(moduleFolder.getProject());
-    return shortName;
-  }
-
-  /**
-   * Get the gwt maven2 module name
-   * @return module name
-   */
-  private String getModuleNameGwtMaven2() {
-    IFile file = (IFile) storage;
-    IFolder moduleFolder = (IFolder) file.getParent();
-    String moduleName = WebAppProjectProperties.getGwtMavenModuleName(moduleFolder.getProject());
-    moduleName = moduleName.replaceAll(".*\\.(.*)", "$1");
-    return moduleName;
-  }
-
-  private String getGWtMaven2ModuleName() {
-    IFile file = (IFile) storage;
-    IFolder moduleFolder = (IFolder) file.getParent();
-    String moduleName = WebAppProjectProperties.getGwtMavenModuleName(moduleFolder.getProject());
-    return moduleName;
-  }
-
-  /**
    * Returns a list of the <set-configuration-property name="propertyName" value="[return value]"/>.
    *
    * @return a list of the set configuration values for the property name.
@@ -372,7 +304,4 @@ abstract class AbstractModule implements IModule {
   }
 
   protected abstract IDOMModel doGetModelForRead() throws IOException, CoreException;
-
-  protected abstract String doGetPackageName();
-
 }

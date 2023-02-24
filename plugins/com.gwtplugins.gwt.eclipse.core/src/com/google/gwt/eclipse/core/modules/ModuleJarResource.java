@@ -14,6 +14,8 @@
  *******************************************************************************/
 package com.google.gwt.eclipse.core.modules;
 
+import com.google.gwt.eclipse.core.util.Util;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -31,16 +33,37 @@ import java.io.IOException;
 @SuppressWarnings("restriction")
 public class ModuleJarResource extends AbstractModule {
 
+  IJarEntryResource storage;
+
+  String qualifiedName = null;
+
   protected ModuleJarResource(IJarEntryResource jarResource) {
-    super(jarResource);
+    this.storage = jarResource;
   }
 
   public IJarEntryResource getJarEntryResource() {
-    return (IJarEntryResource) storage;
+    return storage;
   }
 
+  @Override
   public boolean isBinary() {
     return true;
+  }
+
+  /**
+   * Returns the package name for the module.
+   */
+  @Override
+  public String getQualifiedName() {
+    // Cache the qualified name
+    if (qualifiedName == null) {
+      qualifiedName = Util.removeFileExtension(storage.getName());
+      String modulePckg = doGetPackageName();
+      if (modulePckg != null) {
+        qualifiedName = modulePckg + "." + qualifiedName;
+      }
+    }
+    return qualifiedName;
   }
 
   @Override
@@ -51,8 +74,7 @@ public class ModuleJarResource extends AbstractModule {
     return model;
   }
 
-  @Override
-  protected String doGetPackageName() {
+  private final String doGetPackageName() {
     IPath modulePckgPath = storage.getFullPath().removeLastSegments(1).makeRelative();
     return modulePckgPath.toString().replace('/', '.');
   }
