@@ -18,7 +18,6 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 
-import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 
 /**
@@ -32,12 +31,12 @@ public class M2eCompat {
     // Hide constructor of static only method
   }
 
-  private static class Handles {
+  private static class M2eMethods {
     Method getMavenProject = null;
     Method getMavenProjectFacade = null;
   }
 
-  private static Handles handles = null;
+  private static M2eMethods handles = null;
 
   /**
    * Extract maven project from an instance of  {@link ProjectConfigurationRequest}, i.e.
@@ -50,7 +49,7 @@ public class M2eCompat {
    */
   public static MavenProject getMavenProject(ProjectConfigurationRequest request) {
     try {
-      return (MavenProject)invoke(ensureMethodHandles(request).getMavenProject, request);
+      return (MavenProject)invoke(ensureM2eMethods(request).getMavenProject, request);
     } catch (Throwable e) {
       throw new IllegalStateException("Failed getting MavenProject from ProjectConfigurationRequest", e);
     }
@@ -67,7 +66,7 @@ public class M2eCompat {
    */
   public static IMavenProjectFacade getMavenProjectFacade(ProjectConfigurationRequest request) {
     try {
-      return (IMavenProjectFacade)invoke(ensureMethodHandles(request).getMavenProjectFacade, request);
+      return (IMavenProjectFacade)invoke(ensureM2eMethods(request).getMavenProjectFacade, request);
     } catch (ReflectiveOperationException e) {
       throw new IllegalStateException("Failed getting IMavenProjectFacade from ProjectConfigurationRequest", e);
     }
@@ -75,16 +74,16 @@ public class M2eCompat {
 
 
   /*
-   * Return (and cache) a structure which holds MethodHandle's for m2e methods which have a different signature
+   * Return (and cache) a structure which holds java.lang.reflect.Method's for m2e methods which have a different signature
    * in m2e 1.0 and m2e 2.0
    *
    * @param request
    * @return
    * @throws NoSuchMethodException
    */
-  private synchronized static final Handles ensureMethodHandles(ProjectConfigurationRequest request) throws NoSuchMethodException {
+  private synchronized static final M2eMethods ensureM2eMethods(ProjectConfigurationRequest request) throws NoSuchMethodException {
     if(handles == null) {
-      Handles h = new Handles();
+      M2eMethods h = new M2eMethods();
       h.getMavenProject = findAvailableMethod(request, "mavenProject", "getMavenProject");
       h.getMavenProjectFacade = findAvailableMethod(request, "mavenProjectFacade", "getMavenProjectFacade");
       M2eCompat.handles = h;
@@ -102,7 +101,7 @@ public class M2eCompat {
    * @param obj an instance of the class in which the method has to be searched for
    * @param methodNames an array of possible names
    *
-   * @return a non-null {@link MethodHandle}
+   * @return a non-null {@link Method}
    * @throws NoSuchMethodException if no method id found
    */
   private final static <T> Method findAvailableMethod(T obj, String... methodNames) throws NoSuchMethodException {
@@ -124,9 +123,9 @@ public class M2eCompat {
    *
    * @param <T>
    *
-   * @param method method to invoke
-   * @param obj object on which to invoke
-   * @return
+   * @param method the method to invoke
+   * @param obj an object on which to invoke
+   * @return invocation result
    * @throws ReflectiveOperationException
    */
   private final static <T> Object invoke (Method method, T obj) throws ReflectiveOperationException {
