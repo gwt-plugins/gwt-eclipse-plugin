@@ -19,8 +19,7 @@ import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
+import java.lang.reflect.Method;
 
 /**
  * @author Luca Piccarreta
@@ -34,8 +33,8 @@ public class M2eCompat {
   }
 
   private static class Handles {
-    MethodHandle getMavenProject = null;
-    MethodHandle getMavenProjectFacade = null;
+    Method getMavenProject = null;
+    Method getMavenProjectFacade = null;
   }
 
   private static Handles handles = null;
@@ -86,8 +85,8 @@ public class M2eCompat {
   private synchronized static final Handles ensureMethodHandles(ProjectConfigurationRequest request) throws NoSuchMethodException {
     if(handles == null) {
       Handles h = new Handles();
-      h.getMavenProject = findAvailableMethod(request, MethodType.methodType(MavenProject.class), "mavenProject", "getMavenProject");
-      h.getMavenProjectFacade = findAvailableMethod(request, MethodType.methodType(IMavenProjectFacade.class), "mavenProjectFacade", "getMavenProjectFacade");
+      h.getMavenProject = findAvailableMethod(request, "mavenProject", "getMavenProject");
+      h.getMavenProjectFacade = findAvailableMethod(request, "mavenProjectFacade", "getMavenProjectFacade");
       M2eCompat.handles = h;
     }
     return M2eCompat.handles;
@@ -101,19 +100,17 @@ public class M2eCompat {
    * @param <T>
    *
    * @param obj an instance of the class in which the method has to be searched for
-   * @param methodType method signature
    * @param methodNames an array of possible names
    *
    * @return a non-null {@link MethodHandle}
    * @throws NoSuchMethodException if no method id found
    */
-  private final static <T> MethodHandle findAvailableMethod(T obj, MethodType methodType, String... methodNames) throws NoSuchMethodException {
+  private final static <T> Method findAvailableMethod(T obj, String... methodNames) throws NoSuchMethodException {
     for(String methodName : methodNames) {
       try {
-        return MethodHandles.lookup().findVirtual(obj.getClass(), methodName, methodType);
+        return obj.getClass().getMethod(methodName);
       } catch(ReflectiveOperationException e) {
-        e.printStackTrace();
-        // swallow exception, we're not very interested
+        // intentionally swallowing exception
       }
     }
     throw new NoSuchMethodException("Can't find in " + obj.getClass() + ". Tried " + String.join(",", methodNames));
@@ -132,7 +129,7 @@ public class M2eCompat {
    * @return
    * @throws ReflectiveOperationException
    */
-  private final static <T> Object invoke (MethodHandle method, T obj) throws ReflectiveOperationException {
+  private final static <T> Object invoke (Method method, T obj) throws ReflectiveOperationException {
     try {
       return method.invoke(obj);
     } catch(Throwable t) {
