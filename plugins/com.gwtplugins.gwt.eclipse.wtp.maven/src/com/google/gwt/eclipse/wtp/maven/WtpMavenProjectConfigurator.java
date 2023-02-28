@@ -30,6 +30,7 @@ import org.eclipse.m2e.wtp.WTPProjectConfigurator;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
+import com.google.gdt.eclipse.maven.configurators.M2eCompat;
 import com.google.gwt.eclipse.wtp.GwtWtpPlugin;
 
 /**

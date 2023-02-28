@@ -14,7 +14,8 @@ Export-Package: com.google.gdt.eclipse.maven,
  com.google.gdt.eclipse.maven.launch.processors,
  com.google.gdt.eclipse.maven.properties,
  com.google.gdt.eclipse.maven.sdk,
- com.google.gdt.eclipse.maven.web
+ com.google.gdt.eclipse.maven.web,
+ com.google.gdt.eclipse.maven.utils
 Require-Bundle: com.gwtplugins.gdt.eclipse.core,
  com.gwtplugins.gwt.eclipse.core,
  org.eclipse.core.runtime,
