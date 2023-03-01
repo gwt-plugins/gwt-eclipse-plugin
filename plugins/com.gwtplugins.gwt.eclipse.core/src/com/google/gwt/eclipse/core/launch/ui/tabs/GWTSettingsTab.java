@@ -744,7 +744,7 @@ public class GWTSettingsTab extends JavaLaunchTab
    * @return true if super dev mode can be used
    */
   private boolean canSdkVersionUseSuperDevMode(String version) {
-    return version.matches("^2.[5-9].*") || version.matches("^[3-9].*");
+    return version.matches("^2.([5-9]|1\\d).*") || version.matches("^[3-9].*");
   }
 
   /**
