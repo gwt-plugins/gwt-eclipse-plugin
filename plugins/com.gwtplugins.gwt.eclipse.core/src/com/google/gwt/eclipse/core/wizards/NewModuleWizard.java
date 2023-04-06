@@ -46,7 +46,7 @@ import java.util.List;
 public class NewModuleWizard extends AbstractNewFileWizard {
 
   private static final String NO_VERSION_FOUND_DTD =
-      "<!DOCTYPE module PUBLIC \"-//Google Inc.//DTD GWT//EN\" \"http://gwtproject.org/doctype/2.8.0/gwt-module.dtd\">";
+      "<!DOCTYPE module PUBLIC \"-//Google Inc.//DTD GWT//EN\" \"https://gwtproject.org/doctype/2.8.0/gwt-module.dtd\">";
   private NewModuleWizardPage newModuleWizardPage;
 
   @Override
@@ -140,7 +140,7 @@ public class NewModuleWizard extends AbstractNewFileWizard {
 
       if (!versionNum.endsWith(".999") && !versionNum.startsWith("0.0")) {
         gwtModuleDtd = "<!DOCTYPE module PUBLIC \"-//Google Inc.//DTD Google Web Toolkit " + versionNum
-            + "//EN\" \"http://google-web-toolkit.googlecode.com/svn/tags/" + versionNum
+            + "//EN\" \"https://google-web-toolkit.googlecode.com/svn/tags/" + versionNum
             + "/distro-source/core/src/gwt-module.dtd\">";
       }
     }
