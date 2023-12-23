@@ -83,8 +83,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
  * Web application project creator.
  */
@@ -387,6 +385,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     this.gwtSdk = gwtSdk;
   }
 
+  @Override
   public Sdk getGwtSdk() {
     return gwtSdk;
   }
@@ -407,11 +406,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
         participant.updateWebAppProjectCreator(this);
       }
     }
-  }
-
-  @Inject
-  public void doSomething(IExtensionRegistry registry) {
-    registry.getConfigurationElementsFor("com.gwtplugins.gdt.eclipse.suite.webAppCreatorParticipant");
   }
 
   public List<IPath> getContainerPaths() {
