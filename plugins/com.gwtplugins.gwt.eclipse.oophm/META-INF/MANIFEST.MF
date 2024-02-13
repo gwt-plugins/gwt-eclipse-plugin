@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: com.google.gwt.eclipse.oophm.Activator
 Bundle-ClassPath: .,
- lib/gwt-dev-transport.jar
+ libs/gwt-dev-transport.jar
 Bundle-Localization: plugin
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
