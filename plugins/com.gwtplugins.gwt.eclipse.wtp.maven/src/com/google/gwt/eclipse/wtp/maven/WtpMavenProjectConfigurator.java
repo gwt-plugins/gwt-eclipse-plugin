@@ -30,6 +30,7 @@ import org.eclipse.m2e.wtp.WTPProjectConfigurator;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
+import com.google.gdt.eclipse.maven.configurators.M2eCompat;
 import com.google.gwt.eclipse.wtp.GwtWtpPlugin;
 
 /**
@@ -43,11 +44,11 @@ public class WtpMavenProjectConfigurator extends WTPProjectConfigurator {
     GwtWtpPlugin.logMessage("WtpMavenProjectConfigurator.doConfigure() invoked");
 
     // Given a pom.xml configuration
-    Model pom = request.mavenProject().getModel();
+    Model pom = M2eCompat.getMavenProject(request).getModel();
 
     // When the GWT plugin exists in POM
     if (isGwtProject(pom)) {
-      IProject eclipseProject = request.mavenProjectFacade().getProject();
+      IProject eclipseProject = M2eCompat.getMavenProjectFacade(request).getProject();
       IFacetedProject facetedProject = ProjectFacetsManager.create(eclipseProject);
 
       // Then add GWT facet
