@@ -44,6 +44,7 @@
     <module>features/com.gwtplugins.eclipse.sdkbundle.gwt27.feature</module>
     <module>features/com.gwtplugins.eclipse.sdkbundle.gwt28.feature</module>
     <module>features/com.gwtplugins.eclipse.sdkbundle.gwt29.feature</module>
+    <module>features/com.gwtplugins.eclipse.sdkbundle.gwt211.feature</module>
 
     <!-- Core Plugins -->
     <module>plugins/com.gwtplugins.gdt.eclipse.core</module>
@@ -82,6 +83,7 @@
     <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle.gwt27</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle.gwt28</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle.gwt29</module>
+    <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle.gwt211</module>
 
     <!-- Testing utils -->
     <module>plugins/com.gwtplugins.gcp.eclipse.testing</module>
