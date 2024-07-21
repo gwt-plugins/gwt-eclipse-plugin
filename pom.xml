@@ -46,7 +46,6 @@
     <module>features/com.gwtplugins.eclipse.sdkbundle.gwt29.feature</module>
 
     <!-- Core Plugins -->
-    <module>plugins/com.gwtplugins.gdt.eclipse.apiclientlib</module>
     <module>plugins/com.gwtplugins.gdt.eclipse.core</module>
     <module>plugins/com.gwtplugins.gdt.eclipse.core.test</module>
     <module>plugins/com.gwtplugins.gdt.eclipse.maven</module>
