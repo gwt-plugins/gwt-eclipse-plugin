@@ -13,7 +13,6 @@ Export-Package: com.google.gdt.eclipse.suite.update,
  com.google.gdt.eclipse.suite.update.ui,
  com.google.gdt.eclipse.suite.update.usage
 Require-Bundle: 
- com.gwtplugins.gdt.eclipse.apiclientlib,
  com.gwtplugins.gdt.eclipse.core,
  com.gwtplugins.gdt.eclipse.platform,
  com.gwtplugins.gdt.eclipse.suite,

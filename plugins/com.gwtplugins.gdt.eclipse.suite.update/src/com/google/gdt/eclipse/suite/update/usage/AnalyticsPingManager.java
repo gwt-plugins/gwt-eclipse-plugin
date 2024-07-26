@@ -14,7 +14,7 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.update.usage;
 
-import com.google.api.client.util.escape.PercentEscaper;
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.gdt.eclipse.suite.GdtPlugin;
@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -61,8 +62,6 @@ public class AnalyticsPingManager implements PingManager {
           .put("t", "event") // hit type
           .put("an", APPLICATION_NAME)
           .build();
-
-  private static final PercentEscaper ESCAPER = new PercentEscaper(".-_", false);
 
   private final UpdateSiteURLGenerator urlGenerator;
 
@@ -169,7 +168,7 @@ public class AnalyticsPingManager implements PingManager {
       }
       resultBuilder.append(entry.getKey());
       resultBuilder.append('=');
-      resultBuilder.append(ESCAPER.escape(entry.getValue()));
+      resultBuilder.append(URLEncoder.encode(entry.getValue(), Charsets.UTF_8));
     }
     return resultBuilder.toString();
   }

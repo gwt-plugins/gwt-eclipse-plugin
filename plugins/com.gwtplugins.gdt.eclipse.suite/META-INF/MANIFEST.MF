@@ -40,6 +40,5 @@ Require-Bundle:
  com.gwtplugins.gdt.eclipse.platform,
  org.eclipse.equinox.common,
  system.bundle,
- org.eclipse.core.runtime,
- com.gwtplugins.gdt.eclipse.apiclientlib
+ org.eclipse.core.runtime
 Import-Package: org.eclipse.core.runtime.preferences
