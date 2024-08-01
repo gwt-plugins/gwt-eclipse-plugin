@@ -79,7 +79,6 @@
     <module>plugins/com.gwtplugins.gwt.eclipse.wtp.maven.test</module>
 
     <!-- SDK Bundles -->
-    <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle.gwt27</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle.gwt28</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle.gwt29</module>
     <module>plugins/com.gwtplugins.gwt.eclipse.sdkbundle.gwt211</module>
