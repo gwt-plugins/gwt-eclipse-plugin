@@ -22,5 +22,5 @@
          GWT SDKs
       </description>
    </category-def>
-   <repository-reference location="http://sdbg.github.io/p2" enabled="true" />
+<!--   <repository-reference location="http://sdbg.github.io/p2" enabled="true" /> -->
 </site>
