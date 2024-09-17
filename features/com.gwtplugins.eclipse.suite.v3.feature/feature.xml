@@ -69,7 +69,6 @@
       <import plugin="org.eclipse.equinox.p2.core"/>
       <import plugin="org.eclipse.equinox.p2.operations"/>
       <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.jetty.servlet"/>
       <import plugin="org.eclipse.jetty.server"/>
       <import plugin="org.eclipse.jetty.util"/>
       <import plugin="org.eclipse.swt"/>
