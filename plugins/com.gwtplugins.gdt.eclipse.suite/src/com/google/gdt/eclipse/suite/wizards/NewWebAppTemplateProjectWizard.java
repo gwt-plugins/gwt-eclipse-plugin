@@ -14,12 +14,9 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.wizards;
 
-import com.google.gdt.eclipse.core.projects.IWebAppProjectCreator;
-import com.google.gdt.eclipse.core.projects.ProjectUtilities;
 import com.google.gdt.eclipse.core.sdk.Sdk.SdkException;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.resources.GdtImages;
-import com.google.gwt.eclipse.core.nature.GWTNature;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -40,37 +37,21 @@ import java.net.MalformedURLException;
 import java.net.URI;
 
 /**
- * Creates a new web application project.
+ * Creates a new multi project web application.
  *
  * TODO: The progress monitors are not being used correctly.
  */
 @SuppressWarnings("restriction")
-public class NewWebAppProjectWizard extends NewElementWizard implements INewWizard {
+public class NewWebAppTemplateProjectWizard extends NewElementWizard implements INewWizard {
 
-  private IPath gwtSdkContainerPath;
+  private NewWebAppTemplateProjectWizardPage newProjectWizardPage;
 
-  private URI locationURI;
-
-  private NewWebAppProjectWizardPage newProjectWizardPage;
-
-  private String packageName;
-
-  private String projectName;
-
-  private boolean useGWT;
-
-  private boolean isGenerateEmptyProject;
-
-  private boolean buildAnt;
-
-  private boolean buildMaven;
-
-  public NewWebAppProjectWizard() {
+  public NewWebAppTemplateProjectWizard() {
   }
 
   @Override
   public void addPages() {
-    newProjectWizardPage = new NewWebAppProjectWizardPage();
+    newProjectWizardPage = new NewWebAppTemplateProjectWizardPage();
     addPage(newProjectWizardPage);
   }
 
@@ -82,7 +63,7 @@ public class NewWebAppProjectWizard extends NewElementWizard implements INewWiza
   @Override
   public void init(IWorkbench workbench, IStructuredSelection selection) {
     setHelpAvailable(false);
-    setWindowTitle("New GWT Application Project");
+    setWindowTitle("New GWT Template based Project");
     setNeedsProgressMonitor(true);
     setDefaultPageImageDescriptor(GdtPlugin.getDefault().getImageDescriptor(GdtImages.GDT_NEW_PROJECT_LARGE));
   }
@@ -93,14 +74,6 @@ public class NewWebAppProjectWizard extends NewElementWizard implements INewWiza
    */
   @Override
   public boolean performFinish() {
-    projectName = newProjectWizardPage.getProjectName();
-    useGWT = newProjectWizardPage.useGWT();
-    gwtSdkContainerPath = newProjectWizardPage.getGWTSdkContainerPath();
-    packageName = newProjectWizardPage.getPackage();
-    locationURI = newProjectWizardPage.getCreationLocationURI();
-    isGenerateEmptyProject = newProjectWizardPage.isGenerateEmptyProject();
-    buildAnt = newProjectWizardPage.isBuildAnt();
-    buildMaven = newProjectWizardPage.isBuildMaven();
 
     /**
      * HACK: We need to make sure that the DebugUITools plugin (and the DebugUIPlugin plugin) is loaded via the main
@@ -123,17 +96,19 @@ public class NewWebAppProjectWizard extends NewElementWizard implements INewWiza
   @Override
   protected void finishPage(IProgressMonitor monitor) throws InterruptedException, CoreException {
     try {
-      IWebAppProjectCreator wapc = ProjectUtilities.createWebAppProjectCreator();
+      String projectName = newProjectWizardPage.getProjectName();
+      boolean useGWT = newProjectWizardPage.useGWT();
+      IPath gwtSdkContainerPath = newProjectWizardPage.getGWTSdkContainerPath();
+      String packageName = newProjectWizardPage.getPackage();
+      URI locationURI = newProjectWizardPage.getCreationLocationURI();
+
+      WebAppTemplateProjectCreator wapc = new WebAppTemplateProjectCreator(newProjectWizardPage.getTemplate());
       wapc.setProjectName(projectName);
       wapc.setPackageName(packageName);
       wapc.setLocationURI(locationURI);
-      wapc.setGenerateEmptyProject(isGenerateEmptyProject);
-      wapc.setBuildAnt(buildAnt);
-      wapc.setBuildMaven(buildMaven);
 
       if (useGWT) {
         wapc.addContainerPath(gwtSdkContainerPath);
-        wapc.addNature(GWTNature.NATURE_ID);
       }
 
       wapc.create(monitor);

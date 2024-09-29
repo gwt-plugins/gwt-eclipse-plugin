@@ -25,7 +25,6 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -56,10 +55,6 @@ public interface IWebAppProjectCreator {
 
   void addContainerPath(IPath containerPath);
 
-  void addFile(IPath path, InputStream inputStream);
-
-  void addFile(IPath path, String content) throws UnsupportedEncodingException;
-
   void addNature(String natureId);
 
   /**
@@ -86,10 +81,6 @@ public interface IWebAppProjectCreator {
 
   void setProjectName(String projectName);
 
-  void setTemplates(String... templates);
-
-  void setTemplateSources(String... sources);
-
   /**
    * Build an Ant project.
    *
@@ -109,21 +100,21 @@ public interface IWebAppProjectCreator {
    *
    * @return the java projeect.
    */
-  IJavaProject getCreatedJavaProject();
+  IJavaProject[] getCreatedJavaProjects();
 
   /**
    * Returns build a Maven Project.
    *
    * @return Maven selected
    */
-  boolean getBuildMaven();
+  boolean isBuildMaven();
 
   /**
    * Returns build an ant project.
    *
    * @return Ant selected
    */
-  boolean getBuiltAnt();
+  boolean isBuiltAnt();
 
   /**
    * Returns the Creation progress monitor.

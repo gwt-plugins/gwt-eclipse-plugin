@@ -40,5 +40,7 @@ Require-Bundle:
  com.gwtplugins.gdt.eclipse.platform,
  org.eclipse.equinox.common,
  system.bundle,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.jdom2,
+ org.apache.commons.commons-io
 Import-Package: org.eclipse.core.runtime.preferences

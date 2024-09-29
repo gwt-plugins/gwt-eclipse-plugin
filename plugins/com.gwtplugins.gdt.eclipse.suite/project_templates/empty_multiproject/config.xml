@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<name>Empty Multi Project</name>
+	<description>
+		Empty Project divided into Client, Shared and Server
+	</description>
+	<project name="_PROJECTNAME_.client"
+		dir="client">
+	</project>
+	<project name="_PROJECTNAME_.server"
+		dir="server">
+	</project>
+	<project name="_PROJECTNAME_.shared"
+		dir="shared">
+	</project>
+</config>

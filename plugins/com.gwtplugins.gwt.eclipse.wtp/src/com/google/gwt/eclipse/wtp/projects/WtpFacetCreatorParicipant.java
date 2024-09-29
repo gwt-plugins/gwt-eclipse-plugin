@@ -19,14 +19,14 @@ import com.google.gwt.eclipse.wtp.utils.GwtFacetUtils;
 
 public class WtpFacetCreatorParicipant implements IWebAppProjectCreator.Participant {
 
-  private IJavaProject javaProject;
+  private IJavaProject[] javaProjects;
   private IFacetedProjectListener projectFacetListener;
  
   @Override
   public void updateWebAppProjectCreator(IWebAppProjectCreator webAppProjectCreator) {
     // Just in case exit early
-    javaProject = webAppProjectCreator.getCreatedJavaProject();
-    if (javaProject == null) {
+    javaProjects = webAppProjectCreator.getCreatedJavaProjects();
+    if (javaProjects == null) {
       GwtWtpPlugin.logError("Not installing the GWT Facet b/c it's not a Java project");
       return;
     }
