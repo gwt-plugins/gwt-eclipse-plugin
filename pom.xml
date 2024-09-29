@@ -11,7 +11,7 @@
   <properties>
     <tycho.version>3.0.1</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <eclipse.target>2022-09</eclipse.target> <!-- TODO change to neon -->
+    <eclipse.target>2023-09</eclipse.target> <!-- TODO change to neon -->
 
     <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
     <eclipse-repo.url>https://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>
@@ -257,17 +257,17 @@
     </profile>
 
     <profile>
-      <id>build-eclipse-2022-09</id>
+      <id>build-eclipse-2023-09</id>
       <activation>
         <property>
           <name>eclipse.target</name>
-          <value>2022-09</value>
+          <value>2023-09</value>
         </property>
       </activation>
       <properties>
       </properties>
       <modules>
-        <module>eclipse/2022-09</module>
+        <module>eclipse/2023-09</module>
       </modules>
       <build>
         <plugins>
@@ -278,8 +278,8 @@
               <target>
                 <artifact>
                   <groupId>com.gwtplugins.eclipse</groupId>
-                  <artifactId>gwt-eclipse-2022-09</artifactId>
-                  <version>4.25.0-SNAPSHOT</version>
+                  <artifactId>gwt-eclipse-2023-09</artifactId>
+                  <version>4.27.0-SNAPSHOT</version>
                 </artifact>
               </target>
             </configuration>
