@@ -11,7 +11,7 @@
   <properties>
     <tycho.version>3.0.1</tycho.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <eclipse.target>2023-09</eclipse.target> <!-- TODO change to neon -->
+    <eclipse.target>2023-09</eclipse.target>
 
     <!-- Repositories that Tycho will use to resolve compilation dependencies. -->
     <eclipse-repo.url>https://download.eclipse.org/releases/${eclipse.target}</eclipse-repo.url>

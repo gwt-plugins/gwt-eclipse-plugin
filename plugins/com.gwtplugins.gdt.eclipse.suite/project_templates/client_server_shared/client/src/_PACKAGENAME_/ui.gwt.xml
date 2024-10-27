@@ -25,7 +25,4 @@
 
   <!-- Specify the paths for translatable code                    -->
   <source path='ui'/>
-
-  <!-- allow Super Dev Mode -->
-  <add-linker name="xsiframe"/>
 </module>

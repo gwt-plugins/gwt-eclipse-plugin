@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 Google Inc. All Rights Reserved.
+ * Copyright 2024 GWT Eclipse Plugin. All Rights Reserved.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -77,6 +77,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -654,8 +655,10 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
    * Return the Java project created. This will only work half way through the process.
    */
   @Override
-  public IJavaProject[] getCreatedJavaProjects() {
-    return new IJavaProject[] {createdJavaProject};
+  public List<IJavaProject> getCreatedJavaProjects() {
+    List<IJavaProject> list = new ArrayList<>();
+    list.add(createdJavaProject);
+    return Collections.unmodifiableList(list);
   }
 
   /**

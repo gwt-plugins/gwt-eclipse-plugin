@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.util.List;
 
 /**
  * Creates web app projects populated with files relevant to the selected natures.
@@ -96,11 +97,10 @@ public interface IWebAppProjectCreator {
   void setBuildMaven(boolean buildMaven);
 
   /**
-   * Returns the created Java project. This is available half way through the creation process.
-   *
-   * @return the java projeect.
+   * Returns the created Java projects. This is available half way through the creation process.
+   * @return the java project.
    */
-  IJavaProject[] getCreatedJavaProjects();
+  List<IJavaProject> getCreatedJavaProjects();
 
   /**
    * Returns build a Maven Project.

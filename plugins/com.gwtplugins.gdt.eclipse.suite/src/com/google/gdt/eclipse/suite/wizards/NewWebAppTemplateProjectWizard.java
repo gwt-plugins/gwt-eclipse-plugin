@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 Google Inc. All Rights Reserved.
+ * Copyright 2024 GWT Eclipse Plugin. All Rights Reserved.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -45,6 +45,12 @@ import java.net.URI;
 public class NewWebAppTemplateProjectWizard extends NewElementWizard implements INewWizard {
 
   private NewWebAppTemplateProjectWizardPage newProjectWizardPage;
+  private String projectName;
+  private boolean useGWT;
+  private IPath gwtSdkContainerPath;
+  private String packageName;
+  private URI locationURI;
+  private ProjectTemplate template;
 
   public NewWebAppTemplateProjectWizard() {
   }
@@ -74,6 +80,12 @@ public class NewWebAppTemplateProjectWizard extends NewElementWizard implements 
    */
   @Override
   public boolean performFinish() {
+    projectName = newProjectWizardPage.getProjectName();
+    useGWT = newProjectWizardPage.useGWT();
+    gwtSdkContainerPath = newProjectWizardPage.getGWTSdkContainerPath();
+    packageName = newProjectWizardPage.getPackage();
+    locationURI = newProjectWizardPage.getCreationLocationURI();
+    template = newProjectWizardPage.getTemplate();
 
     /**
      * HACK: We need to make sure that the DebugUITools plugin (and the DebugUIPlugin plugin) is loaded via the main
@@ -96,13 +108,7 @@ public class NewWebAppTemplateProjectWizard extends NewElementWizard implements 
   @Override
   protected void finishPage(IProgressMonitor monitor) throws InterruptedException, CoreException {
     try {
-      String projectName = newProjectWizardPage.getProjectName();
-      boolean useGWT = newProjectWizardPage.useGWT();
-      IPath gwtSdkContainerPath = newProjectWizardPage.getGWTSdkContainerPath();
-      String packageName = newProjectWizardPage.getPackage();
-      URI locationURI = newProjectWizardPage.getCreationLocationURI();
-
-      WebAppTemplateProjectCreator wapc = new WebAppTemplateProjectCreator(newProjectWizardPage.getTemplate());
+      WebAppTemplateProjectCreator wapc = new WebAppTemplateProjectCreator(template);
       wapc.setProjectName(projectName);
       wapc.setPackageName(packageName);
       wapc.setLocationURI(locationURI);

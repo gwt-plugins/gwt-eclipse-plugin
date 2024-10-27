@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 Google Inc. All Rights Reserved.
+ * Copyright 2024 GWT Eclipse Plugin. All Rights Reserved.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -51,16 +51,18 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.ui.PreferenceConstants;
 import org.osgi.service.prefs.BackingStoreException;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
@@ -112,7 +114,7 @@ public class WebAppTemplateProjectCreator implements IWebAppProjectCreator {
   private URI locationURI;
   private String packageBaseName;
   private String projectBaseName;
-  private IJavaProject[] createdJavaProjects;
+  private List<IJavaProject> createdJavaProjects;
   private IProgressMonitor monitor;
   private Sdk gwtSdk;
   private ProjectTemplate projectTemplate;
@@ -149,7 +151,7 @@ public class WebAppTemplateProjectCreator implements IWebAppProjectCreator {
 
     List<String> projectNames = projectTemplate.getProjectNames(projectBaseName);
     IProject[] project = new IProject[projectNames.size()];
-    createdJavaProjects = new IJavaProject[projectNames.size()];
+    createdJavaProjects = new ArrayList<>();
     for(int i=0;i<projectNames.size();i++)
     {
       project[i] = createProject(monitor, projectNames.get(i));
@@ -168,7 +170,7 @@ public class WebAppTemplateProjectCreator implements IWebAppProjectCreator {
       NatureUtils.addNatures(project[i], projectTemplate.getNatureIds(i));
 
       // Create the java project
-      createdJavaProjects[i] = JavaCore.create(project[i]);
+      createdJavaProjects.add( JavaCore.create(project[i]) );
 
       // Create a source folder and add it to the raw classpath
       IResource warFolder = project[i].findMember(WebAppUtilities.DEFAULT_WAR_DIR_NAME);
@@ -179,7 +181,7 @@ public class WebAppTemplateProjectCreator implements IWebAppProjectCreator {
         WebAppUtilities.setDefaultWarSettings(project[i]);
 
         // Set the default output directory
-        WebAppUtilities.setOutputLocationToWebInfClasses(createdJavaProjects[i], monitor);
+        WebAppUtilities.setOutputLocationToWebInfClasses(createdJavaProjects.get(i), monitor);
         /**
          * Copy files into the web-inf lib folder. This code assumes that it is running in a context that has a workspace
          * lock.
@@ -187,7 +189,7 @@ public class WebAppTemplateProjectCreator implements IWebAppProjectCreator {
         Sdk gwtSdk = getGWTSdk();
         setGwtSdk(gwtSdk);
         if (gwtSdk != null) {
-          new GWTUpdateWebInfFolderCommand(createdJavaProjects[i], gwtSdk).execute();
+          new GWTUpdateWebInfFolderCommand(createdJavaProjects.get(i), gwtSdk).execute();
         }
       }
       reformatJavaFiles(dir);
@@ -214,8 +216,12 @@ public class WebAppTemplateProjectCreator implements IWebAppProjectCreator {
         String name = file.getName();
         name = name.replace("_PACKAGENAME_", packageBaseName.replace('.', File.separatorChar));
         File newFile = new File(file.getParentFile(), name);
-        newFile.getParentFile().mkdirs();
-        file.renameTo(newFile);
+        Files.createDirectories(newFile.getParentFile().toPath());
+        boolean ret = file.renameTo(newFile);
+        if(ret == false)
+        {
+          throw new IOException("Could not rename");
+        }
         file = newFile;
       }
       if(file.getName().contains("_.._"))
@@ -223,8 +229,12 @@ public class WebAppTemplateProjectCreator implements IWebAppProjectCreator {
         String name = file.getName();
         name = name.replace("_.._", "../");
         File newFile = new File(file.getParentFile(), name);
-        newFile.getParentFile().mkdirs();
-        file.renameTo(newFile);
+        Files.createDirectories(newFile.getParentFile().toPath());
+        boolean ret = file.renameTo(newFile);
+        if(ret == false)
+        {
+          throw new IOException("Could not rename");
+        }
         file = newFile;
       }
       if(file.isDirectory())
@@ -248,7 +258,7 @@ public class WebAppTemplateProjectCreator implements IWebAppProjectCreator {
    * @throws IOException
    */
   public static void replaceInFile(String file, String pattern, String replacement) throws IOException {
-    Charset cset = Charset.defaultCharset();
+    Charset cset = StandardCharsets.UTF_8;
     java.nio.file.Path path = Paths.get(file);
     if (Files.exists(path)) {
       if (Files.size(path) > 1000000) {
@@ -257,9 +267,7 @@ public class WebAppTemplateProjectCreator implements IWebAppProjectCreator {
       byte[] data = Files.readAllBytes(path);
       String str = new String(data, cset);
       String newStr = str.replaceAll(pattern, replacement);
-      BufferedWriter writer = Files.newBufferedWriter(path, cset);
-      writer.write(newStr);
-      writer.close();
+      Files.writeString(path, newStr, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
     }
   }
 
@@ -407,8 +415,8 @@ public class WebAppTemplateProjectCreator implements IWebAppProjectCreator {
    * Return the Java project created. This will only work half way through the process.
    */
   @Override
-  public IJavaProject[] getCreatedJavaProjects() {
-    return createdJavaProjects;
+  public List<IJavaProject> getCreatedJavaProjects() {
+    return Collections.unmodifiableList(createdJavaProjects);
   }
 
   /**

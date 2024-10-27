@@ -17,9 +17,11 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IProjectConfigurationManager;
 
+import java.util.List;
+
 public class MavenEnablingWebAppCreatorParicipant implements IWebAppProjectCreator.Participant {
 
-  private IJavaProject[] javaProjects;
+  private List<IJavaProject> javaProjects;
 
   @Override
   public void updateWebAppProjectCreator(IWebAppProjectCreator webAppProjectCreator) {
@@ -42,9 +44,9 @@ public class MavenEnablingWebAppCreatorParicipant implements IWebAppProjectCreat
       protected IStatus run(IProgressMonitor monitor) {
         // Turn on the Maven nature
         try {
-          for(int i=0;i<javaProjects.length;i++)
+          for(int i=0;i<javaProjects.size();i++)
           {
-            NatureUtils.addNature(javaProjects[i].getProject(), MavenUtils.MAVEN2_NATURE_ID);
+            NatureUtils.addNature(javaProjects.get(i).getProject(), MavenUtils.MAVEN2_NATURE_ID);
           }
         } catch (CoreException e1) {
           e1.printStackTrace();
@@ -56,9 +58,9 @@ public class MavenEnablingWebAppCreatorParicipant implements IWebAppProjectCreat
         // Maven update project will add the Maven dependencies to the classpath
         IProjectConfigurationManager projectConfig = MavenPlugin.getProjectConfigurationManager();
         try {
-          for(int i=0;i<javaProjects.length;i++)
+          for(int i=0;i<javaProjects.size();i++)
           {
-            projectConfig.updateProjectConfiguration(javaProjects[i].getProject(), monitor);
+            projectConfig.updateProjectConfiguration(javaProjects.get(i).getProject(), monitor);
           }
         } catch (CoreException e) {
           // TODO(${user}): Auto-generated catch block

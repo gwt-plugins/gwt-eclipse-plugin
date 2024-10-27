@@ -1,5 +1,7 @@
 package com.google.gwt.eclipse.wtp.projects;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -19,7 +21,7 @@ import com.google.gwt.eclipse.wtp.utils.GwtFacetUtils;
 
 public class WtpFacetCreatorParicipant implements IWebAppProjectCreator.Participant {
 
-  private IJavaProject[] javaProjects;
+  private List<IJavaProject> javaProjects;
   private IFacetedProjectListener projectFacetListener;
  
   @Override

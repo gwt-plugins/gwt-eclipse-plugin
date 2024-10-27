@@ -1,2 +1,5 @@
 eclipse.preferences.version=1
+encoding//project_templates/client_server_shared/client/.settings/org.eclipse.jdt.core.prefs=UTF-8
+encoding//project_templates/client_server_shared/server/.settings/org.eclipse.jdt.core.prefs=UTF-8
+encoding//project_templates/client_server_shared/shared/.settings/org.eclipse.jdt.core.prefs=UTF-8
 encoding/<project>=UTF-8
