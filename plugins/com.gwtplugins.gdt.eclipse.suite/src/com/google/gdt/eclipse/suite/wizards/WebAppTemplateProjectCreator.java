@@ -213,29 +213,15 @@ public class WebAppTemplateProjectCreator implements IWebAppProjectCreator {
       File file = files.pop();
       if(file.getName().contains("_PACKAGENAME_"))
       {
-        String name = file.getName();
-        name = name.replace("_PACKAGENAME_", packageBaseName.replace('.', File.separatorChar));
-        File newFile = new File(file.getParentFile(), name);
-        Files.createDirectories(newFile.getParentFile().toPath());
-        boolean ret = file.renameTo(newFile);
-        if(ret == false)
-        {
-          throw new IOException("Could not rename");
-        }
-        file = newFile;
+        file = replace(file, "_PACKAGENAME_", packageBaseName.replace('.', File.separatorChar));
+      }
+      if(file.getName().contains("_PROJECTNAME_"))
+      {
+        file = replace(file, "_PROJECTNAME_", projectBaseName.replace('.', File.separatorChar));
       }
       if(file.getName().contains("_.._"))
       {
-        String name = file.getName();
-        name = name.replace("_.._", "../");
-        File newFile = new File(file.getParentFile(), name);
-        Files.createDirectories(newFile.getParentFile().toPath());
-        boolean ret = file.renameTo(newFile);
-        if(ret == false)
-        {
-          throw new IOException("Could not rename");
-        }
-        file = newFile;
+        file = replace(file, "_.._", "../");
       }
       if(file.isDirectory())
       {
@@ -248,6 +234,20 @@ public class WebAppTemplateProjectCreator implements IWebAppProjectCreator {
         replaceInFile(file.toString(), "\\$\\{PROJECTNAME\\}", projectBaseName);
       }
     }
+  }
+
+  private File replace(File file, String toReplace, String replacement) throws IOException
+  {
+    String name = file.getName();
+    name = name.replace(toReplace, replacement);
+    File newFile = new File(file.getParentFile(), name);
+    Files.createDirectories(newFile.getParentFile().toPath());
+    boolean ret = file.renameTo(newFile);
+    if(ret == false)
+    {
+      throw new IOException("Could not rename");
+    }
+    return newFile;
   }
 
   /**
