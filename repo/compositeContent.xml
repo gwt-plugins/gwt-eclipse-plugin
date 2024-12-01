@@ -7,7 +7,7 @@
     <property name='p2.timestamp' value='1665755219001'/>
   </properties>
   <children size='2'>
-    <child location='https://gwt-plugins.github.io/documentation/repo/gwt-eclipse-plugin'/>
-    <child location='https://gwt-plugins.github.io/documentation/repo/gwt-sdk-plugins'/>
+    <child location='https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin/latest'/>
+    <child location='https://plugins.gwtproject.org/eclipse/gwt-sdk-plugins/latest'/>
   </children>
 </repository>
