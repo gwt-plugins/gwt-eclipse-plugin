@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 Google Inc. All Rights Reserved.
+ * Copyright 2024 GWT Eclipse Plugin. All Rights Reserved.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -46,6 +46,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Group;
@@ -54,14 +55,16 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Wizard page where the user specifies the parameters for a new GWT project.
  */
-public class NewWebAppProjectWizardPage extends WizardPage {
+public class NewWebAppTemplateProjectWizardPage extends WizardPage {
 
   /**
    * Select a GWT {@link Sdk} based on the set of {@link Sdk} known to the workspace.
@@ -80,7 +83,7 @@ public class NewWebAppProjectWizardPage extends WizardPage {
       if (Window.OK == PreferencesUtil
           .createPreferenceDialogOn(getShell(), GwtPreferencePage.ID, new String[] { GwtPreferencePage.ID }, null)
           .open()) {
-        NewWebAppProjectWizardPage.this.updateControls();
+        NewWebAppTemplateProjectWizardPage.this.updateControls();
       }
     }
 
@@ -91,42 +94,26 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
     @Override
     protected List<GwtSdk> doGetSpecificSdks() {
-      return new ArrayList<GwtSdk>(GWTPreferences.getSdks());
+      return new ArrayList<>(GWTPreferences.getSdks());
     }
   }
 
-  private final List<String> existingProjectNames = new ArrayList<String>();
-
+  private final List<String> existingProjectNames = new ArrayList<>();
   private SdkSelectionBlock<GwtSdk> gwtSelectionBlock;
-
   private Button outDirBrowseButton;
-
   private String outDirCustom = "";
-
   private Button outDirCustomButton;
-
   private Label outDirLabel;
-
   private Text outDirText;
-
   private Button outDirWorkspaceButton;
-
   private Text packageText;
-
   private Text projectNameText;
-
   private Button useGwtCheckbox;
-
+  private Combo templateCombo;
   private final String workspaceDirectory;
+  private List<ProjectTemplate> templates;
 
-  private Button generateSampleCodeCheckbox;
-
-  private Button generateMavenCodeCheckbox;
-  private Button generateAntCodeCheckbox;
-
-  private Group otherOptionsGroup;
-
-  public NewWebAppProjectWizardPage() {
+  public NewWebAppTemplateProjectWizardPage() {
     super("createProject");
     setTitle("Create a Web Application Project");
     setDescription("Create a Web Application project in the workspace or in an external location");
@@ -182,12 +169,27 @@ public class NewWebAppProjectWizardPage extends WizardPage {
         updateControls();
       }
     });
+    final Label templateLabel = new Label(containerOfComponents, SWT.NONE);
+    templateLabel.setText("Select Template:");
+    templateCombo = new Combo(containerOfComponents, SWT.NONE);
+    GridData gd3 = new GridData(GridData.FILL_HORIZONTAL);
+    gd3.horizontalSpan = 2;
+    templateCombo.setLayoutData(gd3);
+    try {
+      templates = ProjectTemplate.getTemplates();
+      Collections.sort(templates);
+      for(int i=0;i<templates.size();i++)
+      {
+        ProjectTemplate templ = templates.get(i);
+        templateCombo.add(templ.getName());
+      }
+    } catch (IOException e1) {
+      e1.printStackTrace();
+    }
 
     createLocationGroup(containerOfComponents);
 
     createSdkGroup(containerOfComponents);
-
-    createOtherOptionsGroup(containerOfComponents);
 
     scroller.setExpandHorizontal(true);
     scroller.setExpandVertical(true);
@@ -196,6 +198,12 @@ public class NewWebAppProjectWizardPage extends WizardPage {
 
     updateControls();
     projectNameText.forceFocus();
+  }
+
+  public ProjectTemplate getTemplate()
+  {
+    int index = templateCombo.getSelectionIndex();
+    return templates.get(index);
   }
 
   public String getCreationLocation() {
@@ -232,10 +240,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     }
 
     return null;
-  }
-
-  public boolean isGenerateEmptyProject() {
-    return !generateSampleCodeCheckbox.getSelection();
   }
 
   IPath getGWTSdkContainerPath() {
@@ -395,77 +399,6 @@ public class NewWebAppProjectWizardPage extends WizardPage {
     });
   }
 
-  private void createOtherOptionsGroup(Composite container) {
-    // Other-options group
-    otherOptionsGroup = new Group(container, SWT.NULL);
-    otherOptionsGroup.setText("Sample Code");
-    final GridData gd_otherOptionsGroup_1 = new GridData(GridData.FILL_HORIZONTAL);
-    gd_otherOptionsGroup_1.horizontalSpan = 2;
-    otherOptionsGroup.setLayoutData(gd_otherOptionsGroup_1);
-
-    final GridLayout gl_otherOptionsGroup_1 = new GridLayout();
-    gl_otherOptionsGroup_1.numColumns = 2;
-    otherOptionsGroup.setLayout(gl_otherOptionsGroup_1);
-
-    generateSampleCodeCheckbox = new Button(otherOptionsGroup, SWT.CHECK);
-    generateSampleCodeCheckbox.setText("Generate project sample code");
-    generateSampleCodeCheckbox.addSelectionListener(new SelectionListener() {
-      @Override
-      public void widgetDefaultSelected(SelectionEvent e) {
-        updateControls();
-      }
-
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-        if (!generateSampleCodeCheckbox.getSelection()) {
-          generateAntCodeCheckbox.setSelection(false);
-          generateMavenCodeCheckbox.setSelection(false);
-        }
-        updateControls();
-      }
-    });
-    generateSampleCodeCheckbox.setSelection(true);
-    new Label(otherOptionsGroup, SWT.NONE);
-
-    generateAntCodeCheckbox = new Button(otherOptionsGroup, SWT.CHECK);
-    generateAntCodeCheckbox.setText("Generate an Ant Project");
-    generateAntCodeCheckbox.addSelectionListener(new SelectionListener() {
-      @Override
-      public void widgetDefaultSelected(SelectionEvent e) {
-        updateControls();
-      }
-
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-        if (generateAntCodeCheckbox.getSelection()) {
-          generateSampleCodeCheckbox.setSelection(true);
-          generateMavenCodeCheckbox.setSelection(false);
-        }
-        updateControls();
-      }
-    });
-    generateAntCodeCheckbox.setSelection(false);
-
-    generateMavenCodeCheckbox = new Button(otherOptionsGroup, SWT.CHECK);
-    generateMavenCodeCheckbox.setText("Generate a Maven Project");
-    generateMavenCodeCheckbox.addSelectionListener(new SelectionListener() {
-      @Override
-      public void widgetDefaultSelected(SelectionEvent e) {
-        updateControls();
-      }
-
-      @Override
-      public void widgetSelected(SelectionEvent e) {
-        if (generateMavenCodeCheckbox.getSelection()) {
-          generateSampleCodeCheckbox.setSelection(true);
-          generateAntCodeCheckbox.setSelection(false);
-        }
-        updateControls();
-      }
-    });
-    generateMavenCodeCheckbox.setSelection(false);
-  }
-
   private String getOutputDirectory() {
     return outDirText.getText().trim();
   }
@@ -596,13 +529,4 @@ public class NewWebAppProjectWizardPage extends WizardPage {
       setPageComplete(pageComplete);
     }
   }
-
-  boolean isBuildAnt() {
-    return generateAntCodeCheckbox.getSelection();
-  }
-
-  boolean isBuildMaven() {
-    return generateMavenCodeCheckbox.getSelection();
-  }
-
 }
