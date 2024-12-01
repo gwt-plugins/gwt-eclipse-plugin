@@ -1,60 +1,31 @@
-<html>
-<head>
-<title>GWT Eclilpse Plugin</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<style>@import url("web/site.css");</style>
-<script type="text/javascript">
-	var returnval = 0;
-	var stylesheet, xmlFile, cache, doc;
-	function init(){
-		// NSCP 7.1+ / Mozilla 1.4.1+ / Safari
-		// Use the standard DOM Level 2 technique, if it is supported
-		if (document.implementation && document.implementation.createDocument) {
-			xmlFile = document.implementation.createDocument("", "", null);
-			stylesheet = document.implementation.createDocument("", "", null);
-			if (xmlFile.load){
-				xmlFile.load("site.xml");
-				stylesheet.load("web/site.xsl");
-			} else {
-				alert("Document could not be loaded by browser.");
-			}
-			xmlFile.addEventListener("load", transform, false);
-			stylesheet.addEventListener("load", transform, false);
-		}
-		//IE 6.0+ solution
-		else if (window.ActiveXObject) {
-			xmlFile = new ActiveXObject("msxml2.DOMDocument.3.0");
-			xmlFile.async = false;
-			xmlFile.load("site.xml");
-			stylesheet = new ActiveXObject("msxml2.FreeThreadedDOMDocument.3.0");
-			stylesheet.async = false;
-			stylesheet.load("web/site.xsl");
-			cache = new ActiveXObject("msxml2.XSLTemplate.3.0");
-			cache.stylesheet = stylesheet;
-			transformData();
-		}
-	}
-	// separate transformation function for IE 6.0+
-	function transformData(){
-		var processor = cache.createProcessor();
-		processor.input = xmlFile;
-		processor.transform();
-		data.innerHTML = processor.output;
-	}
-	// separate transformation function for NSCP 7.1+ and Mozilla 1.4.1+ 
-	function transform(){
-		returnval+=1;
-		if (returnval==2){
-			var processor = new XSLTProcessor();
-			processor.importStylesheet(stylesheet); 
-			doc = processor.transformToDocument(xmlFile);
-			document.getElementById("data").innerHTML = doc.documentElement.innerHTML;
-		}
-	}
-</script>
+<html><head>
+<title>GWT Eclipse Plugin</title>
+<style>
+a:link, a:visited , a:hover, a:active {
+	color: #2020c0;
+}
+</style>
 </head>
-<body onload="init();">
-<!--[insert static HTML here]-->
-<div id="data"><!-- this is where the transformed data goes --></div>
-</body>
-</html>
+<body>
+<font face="Verdana, Vera, Sans">
+<h2>Welcome to the GWT Eclipse Plugin update site</h2>
+
+<p>
+This web page is for human visitors.
+</p><p>
+<br><br><br>
+</p><h3>Plugin installation</h3>
+<p>
+To install the GWT Eclipse Plugin:
+
+</p><ol>
+<li> In Eclipse, click on <b> Help </b> -&gt; <b> Install New Software... </b> -&gt; <b> Add... </b><br><br>
+</li><li> (The "<b>Add Repository</b>" dialog will appear)<br><br>
+</li><li> For "<b>Name</b>", enter "GWT Eclipse Plugin" or something similar<br><br>
+</li><li> For "<b>Location</b>", fill-in the URL of this <a href="https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin/4.1.0">web page</a> 
+(<a href="https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin/4.1.0/">https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin/4.1.0/</a>)<br><br>
+</li></ol>
+</font>
+
+
+</body></html>
