@@ -2,7 +2,7 @@
 <feature
       id="com.gwtplugins.eclipse.suite.v3.feature"
       label="%featureName"
-      version="4.1.0.qualifier"
+      version="4.2.0.qualifier"
       provider-name="%providerName"
       plugin="com.gwtplugins.gdt.eclipse.suite">
 
@@ -104,77 +104,77 @@
          id="com.gwtplugins.gwt.eclipse.core"
          download-size="0"
          install-size="0"
-         version="4.1.0.qualifier"
+         version="4.2.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gdt.eclipse.maven"
          download-size="0"
          install-size="0"
-         version="4.1.0.qualifier"
+         version="4.2.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gdt.eclipse.platform"
          download-size="0"
          install-size="0"
-         version="4.1.0.qualifier"
+         version="4.2.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gdt.eclipse.suite"
          download-size="0"
          install-size="0"
-         version="4.1.0.qualifier"
+         version="4.2.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gdt.eclipse.suite.update"
          download-size="0"
          install-size="0"
-         version="4.1.0.qualifier"
+         version="4.2.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gwt.eclipse.core"
          download-size="0"
          install-size="0"
-         version="4.1.0.qualifier"
+         version="4.2.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gwt.eclipse.oophm"
          download-size="0"
          install-size="0"
-         version="4.1.0.qualifier"
+         version="4.2.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gwt.eclipse.wtp"
          download-size="0"
          install-size="0"
-         version="4.1.0.qualifier"
+         version="4.2.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gwt.eclipse.wtp.maven"
          download-size="0"
          install-size="0"
-         version="4.1.0.qualifier"
+         version="4.2.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gdt.eclipse.core"
          download-size="0"
          install-size="0"
-         version="4.1.0.qualifier"
+         version="4.2.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="com.gwtplugins.gwt.eclipse.gss"
          download-size="0"
          install-size="0"
-         version="4.1.0.qualifier"
+         version="4.2.0.qualifier"
          unpack="false"/>
 
 </feature>
