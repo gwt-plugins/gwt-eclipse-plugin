@@ -3,18 +3,6 @@
    <feature id="com.gwtplugins.eclipse.suite.v3.feature" version="0.0.0">
       <category name="GWT"/>
    </feature>
-   <feature id="com.gwtplugins.eclipse.sdkbundle.gwt28.feature" version="2.8.0.qualifier">
-      <category name="GWT_SDK"/>
-   </feature>
-   <feature id="com.gwtplugins.eclipse.sdkbundle.gwt29.feature" version="2.9.0.qualifier">
-      <category name="GWT_SDK"/>
-   </feature>
-   <feature id="com.gwtplugins.eclipse.sdkbundle.gwt210.feature" version="2.10.1.qualifier">
-      <category name="GWT_SDK"/>
-   </feature>
-   <feature id="com.gwtplugins.eclipse.sdkbundle.gwt211.feature" version="2.11.0.qualifier">
-      <category name="GWT_SDK"/>
-   </feature>
    <category-def name="GWT" label="GWT Eclipse Plugin"/>
    <category-def name="GWT" label="GWT Plugin for Eclipse"/>
    <category-def name="GWT_SDK" label="GWT SDK">
