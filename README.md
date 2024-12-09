@@ -4,17 +4,6 @@
 
 This repository houses the source for the GWT Eclipse Plugin. 
 
-## Thanks to our Sponsors
-Sponsors that provide man power and equipment to help get the job done. 
-
-### Google
-The Google Cloud Tools team has put a significant amount of effort in helping bring the GWT Eclipse Plugin to market. 
-
-* [Google Cloud Tools](https://cloud.google.com/)
-
-## Not Included
-* This plugin does not include the [Google Cloud Tools Eclipse](https://github.com/GoogleCloudPlatform/google-cloud-eclipse) features.
-
 ## Reference
 * [Documentation](http://gwt-plugins.github.io/documentation/)
 * [GWT Eclipse Plugin Youtube Playlist](https://www.youtube.com/watch?v=DU7ZQVLR5Zo&list=PLBbgqtDgdc_TqzA-qXrjgTFMC_6DKAQyT)
@@ -53,18 +42,11 @@ The Eclipse repositories for this plugin.
 Release update site.
 
 * [Eclipse Marketplace entry for the GWT Plugin](https://marketplace.eclipse.org/content/gwt-plugin)
-* [Update sites for the GWT Plugin](https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin/)
+* [Update sites for the GWT Plugin](https://plugins.gwtproject.org/eclipse/site/latest)
 
 ### Production Zip
 Download the repo in a zip file from the latest release at the
-[releases page](https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/). The current release is
-[4.0.0](https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/download/v4.0.0/repository.zip)
-
-### Staging
-The staging repository is also at plugins.gwtproject.org, under the `nightly` version. At this time,
-these are signed with a self-signed certificate.
-
-* Nightly update site: https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin/nightly
+[releases page](https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/).)
 
 ## Development
 
@@ -100,7 +82,7 @@ Creating a release requires signing artifacts. Set the following environment var
 ### Deploy
 Releases are uploaded as zips to the [release](https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/)
 part of the Github project page, and also deployed at
-https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin as Eclipse update sites. Releases will be
+https://gwt-plugins.github.io/documentation/repo/site/current as Eclipse update sites. Releases will be
 added to the [GWT-Plugin](https://marketplace.eclipse.org/content/gwt-plugin) page on the Eclipse
 Marketplace.
 
@@ -109,4 +91,16 @@ There are a couple of archetypes that are used to test.
 
 * [Single Module Mojo Archetype](https://github.com/branflake2267/Archetypes/tree/master/archetypes/gwt-test-gwt27)
 * [Single Module TBroyer Archetype](https://github.com/branflake2267/Archetypes/tree/master/archetypes/gwt-basic) ([TBroyer GWT Maven Plugin](https://github.com/tbroyer/gwt-maven-plugin))
+
+## Thanks to our Sponsors
+Sponsors that provide man power and equipment to help get the job done. 
+
+### Google
+The Google Cloud Tools team has put a significant amount of effort in helping bring the GWT Eclipse Plugin to market. 
+
+* [Google Cloud Tools](https://cloud.google.com/)
+
+## Not Included
+* This plugin does not include the [Google Cloud Tools Eclipse](https://github.com/GoogleCloudPlatform/google-cloud-eclipse) features.
+
 
