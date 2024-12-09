@@ -42,7 +42,7 @@ The Eclipse repositories for this plugin.
 Release update site.
 
 * [Eclipse Marketplace entry for the GWT Plugin](https://marketplace.eclipse.org/content/gwt-plugin)
-* [Update sites for the GWT Plugin](https://gwt-plugins.github.io/documentation/repo/site/current/)
+* [Update sites for the GWT Plugin](https://plugins.gwtproject.org/eclipse/site/latest)
 
 ### Production Zip
 Download the repo in a zip file from the latest release at the

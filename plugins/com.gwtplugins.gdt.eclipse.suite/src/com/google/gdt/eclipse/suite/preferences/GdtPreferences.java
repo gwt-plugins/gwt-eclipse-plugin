@@ -222,7 +222,7 @@ public final class GdtPreferences {
       String bundleVersion = bundle.getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
       String sdkId = bundleName + '_' + bundleVersion;
 
-      // The bundle name must match com.google.*.eclipse.sdkbundle
+      // The bundle name must match com.gwtplugins.*.eclipse.sdkbundle
       if (bundleName.startsWith(SDK_BUNDLE_PREFIX) && bundleName.contains(SDK_BUNDLE_SUFFIX)
           && !sdkRegistrants.contains(sdkId)) {
 
