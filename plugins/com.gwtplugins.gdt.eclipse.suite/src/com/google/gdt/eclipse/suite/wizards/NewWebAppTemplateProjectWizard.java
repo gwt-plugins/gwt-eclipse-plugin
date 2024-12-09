@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 Google Inc. All Rights Reserved.
+ * Copyright 2024 GWT Eclipse Plugin. All Rights Reserved.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,12 +14,9 @@
  *******************************************************************************/
 package com.google.gdt.eclipse.suite.wizards;
 
-import com.google.gdt.eclipse.core.projects.IWebAppProjectCreator;
-import com.google.gdt.eclipse.core.projects.ProjectUtilities;
 import com.google.gdt.eclipse.core.sdk.Sdk.SdkException;
 import com.google.gdt.eclipse.suite.GdtPlugin;
 import com.google.gdt.eclipse.suite.resources.GdtImages;
-import com.google.gwt.eclipse.core.nature.GWTNature;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -40,37 +37,27 @@ import java.net.MalformedURLException;
 import java.net.URI;
 
 /**
- * Creates a new web application project.
+ * Creates a new multi project web application.
  *
  * TODO: The progress monitors are not being used correctly.
  */
 @SuppressWarnings("restriction")
-public class NewWebAppProjectWizard extends NewElementWizard implements INewWizard {
+public class NewWebAppTemplateProjectWizard extends NewElementWizard implements INewWizard {
 
-  private IPath gwtSdkContainerPath;
-
-  private URI locationURI;
-
-  private NewWebAppProjectWizardPage newProjectWizardPage;
-
-  private String packageName;
-
+  private NewWebAppTemplateProjectWizardPage newProjectWizardPage;
   private String projectName;
-
   private boolean useGWT;
+  private IPath gwtSdkContainerPath;
+  private String packageName;
+  private URI locationURI;
+  private ProjectTemplate template;
 
-  private boolean isGenerateEmptyProject;
-
-  private boolean buildAnt;
-
-  private boolean buildMaven;
-
-  public NewWebAppProjectWizard() {
+  public NewWebAppTemplateProjectWizard() {
   }
 
   @Override
   public void addPages() {
-    newProjectWizardPage = new NewWebAppProjectWizardPage();
+    newProjectWizardPage = new NewWebAppTemplateProjectWizardPage();
     addPage(newProjectWizardPage);
   }
 
@@ -82,7 +69,7 @@ public class NewWebAppProjectWizard extends NewElementWizard implements INewWiza
   @Override
   public void init(IWorkbench workbench, IStructuredSelection selection) {
     setHelpAvailable(false);
-    setWindowTitle("New GWT Application Project");
+    setWindowTitle("New GWT Template based Project");
     setNeedsProgressMonitor(true);
     setDefaultPageImageDescriptor(GdtPlugin.getDefault().getImageDescriptor(GdtImages.GDT_NEW_PROJECT_LARGE));
   }
@@ -98,9 +85,7 @@ public class NewWebAppProjectWizard extends NewElementWizard implements INewWiza
     gwtSdkContainerPath = newProjectWizardPage.getGWTSdkContainerPath();
     packageName = newProjectWizardPage.getPackage();
     locationURI = newProjectWizardPage.getCreationLocationURI();
-    isGenerateEmptyProject = newProjectWizardPage.isGenerateEmptyProject();
-    buildAnt = newProjectWizardPage.isBuildAnt();
-    buildMaven = newProjectWizardPage.isBuildMaven();
+    template = newProjectWizardPage.getTemplate();
 
     /**
      * HACK: We need to make sure that the DebugUITools plugin (and the DebugUIPlugin plugin) is loaded via the main
@@ -123,17 +108,13 @@ public class NewWebAppProjectWizard extends NewElementWizard implements INewWiza
   @Override
   protected void finishPage(IProgressMonitor monitor) throws InterruptedException, CoreException {
     try {
-      IWebAppProjectCreator wapc = ProjectUtilities.createWebAppProjectCreator();
+      WebAppTemplateProjectCreator wapc = new WebAppTemplateProjectCreator(template);
       wapc.setProjectName(projectName);
       wapc.setPackageName(packageName);
       wapc.setLocationURI(locationURI);
-      wapc.setGenerateEmptyProject(isGenerateEmptyProject);
-      wapc.setBuildAnt(buildAnt);
-      wapc.setBuildMaven(buildMaven);
 
       if (useGWT) {
         wapc.addContainerPath(gwtSdkContainerPath);
-        wapc.addNature(GWTNature.NATURE_ID);
       }
 
       wapc.create(monitor);

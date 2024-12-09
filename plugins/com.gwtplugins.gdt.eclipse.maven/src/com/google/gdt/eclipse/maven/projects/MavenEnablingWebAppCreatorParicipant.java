@@ -17,19 +17,21 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IProjectConfigurationManager;
 
+import java.util.List;
+
 public class MavenEnablingWebAppCreatorParicipant implements IWebAppProjectCreator.Participant {
 
-  private IJavaProject javaProject;
+  private List<IJavaProject> javaProjects;
 
   @Override
   public void updateWebAppProjectCreator(IWebAppProjectCreator webAppProjectCreator) {
-    boolean buildMaven = webAppProjectCreator.getBuildMaven();
+    boolean buildMaven = webAppProjectCreator.isBuildMaven();
     if (!buildMaven) {
       return;
     }
 
-    javaProject = webAppProjectCreator.getCreatedJavaProject();
-    if (javaProject == null) {
+    javaProjects = webAppProjectCreator.getCreatedJavaProjects();
+    if (javaProjects == null) {
       return;
     }
 
@@ -42,7 +44,10 @@ public class MavenEnablingWebAppCreatorParicipant implements IWebAppProjectCreat
       protected IStatus run(IProgressMonitor monitor) {
         // Turn on the Maven nature
         try {
-          NatureUtils.addNature(javaProject.getProject(), MavenUtils.MAVEN2_NATURE_ID);
+          for(int i=0;i<javaProjects.size();i++)
+          {
+            NatureUtils.addNature(javaProjects.get(i).getProject(), MavenUtils.MAVEN2_NATURE_ID);
+          }
         } catch (CoreException e1) {
           e1.printStackTrace();
           return Status.CANCEL_STATUS;
@@ -53,7 +58,10 @@ public class MavenEnablingWebAppCreatorParicipant implements IWebAppProjectCreat
         // Maven update project will add the Maven dependencies to the classpath
         IProjectConfigurationManager projectConfig = MavenPlugin.getProjectConfigurationManager();
         try {
-          projectConfig.updateProjectConfiguration(javaProject.getProject(), monitor);
+          for(int i=0;i<javaProjects.size();i++)
+          {
+            projectConfig.updateProjectConfiguration(javaProjects.get(i).getProject(), monitor);
+          }
         } catch (CoreException e) {
           // TODO(${user}): Auto-generated catch block
           e.printStackTrace();

@@ -26,19 +26,19 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.TextEdit;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Vector;
 
 /**
  * Generates source for files needed by web application projects.
- * 
+ *
  * TODO: Convert these use to use templates.
  */
 @SuppressWarnings("restriction")
@@ -128,13 +128,13 @@ public class ProjectResources {
   /**
    * Given a java.io.File containing Java source, call the Eclipse auto-format
    * code on that source and write it back to disk.
-   * 
+   *
    * @param file
    * @throws CoreException
    */
   public static void reformatJavaSource(File file) throws CoreException {
     try {
-      String generatedSource = textFromFile(file);
+      String generatedSource = Files.readString(file.toPath(), Charset.defaultCharset());
       String reformattedSource = reformatJavaSourceAsString(generatedSource);
       if (!reformattedSource.equals(generatedSource)) {
         writeStringToFile(reformattedSource, file);
@@ -164,32 +164,6 @@ public class ProjectResources {
       }
     }
     return source;
-  }
-
-  /*
-   * TODO: These next two methods might be useful somewhere else in the
-   * future, but right now, this is the only place where we need to do I/O on
-   * java.io.Files instead of Eclipse resources.
-   */
-  private static String textFromFile(File file) throws IOException {
-    char bytes[] = new char[1024];
-    int nread;
-    StringBuilder builder = new StringBuilder();
-
-    BufferedReader reader = null;
-    try {
-      reader = new BufferedReader(new FileReader(file));
-      while ((nread = reader.read(bytes, 0, 1024)) != -1) {
-        char toAppend[] = new char[nread];
-        System.arraycopy(bytes, 0, toAppend, 0, nread);
-        builder.append(toAppend);
-      }
-    } finally {
-      if (reader != null) {
-        reader.close();
-      }
-    }
-    return builder.toString();
   }
 
   private static void writeStringToFile(String string, File file)

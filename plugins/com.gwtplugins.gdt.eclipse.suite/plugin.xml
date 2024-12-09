@@ -202,6 +202,15 @@
       </category>
       <wizard
             category="com.gwtplugins.gdt.eclipse.suite.newWizards"
+            class="com.google.gdt.eclipse.suite.wizards.NewWebAppTemplateProjectWizard"
+            icon="icons/gdt-new-project_16x16.png"
+            id="com.gwtplugins.gdt.eclipse.suite.wizards.newMultiProjectWizard"
+            name="GWT Template based Project"
+            preferredPerspectives="org.eclipse.jdt.ui.JavaPerspective"
+            project="true">
+      </wizard>      
+      <wizard
+            category="com.gwtplugins.gdt.eclipse.suite.newWizards"
             class="com.google.gdt.eclipse.suite.wizards.NewWebAppProjectWizard"
             icon="icons/gdt-new-project_16x16.png"
             id="com.gwtplugins.gdt.eclipse.suite.wizards.newProjectWizard"
@@ -224,11 +233,17 @@
       <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaPerspective">
          <newWizardShortcut
+               id="com.gwtplugins.gdt.eclipse.suite.wizards.newMultiProjectWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
                id="com.gwtplugins.gdt.eclipse.suite.wizards.newProjectWizard">
          </newWizardShortcut>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaBrowsingPerspective">
+         <newWizardShortcut
+               id="com.gwtplugins.gdt.eclipse.suite.wizards.newMultiProjectWizard">
+         </newWizardShortcut>
          <newWizardShortcut
                id="com.gwtplugins.gdt.eclipse.suite.wizards.newProjectWizard">
          </newWizardShortcut>
@@ -236,11 +251,17 @@
       <perspectiveExtension
             targetID="org.eclipse.jdt.ui.JavaHierarchyPerspective">
          <newWizardShortcut
+               id="com.gwtplugins.gdt.eclipse.suite.wizards.newMultiProjectWizard">
+         </newWizardShortcut>
+         <newWizardShortcut
                id="com.gwtplugins.gdt.eclipse.suite.wizards.newProjectWizard">
          </newWizardShortcut>
       </perspectiveExtension>
       <perspectiveExtension
             targetID="org.eclipse.jst.j2ee.J2EEPerspective">
+         <newWizardShortcut
+               id="com.gwtplugins.gdt.eclipse.suite.wizards.newMultiProjectWizard">
+         </newWizardShortcut>
          <newWizardShortcut
                id="com.gwtplugins.gdt.eclipse.suite.wizards.newProjectWizard">
          </newWizardShortcut>

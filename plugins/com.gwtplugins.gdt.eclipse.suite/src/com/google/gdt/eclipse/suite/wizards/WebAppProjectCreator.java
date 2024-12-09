@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2011 Google Inc. All Rights Reserved.
+ * Copyright 2024 GWT Eclipse Plugin. All Rights Reserved.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,7 +17,6 @@ package com.google.gdt.eclipse.suite.wizards;
 import com.google.gdt.eclipse.core.ResourceUtils;
 import com.google.gdt.eclipse.core.StringUtilities;
 import com.google.gdt.eclipse.core.WebAppUtilities;
-import com.google.gdt.eclipse.core.WebAppUtilities.FileInfo;
 import com.google.gdt.eclipse.core.natures.NatureUtils;
 import com.google.gdt.eclipse.core.projects.IWebAppProjectCreator;
 import com.google.gdt.eclipse.core.resources.ProjectResources;
@@ -72,15 +71,13 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import org.osgi.service.prefs.BackingStoreException;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -216,15 +213,13 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     return sanitized;
   }
 
-  private List<IPath> containerPaths = new ArrayList<IPath>();
-
-  private final List<FileInfo> fileInfos = new ArrayList<FileInfo>();
+  private List<IPath> containerPaths = new ArrayList<>();
 
   private boolean isGenerateEmptyProject;
 
   private URI locationURI;
 
-  private List<String> natureIds = new ArrayList<String>();
+  private List<String> natureIds = new ArrayList<>();
 
   private String packageName;
 
@@ -261,16 +256,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
   }
 
   @Override
-  public void addFile(IPath path, InputStream inputStream) {
-    fileInfos.add(new FileInfo(path, inputStream));
-  }
-
-  @Override
-  public void addFile(IPath path, String content) throws UnsupportedEncodingException {
-    fileInfos.add(new FileInfo(path, new ByteArrayInputStream(content.getBytes("UTF-8"))));
-  }
-
-  @Override
   public void addNature(String natureId) {
     natureIds.add(natureId);
   }
@@ -287,7 +272,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
       throws CoreException, SdkException, ClassNotFoundException, BackingStoreException, IOException {
     this.monitor = monitor;
     boolean useGwt = natureIds.contains(GWTNature.NATURE_ID);
-
     // TODO: Add code to update the progress monitor
     if (useGwt) {
       // Let GWT create the source files that we want, we will overwrite the
@@ -326,9 +310,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
      * part of the createProject call above.
      */
     project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-
-    // Create files
-    createFiles(project);
 
     // Set all of the natures on the project
     NatureUtils.addNatures(project, natureIds);
@@ -410,10 +391,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
 
   public List<IPath> getContainerPaths() {
     return containerPaths;
-  }
-
-  public List<FileInfo> getFileInfos() {
-    return fileInfos;
   }
 
   public URI getLocationURI() {
@@ -504,33 +481,6 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
     this.projectName = projectName;
   }
 
-  @Override
-  public void setTemplates(String... templates) {
-    if (templates == null) {
-      this.templates = null;
-    } else {
-      this.templates = new String[templates.length];
-      System.arraycopy(templates, 0, this.templates, 0, templates.length);
-    }
-  }
-
-  @Override
-  public void setTemplateSources(String... templateSources) {
-    if (templateSources == null) {
-      this.templateSources = null;
-    } else {
-      this.templateSources = new String[templateSources.length];
-      System.arraycopy(templateSources, 0, this.templateSources, 0, templateSources.length);
-    }
-  }
-
-  protected void createFiles(IProject project) throws CoreException {
-    for (FileInfo fileInfo : fileInfos) {
-      ResourceUtils.createFolderStructure(project, fileInfo.path.removeLastSegments(1));
-      ResourceUtils.createFile(project.getFullPath().append(fileInfo.path), fileInfo.inputStream);
-    }
-  }
-
   protected IFolder createFolders(IProject project, boolean createWarFolders, IProgressMonitor monitor)
       throws CoreException {
     IFolder srcFolder = project.getFolder("src");
@@ -552,7 +502,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
         WebAppLaunchUtil.determineStartupURL(project, false), false, turnOnGwtSuperDevMode);
     ILaunchGroup[] groups = DebugUITools.getLaunchGroups();
 
-    ArrayList<String> groupsNames = new ArrayList<String>();
+    ArrayList<String> groupsNames = new ArrayList<>();
     for (ILaunchGroup group : groups) {
       if (IDebugUIConstants.ID_DEBUG_LAUNCH_GROUP.equals(group.getIdentifier())
           || IDebugUIConstants.ID_RUN_LAUNCH_GROUP.equals(group.getIdentifier())) {
@@ -599,7 +549,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
 
   protected void setProjectClasspath(IJavaProject javaProject, IFolder srcFolder, IProgressMonitor monitor)
       throws JavaModelException {
-    List<IClasspathEntry> classpathEntries = new ArrayList<IClasspathEntry>();
+    List<IClasspathEntry> classpathEntries = new ArrayList<>();
     classpathEntries.add(JavaCore.newSourceEntry(srcFolder.getFullPath()));
 
     // Add the "test" folder as a src path, if it exists
@@ -705,15 +655,17 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
    * Return the Java project created. This will only work half way through the process.
    */
   @Override
-  public IJavaProject getCreatedJavaProject() {
-    return createdJavaProject;
+  public List<IJavaProject> getCreatedJavaProjects() {
+    List<IJavaProject> list = new ArrayList<>();
+    list.add(createdJavaProject);
+    return Collections.unmodifiableList(list);
   }
 
   /**
    * Build a Maven project.
    */
   @Override
-  public boolean getBuildMaven() {
+  public boolean isBuildMaven() {
     return buildMaven;
   }
 
@@ -721,7 +673,7 @@ public class WebAppProjectCreator implements IWebAppProjectCreator {
    * Build a Ant project.
    */
   @Override
-  public boolean getBuiltAnt() {
+  public boolean isBuiltAnt() {
     return buildAnt;
   }
 

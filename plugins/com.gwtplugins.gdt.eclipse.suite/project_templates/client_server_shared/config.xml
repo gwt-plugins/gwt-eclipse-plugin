@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<name>GWT Web App (Multi Project)</name>
+	<description>
+		GWT Web Application with Client, Server and Shared Projects separated.
+	</description>
+	<project name="_PROJECTNAME_.client"
+		dir="client">
+		<natures>
+			<nature id="com.gwtplugins.gwt.eclipse.core.gwtNature"/>
+		</natures>
+	</project>
+	<project name="_PROJECTNAME_.server"
+		dir="server">
+	</project>
+	<project name="_PROJECTNAME_.shared"
+		dir="shared">
+	</project>
+</config>
