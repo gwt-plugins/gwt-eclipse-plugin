@@ -152,6 +152,11 @@ public class ProjectTemplate implements Comparable<ProjectTemplate>{
     return config.getRootElement().getChild("name").getTextNormalize();
   }
 
+  public String getDescription()
+  {
+    return config.getRootElement().getChild("description").getTextNormalize();
+  }
+
   /**
    * @param i
    * @return
