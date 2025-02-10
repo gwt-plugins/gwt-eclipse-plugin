@@ -172,6 +172,19 @@ public class NewWebAppTemplateProjectWizardPage extends WizardPage {
     final Label templateLabel = new Label(containerOfComponents, SWT.NONE);
     templateLabel.setText("Select Template:");
     templateCombo = new Combo(containerOfComponents, SWT.NONE);
+    templateCombo.addSelectionListener(new SelectionListener() {
+
+      @Override
+      public void widgetSelected(SelectionEvent evt) {
+        int index = templateCombo.getSelectionIndex();
+        ProjectTemplate template = templates.get(index);
+        templateCombo.setToolTipText(template.getDescription());
+      }
+
+      @Override
+      public void widgetDefaultSelected(SelectionEvent arg0) {
+      }
+    });
     GridData gd3 = new GridData(GridData.FILL_HORIZONTAL);
     gd3.horizontalSpan = 2;
     templateCombo.setLayoutData(gd3);
