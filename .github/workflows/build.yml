@@ -42,7 +42,7 @@ jobs:
         if: ${{ steps.keystore.outputs.available != 'true' }}
         run: mvn --batch-mode --update-snapshots package
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: repository
           path: repo/target/repository/
