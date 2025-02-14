@@ -82,7 +82,7 @@ Creating a release requires signing artifacts. Set the following environment var
 ### Deploy
 Releases are uploaded as zips to the [release](https://github.com/gwt-plugins/gwt-eclipse-plugin/releases/)
 part of the Github project page, and also deployed at
-https://gwt-plugins.github.io/documentation/repo/site/current as Eclipse update sites. Releases will be
+[https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin](https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin) as Eclipse update sites. Releases will be
 added to the [GWT-Plugin](https://marketplace.eclipse.org/content/gwt-plugin) page on the Eclipse
 Marketplace.
 
