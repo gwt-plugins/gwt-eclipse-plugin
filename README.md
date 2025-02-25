@@ -42,7 +42,9 @@ The Eclipse repositories for this plugin.
 Release update site.
 
 * [Eclipse Marketplace entry for the GWT Plugin](https://marketplace.eclipse.org/content/gwt-plugin)
-* [Update sites for the GWT Plugin](https://plugins.gwtproject.org/eclipse/site/latest)
+* [Update sites for the GWT Plugin + SDK Plugins](https://plugins.gwtproject.org/eclipse/site/latest)
+* [Update sites for the GWT Plugin without SDKs](https://plugins.gwtproject.org/eclipse/gwt-eclipse-plugin)
+* [Update sites for the GWT SDK Plugins](https://plugins.gwtproject.org/eclipse/gwt-sdk-plugins)
 
 ### Production Zip
 Download the repo in a zip file from the latest release at the
@@ -97,10 +99,5 @@ Sponsors that provide man power and equipment to help get the job done.
 
 ### Google
 The Google Cloud Tools team has put a significant amount of effort in helping bring the GWT Eclipse Plugin to market. 
-
-* [Google Cloud Tools](https://cloud.google.com/)
-
-## Not Included
-* This plugin does not include the [Google Cloud Tools Eclipse](https://github.com/GoogleCloudPlatform/google-cloud-eclipse) features.
 
 
