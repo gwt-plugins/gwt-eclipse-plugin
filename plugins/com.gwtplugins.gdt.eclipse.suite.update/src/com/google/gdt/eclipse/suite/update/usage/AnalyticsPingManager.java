@@ -89,7 +89,6 @@ public class AnalyticsPingManager implements PingManager {
       parametersMap.put("ev", value.toString());
     }
     setCustomDimension(parametersMap, CustomDimensionName.ANONYMIZED_CLIENT_ID, anonymizedClientId);
-    @SuppressWarnings("deprecation") // PluginVersionIdentifier.toString()
     String gwtVersion =
         new VersionedIdentifier(
             GdtExtPlugin.FEATURE_ID, GdtExtPlugin.FEATURE_VERSION.toString()).toString();

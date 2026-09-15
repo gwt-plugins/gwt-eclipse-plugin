@@ -30,17 +30,16 @@ import com.google.gwt.eclipse.core.runtime.GwtSdk;
 
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.PluginVersionIdentifier;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Version;
 import org.w3c.dom.Element;
 
 /**
  * Activator class for the plugin.
  */
-@SuppressWarnings("deprecation")
 public class GdtExtPlugin extends AbstractGwtPlugin {
 
   /**
@@ -57,7 +56,7 @@ public class GdtExtPlugin extends AbstractGwtPlugin {
   public static final String FEATURE_ID;
 
   public static final String FEATURE_UPDATE_SITE_URL;
-  public static final PluginVersionIdentifier FEATURE_VERSION;
+  public static final Version FEATURE_VERSION;
   public static final String PLUGIN_ID = "com.gwtplugins.gdt.eclipse.suite.update";
   public static final String GWT_SDK_BUNDLE_FEATURE_ID = "com.gwtplugins.gwt.eclipse.sdkbundle.gwt211.feature";
 
@@ -70,7 +69,7 @@ public class GdtExtPlugin extends AbstractGwtPlugin {
   static {
     PluginProperties props = new PluginProperties(GdtExtPlugin.class);
     FEATURE_ID = props.getProperty("featureId", "com.gwtplugins.eclipse.suite.v3.feature");
-    FEATURE_VERSION = new PluginVersionIdentifier(props.getProperty("featureVersion", "0.0.0.0"));
+    FEATURE_VERSION = new Version(props.getProperty("featureVersion", "0.0.0.0"));
     FEATURE_UPDATE_SITE_URL = props.getProperty("featureUpdateSiteURL", "http://localhost/update");
   }
 
@@ -153,7 +152,7 @@ public class GdtExtPlugin extends AbstractGwtPlugin {
 
         return doCheckSiteXMLForUpdates(
             GWT_SDK_BUNDLE_FEATURE_ID,
-            new PluginVersionIdentifier(maxGwtSdkVersion),
+            new Version(maxGwtSdkVersion),
             GdtPreferences.getVersionForLastAcknowledgedUpdateNotification(GWT_SDK_BUNDLE_FEATURE_ID),
             siteXMLRootElem, false);
       }
