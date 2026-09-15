@@ -87,7 +87,6 @@ public class UpdateSiteURLGenerator {
    *          api add action. May be null
    * @param extra if not null, then is appended at the end of the URL
    */
-  @SuppressWarnings("deprecation") // PluginVersionIdentifier.toString()
   private static URL computeCompositeUpdateSiteURL(String baseUrl, String action,
       IProject project, String apiName, String apiPlatform, String extra)
       throws MalformedURLException {

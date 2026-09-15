@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.PluginVersionIdentifier;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -181,9 +180,8 @@ public final class GdtPreferences {
     return instancePrefs.getInt(PROJECT_MIGRATOR_VERSION + project.getName(), 0);
   }
 
-  @SuppressWarnings("deprecation")
-  public static PluginVersionIdentifier getVersionForLastAcknowledgedUpdateNotification(String featureId) {
-    return new PluginVersionIdentifier(
+  public static Version getVersionForLastAcknowledgedUpdateNotification(String featureId) {
+    return new Version(
         getConfigurationPreferences().get(getLastAckFeatureUpdateVersionKey(featureId), "0.0.0.0"));
   }
 
@@ -297,8 +295,7 @@ public final class GdtPreferences {
     flushPreferences(configurationPreferences);
   }
 
-  @SuppressWarnings("deprecation")
-  public static void setVersionForLastAcknowlegedUpdateNotification(String featureId, PluginVersionIdentifier version) {
+  public static void setVersionForLastAcknowlegedUpdateNotification(String featureId, Version version) {
     IEclipsePreferences configurationPreferences = getConfigurationPreferences();
     configurationPreferences.put(getLastAckFeatureUpdateVersionKey(featureId), version.toString());
     flushPreferences(configurationPreferences);

@@ -16,7 +16,7 @@ package com.google.gdt.eclipse.core.update.internal.core;
 
 import com.google.gdt.eclipse.core.CorePluginLog;
 
-import org.eclipse.core.runtime.PluginVersionIdentifier;
+import org.osgi.framework.Version;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -30,7 +30,6 @@ import java.util.List;
  * available. The UpdateComputers are given the root element of a
  * <code>site.xml</code> file as input.
  */
-@SuppressWarnings("deprecation")
 public class FeatureUpdateChecker {
 
   /**
@@ -68,8 +67,8 @@ public class FeatureUpdateChecker {
      * .
      */
     protected UpdateInfo doCheckSiteXMLForUpdates(String featureId,
-        PluginVersionIdentifier featureVersion,
-        PluginVersionIdentifier lastAcknowledgedVersionForFeatureUpdate,
+        Version featureVersion,
+        Version lastAcknowledgedVersionForFeatureUpdate,
         Element siteXMLRootElement, boolean compareQualifiers) {
 
       FeatureUpdateChecker.UpdateInfo context = new FeatureUpdateChecker.UpdateInfo(
@@ -84,7 +83,7 @@ public class FeatureUpdateChecker {
        * the feature id of the installedFeature, and find the one with the
        * highest version number.
        */
-      PluginVersionIdentifier maxFeatureVersion = null;
+      Version maxFeatureVersion = null;
 
       NodeList list = siteXMLRootElement.getChildNodes();
       int length = list.getLength();
@@ -108,18 +107,18 @@ public class FeatureUpdateChecker {
               continue;
             }
 
-            PluginVersionIdentifier siteXMLFeatureVersion = new PluginVersionIdentifier(
+            Version siteXMLFeatureVersion = new Version(
                 versionStr);
 
             if (!compareQualifiers) {
-              siteXMLFeatureVersion = new PluginVersionIdentifier(
-                  siteXMLFeatureVersion.getMajorComponent(),
-                  siteXMLFeatureVersion.getMinorComponent(),
-                  siteXMLFeatureVersion.getServiceComponent());
+              siteXMLFeatureVersion = new Version(
+                  siteXMLFeatureVersion.getMajor(),
+                  siteXMLFeatureVersion.getMinor(),
+                  siteXMLFeatureVersion.getMicro());
             }
 
             if (maxFeatureVersion == null
-                || siteXMLFeatureVersion.isGreaterThan(maxFeatureVersion)) {
+                || siteXMLFeatureVersion.compareTo(maxFeatureVersion) > 0) {
               maxFeatureVersion = siteXMLFeatureVersion;
             }
           }
@@ -145,8 +144,8 @@ public class FeatureUpdateChecker {
        * update that has a higher version than anything the user has been
        * notified about beforehand.
        */
-      if (maxFeatureVersion.isGreaterThan(featureVersion)
-          && maxFeatureVersion.isGreaterThan(lastAcknowledgedVersionForFeatureUpdate)) {
+      if (maxFeatureVersion.compareTo(featureVersion) > 0
+          && maxFeatureVersion.compareTo(lastAcknowledgedVersionForFeatureUpdate) > 0) {
         context.setUpdateAvailable(true);
         context.setUpdatedFeatureVersion(maxFeatureVersion);
       }
@@ -160,16 +159,16 @@ public class FeatureUpdateChecker {
    */
   public static class UpdateInfo {
 
-    private static final PluginVersionIdentifier NO_VERSION = new PluginVersionIdentifier(
+    private static final Version NO_VERSION = new Version(
         "0.0.0.0");
 
     private boolean isUpdateAvailable = false;
     private String featureId = null;
-    private PluginVersionIdentifier updatedFeatureVersion = NO_VERSION;
+    private Version updatedFeatureVersion = NO_VERSION;
 
     /**
      * Constructs an object to hold update information for the given feature.
-     * 
+     *
      * @param featureId the id of the feature
      */
     public UpdateInfo(String featureId) {
@@ -184,7 +183,7 @@ public class FeatureUpdateChecker {
      * If an update is available, returns the updated version that is available
      * for the feature. Otherwise, returns a version of <code>0.0.0.0</code>.
      */
-    public PluginVersionIdentifier getUpdatedFeatureVersion() {
+    public Version getUpdatedFeatureVersion() {
       return updatedFeatureVersion;
     }
 
@@ -200,7 +199,7 @@ public class FeatureUpdateChecker {
     }
 
     public void setUpdatedFeatureVersion(
-        PluginVersionIdentifier updatedFeatureVersion) {
+        Version updatedFeatureVersion) {
       if (updatedFeatureVersion == null) {
         this.updatedFeatureVersion = NO_VERSION;
       } else {
@@ -215,7 +214,7 @@ public class FeatureUpdateChecker {
    * Constructs an instance with a set of {@link UpdateComputer}s. The
    * UpdateComputers are used to determine if updates are available based on the
    * contents of the <code>site.xml</code> file.
-   * 
+   *
    * @param updateComputers used to determine if updates are available based on
    *          the contents of the <code>site.xml</code> file
    */
