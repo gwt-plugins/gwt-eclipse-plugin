@@ -32,6 +32,7 @@ import com.google.gwt.eclipse.oophm.model.WebAppDebugModel;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
@@ -45,8 +46,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.wst.server.core.IModule;
 import org.eclipse.wst.server.core.ServerUtil;
+import org.osgi.framework.Bundle;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -88,6 +92,56 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
       Path unmanagedWarPath = new Path(parser.resolvedUnverifiedWarDir);
       WtpPublisher.publishModulesToWarDirectory(project, modules, unmanagedWarPath, forceFullPublish, monitor);
     }
+  }
+
+  /* (non-Javadoc)
+   * @see org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate#getClasspathAndModulepath(org.eclipse.debug.core.ILaunchConfiguration)
+   */
+  @Override
+  public String[][] getClasspathAndModulepath(ILaunchConfiguration config) throws CoreException {
+    String[][] paths = super.getClasspathAndModulepath(config);
+    try {
+      String path = getJettyLauncherPath();
+      String[] cp = paths[0];
+      String[] cpNew = new String[cp.length+1];
+      System.arraycopy(cp, 0, cpNew, 0, cp.length);
+      cpNew[cpNew.length-1] = path;
+      paths[0] = cpNew;
+    } catch (Exception e) {
+      GdtPlugin.getLogger().logError(e, "Could not extend classpath");
+    }
+    return paths;
+  }
+
+  /* (non-Javadoc)
+   * @see org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate#getClasspath(org.eclipse.debug.core.ILaunchConfiguration)
+   */
+  @Override
+  public String[] getClasspath(ILaunchConfiguration configuration) throws CoreException {
+    String[] cp = super.getClasspath(configuration);
+    try {
+      String path = getJettyLauncherPath();
+      String[] cpNew = new String[cp.length+1];
+      System.arraycopy(cp, 0, cpNew, 0, cp.length);
+      cpNew[cpNew.length-1] = path;
+      cp = cpNew;
+    } catch (Exception e) {
+      GdtPlugin.getLogger().logError(e, "Could not extend classpath");
+    }
+    return cp;
+  }
+
+  /**
+   * @return
+   * @throws IOException
+   *
+   */
+  private String getJettyLauncherPath() throws Exception {
+    Bundle plugin = org.eclipse.core.runtime.Platform.getBundle("com.gwtplugins.eclipse.jettylauncher");
+    URL url = plugin.getResource("/");
+    url = FileLocator.toFileURL(url);
+    String path = new File(url.toURI()).toString();
+    return path;
   }
 
   @Override
@@ -147,7 +201,7 @@ public class WebAppLaunchDelegate extends JavaLaunchDelegate {
        */
       WebAppDebugModel.getInstance().addOrReturnExistingLaunchConfiguration(launch, null, null);
     }
-
+    String cmd = this.showCommandLine(configuration, mode, launch, monitor);
     super.launch(configuration, mode, launch, monitor);
   }
 

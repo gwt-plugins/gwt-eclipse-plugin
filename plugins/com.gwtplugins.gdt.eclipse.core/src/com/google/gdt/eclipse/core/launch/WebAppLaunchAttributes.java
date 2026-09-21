@@ -17,7 +17,7 @@ package com.google.gdt.eclipse.core.launch;
 import com.google.gdt.eclipse.core.CorePlugin;
 
 /**
- * 
+ *
  */
 public enum WebAppLaunchAttributes implements ILaunchConfigurationAttribute {
   /**
@@ -31,6 +31,16 @@ public enum WebAppLaunchAttributes implements ILaunchConfigurationAttribute {
   SERVER_PORT("8888"),
 
   /**
+   * Server class to use.
+   */
+  SERVER_CLASS("com.google.gwt.dev.shell.jetty.JettyLauncher"),
+
+  /**
+   * Server class to use.
+   */
+  JETTY_HOME(""),
+
+  /**
    * Run a built-in server.
    */
   RUN_SERVER(true);
@@ -41,10 +51,12 @@ public enum WebAppLaunchAttributes implements ILaunchConfigurationAttribute {
     this.defaultValue = defaultValue;
   }
 
+  @Override
   public Object getDefaultValue() {
     return defaultValue;
   }
 
+  @Override
   public String getQualifiedName() {
     return CorePlugin.PLUGIN_ID + "." + name();
   }

@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jettylauncher
+Bundle-SymbolicName: com.gwtplugins.eclipse.jettylauncher
+Bundle-Version: 4.2.0.qualifier
+Automatic-Module-Name: org.gwtproject.jettylauncher
+Bundle-RequiredExecutionEnvironment: JavaSE-17

@@ -17,7 +17,7 @@ package com.google.gdt.eclipse.core.launch;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 
 /**
- * 
+ *
  */
 public class WebAppLaunchConfigurationWorkingCopy extends
     WebAppLaunchConfiguration {
@@ -38,6 +38,12 @@ public class WebAppLaunchConfigurationWorkingCopy extends
       String serverPort) {
     LaunchConfigurationAttributeUtilities.set(workingCopy,
         WebAppLaunchAttributes.SERVER_PORT, serverPort);
+  }
+
+  public static void setServerClass(ILaunchConfigurationWorkingCopy workingCopy,
+      String serverClass) {
+    LaunchConfigurationAttributeUtilities.set(workingCopy,
+        WebAppLaunchAttributes.SERVER_CLASS, serverClass);
   }
 
 }

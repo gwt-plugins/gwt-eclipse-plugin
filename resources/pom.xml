@@ -32,8 +32,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <!-- GWT 2.7.0 SDK zip -->
-              <url>http://goo.gl/t7FQSn</url>
+		    <url>https://github.com/gwtproject/gwt/releases/download/${gwt.version}/gwt-${gwt.version}.zip</url>
               <!-- GWT_HOME wants the zip -->
               <unpack>false</unpack>
               <overwrite>true</overwrite>

@@ -103,21 +103,21 @@ public abstract class AbstractProjectValidator extends
    * Given a Java project, validates that it has a classpath container with the
    * given ID on its build path, and the SDK that the container corresponds to
    * exists, is valid and supported.
-   * 
+   *
    * If any problems are detected with finding or validating the SDK, error
    * markers with the given ID are created on the Java project's corresponding
    * IProject, and a value of false will be returned.
-   * 
+   *
    * If the project has the Web Application Nature, then warning markers with
    * the given ID will be generated for each of the SDK's server classpath
    * libraries which are inconsistent with the contents of WEB-INF/lib. Even if
    * there are inconsistencies, a value of true will still be returned by this
    * method.
-   * 
+   *
    * TODO: Ensure that only one SDK with the given containerID exists on the
    * project's build path; right now, this method looks for the first classpath
    * container entry that matches the containerID *
-   * 
+   *
    * @return whether the classpath container refers to an existing and valid
    *         SDK.
    * @throws CoreException
@@ -169,11 +169,24 @@ public abstract class AbstractProjectValidator extends
     }
 
     for (File webAppClasspathFile : sdk.getWebAppClasspathFiles(getProject())) {
-
       IFile webInfLibFile = null;
-
-      if (webInfLibFolder.exists()) {
-        webInfLibFile = webInfLibFolder.getFile(webAppClasspathFile.getName());
+      String javaxName = webAppClasspathFile.getName();
+      if("gwt-servlet.jar".equals(javaxName))
+      {
+        if (webInfLibFolder.exists()) {
+          String jakartaName = javaxName.replace(".jar", "-jakarta.jar");
+          IFile javaxFile = webInfLibFolder.getFile(javaxName);
+          IFile jakartaFile = webInfLibFolder.getFile(jakartaName);
+          if(jakartaFile.exists())
+          {
+            webInfLibFile = jakartaFile;
+            webAppClasspathFile = new File(webAppClasspathFile.getParentFile(), jakartaName);
+          }
+          else
+          {
+            webInfLibFile = javaxFile;
+          }
+        }
       }
 
       if (webInfLibFile == null || !webInfLibFile.exists()) {

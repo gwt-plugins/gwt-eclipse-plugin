@@ -23,12 +23,12 @@ import com.google.gdt.eclipse.core.launch.WebAppLaunchAttributes;
 import com.google.gdt.eclipse.core.launch.WebAppLaunchConfiguration;
 import com.google.gdt.eclipse.core.launch.WebAppLaunchConfigurationWorkingCopy;
 import com.google.gdt.eclipse.suite.GdtPlugin;
+import com.google.gdt.eclipse.suite.launch.processors.JettyServerArgumentProcessor;
 import com.google.gdt.eclipse.suite.launch.processors.PortArgumentProcessor;
 import com.google.gdt.eclipse.suite.launch.processors.PortArgumentProcessor.PortParser;
 import com.google.gdt.eclipse.suite.resources.GdtImages;
 import com.google.gwt.eclipse.core.launch.processors.NoServerArgumentProcessor;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -59,11 +59,16 @@ import java.util.List;
 public class WebAppServerTab extends JavaLaunchTab implements WebAppArgumentsTab.ArgumentsListener,
     UpdateLaunchConfigurationDialogBatcher.Listener {
 
-  // TODO: Create a subclass that contains the run server and autoport
+  private static final String DEFAULT_SERVER_CLASS = "com.google.gwt.dev.shell.jetty.JettyLauncher";
+  private static final String JETTY12_JEE10_SERVER_CLASS = "com.gwtplugins.jettylauncher.jee10.Jetty12Launcher";
+  private static final String JETTY12_JEE8_SERVER_CLASS = "com.gwtplugins.jettylauncher.jee8.Jetty12Launcher";
+
   /**
-   * May be null.
    */
+  private Button noServerButton;
   private Button runServerButton;
+  private Button runJetty12Jee10ServerButton;
+  private Button runJetty12Jee8ServerButton;
 
   /**
    * May be null.
@@ -125,13 +130,23 @@ public class WebAppServerTab extends JavaLaunchTab implements WebAppArgumentsTab
   @Override
   public void doPerformApply(ILaunchConfigurationWorkingCopy configuration) {
     if (runServerButton != null) {
-      WebAppLaunchConfigurationWorkingCopy.setRunServer(configuration, runServerButton.getSelection());
+      boolean runServer = ! noServerButton.getSelection();
+      WebAppLaunchConfigurationWorkingCopy.setRunServer(configuration, runServer);
+      String serverClass = DEFAULT_SERVER_CLASS;
+      if(runJetty12Jee10ServerButton.getSelection())
+      {
+        serverClass = JETTY12_JEE10_SERVER_CLASS;
+      }
+      else if(runJetty12Jee8ServerButton.getSelection())
+      {
+        serverClass = JETTY12_JEE8_SERVER_CLASS;
+      }
+      WebAppLaunchConfigurationWorkingCopy.setServerClass(configuration, serverClass);
     }
 
     LaunchConfigurationProcessorUtilities.updateViaProcessor(new NoServerArgumentProcessor(), configuration);
 
-    // TODO remove and have folks use the CodeServerLauncher
-    //LaunchConfigurationProcessorUtilities.updateViaProcessor(new ServerArgumentProcessor(), configuration);
+    LaunchConfigurationProcessorUtilities.updateViaProcessor(new JettyServerArgumentProcessor(), configuration);
 
     WebAppLaunchConfigurationWorkingCopy.setServerPort(configuration, serverPortText.getText().trim());
 
@@ -160,7 +175,24 @@ public class WebAppServerTab extends JavaLaunchTab implements WebAppArgumentsTab
         super.initializeFrom(config);
 
         if (runServerButton != null) {
-          runServerButton.setSelection(WebAppLaunchConfiguration.getRunServer(config));
+          boolean runServer = WebAppLaunchConfiguration.getRunServer(config);
+          noServerButton.setSelection( ! runServer);
+          if(runServer)
+          {
+            String serverClass = WebAppLaunchConfiguration.getServerClass(config);
+            if(JETTY12_JEE10_SERVER_CLASS.equals(serverClass))
+            {
+              runJetty12Jee10ServerButton.setSelection(true);
+            }
+            else if(JETTY12_JEE8_SERVER_CLASS.equals(serverClass))
+            {
+              runJetty12Jee8ServerButton.setSelection(true);
+            }
+            else
+            {
+              runServerButton.setSelection(true);
+            }
+          }
         }
 
         if (autoPortSelectionButton != null) {
@@ -192,14 +224,13 @@ public class WebAppServerTab extends JavaLaunchTab implements WebAppArgumentsTab
       return false;
     }
 
-    IProject project;
     try {
       IJavaProject javaProject = JavaRuntime.getJavaProject(launchConfig);
       if (javaProject == null) {
         return false;
       }
 
-      project = javaProject.getProject();
+      javaProject.getProject();
     } catch (CoreException ce) {
       // Thrown if the Java project does not exist, which is not of concern in
       // this tab (the Main tab handles those error messages)
@@ -245,17 +276,24 @@ public class WebAppServerTab extends JavaLaunchTab implements WebAppArgumentsTab
   }
 
   protected void createServerComponent(Composite parent) {
-    Group group = SWTFactory.createGroup(parent, "Embedded Jetty Server:", 3, 1, GridData.FILL_HORIZONTAL);
+    Group group = SWTFactory.createGroup(parent, "Run Server:", 3, 1, GridData.FILL_HORIZONTAL);
 
     if (showRunServerButton) {
-      runServerButton = SWTFactory.createCheckButton(group, "Run built-in server", null, true, 3);
-      runServerButton.addSelectionListener(new SelectionAdapter() {
+      noServerButton = SWTFactory.createRadioButton(group, "No server", 3);
+      SelectionAdapter selectionAdapter = new SelectionAdapter() {
         @Override
         public void widgetSelected(SelectionEvent e) {
           updateEnabledState();
           webAppServerTab.updateLaunchConfigurationDialog();
         }
-      });
+      };
+      noServerButton.addSelectionListener(selectionAdapter);
+      runServerButton = SWTFactory.createRadioButton(group, "Run built-in server (Jetty 9)", 3);
+      runServerButton.addSelectionListener(selectionAdapter);
+      runJetty12Jee10ServerButton = SWTFactory.createRadioButton(group, "Run Jetty 12 JEE 10 server", 3);
+      runJetty12Jee10ServerButton.addSelectionListener(selectionAdapter);
+      runJetty12Jee8ServerButton = SWTFactory.createRadioButton(group, "Run Jetty 12 JEE 8 server", 3);
+      runJetty12Jee8ServerButton.addSelectionListener(selectionAdapter);
     }
 
     Label serverPortLabel = new Label(group, SWT.NONE);
@@ -304,11 +342,12 @@ public class WebAppServerTab extends JavaLaunchTab implements WebAppArgumentsTab
 
   private void updateEnabledState() {
     boolean usingAutoPort = autoPortSelectionButton != null && autoPortSelectionButton.getSelection();
-    boolean runningServer = runServerButton == null || runServerButton.getSelection();
+    boolean runningServer = runServerButton == null || runServerButton.getSelection()
+        || runJetty12Jee8ServerButton.getSelection() || runJetty12Jee10ServerButton.getSelection();
     serverPortText.setEnabled(!usingAutoPort && runningServer);
 
     if (autoPortSelectionButton != null) {
-      autoPortSelectionButton.setEnabled(runServerButton.getSelection());
+      autoPortSelectionButton.setEnabled(runningServer);
     }
   }
 }

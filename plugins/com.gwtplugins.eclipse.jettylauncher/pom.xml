@@ -1,0 +1,134 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.gwtplugins.eclipse</groupId>
+		<artifactId>trunk</artifactId>
+		<version>4.2.0-SNAPSHOT</version>
+		<relativePath>../../</relativePath>
+	</parent>
+
+	<artifactId>com.gwtplugins.eclipse.jettylauncher</artifactId>
+	<version>4.2.0-SNAPSHOT</version>
+	<packaging>eclipse-plugin</packaging>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>11</java.version>
+		<maven.test.skip>true</maven.test.skip>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>12.0.31</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty.ee10</groupId>
+			<artifactId>jetty-ee10-servlet</artifactId>
+			<version>12.0.31</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty.ee10</groupId>
+			<artifactId>jetty-ee10-webapp</artifactId>
+			<version>12.0.31</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty.ee8</groupId>
+			<artifactId>jetty-ee8-servlet</artifactId>
+			<version>12.0.31</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty.ee8</groupId>
+			<artifactId>jetty-ee8-webapp</artifactId>
+			<version>12.0.31</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.gwtproject</groupId>
+			<artifactId>gwt-dev</artifactId>
+			<version>2.12.2</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+					</configuration>
+					<executions>
+						<execution>
+							<id>default-testCompile</id>
+							<phase>none</phase> <!-- Deaktiviert das
+							Test-Kompilieren -->
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-compiler-plugin</artifactId>
+					<version>${tycho.version}</version>
+					<configuration>
+						<extraClasspathElements>
+							<extraClasspathElement>
+								<groupId>org.eclipse.jetty</groupId>
+								<artifactId>jetty-server</artifactId>
+								<version>12.0.36</version> <!-- Version anpassen -->
+							</extraClasspathElement>
+							<extraClasspathElement>
+								<groupId>org.eclipse.jetty.ee8</groupId>
+								<artifactId>jetty-ee8-servlet</artifactId>
+								<version>12.0.36</version> <!-- Version anpassen -->
+							</extraClasspathElement>
+							<extraClasspathElement>
+								<groupId>org.eclipse.jetty.ee8</groupId>
+								<artifactId>jetty-ee8-webapp</artifactId>
+								<version>12.0.36</version>
+							</extraClasspathElement>
+							<extraClasspathElement>
+								<groupId>org.eclipse.jetty.ee10</groupId>
+								<artifactId>jetty-ee10-servlet</artifactId>
+								<version>12.0.36</version> <!-- Version anpassen -->
+							</extraClasspathElement>
+							<extraClasspathElement>
+								<groupId>org.eclipse.jetty.ee10</groupId>
+								<artifactId>jetty-ee10-webapp</artifactId>
+								<version>12.0.36</version>
+							</extraClasspathElement>
+							<extraClasspathElement>
+								<groupId>org.gwtproject</groupId>
+								<artifactId>gwt-dev</artifactId>
+								<version>2.12.2</version>
+								<exclusions>
+									<exclusion>
+										<groupId>xml-apis</groupId>
+										<artifactId>xml-apis</artifactId>
+									</exclusion>
+									<exclusion>
+										<groupId>xerces</groupId>
+										<artifactId>xercesImpl</artifactId>
+									</exclusion>
+								</exclusions>
+							</extraClasspathElement>
+						</extraClasspathElements>
+						<useProjectDependencies>true</useProjectDependencies>
+						<showWarnings>true</showWarnings>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>

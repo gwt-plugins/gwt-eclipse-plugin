@@ -119,7 +119,20 @@ public abstract class UpdateWebInfFolderCommand {
     // Copy the new files in
     for (File fileToAdd : filesToAdd) {
       IFile file = webInfLibFolder.getFile(fileToAdd.getName());
-      if (file.exists()) {
+      if(fileToAdd.getName().equals("gwt-servlet.jar"))    	  
+      { //check if jakarta version is used and replace gwt-servlet with that if needed.
+        if(file.exists() == false)
+        {
+          File jakartaFileToAdd = new File(fileToAdd.getParent(), "gwt-servlet-jakarta.jar");
+          IFile jakartaFile = webInfLibFolder.getFile(jakartaFileToAdd.getName());
+          if(jakartaFile.exists())
+          {
+            fileToAdd = jakartaFileToAdd;
+            file = jakartaFile;
+          }
+        }
+      }
+      if (fileToAdd.exists()) {
         file.delete(true, false, new NullProgressMonitor());
       }
       file.create(new FileInputStream(fileToAdd), true, null);

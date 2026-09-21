@@ -46,4 +46,10 @@ public class WebAppLaunchConfiguration {
     return LaunchConfigurationAttributeUtilities.getString(launchConfiguration,
         WebAppLaunchAttributes.SERVER_PORT);
   }
+
+  public static String getServerClass(ILaunchConfiguration launchConfiguration)
+      throws CoreException {
+    return LaunchConfigurationAttributeUtilities.getString(launchConfiguration,
+        WebAppLaunchAttributes.SERVER_CLASS);
+  }
 }

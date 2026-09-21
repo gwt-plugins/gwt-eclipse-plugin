@@ -177,4 +177,11 @@
          version="4.2.0.qualifier"
          unpack="false"/>
 
+   <plugin
+         id="com.gwtplugins.eclipse.jettylauncher"
+         download-size="0"
+         install-size="0"
+         version="4.2.0.qualifier"
+         unpack="false"/>
+
 </feature>
